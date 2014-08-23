@@ -14,7 +14,21 @@ class GameScene: SKScene {
     typealias TileSprite = Sprites.TileSprite
     
     class GameState {
+        
+        class Player {
+            var score = 0
+            init() {
+                score = 0
+            }
+            
+            func incrementScore(value: Int) {
+                score += value
+                println("Add Score: \(value), new score: \(score)")
+            }
+        }
+        
         var game: Locution
+        var player: Player // Create array
         var squareSprites: [SquareSprite]
         var rackSprites: [TileSprite]
         var draggedSprite: TileSprite?
@@ -22,8 +36,9 @@ class GameScene: SKScene {
         
         init(view: SKView, node: SKNode) {
             self.game = Locution()
-            self.squareSprites = SquareSprite.createSprites(forGame: game, size: view.frame.size)
-            self.rackSprites = TileSprite.createRackSprites(forGame: game, size: view.frame.size)
+            self.player = Player()
+            self.squareSprites = SquareSprite.createSprites(forGame: game, frame: view.frame)
+            self.rackSprites = TileSprite.createRackSprites(forGame: game, frame: view.frame)
             self.setup(inView: view, node: node)
         }
         
@@ -48,9 +63,58 @@ class GameScene: SKScene {
             self.squareSprites.removeAll(keepCapacity: false)
             self.rackSprites.removeAll(keepCapacity: false)
             self.game = Locution()
-            self.squareSprites = SquareSprite.createSprites(forGame: game, size: view.frame.size)
-            self.rackSprites = TileSprite.createRackSprites(forGame: game, size: view.frame.size)
+            self.player = Player()
+            self.squareSprites = SquareSprite.createSprites(forGame: game, frame: view.frame)
+            self.rackSprites = TileSprite.createRackSprites(forGame: game, frame: view.frame)
             self.setup(inView: view, node: node)
+        }
+        
+        func droppedTiles() -> [TileSprite] {
+            var tiles = [TileSprite]()
+            for squareSprite in filledSquares() {
+                if let tileSprite = squareSprite.tileSprite {
+                    tiles.append(tileSprite)
+                }
+            }
+            return tiles
+        }
+        
+        func filledSquares() -> [SquareSprite] {
+            var tiles = [SquareSprite]()
+            for squareSprite in squareSprites {
+                if let movable = squareSprite.tileSprite?.movable {
+                    if movable {
+                        tiles.append(squareSprite)
+                    }
+                }
+            }
+            return tiles
+        }
+        
+        func validate() -> Bool {
+            // Check that word lines up correctly
+            return true
+        }
+        
+        func submit() -> Bool {
+            if validate() {
+                var score = 0
+                var multiplier = 1
+                for squareSprite in filledSquares() {
+                    if let square = squareSprite.square {
+                        multiplier *= square.wordMultiplier()
+                        score += square.value()
+                    }
+                    if let tileSprite = squareSprite.tileSprite {
+                        tileSprite.movable = false
+                    }
+                }
+                println("Score pre-multiply: \(score)")
+                score *= multiplier
+                player.incrementScore(score)
+                return true
+            }
+            return false
         }
     }
     
@@ -66,6 +130,11 @@ class GameScene: SKScene {
     
     override func didMoveToView(view: SKView) {
         self.newGame()
+        
+        var submit = SKLabelNode(text: "Submit")
+        submit.position = view.center
+        submit.position.y -= 100
+        self.addChild(submit)
     }
     
     override func touchesBegan(touches: NSSet!, withEvent event: UIEvent!) {
@@ -89,6 +158,8 @@ class GameScene: SKScene {
                             }
                         }
                     }
+                } else if let labelNode = child as? SKLabelNode {
+                    gameState?.submit()
                 }
             }
         }

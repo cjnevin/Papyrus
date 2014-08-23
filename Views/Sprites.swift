@@ -13,12 +13,12 @@ class Sprites {
     typealias Tile = Locution.Tile
     
     class SquareSprite: SKSpriteNode {
-        class func createSprites(forGame game: Locution, size: CGSize) -> [SquareSprite] {
+        class func createSprites(forGame game: Locution, frame: CGRect) -> [SquareSprite] {
             var sprites = [SquareSprite]()
-            var squareSize = size.width / CGFloat(game.board.dimensions)
+            var squareSize = CGRectGetWidth(frame) / CGFloat(game.board.dimensions)
             for square in game.board.squares {
                 var sprite = SquareSprite(square: square, edge: squareSize)
-                sprite.position = CGPointMake(squareSize * CGFloat(square.point.0 - 1) + squareSize / 2, size.height - squareSize * CGFloat(square.point.1 - 1) + squareSize / 2)
+                sprite.position = CGPointMake(squareSize * CGFloat(square.point.0 - 1) + squareSize / 2, CGRectGetHeight(frame) - squareSize * CGFloat(square.point.1) + squareSize / 2)
                 sprites.append(sprite)
             }
             return sprites
@@ -98,12 +98,12 @@ class Sprites {
     
     
     class TileSprite: SKSpriteNode {
-        class func createRackSprites(forGame game: Locution, size: CGSize) -> [TileSprite] {
+        class func createRackSprites(forGame game: Locution, frame: CGRect) -> [TileSprite] {
             var sprites = [TileSprite]()
             var index = 0
-            var squareSize = size.width / CGFloat(game.board.dimensions)
+            var squareSize = CGRectGetWidth(frame) / CGFloat(game.board.dimensions)
             var tileSize = squareSize * 2.0
-            var spacing = (size.width - tileSize * CGFloat(game.rack.amount)) / 2
+            var spacing = (CGRectGetWidth(frame) - tileSize * CGFloat(game.rack.amount)) / 2
             for tile in game.rack.tiles {
                 var sprite = TileSprite(tile: tile, edge: squareSize, scale: 2.0)
                 sprite.position = CGPointMake(tileSize * CGFloat(index) + tileSize / 2 + spacing, tileSize / 2)

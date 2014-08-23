@@ -139,7 +139,7 @@ class Locution {
                     var point = (row, col)
                     if symmetrical(point, offset: 0, offset2: 0, middle: middle) {
                         squares.append(Square(squareType: .Center, point: point))
-                    } else if symmetrical(point, offset: middle - 1, offset2: middle - 1, middle: middle) {
+                    } else if symmetrical(point, offset: middle - 1, offset2: middle - 1, middle: middle) || symmetrical(point, offset: 0, offset2: middle - 1, middle: middle) {
                         squares.append(Square(squareType: .TripleWord, point: point))
                     } else if symmetrical(point, offset: 1, offset2: 1, middle: middle) || symmetrical(point, offset: 1, offset2: 5, middle: middle) || symmetrical(point, offset: 0, offset2: 4, middle: middle) || symmetrical(point, offset: middle - 1, offset2: 4, middle: middle) {
                         squares.append(Square(squareType: .DoubleLetter, point: point))
