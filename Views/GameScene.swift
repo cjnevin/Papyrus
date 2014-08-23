@@ -71,22 +71,36 @@ class GameScene: SKScene {
         if let point = touches.anyObject().locationInNode?(self) {
             if let sprite = draggedSprite {
                 var found = false
+                var fallback: SquareSprite?     // Closest square to drop tile if hovered square is filled
+                var fallbackOverlap: CGFloat = 0
                 for child in self.children {
                     if let squareSprite = child as? SquareSprite {
-                        if squareSprite.intersectsNode(sprite) && squareSprite.frame.contains(point) {
+                        if squareSprite.intersectsNode(sprite) {
                             if squareSprite.isEmpty() {
-                                if let originalPoint = self.originalPoint {
-                                    squareSprite.dropTileSprite(sprite, originalPoint: originalPoint)
-                                    found = true
-                                    break
+                                if squareSprite.frame.contains(point) {
+                                    if let originalPoint = self.originalPoint {
+                                        squareSprite.dropTileSprite(sprite, originalPoint: originalPoint)
+                                        found = true
+                                        break
+                                    }
+                                }
+                                var intersection = CGRectIntersection(squareSprite.frame, sprite.frame)
+                                var overlap = CGRectGetWidth(intersection) + CGRectGetHeight(intersection)
+                                if overlap > fallbackOverlap {
+                                    fallback = squareSprite
+                                    fallbackOverlap = overlap
                                 }
                             }
                         }
                     }
                 }
                 if !found {
-                    if let origPoint = self.originalPoint {
-                        sprite.position = origPoint
+                    if let originalPoint = self.originalPoint {
+                        if let squareSprite = fallback {
+                            squareSprite.dropTileSprite(sprite, originalPoint: originalPoint)
+                        } else {
+                            sprite.position = originalPoint
+                        }
                     }
                 }
                 originalPoint = nil
