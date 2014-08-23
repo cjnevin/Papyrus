@@ -14,10 +14,9 @@ class GameScene: SKScene {
     typealias TileSprite = Sprites.TileSprite
     
     class GameState {
+        var game: Locution
         var squareSprites: [SquareSprite]
         var rackSprites: [TileSprite]
-        let game: Locution
-        
         var draggedSprite: TileSprite?
         var originalPoint: CGPoint?
         
@@ -25,6 +24,10 @@ class GameScene: SKScene {
             self.game = Locution()
             self.squareSprites = SquareSprite.createSprites(forGame: game, size: view.frame.size)
             self.rackSprites = TileSprite.createRackSprites(forGame: game, size: view.frame.size)
+            self.setup(inView: view, node: node)
+        }
+        
+        private func setup(inView view: SKView, node: SKNode) {
             for sprite in self.squareSprites {
                 node.addChild(sprite)
             }
@@ -32,12 +35,33 @@ class GameScene: SKScene {
                 node.addChild(sprite)
             }
         }
+        
+        func reset(inView view: SKView, node: SKNode) {
+            for sprite in self.squareSprites {
+                sprite.removeFromParent()
+            }
+            for sprite in self.rackSprites {
+                sprite.removeFromParent()
+            }
+            self.draggedSprite = nil
+            self.originalPoint = nil
+            self.squareSprites.removeAll(keepCapacity: false)
+            self.rackSprites.removeAll(keepCapacity: false)
+            self.game = Locution()
+            self.squareSprites = SquareSprite.createSprites(forGame: game, size: view.frame.size)
+            self.rackSprites = TileSprite.createRackSprites(forGame: game, size: view.frame.size)
+            self.setup(inView: view, node: node)
+        }
     }
     
     var gameState: GameState?
     
     func newGame() {
-        self.gameState = GameState(view:view, node:self)
+        if let gameState = self.gameState {
+            gameState.reset(inView: view, node: self)
+        } else {
+            self.gameState = GameState(view:view, node:self)
+        }
     }
     
     override func didMoveToView(view: SKView) {

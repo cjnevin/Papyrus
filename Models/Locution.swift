@@ -127,8 +127,6 @@ class Locution {
             }
         }
         
-        // MARK: - Lifecycle
-        
         let dimensions: Int
         let squares: [Square]
         
