@@ -10,6 +10,8 @@ import SpriteKit
 import SceneKit
 
 class GameScene: SKScene {
+    typealias Square = Locution.Board.Square
+    typealias Tile = Locution.Tile
     typealias SquareSprite = Sprites.SquareSprite
     typealias TileSprite = Sprites.TileSprite
     
@@ -69,30 +71,18 @@ class GameScene: SKScene {
             self.setup(inView: view, node: node)
         }
         
-        func droppedTiles() -> [TileSprite] {
-            var tiles = [TileSprite]()
-            for squareSprite in filledSquares() {
-                if let tileSprite = squareSprite.tileSprite {
-                    tiles.append(tileSprite)
-                }
-            }
-            return tiles
-        }
-        
-        func filledSquares() -> [SquareSprite] {
-            var tiles = [SquareSprite]()
-            for squareSprite in squareSprites {
-                if let movable = squareSprite.tileSprite?.movable {
-                    if movable {
-                        tiles.append(squareSprite)
-                    }
-                }
-            }
-            return tiles
-        }
-        
         func validate() -> Bool {
             // Check that word lines up correctly
+            var squares = filledSquares()
+            if areSquaresHorizontal(squares) {
+                
+            } else if areSquaresVertical(squares) {
+                
+            } else {
+                return false
+            }
+            
+            // Check that word intercepts center tile or another word
             return true
         }
         
@@ -100,7 +90,7 @@ class GameScene: SKScene {
             if validate() {
                 var score = 0
                 var multiplier = 1
-                for squareSprite in filledSquares() {
+                for squareSprite in filledSquareSprites() {
                     if let square = squareSprite.square {
                         multiplier *= square.wordMultiplier()
                         score += square.value()
@@ -115,6 +105,54 @@ class GameScene: SKScene {
                 return true
             }
             return false
+        }
+        
+        // MARK: Private
+        
+        private func droppedTileSprites() -> [TileSprite] {
+            var tiles = [TileSprite]()
+            for squareSprite in filledSquareSprites() {
+                if let tileSprite = squareSprite.tileSprite {
+                    tiles.append(tileSprite)
+                }
+            }
+            return tiles
+        }
+        
+        private func filledSquares() -> [Square] {
+            var tiles = [Square]()
+            for sprite in filledSquareSprites() {
+                if let square = sprite.square {
+                    tiles.append(square)
+                }
+            }
+            return tiles
+        }
+        
+        private func filledSquareSprites() -> [SquareSprite] {
+            var tiles = [SquareSprite]()
+            for squareSprite in squareSprites {
+                if let movable = squareSprite.tileSprite?.movable {
+                    if movable {
+                        tiles.append(squareSprite)
+                    }
+                }
+            }
+            return tiles
+        }
+        
+        private func areSquaresHorizontal(squares: [Square]) -> Bool {
+            var firstValue = squares[0].point.0
+            var values = squares.map({$0.point.0})
+            var inline = squares.count == values.filter({$0 == firstValue}).count
+            return inline
+        }
+        
+        private func areSquaresVertical(squares: [Square]) -> Bool {
+            var firstValue = squares[0].point.1
+            var values = squares.map({$0.point.1})
+            var inline = squares.count == values.filter({$0 == firstValue}).count
+            return inline
         }
     }
     
