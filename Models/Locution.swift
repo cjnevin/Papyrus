@@ -1,5 +1,5 @@
 //
-//  Model.swift
+//  Locution.swift
 //  Locution
 //
 //  Created by Chris Nevin on 22/08/2014.
