@@ -11,6 +11,9 @@ import SpriteKit
 class TileSprite: SKSpriteNode {
     var movable: Bool = true
     let tile: Board.Tile?
+    
+    // MARK: - Lifecycle
+    
     init(tile: Board.Tile, edge: CGFloat, scale: CGFloat) {
         self.tile = tile;
         var color = UIColor(red: 1, green: 1, blue: 200/255, alpha: 1)

@@ -12,6 +12,13 @@ class SquareSprite: SKSpriteNode {
     let square: Board.Square?
     var originalPoint: CGPoint?
     var tileSprite: TileSprite?
+    
+    // MARK: - Lifecycle
+    
+    required init(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+    }
+    
     init(square: Board.Square, edge: CGFloat) {
         var color: UIColor
         switch (square.squareType) {
@@ -38,6 +45,8 @@ class SquareSprite: SKSpriteNode {
             newTileSprite.movable = false
         }
     }
+    
+    // MARK: - Public
     
     func isEmpty() -> Bool {
         return self.tileSprite == nil
@@ -73,10 +82,6 @@ class SquareSprite: SKSpriteNode {
             }
         }
         return nil
-    }
-    
-    required init(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
     }
 }
 

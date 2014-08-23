@@ -79,22 +79,7 @@ class Board {
         }
     }
     
-    func symmetrical(point: (Int, Int), offset: Int, offset2: Int, middle: Int) -> Bool {
-        switch (point) {
-        case
-        (middle - offset, middle - offset2),
-        (middle - offset, middle + offset2),
-        (middle + offset, middle + offset2),
-        (middle + offset, middle - offset2),
-        (middle - offset2, middle - offset),
-        (middle - offset2, middle + offset),
-        (middle + offset2, middle + offset),
-        (middle + offset2, middle - offset):
-            return true
-        default:
-            return false
-        }
-    }
+    // MARK: - Lifecycle
     
     init(dimensions: Int) {
         self.dimensions = dimensions;
@@ -143,35 +128,36 @@ class Board {
                 var point = (row, col)
                 if symmetrical(point, offset: 0, offset2: 0, middle: middle) {
                     squares.append(Square(squareType: .Center, point: point))
-                    //buffer+="XX"
                 } else if symmetrical(point, offset: middle - 1, offset2: middle - 1, middle: middle) {
                     squares.append(Square(squareType: .TripleWord, point: point))
-                    //buffer+="TW"
                 } else if symmetrical(point, offset: 1, offset2: 1, middle: middle) || symmetrical(point, offset: 1, offset2: 5, middle: middle) || symmetrical(point, offset: 0, offset2: 4, middle: middle) || symmetrical(point, offset: middle - 1, offset2: 4, middle: middle) {
                     squares.append(Square(squareType: .DoubleLetter, point: point))
-                    //buffer+="DL"
                 } else if symmetrical(point, offset: 2, offset2: 6, middle: middle) || symmetrical(point, offset: 2, offset2: 2, middle: middle) {
                     squares.append(Square(squareType: .TripleLetter, point: point))
-                    //buffer+="TL"
                 } else if symmetrical(point, offset: 3, offset2: 3, middle: middle) || symmetrical(point, offset: 4, offset2: 4, middle: middle) || symmetrical(point, offset: 5, offset2: 5, middle: middle) || symmetrical(point, offset: 6, offset2: 6, middle: middle) {
                     squares.append(Square(squareType: .DoubleWord, point: point))
-                    var r = Int(arc4random_uniform(UInt32(self.bagTiles.count)))
-                    if let square = squares.last {
-                        square.fill(self.bagTiles[r])
-                        self.bagTiles.removeAtIndex(r)
-                    }
-                    var filled = squares.filter({$0.tile != nil})
-                    var map = filled.reduce(0, Square.values)
-                    println("\(map)")
-                    println("Remaining: \(bagTiles.count)")
-                    //buffer+="DW"
                 }
                 else {
                     squares.append(Square(squareType: .Normal, point: point))
-                    //buffer+="  "
                 }
             }
-            //println(buffer);
+        }
+    }
+    
+    func symmetrical(point: (Int, Int), offset: Int, offset2: Int, middle: Int) -> Bool {
+        switch (point) {
+        case
+        (middle - offset, middle - offset2),
+        (middle - offset, middle + offset2),
+        (middle + offset, middle + offset2),
+        (middle + offset, middle - offset2),
+        (middle - offset2, middle - offset),
+        (middle - offset2, middle + offset),
+        (middle + offset2, middle + offset),
+        (middle + offset2, middle - offset):
+            return true
+        default:
+            return false
         }
     }
 }

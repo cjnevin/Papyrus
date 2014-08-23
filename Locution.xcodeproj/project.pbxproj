@@ -17,6 +17,7 @@
 		99AACAC619A87D7B00238253 /* TileSprite.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99AACAC519A87D7B00238253 /* TileSprite.swift */; };
 		99AACAC819A87D9F00238253 /* SquareSprite.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99AACAC719A87D9F00238253 /* SquareSprite.swift */; };
 		99AACACC19A87EBA00238253 /* GameScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = 99AACACB19A87EBA00238253 /* GameScene.sks */; };
+		99AACAD119A8942900238253 /* GameLogicController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99AACAD019A8942900238253 /* GameLogicController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -44,6 +45,7 @@
 		99AACAC519A87D7B00238253 /* TileSprite.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TileSprite.swift; sourceTree = "<group>"; };
 		99AACAC719A87D9F00238253 /* SquareSprite.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SquareSprite.swift; sourceTree = "<group>"; };
 		99AACACB19A87EBA00238253 /* GameScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = GameScene.sks; sourceTree = "<group>"; };
+		99AACAD019A8942900238253 /* GameLogicController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameLogicController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -69,6 +71,7 @@
 			children = (
 				993F978819A7555100B8410B /* Locution */,
 				99AACAB719A87D0200238253 /* Models */,
+				99AACACF19A8942900238253 /* ModelControllers */,
 				99AACABB19A87D0200238253 /* ViewControllers */,
 				99AACABD19A87D0200238253 /* Views */,
 				99AACAB919A87D0200238253 /* Resources */,
@@ -154,6 +157,14 @@
 				99AACAC719A87D9F00238253 /* SquareSprite.swift */,
 			);
 			path = Views;
+			sourceTree = "<group>";
+		};
+		99AACACF19A8942900238253 /* ModelControllers */ = {
+			isa = PBXGroup;
+			children = (
+				99AACAD019A8942900238253 /* GameLogicController.swift */,
+			);
+			path = ModelControllers;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -262,6 +273,7 @@
 				99AACAC619A87D7B00238253 /* TileSprite.swift in Sources */,
 				993F978C19A7555100B8410B /* AppDelegate.swift in Sources */,
 				99AACAC819A87D9F00238253 /* SquareSprite.swift in Sources */,
+				99AACAD119A8942900238253 /* GameLogicController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
