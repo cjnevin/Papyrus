@@ -118,9 +118,6 @@ class GameScene: SKScene {
             // TODO: Get intersecting words that formed part of the submission and illuminate those as well with a time offset
         }
         
-        //{(parameterTypes) -> (returnType) in statements}
-        
-        
         private func interceptedWordsSquares(forMutableSquares mutableSquares: [Square?]) -> [[Square]] {
             var interceptedWords: [[Square]]
             if areSquaresHorizontal(mutableSquares) {
@@ -192,48 +189,24 @@ class GameScene: SKScene {
             return validWords
         }
         
-        private func mutableSquareSprites() -> [SquareSprite] {
-            var tiles = [SquareSprite]()
-            for squareSprite in squareSprites {
-                if let movable = squareSprite.tileSprite?.movable {
-                    if movable {
-                        tiles.append(squareSprite)
-                    }
-                }
-            }
-            return tiles
+        private func tileSpritesForSquareSprites(squareSprite: SquareSprite) -> TileSprite? {
+            return squareSprite.tileSprite
         }
         
-        private func mutableTileSprites() -> [TileSprite] {
-            var tiles = [TileSprite]()
-            for squareSprite in mutableSquareSprites() {
-                if let tileSprite = squareSprite.tileSprite {
-                    tiles.append(tileSprite)
-                }
-            }
-            return tiles
+        private func mutableSquareSprites() -> [SquareSprite] {
+            return squareSprites.filter({$0.tileSprite?.movable == true})
+        }
+        
+        private func mutableTileSprites() -> [TileSprite?] {
+            return mutableSquareSprites().map(tileSpritesForSquareSprites)
         }
         
         private func immutableSquareSprites() -> [SquareSprite] {
-            var tiles = [SquareSprite]()
-            for squareSprite in squareSprites {
-                if let movable = squareSprite.tileSprite?.movable {
-                    if !movable {
-                        tiles.append(squareSprite)
-                    }
-                }
-            }
-            return tiles
+            return squareSprites.filter({$0.tileSprite?.movable == false})
         }
         
-        private func immutableTileSprites() -> [TileSprite] {
-            var tiles = [TileSprite]()
-            for squareSprite in immutableSquareSprites() {
-                if let tileSprite = squareSprite.tileSprite {
-                    tiles.append(tileSprite)
-                }
-            }
-            return tiles
+        private func immutableTileSprites() -> [TileSprite?] {
+            return immutableSquareSprites().map(tileSpritesForSquareSprites)
         }
         
         private func areSquaresHorizontal(squares: [Square?]) -> Bool {
