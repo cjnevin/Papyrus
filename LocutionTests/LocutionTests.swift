@@ -3,7 +3,7 @@
 //  LocutionTests
 //
 //  Created by Chris Nevin on 22/08/2014.
-//  Copyright (c) 2014 Alive Mobile Group. All rights reserved.
+//  Copyright (c) 2014 CJNevin. All rights reserved.
 //
 
 import UIKit

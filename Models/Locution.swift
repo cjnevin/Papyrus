@@ -3,7 +3,7 @@
 //  Locution
 //
 //  Created by Chris Nevin on 22/08/2014.
-//  Copyright (c) 2014 Alive Mobile Group. All rights reserved.
+//  Copyright (c) 2014 CJNevin. All rights reserved.
 //
 
 import Foundation
@@ -83,10 +83,10 @@ class Locution {
             }
             
             let squareType: SquareType
-            let point: (Int, Int)
+            let point: (x: Int, y: Int)
             var tile: Tile?
             
-            init(squareType: SquareType, point: (Int, Int)) {
+            init(squareType: SquareType, point: (x: Int, y:Int)) {
                 self.squareType = squareType
                 self.point = point
             }
@@ -153,6 +153,14 @@ class Locution {
                     }
                 }
             }
+        }
+        
+        func emptySquares() -> [Square] {
+            return squares.filter({$0.tile == nil})
+        }
+        
+        func filledSquares() -> [Square] {
+            return squares.filter({$0.tile != nil})
         }
         
         private func symmetrical(point: (Int, Int), offset: Int, offset2: Int, middle: Int) -> Bool {

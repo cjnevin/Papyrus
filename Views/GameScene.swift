@@ -3,7 +3,7 @@
 //  Locution
 //
 //  Created by Chris Nevin on 22/08/2014.
-//  Copyright (c) 2014 Alive Mobile Group. All rights reserved.
+//  Copyright (c) 2014 CJNevin. All rights reserved.
 //
 
 import SpriteKit
@@ -73,24 +73,25 @@ class GameScene: SKScene {
         
         func validate() -> Bool {
             // Check that word lines up correctly
-            var squares = filledSquares()
-            if areSquaresHorizontal(squares) {
-                
-            } else if areSquaresVertical(squares) {
-                
-            } else {
+            var mutableSquares = mutableSquareSprites().map({$0.square})
+            if mutableSquares.count == 0 {
                 return false
+            } else if mutableSquares.count > 1 {
+                var interceptedWords = interceptedWordsSquares(forMutableSquares: mutableSquares);
+                if interceptedWords.count == 0 {
+                    return false
+                }
             }
-            
             // Check that word intercepts center tile or another word
             return true
         }
         
         func submit() -> Bool {
             if validate() {
+                var sprites = mutableSquareSprites()
                 var score = 0
                 var multiplier = 1
-                for squareSprite in filledSquareSprites() {
+                for squareSprite in sprites {
                     if let square = squareSprite.square {
                         multiplier *= square.wordMultiplier()
                         score += square.value()
@@ -101,6 +102,9 @@ class GameScene: SKScene {
                 }
                 println("Score pre-multiply: \(score)")
                 score *= multiplier
+                if (sprites.count == 7) {
+                    score += 50;
+                }
                 player.incrementScore(score)
                 return true
             }
@@ -109,27 +113,86 @@ class GameScene: SKScene {
         
         // MARK: Private
         
-        private func droppedTileSprites() -> [TileSprite] {
-            var tiles = [TileSprite]()
-            for squareSprite in filledSquareSprites() {
-                if let tileSprite = squareSprite.tileSprite {
-                    tiles.append(tileSprite)
-                }
-            }
-            return tiles
+        private func illuminateTileSprites(sprites: [TileSprite]) {
+            // TODO: Do a nice animation if submission is successful
+            // TODO: Get intersecting words that formed part of the submission and illuminate those as well with a time offset
         }
         
-        private func filledSquares() -> [Square] {
-            var tiles = [Square]()
-            for sprite in filledSquareSprites() {
-                if let square = sprite.square {
-                    tiles.append(square)
-                }
+        //{(parameterTypes) -> (returnType) in statements}
+        
+        
+        private func interceptedWordsSquares(forMutableSquares mutableSquares: [Square?]) -> [[Square]] {
+            var interceptedWords: [[Square]]
+            if areSquaresHorizontal(mutableSquares) {
+                interceptedWords = interceptedWordsSquares(inMutableSquares: mutableSquares, horizontal: true)
+            } else if areSquaresVertical(mutableSquares) {
+                // Need to go left/right to determine the intercepting words on the X axis
+                interceptedWords = interceptedWordsSquares(inMutableSquares: mutableSquares, horizontal: false)
+            } else {
+                interceptedWords = [[Square]]()
             }
-            return tiles
+            return interceptedWords
         }
         
-        private func filledSquareSprites() -> [SquareSprite] {
+        private func interceptedWordsSquares(inMutableSquares mutableSquares: [Square?], horizontal: Bool) -> [[Square]] {
+            var validWords = [[Square]]()
+            var immutableSquares = immutableSquareSprites().map({$0.square})
+            for mutableSquare in mutableSquares {
+                if let square = mutableSquare {
+                    var x = square.point.x
+                    var y = square.point.y
+                    // Compare perpendicular words
+                    var z = 0
+                    var compare: (Square? -> Bool)
+                    if horizontal {
+                        compare = { $0?.point.x == x }
+                        z = y
+                    } else {
+                        compare = { $0?.point.y == y }
+                        z = x
+                    }
+                    var perpendicularSquares = immutableSquares.filter(compare)
+                    // Ensure there are no gaps
+                    var validSquares = [Square]()
+                    for var i = z - 1; i > 0; i-- {
+                        if horizontal {
+                            compare = { $0?.point.y == i }
+                        } else {
+                            compare = { $0?.point.x == i }
+                        }
+                        var matchingSquares = perpendicularSquares.filter(compare)
+                        if let matchingSquare = matchingSquares.first? {
+                            validSquares.append(matchingSquare)
+                        } else {
+                            break
+                        }
+                    }
+                    validSquares.append(square)
+                    for var i = z + 1; i < game.board.dimensions; i++ {
+                        if horizontal {
+                            compare = { $0?.point.y == i }
+                        } else {
+                            compare = { $0?.point.x == i }
+                        }
+                        var matchingSquares = perpendicularSquares.filter(compare)
+                        if let matchingSquare = matchingSquares.first? {
+                            validSquares.append(matchingSquare)
+                        } else {
+                            break
+                        }
+                    }
+                    // Intercepted vertical word
+                    if validSquares.count > 1 {
+                        // Calculation of these words must ignore immutable squares (i.e. only ySquare would apply any calculation that affects the whole word)
+                        validWords.append(validSquares)
+                        println("Intercepted Word: \(validSquares.map({$0.tile?.letter}))")
+                    }
+                }
+            }
+            return validWords
+        }
+        
+        private func mutableSquareSprites() -> [SquareSprite] {
             var tiles = [SquareSprite]()
             for squareSprite in squareSprites {
                 if let movable = squareSprite.tileSprite?.movable {
@@ -141,16 +204,50 @@ class GameScene: SKScene {
             return tiles
         }
         
-        private func areSquaresHorizontal(squares: [Square]) -> Bool {
-            var firstValue = squares[0].point.0
-            var values = squares.map({$0.point.0})
+        private func mutableTileSprites() -> [TileSprite] {
+            var tiles = [TileSprite]()
+            for squareSprite in mutableSquareSprites() {
+                if let tileSprite = squareSprite.tileSprite {
+                    tiles.append(tileSprite)
+                }
+            }
+            return tiles
+        }
+        
+        private func immutableSquareSprites() -> [SquareSprite] {
+            var tiles = [SquareSprite]()
+            for squareSprite in squareSprites {
+                if let movable = squareSprite.tileSprite?.movable {
+                    if !movable {
+                        tiles.append(squareSprite)
+                    }
+                }
+            }
+            return tiles
+        }
+        
+        private func immutableTileSprites() -> [TileSprite] {
+            var tiles = [TileSprite]()
+            for squareSprite in immutableSquareSprites() {
+                if let tileSprite = squareSprite.tileSprite {
+                    tiles.append(tileSprite)
+                }
+            }
+            return tiles
+        }
+        
+        private func areSquaresHorizontal(squares: [Square?]) -> Bool {
+            // y axis is the same
+            var firstValue = squares[0]?.point.y
+            var values = squares.map({$0?.point.y})
             var inline = squares.count == values.filter({$0 == firstValue}).count
             return inline
         }
         
-        private func areSquaresVertical(squares: [Square]) -> Bool {
-            var firstValue = squares[0].point.1
-            var values = squares.map({$0.point.1})
+        private func areSquaresVertical(squares: [Square?]) -> Bool {
+            // x axis is the same
+            var firstValue = squares[0]?.point.x
+            var values = squares.map({$0?.point.x})
             var inline = squares.count == values.filter({$0 == firstValue}).count
             return inline
         }
