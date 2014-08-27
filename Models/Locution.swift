@@ -84,6 +84,7 @@ class Locution {
             
             let squareType: SquareType
             let point: (x: Int, y: Int)
+            var immutable = false
             var tile: Tile?
             
             init(squareType: SquareType, point: (x: Int, y:Int)) {
@@ -96,14 +97,16 @@ class Locution {
             }
             
             func value() -> Int {
-                var multiplier: Int
-                switch (squareType) {
-                case .DoubleLetter:
-                    multiplier = 2
-                case .TripleLetter:
-                    multiplier = 3
-                default:
-                    multiplier = 1
+                var multiplier: Int = 1
+                if !immutable {
+                    switch (squareType) {
+                    case .DoubleLetter:
+                        multiplier = 2
+                    case .TripleLetter:
+                        multiplier = 3
+                    default:
+                        multiplier = 1
+                    }
                 }
                 if let value = self.tile?.value {
                     return value * multiplier;
@@ -112,18 +115,17 @@ class Locution {
             }
             
             func wordMultiplier() -> Int {
-                switch (squareType) {
-                case .Center, .DoubleWord:
-                    return 2
-                case .TripleWord:
-                    return 3
-                default:
-                    return 1
+                if !immutable {
+                    switch (squareType) {
+                    case .Center, .DoubleWord:
+                        return 2
+                    case .TripleWord:
+                        return 3
+                    default:
+                        return 1
+                    }
                 }
-            }
-            
-            class func values(accumulator: Int, square: Square) -> Int {
-                return square.value() + accumulator;
+                return 1
             }
         }
         
