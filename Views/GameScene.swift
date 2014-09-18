@@ -35,12 +35,16 @@ class GameScene: SKScene {
         var rackSprites: [TileSprite]
         var draggedSprite: TileSprite?
         var originalPoint: CGPoint?
+        var view: SKView
+        var node: SKNode
         
         init(view: SKView, node: SKNode) {
             self.game = Locution()
             self.player = Player()
             self.squareSprites = SquareSprite.createSprites(forGame: game, frame: view.frame)
             self.rackSprites = TileSprite.createRackSprites(forGame: game, frame: view.frame)
+            self.view = view
+            self.node = node
             self.setup(inView: view, node: node)
         }
         
@@ -68,6 +72,8 @@ class GameScene: SKScene {
             self.player = Player()
             self.squareSprites = SquareSprite.createSprites(forGame: game, frame: view.frame)
             self.rackSprites = TileSprite.createRackSprites(forGame: game, frame: view.frame)
+            self.view = view
+            self.node = node
             self.setup(inView: view, node: node)
         }
         
@@ -109,6 +115,7 @@ class GameScene: SKScene {
                     wordMultiplier *= square.wordMultiplier()
                 }
             }
+			println("Word value \(word.map({$0.square!.tile!.letter})) : (\(wordValue * wordMultiplier))");
             return wordValue * wordMultiplier
         }
         
@@ -122,22 +129,43 @@ class GameScene: SKScene {
                 var totalValue = 0
                 for word in intersectingSprites {
                     var value = wordValue(word)
-                    println("Word value: \(value)")
                     totalValue += value
                 }
                 if intersectingSprites.count == 0 || currentSprites.count > 1 {
                     // we only calculate this word's value
                     var value = wordValue(currentSprites)
-                    println("Word value: \(value)")
                     totalValue += value
                 }
                 if currentSprites.count == 7 {
                     totalValue += 50
                 }
                 player.incrementScore(totalValue)
+                
                 for sprite in currentSprites {
                     sprite.makeImmutable()
+                    rackSprites = rackSprites.filter({ (tileSprite: TileSprite) -> Bool in
+                        return sprite == tileSprite
+                    })
+                    if let letter = sprite.tileSprite?.tile?.letter {
+                        for var index = 0; index < game.rack.tiles.count; index++ {
+                            var tile = game.rack.tiles[index]
+                            if tile.letter == letter {
+                                game.rack.tiles.removeAtIndex(index)
+                                break
+                            }
+                        }
+                    }
                 }
+                
+                for sprite in rackSprites {
+                    sprite.removeFromParent()
+                }
+                game.rack.replenish(fromBag: game.bag);
+                rackSprites = TileSprite.createRackSprites(forGame: game, frame: view.frame)
+                for sprite in rackSprites {
+                    node.addChild(sprite)
+                }
+                
                 return true
             }
             return false
@@ -185,9 +213,9 @@ class GameScene: SKScene {
     
     func newGame() {
         if let gameState = self.gameState {
-            gameState.reset(inView: view, node: self)
+            gameState.reset(inView: view!, node: self)
         } else {
-            self.gameState = GameState(view:view, node:self)
+            self.gameState = GameState(view:view!, node:self)
         }
     }
     
@@ -200,8 +228,8 @@ class GameScene: SKScene {
         self.addChild(submit)
     }
     
-    override func touchesBegan(touches: NSSet!, withEvent event: UIEvent!) {
-        if let point = touches.anyObject().locationInNode?(self) {
+    override func touchesBegan(touches: NSSet, withEvent event: UIEvent) {
+        if let point = touches.anyObject()?.locationInNode?(self) {
             for child in self.children {
                 if let sprite = child as? TileSprite {
                     if sprite.containsPoint(point) {
@@ -222,22 +250,24 @@ class GameScene: SKScene {
                         }
                     }
                 } else if let labelNode = child as? SKLabelNode {
-                    gameState?.submit()
+                    if labelNode.containsPoint(point) {
+                        gameState?.submit()
+                    }
                 }
             }
         }
     }
     
-    override func touchesMoved(touches: NSSet!, withEvent event: UIEvent!) {
-        if let point = touches.anyObject().locationInNode?(self) {
+    override func touchesMoved(touches: NSSet, withEvent event: UIEvent) {
+        if let point = touches.anyObject()?.locationInNode?(self) {
             if let sprite = gameState?.draggedSprite {
                 sprite.position = point
             }
         }
     }
     
-    override func touchesEnded(touches: NSSet!, withEvent event: UIEvent!) {
-        if let point = touches.anyObject().locationInNode?(self) {
+    override func touchesEnded(touches: NSSet, withEvent event: UIEvent) {
+        if let point = touches.anyObject()?.locationInNode?(self) {
             if let sprite = gameState?.draggedSprite {
                 var found = false
                 var fallback: SquareSprite?     // Closest square to drop tile if hovered square is filled
@@ -278,8 +308,8 @@ class GameScene: SKScene {
         }
     }
     
-    override func touchesCancelled(touches: NSSet!, withEvent event: UIEvent!) {
-        if let point = touches.anyObject().locationInNode?(self) {
+    override func touchesCancelled(touches: NSSet, withEvent event: UIEvent) {
+        if let point = touches.anyObject()?.locationInNode?(self) {
             if let sprite = gameState?.draggedSprite {
                 if let origPoint = gameState?.originalPoint {
                     sprite.position = origPoint

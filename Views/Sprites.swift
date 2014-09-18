@@ -44,9 +44,9 @@ class Sprites {
                     var validSquareSprites = [SquareSprite]()
                     for var i = z - 1; i > 0; i-- {
                         if horizontal {
-                            compare = { $0.square?.point.y == i }
+                            compare = { $0.square!.point.y == i }
                         } else {
-                            compare = { $0.square?.point.x == i }
+                            compare = { $0.square!.point.x == i }
                         }
                         var matchingSquareSprites = perpendicularSquareSprites.filter(compare)
                         if let matchingSquareSprite = matchingSquareSprites.first? {
@@ -58,9 +58,9 @@ class Sprites {
                     validSquareSprites.append(mutableSprite)
                     for var i = z + 1; i < dimensions; i++ {
                         if horizontal {
-                            compare = { $0.square?.point.y == i }
+                            compare = { $0.square!.point.y == i }
                         } else {
-                            compare = { $0.square?.point.x == i }
+                            compare = { $0.square!.point.x == i }
                         }
                         var matchingSquareSprites = perpendicularSquareSprites.filter(compare)
                         if let matchingSquareSprite = matchingSquareSprites.first? {
@@ -73,7 +73,6 @@ class Sprites {
                     if validSquareSprites.count > 1 {
                         // Calculation of these words must ignore immutable squares (i.e. only ySquare would apply any calculation that affects the whole word)
                         wordSprites.append(validSquareSprites)
-                        println("Intercepted Word: \(validSquareSprites.map({$0.square?.tile?.letter}))")
                     }
                 }
             }

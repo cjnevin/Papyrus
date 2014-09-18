@@ -62,12 +62,18 @@ class Locution {
             tiles = [Tile]()
         }
         
-        func replenish(fromBag bag: Bag) {
-            for _ in 1...(amount-tiles.count) {
-                var index = Int(arc4random_uniform(UInt32(bag.tiles.count)))
-                tiles.append(bag.tiles[index])
-                bag.tiles.removeAtIndex(index)
+        func replenish(fromBag bag: Bag) -> [Tile] {
+            var needed = amount - tiles.count
+            var newTiles = [Tile]()
+            if needed > 0 {
+                for _ in 0...needed {
+                    var index = Int(arc4random_uniform(UInt32(bag.tiles.count)))
+                    newTiles.append(bag.tiles[index])
+                    bag.tiles.removeAtIndex(index)
+                }
             }
+            tiles.extend(newTiles)
+            return newTiles
         }
     }
     
