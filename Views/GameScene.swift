@@ -16,13 +16,8 @@ class GameScene: SKScene {
     typealias TileSprite = Sprites.TileSprite
     
     class GameState {
-        
         class Player {
             var score = 0
-            init() {
-                score = 0
-            }
-            
             func incrementScore(value: Int) {
                 score += value
                 println("Add Score: \(value), new score: \(score)")
@@ -142,18 +137,9 @@ class GameScene: SKScene {
                 player.incrementScore(totalValue)
                 
                 for sprite in currentSprites {
-                    sprite.makeImmutable()
-                    rackSprites = rackSprites.filter({ (tileSprite: TileSprite) -> Bool in
-                        return sprite == tileSprite
-                    })
-                    if let letter = sprite.tileSprite?.tile?.letter {
-                        for var index = 0; index < game.rack.tiles.count; index++ {
-                            var tile = game.rack.tiles[index]
-                            if tile.letter == letter {
-                                game.rack.tiles.removeAtIndex(index)
-                                break
-                            }
-                        }
+                   if let spriteTile = sprite.tileSprite?.tile? {
+						rackSprites = rackSprites.filter({$0.tile != spriteTile})
+						game.rack.tiles = game.rack.tiles.filter({$0 != spriteTile})
                     }
                 }
                 
@@ -227,7 +213,10 @@ class GameScene: SKScene {
         submit.position.y -= 100
         self.addChild(submit)
     }
-    
+	
+	
+	// MARK:- Touches
+	
     override func touchesBegan(touches: NSSet, withEvent event: UIEvent) {
         if let point = touches.anyObject()?.locationInNode?(self) {
             for child in self.children {

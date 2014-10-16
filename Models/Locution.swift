@@ -8,45 +8,59 @@
 
 import Foundation
 
+func == (lhs: Locution.Tile, rhs: Locution.Tile) -> Bool {
+	return ObjectIdentifier(lhs) == ObjectIdentifier(rhs)
+}
+
+func == (lhs: Locution.Board.Square, rhs: Locution.Board.Square) -> Bool {
+	return ObjectIdentifier(lhs) == ObjectIdentifier(rhs)
+}
+
 class Locution {
-    class Bag {
+	enum Language {
+		case English
+	}
+	
+	class Bag {
         let total: Int
         var tiles: [Tile]
-        
-        init() {
+		
+		init(language: Language) {
             tiles = [Tile]()
-            tiles.extend(Array(count: 9, repeatedValue: Tile(letter: "A", value: 1)))
-            tiles.extend(Array(count: 2, repeatedValue: Tile(letter: "B", value: 3)))
-            tiles.extend(Array(count: 2, repeatedValue: Tile(letter: "C", value: 3)))
-            tiles.extend(Array(count: 4, repeatedValue: Tile(letter: "D", value: 2)))
-            tiles.extend(Array(count: 12, repeatedValue: Tile(letter: "E", value: 1)))
-            tiles.extend(Array(count: 2, repeatedValue: Tile(letter: "F", value: 4)))
-            tiles.extend(Array(count: 3, repeatedValue: Tile(letter: "G", value: 2)))
-            tiles.extend(Array(count: 2, repeatedValue: Tile(letter: "H", value: 4)))
-            tiles.extend(Array(count: 9, repeatedValue: Tile(letter: "I", value: 1)))
-            tiles.extend(Array(count: 1, repeatedValue: Tile(letter: "J", value: 8)))
-            tiles.extend(Array(count: 1, repeatedValue: Tile(letter: "K", value: 5)))
-            tiles.extend(Array(count: 4, repeatedValue: Tile(letter: "L", value: 1)))
-            tiles.extend(Array(count: 2, repeatedValue: Tile(letter: "M", value: 3)))
-            tiles.extend(Array(count: 6, repeatedValue: Tile(letter: "N", value: 1)))
-            tiles.extend(Array(count: 8, repeatedValue: Tile(letter: "O", value: 1)))
-            tiles.extend(Array(count: 2, repeatedValue: Tile(letter: "P", value: 3)))
-            tiles.extend(Array(count: 1, repeatedValue: Tile(letter: "Q", value: 10)))
-            tiles.extend(Array(count: 6, repeatedValue: Tile(letter: "R", value: 1)))
-            tiles.extend(Array(count: 4, repeatedValue: Tile(letter: "S", value: 1)))
-            tiles.extend(Array(count: 6, repeatedValue: Tile(letter: "T", value: 1)))
-            tiles.extend(Array(count: 4, repeatedValue: Tile(letter: "U", value: 1)))
-            tiles.extend(Array(count: 2, repeatedValue: Tile(letter: "V", value: 4)))
-            tiles.extend(Array(count: 2, repeatedValue: Tile(letter: "W", value: 4)))
-            tiles.extend(Array(count: 1, repeatedValue: Tile(letter: "X", value: 10)))
-            tiles.extend(Array(count: 2, repeatedValue: Tile(letter: "Y", value: 4)))
-            tiles.extend(Array(count: 1, repeatedValue: Tile(letter: "Z", value: 10)))
-            tiles.extend(Array(count: 2, repeatedValue: Tile(letter: "?", value: 0)))
+			if language == .English {
+				tiles.extend(Array(count: 9, repeatedValue: Tile(letter: "A", value: 1)))
+				tiles.extend(Array(count: 2, repeatedValue: Tile(letter: "B", value: 3)))
+				tiles.extend(Array(count: 2, repeatedValue: Tile(letter: "C", value: 3)))
+				tiles.extend(Array(count: 4, repeatedValue: Tile(letter: "D", value: 2)))
+				tiles.extend(Array(count: 12, repeatedValue: Tile(letter: "E", value: 1)))
+				tiles.extend(Array(count: 2, repeatedValue: Tile(letter: "F", value: 4)))
+				tiles.extend(Array(count: 3, repeatedValue: Tile(letter: "G", value: 2)))
+				tiles.extend(Array(count: 2, repeatedValue: Tile(letter: "H", value: 4)))
+				tiles.extend(Array(count: 9, repeatedValue: Tile(letter: "I", value: 1)))
+				tiles.extend(Array(count: 1, repeatedValue: Tile(letter: "J", value: 8)))
+				tiles.extend(Array(count: 1, repeatedValue: Tile(letter: "K", value: 5)))
+				tiles.extend(Array(count: 4, repeatedValue: Tile(letter: "L", value: 1)))
+				tiles.extend(Array(count: 2, repeatedValue: Tile(letter: "M", value: 3)))
+				tiles.extend(Array(count: 6, repeatedValue: Tile(letter: "N", value: 1)))
+				tiles.extend(Array(count: 8, repeatedValue: Tile(letter: "O", value: 1)))
+				tiles.extend(Array(count: 2, repeatedValue: Tile(letter: "P", value: 3)))
+				tiles.extend(Array(count: 1, repeatedValue: Tile(letter: "Q", value: 10)))
+				tiles.extend(Array(count: 6, repeatedValue: Tile(letter: "R", value: 1)))
+				tiles.extend(Array(count: 4, repeatedValue: Tile(letter: "S", value: 1)))
+				tiles.extend(Array(count: 6, repeatedValue: Tile(letter: "T", value: 1)))
+				tiles.extend(Array(count: 4, repeatedValue: Tile(letter: "U", value: 1)))
+				tiles.extend(Array(count: 2, repeatedValue: Tile(letter: "V", value: 4)))
+				tiles.extend(Array(count: 2, repeatedValue: Tile(letter: "W", value: 4)))
+				tiles.extend(Array(count: 1, repeatedValue: Tile(letter: "X", value: 10)))
+				tiles.extend(Array(count: 2, repeatedValue: Tile(letter: "Y", value: 4)))
+				tiles.extend(Array(count: 1, repeatedValue: Tile(letter: "Z", value: 10)))
+				tiles.extend(Array(count: 2, repeatedValue: Tile(letter: "?", value: 0)))
+			}
             total = tiles.count
         }
     }
-    
-    class Tile {
+	
+	class Tile: Equatable {
         let letter: String
         let value: Int
         init(letter: String, value: Int) {
@@ -63,7 +77,7 @@ class Locution {
         }
         
         func replenish(fromBag bag: Bag) -> [Tile] {
-            var needed = amount - tiles.count
+			var needed = amount - tiles.count
             var newTiles = [Tile]()
             if needed > 0 {
                 for _ in 0...needed {
@@ -78,7 +92,7 @@ class Locution {
     }
     
     class Board {
-        class Square {
+		class Square: Equatable {
             enum SquareType {
                 case Normal
                 case Center
@@ -101,7 +115,7 @@ class Locution {
             func fill(tile: Tile?) {
                 self.tile = tile
             }
-            
+			
             func value() -> Int {
                 var multiplier: Int = 1
                 if !immutable {
@@ -155,8 +169,7 @@ class Locution {
                         squares.append(Square(squareType: .TripleLetter, point: point))
                     } else if symmetrical(point, offset: 3, offset2: 3, middle: middle) || symmetrical(point, offset: 4, offset2: 4, middle: middle) || symmetrical(point, offset: 5, offset2: 5, middle: middle) || symmetrical(point, offset: 6, offset2: 6, middle: middle) {
                         squares.append(Square(squareType: .DoubleWord, point: point))
-                    }
-                    else {
+                    } else {
                         squares.append(Square(squareType: .Normal, point: point))
                     }
                 }
@@ -195,7 +208,7 @@ class Locution {
     
     init() {
         self.board = Board(dimensions: 15)
-        self.bag = Bag()
+		self.bag = Bag(language:.English)
         self.rack = Rack()
         self.rack.replenish(fromBag: bag)
     }

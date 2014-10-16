@@ -30,24 +30,13 @@ class Sprites {
                 if let mutableSquare = mutableSprite.square {
                     var x = mutableSquare.point.x
                     var y = mutableSquare.point.y
-                    var z = 0
-                    var compare: (SquareSprite -> Bool)
-                    if horizontal {
-                        compare = {$0.square?.point.x == x}
-                        z = y
-                    } else {
-                        compare = {$0.square?.point.y == y}
-                        z = x
-                    }
+                    var z = horizontal ? y : x
+                    var compare: (SquareSprite -> Bool) = {horizontal ? $0.square?.point.x == x : $0.square?.point.y == y}
                     var perpendicularSquareSprites = immutableSprites.filter(compare)
                     // Ensure there are no gaps
                     var validSquareSprites = [SquareSprite]()
                     for var i = z - 1; i > 0; i-- {
-                        if horizontal {
-                            compare = { $0.square!.point.y == i }
-                        } else {
-                            compare = { $0.square!.point.x == i }
-                        }
+                        compare = { horizontal ? $0.square!.point.y == i : $0.square!.point.x == i }
                         var matchingSquareSprites = perpendicularSquareSprites.filter(compare)
                         if let matchingSquareSprite = matchingSquareSprites.first? {
                             validSquareSprites.append(matchingSquareSprite)
@@ -57,11 +46,7 @@ class Sprites {
                     }
                     validSquareSprites.append(mutableSprite)
                     for var i = z + 1; i < dimensions; i++ {
-                        if horizontal {
-                            compare = { $0.square!.point.y == i }
-                        } else {
-                            compare = { $0.square!.point.x == i }
-                        }
+						compare = { horizontal ? $0.square!.point.y == i : $0.square!.point.x == i }
                         var matchingSquareSprites = perpendicularSquareSprites.filter(compare)
                         if let matchingSquareSprite = matchingSquareSprites.first? {
                             validSquareSprites.append(matchingSquareSprite)
@@ -102,23 +87,28 @@ class Sprites {
         required init(coder aDecoder: NSCoder) {
             super.init(coder: aDecoder)
         }
-        
+		
+		class func colorForSquare(square: Square) -> UIColor {
+			var color: UIColor
+			switch (square.squareType) {
+			case .Center:
+				color = UIColor.CenterTileColor()
+			case .DoubleLetter:
+				color = UIColor.DoubleLetterTileColor()
+			case .DoubleWord:
+				color = UIColor.DoubleWordTileColor()
+			case .TripleLetter:
+				color = UIColor.TripleLetterTileColor()
+			case .TripleWord:
+				color = UIColor.TripleWordTileColor()
+			default:
+				color = UIColor.BoardTileColor()
+			}
+			return color
+		}
+		
         init(square: Square, edge: CGFloat) {
-            var color: UIColor
-            switch (square.squareType) {
-            case .Center:
-                color = UIColor.purpleColor()
-            case .DoubleLetter:
-                color = UIColor(red: 173/255, green: 216/255, blue: 230/255, alpha: 1)
-            case .DoubleWord:
-                color = UIColor(red: 1, green: 182/255, blue: 193/255, alpha: 1)
-            case .TripleLetter:
-                color = UIColor(red: 65/255, green: 105/255, blue: 225/255, alpha: 1)
-            case .TripleWord:
-                color = UIColor(red: 205/255, green: 92/255, blue: 92/255, alpha: 1)
-            default:
-                color = UIColor(red: 245/255, green: 245/255, blue: 220/255, alpha: 1)
-            }
+            var color = SquareSprite.colorForSquare(square)
             self.square = square
             var size = CGSizeMake(edge, edge)
             super.init(texture: nil, color: color, size: size)
@@ -135,12 +125,8 @@ class Sprites {
         }
         
         func makeImmutable() {
-            if let tileSprite = self.tileSprite {
-                tileSprite.movable = false
-                if let square = self.square {
-                    square.immutable = true
-                }
-            }
+			tileSprite?.movable = false
+			square?.immutable = true
         }
         
         func dropTileSprite(sprite: TileSprite, originalPoint point: CGPoint) {
