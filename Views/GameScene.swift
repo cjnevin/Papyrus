@@ -83,60 +83,18 @@ class GameScene: SKScene {
             self.setup(inView: view, node: node)
         }
 		
-		func submit() -> Bool {
+		func submit() -> (success: Bool, errors: [String]) {
 			// TODO: Check that word intercepts center tile or another word
 			// TODO: Ensure squares all touch, i.e. no gaps, all in the same column or row or count is exactly one (and not first word)
 			let squares = mutableSquareSprites.map({$0.square!})
-			let words = self.game.board.getWords(aroundSquares: squares)
-			if words.count == 0 {
-				println("Invalid arrangement")
-				return false
+			var words = [Word]()
+			var (success, errors) = self.game.validate(squares, outWords: &words)
+			if !success {
+				return (success, errors)
 			}
 			var sprites = [SquareSprite]()
 			for word in words {
-				if !word.isValidArrangement {
-					println("Invalid word: \(word.word)")
-					return false
-				} else {
-					var (valid, definition) = game.dictionary.defined(word.word)
-					if valid {
-						println("Valid word: \(word.word),  definition: \(definition!)")
-					} else {
-						println("Invalid word: \(word.word)")
-						return false
-					}
-				}
 				sprites.extend(getSquareSprites(forSquares:word.squares))
-			}
-			
-			if game.board.words.count == 0 {
-				// First play
-				if words.count != 1 {
-					println("Too many words")
-					return false
-				}
-				if let word = words.first {
-					// Ensure word is valid length
-					if word.length < 2 {
-						println("Word too short")
-						return false
-					}
-					// Ensure word intersects center
-					if !game.board.containsCenterSquare(inArray: word.squares) {
-						println("Doesn't intersect center")
-						return false
-					}
-				}
-			} else {
-				// Word must intersect the center tile, via another word
-				var output = Set<Square>()
-				for square in squares {
-					game.board.getAdjacentFilledSquares(atPoint: square.point, vertically: true, horizontally: true, original: square, output: &output)
-				}
-				if !game.board.containsCenterSquare(inArray: Array(output)) {
-					println("Doesn't intersect center")
-					return false
-				}
 			}
 			
 			// Add words to board
@@ -172,7 +130,7 @@ class GameScene: SKScene {
 			for sprite in rackSprites {
 				node.addChild(sprite)
 			}
-			return true
+			return (true, errors)
         }
         
         // MARK: Private
@@ -206,7 +164,8 @@ class GameScene: SKScene {
     }
     
     var gameState: GameState?
-    
+	var viewController: GameViewController?		// Potentially strong reference here?
+	
     func newGame() {
         if let gameState = self.gameState {
             gameState.reset(inView: view!, node: self)
@@ -250,7 +209,18 @@ class GameScene: SKScene {
                     }
                 } else if let labelNode = child as? SKLabelNode {
                     if labelNode.containsPoint(point) {
-                        gameState?.submit()
+						if let (success, errors) = gameState?.submit() {
+							if (!success) {
+								// TODO: Refactor this
+								// Present error (should pass this through a delegate?)
+								var errorString = join("\n", errors)
+								var alertController = UIAlertController(title: "Error", message: errorString, preferredStyle: UIAlertControllerStyle.Alert)
+								let OKAction = UIAlertAction(title: "OK", style: .Default) { (action) in
+								}
+								alertController.addAction(OKAction)
+								viewController?.presentViewController(alertController, animated: true, completion: nil)
+							}
+						}
                     }
                 }
             }

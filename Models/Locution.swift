@@ -118,6 +118,10 @@ class Locution {
 	typealias BoardPoint = (x: Int, y: Int)
 
 	class Board {
+		func containsCenterSquare(inArray squares: [Square]) -> Bool {
+			return (squares.filter{$0.squareType == Square.SquareType.Center}).count == 1
+		}
+		
 		func getFilledSquare(atPoint point: BoardPoint) -> Square? {
 			return filledSquares().filter({$0.point == point}).first
 		}
@@ -138,10 +142,6 @@ class Locution {
 			}
 		}
 		
-		func containsCenterSquare(inArray squares: [Square]) -> Bool {
-			return (squares.filter{$0.squareType == Square.SquareType.Center}).count == 1
-		}
-		
 		func getWords(aroundSquares squares: [Square]) -> [Word] {
 			// Now collect all dropped tiles in both directions
 			var words = [Word]()
@@ -156,34 +156,33 @@ class Locution {
 				if tempWord.isVertical {
 					// Get the word that we played vertically
 					var fullWordSquares = adjacentSquares.filter({$0.point.x == tempWord.column})
-					var fullWord = Word(fullWordSquares)
-					words.append(fullWord)
+					if fullWordSquares.count > 1 {
+						words.append(Word(fullWordSquares))
+					}
 					// Now collect all words played horizontally
 					for square in squares {
 						var rowWordSquares = adjacentSquares.filter({$0.point.y == square.point.y})
 						if rowWordSquares.count > 1 {
-							var rowWord = Word(rowWordSquares)
-							words.append(rowWord)
+							words.append(Word(rowWordSquares))
 						}
 					}
 				} else {
 					// Get the word that we played horizontally
 					var fullWordSquares = adjacentSquares.filter({$0.point.y == tempWord.row})
-					var fullWord = Word(fullWordSquares)
-					words.append(fullWord)
+					if fullWordSquares.count > 1 {
+						words.append(Word(fullWordSquares))
+					}
 					// Now collect all words played vertically
 					for square in squares {
 						var columnWordSquares = adjacentSquares.filter({$0.point.x == square.point.x})
 						if columnWordSquares.count > 1 {
-							var columnWord = Word(columnWordSquares)
-							words.append(columnWord)
+							words.append(Word(columnWordSquares))
 						}
 					}
 				}
 			}
 			return words
 		}
-	
 	
 		// Word: Collection of squares
 		class Word {
@@ -375,4 +374,56 @@ class Locution {
         self.rack.replenish(fromBag: bag)
 		self.dictionary = Dictionary(language: .English)
     }
+	
+	typealias Square = Board.Square
+	typealias Word = Board.Word
+	
+	func validate(squares: [Square], inout outWords: [Word]) -> (Bool, errors: [String]) {
+		let newWords = board.getWords(aroundSquares: squares)
+		outWords = newWords
+		if newWords.count == 0 {
+			return (false, ["Invalid tile arrangement."])
+		}
+		// TODO: Fix issue where words can have one letter
+		var errors = [String]()
+		for word in newWords {
+			if !word.isValidArrangement {
+				errors.append("Invalid tile arrangement.")
+			} else {
+				var (valid, definition) = dictionary.defined(word.word)
+				if valid {
+					println("Valid word: \(word.word),  definition: \(definition!)")
+				} else {
+					errors.append("Invalid word: \(word.word)")
+				}
+			}
+		}
+		
+		// Check if first play
+		if board.words.count == 0 {
+			if newWords.count != 1 {
+				errors.append("First play must have all tiles lined up.")
+			}
+			if let word = newWords.first {
+				// Ensure word is valid length
+				if word.length < 2 {
+					errors.append("You must play more than one letter.")
+				}
+				// Ensure word intersects center
+				if !board.containsCenterSquare(inArray: word.squares) {
+					errors.append("First play must intersect the center square.")
+				}
+			}
+		} else {
+			// Word must intersect the center tile, via another word
+			var output = Set<Square>()
+			for square in squares {
+				board.getAdjacentFilledSquares(atPoint: square.point, vertically: true, horizontally: true, original: square, output: &output)
+			}
+			if !board.containsCenterSquare(inArray: Array(output)) {
+				errors.append("New words must intersect existing words.")
+			}
+		}
+		return (errors.count == 0, errors)
+	}
 }
