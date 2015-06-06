@@ -9,6 +9,10 @@
 import Foundation
 import UIKit
 
+func == (lhs: Locution.BoardPoint, rhs: Locution.BoardPoint) -> Bool {
+	return lhs.x == rhs.x && lhs.y == rhs.y
+}
+
 func == (lhs: Locution.Tile, rhs: Locution.Tile) -> Bool {
 	return ObjectIdentifier(lhs) == ObjectIdentifier(rhs)
 }
@@ -116,6 +120,69 @@ class Locution {
 	class Board {
 		let rect: CGRect
 		
+		func getFilledSquare(atPoint point: BoardPoint) -> Square? {
+			return filledSquares().filter({$0.point == point}).first
+		}
+		
+		func getAdjacentFilledSquares(atPoint point: BoardPoint, vertically v: Bool, horizontally h: Bool, original: Square, inout output: Set<Square>) {
+			if let sq = getFilledSquare(atPoint: point) {
+				if (sq == original || !output.contains(sq)) {
+					output.insert(sq)
+					if h {
+						getAdjacentFilledSquares(atPoint: (point.x + 1, point.y), vertically: v, horizontally: h, original: original, output: &output)
+						getAdjacentFilledSquares(atPoint: (point.x - 1, point.y), vertically: v, horizontally: h, original: original, output: &output)
+					}
+					if v {
+						getAdjacentFilledSquares(atPoint: (point.x, point.y + 1), vertically: v, horizontally: h, original: original, output: &output)
+						getAdjacentFilledSquares(atPoint: (point.x, point.y - 1), vertically: v, horizontally: h, original: original, output: &output)
+					}
+				}
+			}
+		}
+		
+		func getWords(aroundSquares squares: [Square]) -> [Word] {
+			// Now collect all dropped tiles in both directions
+			var words = [Word]()
+			var tempWord = Word(squares)
+			if tempWord.isValidArrangement {
+				var output = Set<Square>()
+				for square in squares {
+					getAdjacentFilledSquares(atPoint: square.point, vertically: true, horizontally: false, original: square, output: &output)
+					getAdjacentFilledSquares(atPoint: square.point, vertically: false, horizontally: true, original: square, output: &output)
+				}
+				var adjacentSquares = Array(output)
+				if tempWord.isVertical {
+					// Get the word that we played vertically
+					var fullWordSquares = adjacentSquares.filter({$0.point.x == tempWord.column})
+					var fullWord = Word(fullWordSquares)
+					words.append(fullWord)
+					// Now collect all words played horizontally
+					for square in squares {
+						var rowWordSquares = adjacentSquares.filter({$0.point.y == square.point.y})
+						if rowWordSquares.count > 1 {
+							var rowWord = Word(rowWordSquares)
+							words.append(rowWord)
+						}
+					}
+				} else {
+					// Get the word that we played horizontally
+					var fullWordSquares = adjacentSquares.filter({$0.point.y == tempWord.row})
+					var fullWord = Word(fullWordSquares)
+					words.append(fullWord)
+					// Now collect all words played vertically
+					for square in squares {
+						var columnWordSquares = adjacentSquares.filter({$0.point.x == square.point.x})
+						if columnWordSquares.count > 1 {
+							var columnWord = Word(columnWordSquares)
+							words.append(columnWord)
+						}
+					}
+				}
+			}
+			return words
+		}
+	
+	
 		// Word: Collection of squares
 		class Word {
 			let squares: [Square]
@@ -125,17 +192,17 @@ class Locution {
 			var isValidArrangement: Bool = true
 			let row: Int
 			let column: Int
-			init(squares: [Square]) {
+			init(_ squares: [Square]) {
 				// Sort squares as we add them
 				self.squares = squares.sorted({$0.point.x + $0.point.y < $1.point.x + $1.point.y})
 				
 				// Get value of word
-				self.word = join("", squares.map{$0.tile?.letter}.filter{$0 != nil}.map{$0!})
+				self.word = join("", self.squares.map{$0.tile?.letter}.filter{$0 != nil}.map{$0!})
 				self.length = self.word.lengthOfBytesUsingEncoding(NSUTF8StringEncoding)
 				
 				// Determine bounding rect
-				let x = squares.map({$0.point.x})
-				let y = squares.map({$0.point.y})
+				let x = self.squares.map({$0.point.x})
+				let y = self.squares.map({$0.point.y})
 				let minX = x.reduce(Int.max, combine:{min($0, $1)})
 				let maxX = x.reduce(Int.min, combine:{max($0, $1)})
 				let minY = y.reduce(Int.max, combine:{min($0, $1)})
@@ -144,16 +211,17 @@ class Locution {
 				// Determine if arrangement is valid
 				self.isVertical = minX == maxX
 				if minX == maxX {
-					self.row = maxX
-					self.column = -1
-				} else if minY == maxY {
-					self.column = maxY
+					self.column = maxX
 					self.row = -1
+				} else if minY == maxY {
+					self.row = maxY
+					self.column = -1
 				} else {
 					self.column = -1
 					self.row = -1
 				}
-				
+				// TODO: Restore this code
+				/*
 				if self.length < 1 {
 					isValidArrangement = false
 				} else {
@@ -171,7 +239,18 @@ class Locution {
 						}
 						previous = square
 					}
+				}*/
+			}
+			
+			func getPoints() -> Int {
+				var total = 0
+				for square in squares {
+					total += square.faceValue()
 				}
+				for square in squares {
+					total *= square.wordMultiplier()
+				}
+				return total
 			}
 			
 			func intersects(square: Square) -> Square? {
@@ -191,7 +270,7 @@ class Locution {
 		}
 		
 		// Square: Individual square on the board
-		class Square: Equatable {
+		class Square: Hashable {
             enum SquareType {
                 case Normal
                 case Center
@@ -200,7 +279,11 @@ class Locution {
                 case DoubleWord
                 case TripleWord
             }
-            
+			var hashValue: Int {
+				get {
+					return "\(point.x),\(point.y)".hashValue
+				}
+			}
             let squareType: SquareType
             let point: BoardPoint
             var immutable = false
@@ -211,11 +294,7 @@ class Locution {
                 self.point = point
             }
             
-            func fill(tile: Tile?) {
-                self.tile = tile
-            }
-			
-            func value() -> Int {
+            func faceValue() -> Int {
                 var multiplier: Int = 1
                 if !immutable {
                     switch (squareType) {

@@ -23,63 +23,7 @@ class Sprites {
             }
             return sprites
         }
-		
-        private class func intersectingSprites(sprites mutableSprites: [SquareSprite], inSprites immutableSprites: [SquareSprite], dimensions: Int, horizontal: Bool) -> [[SquareSprite]] {
-            var wordSprites = [[SquareSprite]]()
-            for mutableSprite in mutableSprites {
-                if let mutableSquare = mutableSprite.square {
-                    var x = mutableSquare.point.x
-                    var y = mutableSquare.point.y
-                    var z = horizontal ? y : x
-                    var compare: (SquareSprite -> Bool) = {horizontal ? $0.square?.point.x == x : $0.square?.point.y == y}
-                    var perpendicularSquareSprites = immutableSprites.filter(compare)
-                    // Ensure there are no gaps
-                    var validSquareSprites = [SquareSprite]()
-                    for var i = z - 1; i > 0; i-- {
-                        compare = { horizontal ? $0.square!.point.y == i : $0.square!.point.x == i }
-                        var matchingSquareSprites = perpendicularSquareSprites.filter(compare)
-                        if let matchingSquareSprite = matchingSquareSprites.first {
-                            validSquareSprites.append(matchingSquareSprite)
-                        } else {
-                            break
-                        }
-                    }
-                    validSquareSprites.append(mutableSprite)
-                    for var i = z + 1; i < dimensions; i++ {
-						compare = { horizontal ? $0.square!.point.y == i : $0.square!.point.x == i }
-                        var matchingSquareSprites = perpendicularSquareSprites.filter(compare)
-                        if let matchingSquareSprite = matchingSquareSprites.first {
-                            validSquareSprites.append(matchingSquareSprite)
-                        } else {
-                            break
-                        }
-                    }
-                    // Intercepted vertical word
-                    if validSquareSprites.count > 1 {
-                        // Calculation of these words must ignore immutable squares (i.e. only ySquare would apply any calculation that affects the whole word)
-                        wordSprites.append(validSquareSprites)
-                    }
-                }
-            }
-            return wordSprites
-        }
-		
-        class func intersectingSprites(sprites mutableSprites: [SquareSprite], inSprites immutableSprites: [SquareSprite], dimensions: Int) -> [[SquareSprite]] {
-            var wordSprites = [[SquareSprite]]()
-			var horizontal = true// mutableSprites.count == mutableSprites.map({$0.square?.point.y}).filter({$0 == mutableSprites.first?.square?.point.y}).count
-            var vertical = true//mutableSprites.count == mutableSprites.map({$0.square?.point.x}).filter({$0 == mutableSprites.first?.square?.point.x}).count
-            if horizontal && vertical {
-                // Single tile, go both ways
-                wordSprites.extend(intersectingSprites(sprites: mutableSprites, inSprites: immutableSprites, dimensions: dimensions, horizontal: true))
-                wordSprites.extend(intersectingSprites(sprites: mutableSprites, inSprites: immutableSprites, dimensions: dimensions, horizontal: false))
-            } else if horizontal {
-                wordSprites.extend(intersectingSprites(sprites: mutableSprites, inSprites: immutableSprites, dimensions: dimensions, horizontal: true))
-            } else if vertical {
-                wordSprites.extend(intersectingSprites(sprites: mutableSprites, inSprites: immutableSprites, dimensions: dimensions, horizontal: false))
-            }
-            return wordSprites
-        }
-        
+		        
         var square: Square?
         var originalPoint: CGPoint?
         var tileSprite: TileSprite?
