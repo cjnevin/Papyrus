@@ -18,7 +18,8 @@ class Sprites {
             var squareSize = CGRectGetWidth(frame) / CGFloat(game.board.dimensions)
             for square in game.board.squares {
                 var sprite = SquareSprite(square: square, edge: squareSize)
-                sprite.position = CGPointMake(squareSize * CGFloat(square.point.0 - 1) + squareSize / 2, CGRectGetHeight(frame) - squareSize * CGFloat(square.point.1) + squareSize / 2)
+                sprite.position = CGPointMake(squareSize * CGFloat(square.point.0 - 1) + squareSize / 2,
+					CGRectGetHeight(frame) - squareSize * CGFloat(square.point.1) + squareSize / 2)
                 sprites.append(sprite)
             }
             return sprites
@@ -54,7 +55,7 @@ class Sprites {
             super.init(texture: nil, color: color, size: size)
             if let tile = self.square?.tile {
                 // For Testing
-                var newTileSprite = TileSprite(tile: tile, edge: edge, scale: 1.0)
+                var newTileSprite = TileSprite(tile: tile, edge: edge, scale: 0.5)
                 self.dropTileSprite(newTileSprite, originalPoint:CGPointZero)
                 newTileSprite.movable = false
             }
@@ -77,8 +78,8 @@ class Sprites {
             if self.tileSprite == nil {
                 self.originalPoint = point
                 sprite.removeFromParent()
-                sprite.xScale = 1.0
-                sprite.yScale = 1.0
+                sprite.xScale = 0.5
+                sprite.yScale = 0.5
                 sprite.position = CGPointZero
                 self.addChild(sprite)
                 self.tileSprite = sprite
@@ -91,8 +92,8 @@ class Sprites {
         func pickupTileSprite() -> TileSprite? {
             if let tileSprite = self.tileSprite {
                 if tileSprite.movable {
-                    tileSprite.xScale = 2.0
-                    tileSprite.yScale = 2.0
+                    tileSprite.xScale = 1.0
+                    tileSprite.yScale = 1.0
                     tileSprite.position = self.position
                     tileSprite.removeFromParent()
                     self.tileSprite = nil
@@ -113,10 +114,10 @@ class Sprites {
             var index = 0
             var squareSize = CGRectGetWidth(frame) / CGFloat(game.board.dimensions)
             var tileSize = squareSize * 2.0
-            var spacing = (CGRectGetWidth(frame) - tileSize * CGFloat(game.rack.amount)) / 2
+            var spacing = ceil((CGRectGetWidth(frame) - tileSize * CGFloat(game.rack.amount)) / 2)
             for tile in game.rack.tiles {
-                var sprite = TileSprite(tile: tile, edge: squareSize, scale: 2.0)
-                sprite.position = CGPointMake(tileSize * CGFloat(index) + tileSize / 2 + spacing, tileSize / 2)
+                var sprite = TileSprite(tile: tile, edge: tileSize, scale: 1.0)
+                sprite.position = CGPointMake(ceil(tileSize * CGFloat(index) + tileSize / 2 + spacing), ceil(tileSize / 2))
                 sprites.append(sprite)
                 index++
             }
@@ -133,18 +134,18 @@ class Sprites {
             var size = CGSizeMake(edge, edge)
             var label = SKLabelNode(text: tile.letter)
             label.fontColor = UIColor.blackColor()
-            label.fontSize = 13
+            label.fontSize = 27
             label.horizontalAlignmentMode = SKLabelHorizontalAlignmentMode.Center
             label.verticalAlignmentMode = SKLabelVerticalAlignmentMode.Baseline
             label.fontName = "AppleSDGothicNeo-Light"
-            label.position = CGPointMake(0, -5)
+            label.position = CGPointMake(0, -8)
             var points = SKLabelNode(text: String(tile.value))
             points.fontColor = UIColor.blackColor()
-            points.fontSize = 6
+            points.fontSize = 12
             points.fontName = "AppleSDGothicNeo-Light"
             points.horizontalAlignmentMode = SKLabelHorizontalAlignmentMode.Left
             points.verticalAlignmentMode = SKLabelVerticalAlignmentMode.Top
-            points.position = CGPointMake(4, -3)
+            points.position = CGPointMake(8, -7)
             super.init(texture: nil, color: color, size: size)
             self.addChild(label)
             self.addChild(points)
