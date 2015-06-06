@@ -23,7 +23,7 @@ class Sprites {
             }
             return sprites
         }
-        
+		
         private class func intersectingSprites(sprites mutableSprites: [SquareSprite], inSprites immutableSprites: [SquareSprite], dimensions: Int, horizontal: Bool) -> [[SquareSprite]] {
             var wordSprites = [[SquareSprite]]()
             for mutableSprite in mutableSprites {
@@ -63,11 +63,11 @@ class Sprites {
             }
             return wordSprites
         }
-        
+		
         class func intersectingSprites(sprites mutableSprites: [SquareSprite], inSprites immutableSprites: [SquareSprite], dimensions: Int) -> [[SquareSprite]] {
             var wordSprites = [[SquareSprite]]()
-            var horizontal = mutableSprites.count == mutableSprites.map({$0.square?.point.y}).filter({$0 == mutableSprites.first?.square?.point.y}).count
-            var vertical = mutableSprites.count == mutableSprites.map({$0.square?.point.x}).filter({$0 == mutableSprites.first?.square?.point.x}).count
+			var horizontal = true// mutableSprites.count == mutableSprites.map({$0.square?.point.y}).filter({$0 == mutableSprites.first?.square?.point.y}).count
+            var vertical = true//mutableSprites.count == mutableSprites.map({$0.square?.point.x}).filter({$0 == mutableSprites.first?.square?.point.x}).count
             if horizontal && vertical {
                 // Single tile, go both ways
                 wordSprites.extend(intersectingSprites(sprites: mutableSprites, inSprites: immutableSprites, dimensions: dimensions, horizontal: true))

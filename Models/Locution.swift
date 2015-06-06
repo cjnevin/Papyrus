@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import UIKit
 
 func == (lhs: Locution.Tile, rhs: Locution.Tile) -> Bool {
 	return ObjectIdentifier(lhs) == ObjectIdentifier(rhs)
@@ -109,8 +110,87 @@ class Locution {
             return newTiles
         }
     }
-    
-    class Board {
+	
+	typealias BoardPoint = (x: Int, y: Int)
+
+	class Board {
+		let rect: CGRect
+		
+		// Word: Collection of squares
+		class Word {
+			let squares: [Square]
+			let word: String
+			let length: Int
+			let isVertical: Bool
+			var isValidArrangement: Bool = true
+			let row: Int
+			let column: Int
+			init(squares: [Square]) {
+				// Sort squares as we add them
+				self.squares = squares.sorted({$0.point.x + $0.point.y < $1.point.x + $1.point.y})
+				
+				// Get value of word
+				self.word = join("", squares.map{$0.tile?.letter}.filter{$0 != nil}.map{$0!})
+				self.length = self.word.lengthOfBytesUsingEncoding(NSUTF8StringEncoding)
+				
+				// Determine bounding rect
+				let x = squares.map({$0.point.x})
+				let y = squares.map({$0.point.y})
+				let minX = x.reduce(Int.max, combine:{min($0, $1)})
+				let maxX = x.reduce(Int.min, combine:{max($0, $1)})
+				let minY = y.reduce(Int.max, combine:{min($0, $1)})
+				let maxY = y.reduce(Int.min, combine:{max($0, $1)})
+				
+				// Determine if arrangement is valid
+				self.isVertical = minX == maxX
+				if minX == maxX {
+					self.row = maxX
+					self.column = -1
+				} else if minY == maxY {
+					self.column = maxY
+					self.row = -1
+				} else {
+					self.column = -1
+					self.row = -1
+				}
+				
+				if self.length < 1 {
+					isValidArrangement = false
+				} else {
+					var previous : Square?
+					for square in self.squares {
+						if let prev = previous {
+							if (prev.point.x == square.point.x && square.point.y != prev.point.y + 1) &&
+								(prev.point.y == square.point.y && square.point.x != prev.point.x + 1) {
+								isValidArrangement = false
+								break
+							} else {
+								isValidArrangement = false
+								break
+							}
+						}
+						previous = square
+					}
+				}
+			}
+			
+			func intersects(square: Square) -> Square? {
+				for sq in squares {
+					switch square.point {
+					case (sq.point.x, sq.point.y - 1),	// Touches bottom edge
+						(sq.point.x - 1, sq.point.y),	// Touches right edge
+						(sq.point.x, sq.point.y + 1),	// Touches top edge
+						(sq.point.x + 1, sq.point.y):	// Touches left edge
+							return sq
+					default:
+						println(sq.point)
+					}
+				}
+				return nil
+			}
+		}
+		
+		// Square: Individual square on the board
 		class Square: Equatable {
             enum SquareType {
                 case Normal
@@ -122,11 +202,11 @@ class Locution {
             }
             
             let squareType: SquareType
-            let point: (x: Int, y: Int)
+            let point: BoardPoint
             var immutable = false
             var tile: Tile?
             
-            init(squareType: SquareType, point: (x: Int, y:Int)) {
+            init(squareType: SquareType, point: BoardPoint) {
                 self.squareType = squareType
                 self.point = point
             }
@@ -170,10 +250,13 @@ class Locution {
         
         let dimensions: Int
         var squares: [Square]
+		var words: [Word]
         
         init(dimensions: Int) {
             self.dimensions = dimensions;
             self.squares = [Square]()
+			self.words = [Word]()
+			self.rect = CGRect(x: 0, y: 0, width: dimensions, height: dimensions)
             var middle = dimensions/2+1
             for row in 1...dimensions {
                 for col in 1...dimensions {
@@ -194,7 +277,7 @@ class Locution {
                 }
             }
         }
-        
+		
         func emptySquares() -> [Square] {
             return squares.filter({$0.tile == nil})
         }
@@ -203,7 +286,7 @@ class Locution {
             return squares.filter({$0.tile != nil})
         }
         
-        private func symmetrical(point: (Int, Int), offset: Int, offset2: Int, middle: Int) -> Bool {
+        private func symmetrical(point: BoardPoint, offset: Int, offset2: Int, middle: Int) -> Bool {
             switch (point) {
             case
             (middle - offset, middle - offset2),
@@ -232,6 +315,5 @@ class Locution {
         self.rack = Rack()
         self.rack.replenish(fromBag: bag)
 		self.dictionary = Dictionary(language: .English)
-		dump(self.dictionary.defined("KITTY"))
     }
 }
