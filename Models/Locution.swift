@@ -252,21 +252,6 @@ class Locution {
 				}
 				return total
 			}
-			
-			func intersects(square: Square) -> Square? {
-				for sq in squares {
-					switch square.point {
-					case (sq.point.x, sq.point.y - 1),	// Touches bottom edge
-						(sq.point.x - 1, sq.point.y),	// Touches right edge
-						(sq.point.x, sq.point.y + 1),	// Touches top edge
-						(sq.point.x + 1, sq.point.y):	// Touches left edge
-							return sq
-					default:
-						println(sq.point)
-					}
-				}
-				return nil
-			}
 		}
 		
 		// Square: Individual square on the board
