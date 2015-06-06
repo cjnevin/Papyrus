@@ -17,8 +17,43 @@ func == (lhs: Locution.Board.Square, rhs: Locution.Board.Square) -> Bool {
 }
 
 class Locution {
-	enum Language {
-		case English
+	enum Language: String {
+		case English = "CSW12"
+	}
+	
+	class Dictionary {
+		private let DefKey = "Def"
+		private let dictionary: NSDictionary
+		let language: Language
+		init(language: Language) {
+			self.language = language
+			if let path = NSBundle.mainBundle().pathForResource(language.rawValue, ofType: "plist"),
+				values = NSDictionary(contentsOfFile: path) {
+				self.dictionary = values
+			} else {
+				self.dictionary = NSDictionary()
+			}
+		}
+		
+		func defined(word: String) -> (Bool, String?) {
+			var current = dictionary
+			var index = word.startIndex
+			for char in word.uppercaseString {
+				if let inner = current.objectForKey(String(char)) as? NSDictionary {
+					index = advance(index, 1)
+					if index == word.endIndex {
+						if let definition = inner.objectForKey(DefKey) as? String {
+							return (true, definition)
+						}
+					}
+					current = inner
+				} else {
+					// Invalid word
+					break
+				}
+			}
+			return (false, nil)
+		}
 	}
 	
 	class Bag {
@@ -189,11 +224,14 @@ class Locution {
     let bag: Bag
     let rack: Rack
     let board: Board
+	let dictionary: Dictionary
     
     init() {
         self.board = Board(dimensions: 15)
 		self.bag = Bag(language:.English)
         self.rack = Rack()
         self.rack.replenish(fromBag: bag)
+		self.dictionary = Dictionary(language: .English)
+		dump(self.dictionary.defined("KITTY"))
     }
 }

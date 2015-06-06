@@ -75,30 +75,44 @@ class GameScene: SKScene {
         func playedWordSprites() -> [[SquareSprite]] {
             var currentSprites = mutableSquareSprites()
             var sprites = Sprites.SquareSprite.intersectingSprites(sprites: currentSprites, inSprites: immutableSquareSprites(), dimensions: game.board.dimensions)
-            sprites.append(currentSprites)
+			sprites.append(currentSprites)
             return sprites
         }
         
-        func validate() -> Bool {
+        func validate() -> (Bool, [String]) {
             // TODO: Check that if single tile, it must intersect another word
-            
+			var invalidWords = [String]()
             // Check that word lines up correctly
             var words = playedWordSprites()
             if words.count == 0 {
                 // If no words, return
-                return false
+                return (false, invalidWords)
             } else if words.count == 1 {
                 // If single word, it must include center tile
                 if words.first?.filter({$0.square?.squareType == Locution.Board.Square.SquareType.Center}).count == 0 {
-                    return false
+                    return (false, invalidWords)
                 }
             }
-            // TODO: Validate each of the words, to ensure that they exist in the dictionary
-            for word in words {
-                
+			for word in words {
+				var sorted = word.sorted({ (a: SquareSprite, b: SquareSprite) -> Bool in
+					if let asq = a.square?.point, bsq = b.square?.point {
+						return asq.x + asq.y < bsq.x + bsq.y
+					}
+					return false
+				})
+				var letters = sorted.map{$0.tileSprite?.tile?.letter}.filter{$0 != nil}
+				if letters.count > 1 {
+					var values = join("", letters.map{$0!})
+					var definition = game.dictionary.defined(values)
+					if definition.0 == false {
+						invalidWords.append(values)
+					} else {
+						println(values + " " + definition.1!)
+					}
+				}
             }
             // Check that word intercepts center tile or another word
-            return true
+            return (invalidWords.count == 0, invalidWords)
         }
         
         func wordValue(word: [SquareSprite]) -> Int {
@@ -115,7 +129,8 @@ class GameScene: SKScene {
         }
         
         func submit() -> Bool {
-            if validate() {
+			var valid = validate()
+			if valid.0 == true {
                 var currentSprites = mutableSquareSprites()
                 var intersectingSprites = Sprites.SquareSprite.intersectingSprites(sprites: currentSprites, inSprites: immutableSquareSprites(), dimensions: game.board.dimensions)
                 //var words = playedWordSprites()
@@ -136,13 +151,14 @@ class GameScene: SKScene {
                 }
                 player.incrementScore(totalValue)
 				
-                for sprite in currentSprites {
-                   if let spriteTile = sprite.tileSprite?.tile {
+				for sprite in currentSprites {
+					sprite.tileSprite?.movable = false
+					if let spriteTile = sprite.tileSprite?.tile {
 						rackSprites = rackSprites.filter({$0.tile != spriteTile})
 						game.rack.tiles = game.rack.tiles.filter({$0 != spriteTile})
-                    }
+					}
                 }
-                
+				
                 for sprite in rackSprites {
                     sprite.removeFromParent()
                 }
@@ -151,9 +167,10 @@ class GameScene: SKScene {
                 for sprite in rackSprites {
                     node.addChild(sprite)
                 }
-				
                 return true
-            }
+			} else {
+				dump(valid.1)
+			}
             return false
         }
         
