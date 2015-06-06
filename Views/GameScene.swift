@@ -134,7 +134,7 @@ class GameScene: SKScene {
                 var currentSprites = mutableSquareSprites()
                 var intersectingSprites = Sprites.SquareSprite.intersectingSprites(sprites: currentSprites, inSprites: immutableSquareSprites(), dimensions: game.board.dimensions)
                 //var words = playedWordSprites()
-                illuminateWords(intersectingSprites, illuminated: false)
+                illuminateWords([immutableSquareSprites()], illuminated: false)
                 illuminateWords([currentSprites], illuminated: true)
                 var totalValue = 0
                 for word in intersectingSprites {
