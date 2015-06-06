@@ -11,27 +11,49 @@ import SpriteKit
 
 class GameViewController: UIViewController {
 
+	@IBOutlet var skView: SKView?
+	var scene: GameScene?
+	
     override func viewDidLoad() {
         super.viewDidLoad()
 
         /* Pick a size for the scene */
-		let scene = GameScene(fileNamed:"GameScene")
+		let gscene = GameScene(fileNamed:"GameScene")
 		// Configure the view.
-		if let skView = self.view as? SKView {
-			skView.showsFPS = false
-			skView.showsNodeCount = false
+		if let view = skView {
+			view.showsFPS = false
+			view.showsNodeCount = false
 			
 			/* Sprite Kit applies additional optimizations to improve rendering performance */
-			skView.ignoresSiblingOrder = false //true is faster
+			view.ignoresSiblingOrder = false //true is faster
 			
 			/* Set the scale mode to scale to fit the window */
-			scene.scaleMode = SKSceneScaleMode.ResizeFill
-			scene.viewController = self
-			
-			skView.presentScene(scene)
+			gscene.scaleMode = SKSceneScaleMode.ResizeFill
+			view.presentScene(gscene)
 		}
+		self.scene = gscene
+		self.title = "Locution"
+		self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Submit", style: .Done, target: self, action: "submit:")
     }
 
+	func submit(sender: UIBarButtonItem) {
+		if let (success, errors) = scene?.gameState?.submit() {
+			if (!success) {
+				// TODO: Refactor this
+				// Present error (should pass this through a delegate?)
+				var errorString = join("\n", errors)
+				var alertController = UIAlertController(title: "Error", message: errorString, preferredStyle: UIAlertControllerStyle.Alert)
+				let OKAction = UIAlertAction(title: "OK", style: .Default) { (action) in
+				}
+				alertController.addAction(OKAction)
+				self.presentViewController(alertController, animated: true, completion: nil)
+			} else {
+				self.navigationItem.title = "Score: \(scene!.gameState!.player.score)"
+			}
+		}
+	}
+	
+	
     override func shouldAutorotate() -> Bool {
         return false
     }

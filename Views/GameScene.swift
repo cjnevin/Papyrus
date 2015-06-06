@@ -164,7 +164,6 @@ class GameScene: SKScene {
     }
     
     var gameState: GameState?
-	var viewController: GameViewController?		// Potentially strong reference here?
 	
     func newGame() {
         if let gameState = self.gameState {
@@ -173,14 +172,9 @@ class GameScene: SKScene {
             self.gameState = GameState(view:view!, node:self)
         }
     }
-    
+	
     override func didMoveToView(view: SKView) {
         self.newGame()
-        
-        var submit = SKLabelNode(text: "Submit")
-        submit.position = view.center
-        submit.position.y -= 100
-        self.addChild(submit)
     }
 	
 	
@@ -206,21 +200,6 @@ class GameScene: SKScene {
                                 break
                             }
                         }
-                    }
-                } else if let labelNode = child as? SKLabelNode {
-                    if labelNode.containsPoint(point) {
-						if let (success, errors) = gameState?.submit() {
-							if (!success) {
-								// TODO: Refactor this
-								// Present error (should pass this through a delegate?)
-								var errorString = join("\n", errors)
-								var alertController = UIAlertController(title: "Error", message: errorString, preferredStyle: UIAlertControllerStyle.Alert)
-								let OKAction = UIAlertAction(title: "OK", style: .Default) { (action) in
-								}
-								alertController.addAction(OKAction)
-								viewController?.presentViewController(alertController, animated: true, completion: nil)
-							}
-						}
                     }
                 }
             }
