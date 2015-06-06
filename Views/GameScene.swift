@@ -89,6 +89,7 @@ class GameScene: SKScene {
 			let squares = mutableSquareSprites.map({$0.square!})
 			let words = self.game.board.getWords(aroundSquares: squares)
 			if words.count == 0 {
+				println("Invalid arrangement")
 				return false
 			}
 			var sprites = [SquareSprite]()

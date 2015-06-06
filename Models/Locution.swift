@@ -234,26 +234,17 @@ class Locution {
 					self.column = -1
 					self.row = -1
 				}
-				// TODO: Restore this code
-				/*
-				if self.length < 1 {
-					isValidArrangement = false
-				} else {
-					var previous : Square?
-					for square in self.squares {
-						if let prev = previous {
-							if (prev.point.x == square.point.x && square.point.y != prev.point.y + 1) &&
-								(prev.point.y == square.point.y && square.point.x != prev.point.x + 1) {
+				var previous: Square?
+				for square in self.squares {
+					if let prev = previous {
+						if minY == maxY && prev.point.x + 1 != square.point.x ||
+							minX == maxX && prev.point.y + 1 != square.point.y {
 								isValidArrangement = false
 								break
-							} else {
-								isValidArrangement = false
-								break
-							}
 						}
-						previous = square
 					}
-				}*/
+					previous = square
+				}
 			}
 		}
 		
