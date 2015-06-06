@@ -135,9 +135,9 @@ class GameScene: SKScene {
                     totalValue += 50
                 }
                 player.incrementScore(totalValue)
-                
+				
                 for sprite in currentSprites {
-                   if let spriteTile = sprite.tileSprite?.tile? {
+                   if let spriteTile = sprite.tileSprite?.tile {
 						rackSprites = rackSprites.filter({$0.tile != spriteTile})
 						game.rack.tiles = game.rack.tiles.filter({$0 != spriteTile})
                     }
@@ -151,7 +151,7 @@ class GameScene: SKScene {
                 for sprite in rackSprites {
                     node.addChild(sprite)
                 }
-                
+				
                 return true
             }
             return false
@@ -217,8 +217,8 @@ class GameScene: SKScene {
 	
 	// MARK:- Touches
 	
-    override func touchesBegan(touches: NSSet, withEvent event: UIEvent) {
-        if let point = touches.anyObject()?.locationInNode?(self) {
+	override func touchesBegan(touches: Set<NSObject>, withEvent event: UIEvent) {
+		if let point = (touches.first as? UITouch)?.locationInNode(self) {
             for child in self.children {
                 if let sprite = child as? TileSprite {
                     if sprite.containsPoint(point) {
@@ -246,18 +246,18 @@ class GameScene: SKScene {
             }
         }
     }
-    
-    override func touchesMoved(touches: NSSet, withEvent event: UIEvent) {
-        if let point = touches.anyObject()?.locationInNode?(self) {
-            if let sprite = gameState?.draggedSprite {
+	
+	override func touchesMoved(touches: Set<NSObject>, withEvent event: UIEvent) {
+		if let point = (touches.first as? UITouch)?.locationInNode(self) {
+			if let sprite = gameState?.draggedSprite {
                 sprite.position = point
             }
         }
     }
-    
-    override func touchesEnded(touches: NSSet, withEvent event: UIEvent) {
-        if let point = touches.anyObject()?.locationInNode?(self) {
-            if let sprite = gameState?.draggedSprite {
+	
+	override func touchesEnded(touches: Set<NSObject>, withEvent event: UIEvent) {
+		if let point = (touches.first as? UITouch)?.locationInNode(self) {
+			if let sprite = gameState?.draggedSprite {
                 var found = false
                 var fallback: SquareSprite?     // Closest square to drop tile if hovered square is filled
                 var fallbackOverlap: CGFloat = 0
@@ -296,10 +296,10 @@ class GameScene: SKScene {
             }
         }
     }
-    
-    override func touchesCancelled(touches: NSSet, withEvent event: UIEvent) {
-        if let point = touches.anyObject()?.locationInNode?(self) {
-            if let sprite = gameState?.draggedSprite {
+	
+	override func touchesCancelled(touches: Set<NSObject>!, withEvent event: UIEvent!) {
+		if let point = (touches.first as? UITouch)?.locationInNode(self) {
+			if let sprite = gameState?.draggedSprite {
                 if let origPoint = gameState?.originalPoint {
                     sprite.position = origPoint
                 } else {

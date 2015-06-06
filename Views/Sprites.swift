@@ -38,7 +38,7 @@ class Sprites {
                     for var i = z - 1; i > 0; i-- {
                         compare = { horizontal ? $0.square!.point.y == i : $0.square!.point.x == i }
                         var matchingSquareSprites = perpendicularSquareSprites.filter(compare)
-                        if let matchingSquareSprite = matchingSquareSprites.first? {
+                        if let matchingSquareSprite = matchingSquareSprites.first {
                             validSquareSprites.append(matchingSquareSprite)
                         } else {
                             break
@@ -48,7 +48,7 @@ class Sprites {
                     for var i = z + 1; i < dimensions; i++ {
 						compare = { horizontal ? $0.square!.point.y == i : $0.square!.point.x == i }
                         var matchingSquareSprites = perpendicularSquareSprites.filter(compare)
-                        if let matchingSquareSprite = matchingSquareSprites.first? {
+                        if let matchingSquareSprite = matchingSquareSprites.first {
                             validSquareSprites.append(matchingSquareSprite)
                         } else {
                             break
@@ -80,13 +80,9 @@ class Sprites {
             return wordSprites
         }
         
-        let square: Square?
+        var square: Square?
         var originalPoint: CGPoint?
         var tileSprite: TileSprite?
-        
-        required init(coder aDecoder: NSCoder) {
-            super.init(coder: aDecoder)
-        }
 		
 		class func colorForSquare(square: Square) -> UIColor {
 			var color: UIColor
@@ -118,6 +114,10 @@ class Sprites {
                 self.dropTileSprite(newTileSprite, originalPoint:CGPointZero)
                 newTileSprite.movable = false
             }
+        }
+
+        required init?(coder aDecoder: NSCoder) {
+			super.init(coder: aDecoder)
         }
         
         func isEmpty() -> Bool {
@@ -181,7 +181,7 @@ class Sprites {
         
         var movable: Bool = true
         let defaultColor = UIColor(red: 1, green: 1, blue: 200/255, alpha: 1)
-        let tile: Tile?
+        var tile: Tile?
         
         init(tile: Tile, edge: CGFloat, scale: CGFloat) {
             self.tile = tile;
@@ -207,10 +207,11 @@ class Sprites {
             self.yScale = scale
             self.xScale = scale
         }
-        
-        required init(coder aDecoder: NSCoder) {
-            super.init(coder: aDecoder)
-        }
+		
+		required init?(coder aDecoder: NSCoder) {
+			super.init(coder: aDecoder)
+		}
+		
     }
 }
     

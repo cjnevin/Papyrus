@@ -15,19 +15,20 @@ class GameViewController: UIViewController {
         super.viewDidLoad()
 
         /* Pick a size for the scene */
-        let scene = GameScene(fileNamed:"GameScene")
-        // Configure the view.
-        let skView = self.view as SKView
-        skView.showsFPS = false
-        skView.showsNodeCount = false
-        
-        /* Sprite Kit applies additional optimizations to improve rendering performance */
-        skView.ignoresSiblingOrder = false //true is faster
-        
-        /* Set the scale mode to scale to fit the window */
-        scene.scaleMode = SKSceneScaleMode.ResizeFill
-        
-        skView.presentScene(scene)
+		let scene = GameScene(fileNamed:"GameScene")
+		// Configure the view.
+		if let skView = self.view as? SKView {
+			skView.showsFPS = false
+			skView.showsNodeCount = false
+			
+			/* Sprite Kit applies additional optimizations to improve rendering performance */
+			skView.ignoresSiblingOrder = false //true is faster
+			
+			/* Set the scale mode to scale to fit the window */
+			scene.scaleMode = SKSceneScaleMode.ResizeFill
+			
+			skView.presentScene(scene)
+		}
     }
 
     override func shouldAutorotate() -> Bool {
@@ -35,7 +36,7 @@ class GameViewController: UIViewController {
     }
 
     override func supportedInterfaceOrientations() -> Int {
-        return Int(UIInterfaceOrientationMask.Portrait.toRaw())
+        return Int(UIInterfaceOrientationMask.Portrait.rawValue)
     }
 
     override func didReceiveMemoryWarning() {

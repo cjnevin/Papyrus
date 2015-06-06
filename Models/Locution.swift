@@ -28,33 +28,17 @@ class Locution {
 		init(language: Language) {
             tiles = [Tile]()
 			if language == .English {
-				tiles.extend(Array(count: 9, repeatedValue: Tile(letter: "A", value: 1)))
-				tiles.extend(Array(count: 2, repeatedValue: Tile(letter: "B", value: 3)))
-				tiles.extend(Array(count: 2, repeatedValue: Tile(letter: "C", value: 3)))
-				tiles.extend(Array(count: 4, repeatedValue: Tile(letter: "D", value: 2)))
-				tiles.extend(Array(count: 12, repeatedValue: Tile(letter: "E", value: 1)))
-				tiles.extend(Array(count: 2, repeatedValue: Tile(letter: "F", value: 4)))
-				tiles.extend(Array(count: 3, repeatedValue: Tile(letter: "G", value: 2)))
-				tiles.extend(Array(count: 2, repeatedValue: Tile(letter: "H", value: 4)))
-				tiles.extend(Array(count: 9, repeatedValue: Tile(letter: "I", value: 1)))
-				tiles.extend(Array(count: 1, repeatedValue: Tile(letter: "J", value: 8)))
-				tiles.extend(Array(count: 1, repeatedValue: Tile(letter: "K", value: 5)))
-				tiles.extend(Array(count: 4, repeatedValue: Tile(letter: "L", value: 1)))
-				tiles.extend(Array(count: 2, repeatedValue: Tile(letter: "M", value: 3)))
-				tiles.extend(Array(count: 6, repeatedValue: Tile(letter: "N", value: 1)))
-				tiles.extend(Array(count: 8, repeatedValue: Tile(letter: "O", value: 1)))
-				tiles.extend(Array(count: 2, repeatedValue: Tile(letter: "P", value: 3)))
-				tiles.extend(Array(count: 1, repeatedValue: Tile(letter: "Q", value: 10)))
-				tiles.extend(Array(count: 6, repeatedValue: Tile(letter: "R", value: 1)))
-				tiles.extend(Array(count: 4, repeatedValue: Tile(letter: "S", value: 1)))
-				tiles.extend(Array(count: 6, repeatedValue: Tile(letter: "T", value: 1)))
-				tiles.extend(Array(count: 4, repeatedValue: Tile(letter: "U", value: 1)))
-				tiles.extend(Array(count: 2, repeatedValue: Tile(letter: "V", value: 4)))
-				tiles.extend(Array(count: 2, repeatedValue: Tile(letter: "W", value: 4)))
-				tiles.extend(Array(count: 1, repeatedValue: Tile(letter: "X", value: 10)))
-				tiles.extend(Array(count: 2, repeatedValue: Tile(letter: "Y", value: 4)))
-				tiles.extend(Array(count: 1, repeatedValue: Tile(letter: "Z", value: 10)))
-				tiles.extend(Array(count: 2, repeatedValue: Tile(letter: "?", value: 0)))
+				// Apparently Array(count:repeatedValue:) creates objects with the same pointer
+				var config = [(9, 1, "A"), (2, 3, "B"), (2, 3, "C"), (4, 2, "D"), (12, 1, "E"),
+				(2, 4, "F"), (3, 2, "G"), (2, 4, "H"), (9, 1, "I"), (1, 8, "J"), (1, 5, "K"),
+				(4, 1, "L"), (2, 3, "M"), (6, 1, "N"), (8, 1, "O"), (2, 3, "P"), (1, 10, "Q"),
+				(6, 1, "R"), (4, 1, "S"), (6, 1, "T"), (4, 1, "U"), (2, 4, "V"), (2, 4, "W"),
+				(2, 4, "Y"), (1, 10, "Z"), (2, 0, "?")]
+				for (count, value, letter) in config {
+					for _ in 1...count {
+						tiles.append(Tile(letter: letter, value: value))
+					}
+				}
 			}
             total = tiles.count
         }
@@ -80,7 +64,7 @@ class Locution {
 			var needed = amount - tiles.count
             var newTiles = [Tile]()
             if needed > 0 {
-                for _ in 0...needed {
+                for _ in 1...needed {
                     var index = Int(arc4random_uniform(UInt32(bag.tiles.count)))
                     newTiles.append(bag.tiles[index])
                     bag.tiles.removeAtIndex(index)
@@ -150,7 +134,7 @@ class Locution {
         }
         
         let dimensions: Int
-        let squares: [Square]
+        var squares: [Square]
         
         init(dimensions: Int) {
             self.dimensions = dimensions;
@@ -159,7 +143,7 @@ class Locution {
             for row in 1...dimensions {
                 for col in 1...dimensions {
                     var point = (row, col)
-                    if symmetrical(point, offset: 0, offset2: 0, middle: middle) {
+					if symmetrical(point, offset: 0, offset2: 0, middle: middle) {
                         squares.append(Square(squareType: .Center, point: point))
                     } else if symmetrical(point, offset: middle - 1, offset2: middle - 1, middle: middle) || symmetrical(point, offset: 0, offset2: middle - 1, middle: middle) {
                         squares.append(Square(squareType: .TripleWord, point: point))
