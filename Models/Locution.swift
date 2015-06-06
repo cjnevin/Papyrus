@@ -118,8 +118,6 @@ class Locution {
 	typealias BoardPoint = (x: Int, y: Int)
 
 	class Board {
-		let rect: CGRect
-		
 		func getFilledSquare(atPoint point: BoardPoint) -> Square? {
 			return filledSquares().filter({$0.point == point}).first
 		}
@@ -138,6 +136,10 @@ class Locution {
 					}
 				}
 			}
+		}
+		
+		func containsCenterSquare(inArray squares: [Square]) -> Bool {
+			return (squares.filter{$0.squareType == Square.SquareType.Center}).count == 1
 		}
 		
 		func getWords(aroundSquares squares: [Square]) -> [Word] {
@@ -312,17 +314,18 @@ class Locution {
                 return 1
             }
         }
-        
+		
+		let centrePoint: BoardPoint
         let dimensions: Int
         var squares: [Square]
 		var words: [Word]
-        
+		
         init(dimensions: Int) {
             self.dimensions = dimensions;
             self.squares = [Square]()
 			self.words = [Word]()
-			self.rect = CGRect(x: 0, y: 0, width: dimensions, height: dimensions)
-            var middle = dimensions/2+1
+			var middle = dimensions/2+1
+			self.centrePoint = (middle, middle)
             for row in 1...dimensions {
                 for col in 1...dimensions {
                     var point = (row, col)

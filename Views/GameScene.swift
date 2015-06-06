@@ -88,6 +88,9 @@ class GameScene: SKScene {
 			// TODO: Ensure squares all touch, i.e. no gaps, all in the same column or row or count is exactly one (and not first word)
 			let squares = mutableSquareSprites.map({$0.square!})
 			let words = self.game.board.getWords(aroundSquares: squares)
+			if words.count == 0 {
+				return false
+			}
 			var sprites = [SquareSprite]()
 			for word in words {
 				if !word.isValidArrangement {
@@ -96,7 +99,7 @@ class GameScene: SKScene {
 				} else {
 					var (valid, definition) = game.dictionary.defined(word.word)
 					if valid {
-						println("Valid word: \(word.word), definition: \(definition)")
+						println("Valid word: \(word.word),  definition: \(definition!)")
 					} else {
 						println("Invalid word: \(word.word)")
 						return false
@@ -104,19 +107,39 @@ class GameScene: SKScene {
 				}
 				sprites.extend(getSquareSprites(forSquares:word.squares))
 			}
-			// Add words to board
-			game.board.words.extend(words)
-			/*if game.board.words.count == 0 {
-				// Word must intersect middle square
-				if !word.isValidArrangement && word.length > 1 {
-					
+			
+			if game.board.words.count == 0 {
+				// First play
+				if words.count != 1 {
+					println("Too many words")
+					return false
+				}
+				if let word = words.first {
+					// Ensure word is valid length
+					if word.length < 2 {
+						println("Word too short")
+						return false
+					}
+					// Ensure word intersects center
+					if !game.board.containsCenterSquare(inArray: word.squares) {
+						println("Doesn't intersect center")
+						return false
+					}
 				}
 			} else {
-				// Word must intersect another word
-				if !word.isValidArrangement {
-					
+				// Word must intersect the center tile, via another word
+				var output = Set<Square>()
+				for square in squares {
+					game.board.getAdjacentFilledSquares(atPoint: square.point, vertically: true, horizontally: true, original: square, output: &output)
 				}
-			}*/
+				if !game.board.containsCenterSquare(inArray: Array(output)) {
+					println("Doesn't intersect center")
+					return false
+				}
+			}
+			
+			// Add words to board
+			game.board.words.extend(words)
 			
 			var sum = words.map{$0.points}.reduce(0, combine: +)
 			// Player used all tiles, reward them
