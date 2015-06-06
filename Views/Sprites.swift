@@ -114,10 +114,10 @@ class Sprites {
             var index = 0
             var squareSize = CGRectGetWidth(frame) / CGFloat(game.board.dimensions)
             var tileSize = squareSize * 2.0
-            var spacing = ceil((CGRectGetWidth(frame) - tileSize * CGFloat(game.rack.amount)) / 2)
+            var spacing = (CGRectGetWidth(frame) - tileSize * CGFloat(game.rack.amount)) / 2
             for tile in game.rack.tiles {
                 var sprite = TileSprite(tile: tile, edge: tileSize, scale: 1.0)
-                sprite.position = CGPointMake(ceil(tileSize * CGFloat(index) + tileSize / 2 + spacing), ceil(tileSize / 2))
+                sprite.position = CGPointMake(tileSize * CGFloat(index) + tileSize / 2 + spacing, tileSize / 2)
                 sprites.append(sprite)
                 index++
             }
