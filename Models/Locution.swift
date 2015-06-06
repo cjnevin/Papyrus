@@ -192,6 +192,18 @@ class Locution {
 			var isValidArrangement: Bool = true
 			let row: Int
 			let column: Int
+			var points: Int {
+				get {
+					var total = 0
+					for square in squares {
+						total += square.faceValue()
+					}
+					for square in squares {
+						total *= square.wordMultiplier()
+					}
+					return total
+				}
+			}
 			init(_ squares: [Square]) {
 				// Sort squares as we add them
 				self.squares = squares.sorted({$0.point.x + $0.point.y < $1.point.x + $1.point.y})
@@ -240,17 +252,6 @@ class Locution {
 						previous = square
 					}
 				}*/
-			}
-			
-			func getPoints() -> Int {
-				var total = 0
-				for square in squares {
-					total += square.faceValue()
-				}
-				for square in squares {
-					total *= square.wordMultiplier()
-				}
-				return total
 			}
 		}
 		

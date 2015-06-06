@@ -118,7 +118,7 @@ class GameScene: SKScene {
 				}
 			}*/
 			
-			var sum = words.map{$0.getPoints()}.reduce(0, combine: +)
+			var sum = words.map{$0.points}.reduce(0, combine: +)
 			// Player used all tiles, reward them
 			if mutableSquareSprites.count == 7 {
 				sum += 50
