@@ -210,17 +210,17 @@ class Locution {
 				|> { s in first(s) }
 		}
 		
-		func getAdjacentFilledSquares(c: Coordinate, vertically v: Bool, horizontally h: Bool, original: Square, inout output: Set<Square>) {
-			if let sq = getFilledSquare(c) {
+		func getAdjacentFilledSquares(c: Coordinate?, vertically v: Bool, horizontally h: Bool, original: Square, inout output: Set<Square>) {
+			if let coord = c, sq = getFilledSquare(coord) {
 				if (sq == original || !output.contains(sq)) {
 					output.insert(sq)
 					if h {
-						getAdjacentFilledSquares(Coordinate(c.x + 1, y:c.y), vertically: v, horizontally: h, original: original, output: &output)
-						getAdjacentFilledSquares(Coordinate(c.x - 1, y:c.y), vertically: v, horizontally: h, original: original, output: &output)
+						getAdjacentFilledSquares(coord.next(.Horizontal, d: 1, b: self), vertically: v, horizontally: h, original: original, output: &output)
+						getAdjacentFilledSquares(coord.next(.Horizontal, d: -1, b: self), vertically: v, horizontally: h, original: original, output: &output)
 					}
 					if v {
-						getAdjacentFilledSquares(Coordinate(c.x, y:c.y + 1), vertically: v, horizontally: h, original: original, output: &output)
-						getAdjacentFilledSquares(Coordinate(c.x, y:c.y - 1), vertically: v, horizontally: h, original: original, output: &output)
+						getAdjacentFilledSquares(coord.next(.Vertical, d: 1, b: self), vertically: v, horizontally: h, original: original, output: &output)
+						getAdjacentFilledSquares(coord.next(.Vertical, d: -1, b: self), vertically: v, horizontally: h, original: original, output: &output)
 					}
 				}
 			}
