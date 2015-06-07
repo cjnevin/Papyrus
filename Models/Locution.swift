@@ -9,17 +9,33 @@
 import Foundation
 import UIKit
 
+// MARK:- Generic Operators
+
+infix operator |>   { precedence 50 associativity left }
+
+func |> <T,U>(lhs: T, rhs: T -> U) -> U {
+	return rhs(lhs)
+}
+
+// MARK:- Locution Operators
+
 func == (lhs: Locution.BoardPoint, rhs: Locution.BoardPoint) -> Bool {
 	return lhs.x == rhs.x && lhs.y == rhs.y
 }
-
+func < (lhs: Locution.BoardPoint, rhs: Locution.BoardPoint) -> Bool {
+	return lhs.x + lhs.y < rhs.x + rhs.y
+}
+func > (lhs: Locution.BoardPoint, rhs: Locution.BoardPoint) -> Bool {
+	return lhs.x + lhs.y > rhs.x + rhs.y
+}
 func == (lhs: Locution.Tile, rhs: Locution.Tile) -> Bool {
 	return ObjectIdentifier(lhs) == ObjectIdentifier(rhs)
 }
-
 func == (lhs: Locution.Board.Square, rhs: Locution.Board.Square) -> Bool {
 	return ObjectIdentifier(lhs) == ObjectIdentifier(rhs)
 }
+
+// MARK:- Game
 
 class Locution {
 	typealias BoardPoint = (x: Int, y: Int)
@@ -105,7 +121,7 @@ class Locution {
 			var newTiles = [Tile]()
 			if needed > 0 {
 				for _ in 1...needed {
-					var index = Int(arc4random_uniform(UInt32(bag.tiles.count)))
+					let index = Int(arc4random_uniform(UInt32(bag.tiles.count)))
 					newTiles.append(bag.tiles[index])
 					bag.tiles.removeAtIndex(index)
 				}
@@ -121,7 +137,7 @@ class Locution {
 		}
 		
 		func getFilledSquare(atPoint point: BoardPoint) -> Square? {
-			return filledSquares().filter({$0.point == point}).first
+			return self.squares.filter({$0.tile != nil && $0.point == point}).first
 		}
 		
 		func getAdjacentFilledSquares(atPoint point: BoardPoint, vertically v: Bool, horizontally h: Bool, original: Square, inout output: Set<Square>) {
@@ -203,10 +219,14 @@ class Locution {
 			}
 			init(_ squares: [Square]) {
 				// Sort squares as we add them
-				self.squares = squares.sorted({$0.point.x + $0.point.y < $1.point.x + $1.point.y})
+				self.squares = (squares |> {s in sorted(s) {$0.point < $1.point} })
 				
 				// Get value of word
-				self.word = join("", self.squares.map{$0.tile?.letter}.filter{$0 != nil}.map{$0!})
+				self.word = (self.squares
+					|> { s in map(s) {$0.tile?.letter} }
+					|> { s in filter(s) {$0 != nil} }
+					|> { s in map(s) {$0!} }
+					|> String.join(""))
 				self.length = self.word.lengthOfBytesUsingEncoding(NSUTF8StringEncoding)
 				
 				// Determine bounding rect
@@ -328,14 +348,6 @@ class Locution {
 					}
 				}
 			}
-		}
-		
-		func emptySquares() -> [Square] {
-			return squares.filter({$0.tile == nil})
-		}
-		
-		func filledSquares() -> [Square] {
-			return squares.filter({$0.tile != nil})
 		}
 		
 		private func symmetrical(point: BoardPoint, offset: Int, offset2: Int, middle: Int) -> Bool {

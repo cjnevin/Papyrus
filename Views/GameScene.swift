@@ -64,7 +64,7 @@ class GameScene: SKScene {
         }
         
         func reset(inView view: SKView, node: SKNode) {
-            for sprite in self.squareSprites {
+			for sprite in self.squareSprites {
                 sprite.removeFromParent()
             }
             for sprite in self.rackSprites {
