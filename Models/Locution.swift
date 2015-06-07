@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import UIKit
 
 // MARK:- Generic Operators
 
@@ -118,11 +117,9 @@ class Locution {
 	class Bag {
 		let total: Int
 		var tiles: [Tile]
-		
 		init(language: Language) {
 			tiles = [Tile]()
 			if language == .English {
-				// Apparently Array(count:repeatedValue:) creates objects with the same pointer
 				var config = [(9, 1, "A"), (2, 3, "B"), (2, 3, "C"), (4, 2, "D"), (12, 1, "E"),
 					(2, 4, "F"), (3, 2, "G"), (2, 4, "H"), (9, 1, "I"), (1, 8, "J"), (1, 5, "K"),
 					(4, 1, "L"), (2, 3, "M"), (6, 1, "N"), (8, 1, "O"), (2, 3, "P"), (1, 10, "Q"),
