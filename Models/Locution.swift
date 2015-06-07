@@ -22,6 +22,10 @@ func == (lhs: Locution.Board.Square, rhs: Locution.Board.Square) -> Bool {
 }
 
 class Locution {
+	typealias BoardPoint = (x: Int, y: Int)
+	typealias Square = Board.Square
+	typealias Word = Board.Word
+	
 	enum Language: String {
 		case English = "CSW12"
 	}
@@ -94,12 +98,8 @@ class Locution {
 	}
 	
 	class Rack {
-		var amount = 7
-		var tiles: [Tile]
-		init() {
-			tiles = [Tile]()
-		}
-		
+		let amount = 7
+		var tiles = [Tile]()
 		func replenish(fromBag bag: Bag) -> [Tile] {
 			var needed = amount - tiles.count
 			var newTiles = [Tile]()
@@ -114,8 +114,6 @@ class Locution {
 			return newTiles
 		}
 	}
-	
-	typealias BoardPoint = (x: Int, y: Int)
 	
 	class Board {
 		func containsCenterSquare(inArray squares: [Square]) -> Bool {
@@ -151,29 +149,29 @@ class Locution {
 				getAdjacentFilledSquares(atPoint: square.point, vertically: true, horizontally: false, original: square, output: &output)
 				getAdjacentFilledSquares(atPoint: square.point, vertically: false, horizontally: true, original: square, output: &output)
 			}
-			var adjacentSquares = Array(output)
+			let adjacentSquares = Array(output)
 			if tempWord.isVertical {
 				// Get the word that we played vertically
-				var fullWordSquares = adjacentSquares.filter({$0.point.x == tempWord.column})
+				let fullWordSquares = adjacentSquares.filter({$0.point.x == tempWord.column})
 				if fullWordSquares.count > 1 {
 					words.append(Word(fullWordSquares))
 				}
 				// Now collect all words played horizontally
 				for square in squares {
-					var rowWordSquares = adjacentSquares.filter({$0.point.y == square.point.y})
+					let rowWordSquares = adjacentSquares.filter({$0.point.y == square.point.y})
 					if rowWordSquares.count > 1 {
 						words.append(Word(rowWordSquares))
 					}
 				}
 			} else {
 				// Get the word that we played horizontally
-				var fullWordSquares = adjacentSquares.filter({$0.point.y == tempWord.row})
+				let fullWordSquares = adjacentSquares.filter({$0.point.y == tempWord.row})
 				if fullWordSquares.count > 1 {
 					words.append(Word(fullWordSquares))
 				}
 				// Now collect all words played vertically
 				for square in squares {
-					var columnWordSquares = adjacentSquares.filter({$0.point.x == square.point.x})
+					let columnWordSquares = adjacentSquares.filter({$0.point.x == square.point.x})
 					if columnWordSquares.count > 1 {
 						words.append(Word(columnWordSquares))
 					}
@@ -305,14 +303,12 @@ class Locution {
 		
 		let centrePoint: BoardPoint
 		let dimensions: Int
-		var squares: [Square]
-		var words: [Word]
+		var squares = [Square]()
+		var words = [Word]()
 		
 		init(dimensions: Int) {
 			self.dimensions = dimensions;
-			self.squares = [Square]()
-			self.words = [Word]()
-			var middle = dimensions/2+1
+			let middle = dimensions/2+1
 			self.centrePoint = (middle, middle)
 			for row in 1...dimensions {
 				for col in 1...dimensions {
@@ -360,11 +356,11 @@ class Locution {
 		}
 	}
 	
+	
 	let bag: Bag
 	let rack: Rack
 	let board: Board
 	let dictionary: Dictionary
-	
 	init() {
 		self.board = Board(dimensions: 15)
 		self.bag = Bag(language:.English)
@@ -373,22 +369,18 @@ class Locution {
 		self.dictionary = Dictionary(language: .English)
 	}
 	
-	typealias Square = Board.Square
-	typealias Word = Board.Word
-	
 	func validate(squares: [Square], inout outWords: [Word]) -> (Bool, errors: [String]) {
 		let newWords = board.getWords(aroundSquares: squares)
 		outWords = newWords
 		if newWords.count == 0 {
 			return (false, ["Invalid tile arrangement."])
 		}
-		// TODO: Fix issue where words can have one letter
 		var errors = [String]()
 		for word in newWords {
 			if !word.isValidArrangement {
 				errors.append("Invalid tile arrangement.")
 			} else {
-				var (valid, definition) = dictionary.defined(word.word)
+				let (valid, definition) = dictionary.defined(word.word)
 				if valid {
 					println("Valid word: \(word.word),  definition: \(definition!)")
 				} else {
@@ -396,7 +388,6 @@ class Locution {
 				}
 			}
 		}
-		
 		// Check if first play
 		if board.words.count == 0 {
 			if newWords.count != 1 {

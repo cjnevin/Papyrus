@@ -25,8 +25,8 @@ class GameScene: SKScene {
             }
         }
         
-        var game: Locution
-        var player: Player // Create array
+		var game: Locution
+        var player: Player // Create array?
         var squareSprites: [SquareSprite]
         var rackSprites: [TileSprite]
         var draggedSprite: TileSprite?
@@ -45,12 +45,12 @@ class GameScene: SKScene {
 		}
 		
         init(view: SKView, node: SKNode) {
-            self.game = Locution()
+			self.game = Locution()
             self.player = Player()
-            self.squareSprites = SquareSprite.createSprites(forGame: game, frame: view.frame)
-            self.rackSprites = TileSprite.createRackSprites(forGame: game, frame: view.frame)
             self.view = view
             self.node = node
+            self.squareSprites = SquareSprite.createSprites(forGame: game, frame: view.frame)
+            self.rackSprites = TileSprite.createRackSprites(forGame: game, frame: view.frame)
             self.setup(inView: view, node: node)
         }
         
@@ -84,11 +84,9 @@ class GameScene: SKScene {
         }
 		
 		func submit() -> (success: Bool, errors: [String]) {
-			// TODO: Check that word intercepts center tile or another word
-			// TODO: Ensure squares all touch, i.e. no gaps, all in the same column or row or count is exactly one (and not first word)
-			let squares = mutableSquareSprites.map({$0.square!})
 			var words = [Word]()
-			var (success, errors) = self.game.validate(squares, outWords: &words)
+			let squares = mutableSquareSprites.map({$0.square!})
+			let (success, errors) = self.game.validate(squares, outWords: &words)
 			if !success {
 				return (success, errors)
 			}
@@ -231,8 +229,8 @@ class GameScene: SKScene {
                                         break
                                     }
                                 }
-                                var intersection = CGRectIntersection(squareSprite.frame, sprite.frame)
-                                var overlap = CGRectGetWidth(intersection) + CGRectGetHeight(intersection)
+                                let intersection = CGRectIntersection(squareSprite.frame, sprite.frame)
+                                let overlap = CGRectGetWidth(intersection) + CGRectGetHeight(intersection)
                                 if overlap > fallbackOverlap {
                                     fallback = squareSprite
                                     fallbackOverlap = overlap

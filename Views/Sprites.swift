@@ -15,9 +15,9 @@ class Sprites {
     class SquareSprite: SKSpriteNode {
         class func createSprites(forGame game: Locution, frame: CGRect) -> [SquareSprite] {
             var sprites = [SquareSprite]()
-            var squareSize = CGRectGetWidth(frame) / CGFloat(game.board.dimensions)
+            let squareSize = CGRectGetWidth(frame) / CGFloat(game.board.dimensions)
             for square in game.board.squares {
-                var sprite = SquareSprite(square: square, edge: squareSize)
+                let sprite = SquareSprite(square: square, edge: squareSize)
                 sprite.position = CGPointMake(squareSize * CGFloat(square.point.0 - 1) + squareSize / 2,
 					CGRectGetHeight(frame) - squareSize * CGFloat(square.point.1) + squareSize / 2)
                 sprites.append(sprite)
@@ -49,13 +49,13 @@ class Sprites {
 		}
 		
         init(square: Square, edge: CGFloat) {
-            var color = SquareSprite.colorForSquare(square)
             self.square = square
-            var size = CGSizeMake(edge, edge)
+            let color = SquareSprite.colorForSquare(square)
+            let size = CGSizeMake(edge, edge)
             super.init(texture: nil, color: color, size: size)
             if let tile = self.square?.tile {
                 // For Testing
-                var newTileSprite = TileSprite(tile: tile, edge: edge, scale: 0.5)
+                let newTileSprite = TileSprite(tile: tile, edge: edge, scale: 0.5)
                 self.dropTileSprite(newTileSprite, originalPoint:CGPointZero)
                 newTileSprite.movable = false
             }
@@ -112,11 +112,11 @@ class Sprites {
         class func createRackSprites(forGame game: Locution, frame: CGRect) -> [TileSprite] {
             var sprites = [TileSprite]()
             var index = 0
-            var squareSize = CGRectGetWidth(frame) / CGFloat(game.board.dimensions)
-            var tileSize = squareSize * 2.0
-            var spacing = (CGRectGetWidth(frame) - tileSize * CGFloat(game.rack.amount)) / 2
+            let squareSize = CGRectGetWidth(frame) / CGFloat(game.board.dimensions)
+            let tileSize = squareSize * 2.0
+            let spacing = (CGRectGetWidth(frame) - tileSize * CGFloat(game.rack.amount)) / 2
             for tile in game.rack.tiles {
-                var sprite = TileSprite(tile: tile, edge: tileSize, scale: 1.0)
+                let sprite = TileSprite(tile: tile, edge: tileSize, scale: 1.0)
                 sprite.position = CGPointMake(tileSize * CGFloat(index) + tileSize / 2 + spacing, tileSize / 2)
                 sprites.append(sprite)
                 index++
@@ -124,22 +124,22 @@ class Sprites {
             return sprites
         }
         
-        var movable: Bool = true
         let defaultColor = UIColor(red: 1, green: 1, blue: 200/255, alpha: 1)
+        var movable: Bool = true
         var tile: Tile?
         
         init(tile: Tile, edge: CGFloat, scale: CGFloat) {
             self.tile = tile;
             var color = defaultColor
-            var size = CGSizeMake(edge, edge)
-            var label = SKLabelNode(text: tile.letter)
+            let size = CGSizeMake(edge, edge)
+            let label = SKLabelNode(text: tile.letter)
             label.fontColor = UIColor.blackColor()
             label.fontSize = 27
             label.horizontalAlignmentMode = SKLabelHorizontalAlignmentMode.Center
             label.verticalAlignmentMode = SKLabelVerticalAlignmentMode.Baseline
             label.fontName = "AppleSDGothicNeo-Light"
             label.position = CGPointMake(0, -8)
-            var points = SKLabelNode(text: String(tile.value))
+            let points = SKLabelNode(text: String(tile.value))
             points.fontColor = UIColor.blackColor()
             points.fontSize = 12
             points.fontName = "AppleSDGothicNeo-Light"
