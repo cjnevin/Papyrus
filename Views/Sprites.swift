@@ -9,11 +9,11 @@
 import SpriteKit
 
 class Sprites {
-    typealias Square = Locution.Board.Square
-    typealias Tile = Locution.Tile
+    typealias Square = Game.Board.Square
+    typealias Tile = Game.Tile
     
     class SquareSprite: SKSpriteNode {
-        class func createSprites(forGame game: Locution, frame: CGRect) -> [SquareSprite] {
+        class func createSprites(forGame game: Game, frame: CGRect) -> [SquareSprite] {
             var sprites = [SquareSprite]()
             let squareSize = CGRectGetWidth(frame) / CGFloat(game.board.dimensions)
             for square in game.board.squares {
@@ -109,7 +109,7 @@ class Sprites {
     
     
     class TileSprite: SKSpriteNode {
-        class func createRackSprites(forGame game: Locution, frame: CGRect) -> [TileSprite] {
+        class func createRackSprites(forGame game: Game, frame: CGRect) -> [TileSprite] {
             var sprites = [TileSprite]()
             var index = 0
             let squareSize = CGRectGetWidth(frame) / CGFloat(game.board.dimensions)

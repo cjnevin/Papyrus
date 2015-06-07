@@ -1,5 +1,5 @@
 //
-//  Locution.swift
+//  Game.swift
 //  Locution
 //
 //  Created by Chris Nevin on 22/08/2014.
@@ -16,27 +16,27 @@ func |> <T,U>(lhs: T, rhs: T -> U) -> U {
 	return rhs(lhs)
 }
 
-// MARK:- Locution Operators
+// MARK:- Class Operators
 
-func == (lhs: Locution.Board.Coordinate, rhs: Locution.Board.Coordinate) -> Bool {
+func == (lhs: Game.Board.Coordinate, rhs: Game.Board.Coordinate) -> Bool {
 	return lhs.x == rhs.x && lhs.y == rhs.y
 }
-func < (lhs: Locution.Board.Coordinate, rhs: Locution.Board.Coordinate) -> Bool {
+func < (lhs: Game.Board.Coordinate, rhs: Game.Board.Coordinate) -> Bool {
 	return lhs.x + lhs.y < rhs.x + rhs.y
 }
-func > (lhs: Locution.Board.Coordinate, rhs: Locution.Board.Coordinate) -> Bool {
+func > (lhs: Game.Board.Coordinate, rhs: Game.Board.Coordinate) -> Bool {
 	return lhs.x + lhs.y > rhs.x + rhs.y
 }
-func == (lhs: Locution.Tile, rhs: Locution.Tile) -> Bool {
+func == (lhs: Game.Tile, rhs: Game.Tile) -> Bool {
 	return ObjectIdentifier(lhs) == ObjectIdentifier(rhs)
 }
-func == (lhs: Locution.Board.Square, rhs: Locution.Board.Square) -> Bool {
+func == (lhs: Game.Board.Square, rhs: Game.Board.Square) -> Bool {
 	return ObjectIdentifier(lhs) == ObjectIdentifier(rhs)
 }
 
 // MARK:- Game
 
-class Locution {
+class Game {
 	// Create some aliases for easier use
 	typealias Coordinate = Board.Coordinate
 	typealias Square = Board.Square

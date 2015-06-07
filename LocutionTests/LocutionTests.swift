@@ -34,10 +34,10 @@ class LocutionTests: XCTestCase {
     }
 	
 	func testGame() {
-		var game: Locution?
+		var game: Game?
 		self.measureBlock() {
 			// Starting a game can take a while to create the dictionary (should background)
-			game = Locution()
+			game = Game()
 		}
 		if let g = game {
 			// Test squares
@@ -57,7 +57,7 @@ class LocutionTests: XCTestCase {
 			// Test bag
 			XCTAssert(g.bag.total - 14 == g.bag.tiles.count, "Pass")
 			// Add AI
-			game?.addAI(Locution.AIPlayer.Intelligence.Master)
+			game?.addAI(Game.AIPlayer.Intelligence.Master)
 			XCTAssert(g.players.count == 3, "Pass")
 			game?.currentPlayer = g.players.last
 			// Test rack

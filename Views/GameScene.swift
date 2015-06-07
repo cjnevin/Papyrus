@@ -10,15 +10,15 @@ import SpriteKit
 import SceneKit
 
 class GameScene: SKScene {
-	typealias Player = Locution.Player
-    typealias Square = Locution.Board.Square
-	typealias Word = Locution.Board.Word
-    typealias Tile = Locution.Tile
+	typealias Player = Game.Player
+    typealias Square = Game.Board.Square
+	typealias Word = Game.Board.Word
+    typealias Tile = Game.Tile
     typealias SquareSprite = Sprites.SquareSprite
     typealias TileSprite = Sprites.TileSprite
     
     class GameState {
-		var game: Locution
+		var game: Game
         var squareSprites: [SquareSprite]
         var rackSprites: [TileSprite]
         var draggedSprite: TileSprite?
@@ -37,7 +37,7 @@ class GameScene: SKScene {
 		}
 		
         init(view: SKView, node: SKNode) {
-			self.game = Locution()
+			self.game = Game()
             self.view = view
             self.node = node
             self.squareSprites = SquareSprite.createSprites(forGame: game, frame: view.frame)
@@ -65,7 +65,7 @@ class GameScene: SKScene {
             self.originalPoint = nil
             self.squareSprites.removeAll(keepCapacity: false)
             self.rackSprites.removeAll(keepCapacity: false)
-            self.game = Locution()
+            self.game = Game()
             self.squareSprites = SquareSprite.createSprites(forGame: game, frame: view.frame)
             self.rackSprites = TileSprite.createRackSprites(forGame: game, frame: view.frame)
             self.view = view

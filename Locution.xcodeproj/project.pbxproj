@@ -11,14 +11,14 @@
 		993F979519A7555100B8410B /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 993F979319A7555100B8410B /* Main.storyboard */; };
 		993F97A319A7555100B8410B /* LocutionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 993F97A219A7555100B8410B /* LocutionTests.swift */; };
 		999A81CC19EFB0BD001C7B41 /* Styling.swift in Sources */ = {isa = PBXBuildFile; fileRef = 999A81CB19EFB0BD001C7B41 /* Styling.swift */; };
-		99AACAC019A87D0200238253 /* Locution.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99AACAB819A87D0200238253 /* Locution.swift */; };
+		99AACAC019A87D0200238253 /* Game.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99AACAB819A87D0200238253 /* Game.swift */; };
 		99AACAC119A87D0200238253 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 99AACABA19A87D0200238253 /* Images.xcassets */; };
 		99AACAC219A87D0200238253 /* GameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99AACABC19A87D0200238253 /* GameViewController.swift */; };
 		99AACAC419A87D0200238253 /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99AACABF19A87D0200238253 /* GameScene.swift */; };
 		99AACACC19A87EBA00238253 /* GameScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = 99AACACB19A87EBA00238253 /* GameScene.sks */; };
 		99AACAD319A8A4E600238253 /* Sprites.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99AACAD219A8A4E600238253 /* Sprites.swift */; };
 		99D7B7A41B23104500567B50 /* CSW12.plist in Resources */ = {isa = PBXBuildFile; fileRef = 99D7B7A31B23104500567B50 /* CSW12.plist */; };
-		99DBE5B61B24626D006BBB1F /* Locution.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99AACAB819A87D0200238253 /* Locution.swift */; };
+		99DBE5B61B24626D006BBB1F /* Game.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99AACAB819A87D0200238253 /* Game.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -40,7 +40,7 @@
 		993F97A119A7555100B8410B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		993F97A219A7555100B8410B /* LocutionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocutionTests.swift; sourceTree = "<group>"; };
 		999A81CB19EFB0BD001C7B41 /* Styling.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Styling.swift; path = Models/Styling.swift; sourceTree = SOURCE_ROOT; };
-		99AACAB819A87D0200238253 /* Locution.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Locution.swift; sourceTree = "<group>"; };
+		99AACAB819A87D0200238253 /* Game.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Game.swift; sourceTree = "<group>"; };
 		99AACABA19A87D0200238253 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		99AACABC19A87D0200238253 /* GameViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameViewController.swift; sourceTree = "<group>"; };
 		99AACABF19A87D0200238253 /* GameScene.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameScene.swift; sourceTree = "<group>"; };
@@ -127,7 +127,7 @@
 		99AACAB719A87D0200238253 /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				99AACAB819A87D0200238253 /* Locution.swift */,
+				99AACAB819A87D0200238253 /* Game.swift */,
 				999A81CB19EFB0BD001C7B41 /* Styling.swift */,
 			);
 			name = Model;
@@ -271,7 +271,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				999A81CC19EFB0BD001C7B41 /* Styling.swift in Sources */,
-				99AACAC019A87D0200238253 /* Locution.swift in Sources */,
+				99AACAC019A87D0200238253 /* Game.swift in Sources */,
 				99AACAC219A87D0200238253 /* GameViewController.swift in Sources */,
 				99AACAD319A8A4E600238253 /* Sprites.swift in Sources */,
 				99AACAC419A87D0200238253 /* GameScene.swift in Sources */,
@@ -283,7 +283,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				99DBE5B61B24626D006BBB1F /* Locution.swift in Sources */,
+				99DBE5B61B24626D006BBB1F /* Game.swift in Sources */,
 				993F97A319A7555100B8410B /* LocutionTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
