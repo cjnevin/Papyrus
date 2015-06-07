@@ -48,7 +48,7 @@ class GameViewController: UIViewController {
 				alertController.addAction(OKAction)
 				self.presentViewController(alertController, animated: true, completion: nil)
 			} else {
-				self.navigationItem.title = "Score: \(scene!.gameState!.player.score)"
+				self.navigationItem.title = "Score: \(scene!.gameState!.game.currentPlayer!.score)"
 			}
 		}
 	}

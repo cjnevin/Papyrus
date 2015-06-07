@@ -114,16 +114,18 @@ class Sprites {
             var index = 0
             let squareSize = CGRectGetWidth(frame) / CGFloat(game.board.dimensions)
             let tileSize = squareSize * 2.0
-            let spacing = (CGRectGetWidth(frame) - tileSize * CGFloat(game.rack.amount)) / 2
-            for tile in game.rack.tiles {
-                let sprite = TileSprite(tile: tile, edge: tileSize, scale: 1.0)
-                sprite.position = CGPointMake(tileSize * CGFloat(index) + tileSize / 2 + spacing, tileSize / 2)
-                sprites.append(sprite)
-                index++
-            }
-            return sprites
+			if let rack = game.rack {
+				let spacing = (CGRectGetWidth(frame) - tileSize * CGFloat(rack.amount)) / 2
+				for tile in rack.tiles {
+					let sprite = TileSprite(tile: tile, edge: tileSize, scale: 1.0)
+					sprite.position = CGPointMake(tileSize * CGFloat(index) + tileSize / 2 + spacing, tileSize / 2)
+					sprites.append(sprite)
+					index++
+				}
+			}
+			return sprites
         }
-        
+		
         let defaultColor = UIColor(red: 1, green: 1, blue: 200/255, alpha: 1)
         var movable: Bool = true
         var tile: Tile?

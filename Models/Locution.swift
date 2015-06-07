@@ -144,6 +144,29 @@ class Locution {
 		}
 	}
 	
+	class Player {
+		let rack: Rack
+		var score = 0
+		init() {
+			self.rack = Rack()
+		}
+		func incrementScore(value: Int) {
+			score += value
+			println("Added Score: \(value), new score: \(score)")
+		}
+	}
+	
+	class AIPlayer : Player {
+		enum Intelligence {
+			case Newbie
+			case Master
+		}
+		let intelligence: Intelligence
+		init(i: Intelligence) {
+			intelligence = i
+		}
+	}
+	
 	class Rack {
 		let amount = 7
 		var tiles = [Tile]()
@@ -444,15 +467,38 @@ class Locution {
 	
 	
 	let bag: Bag
-	let rack: Rack
 	let board: Board
 	let dictionary: Dictionary
+	var players = [Player]()
+	var currentPlayer: Player?
+	var rack: Rack? {
+		get {
+			return currentPlayer?.rack
+		}
+	}
 	init() {
+		self.dictionary = Dictionary(language: .English)
 		self.board = Board(dimensions: 15)
 		self.bag = Bag(language:.English)
-		self.rack = Rack()
-		self.rack.replenish(fromBag: bag)
-		self.dictionary = Dictionary(language: .English)
+		addPlayer()	// Need at least one
+	}
+	
+	func addAI(intelligence: AIPlayer.Intelligence) {
+		var ai = AIPlayer(i: intelligence)
+		ai.rack.replenish(fromBag: bag)
+		self.players.append(ai)
+		if self.currentPlayer == nil {
+			self.currentPlayer = ai
+		}
+	}
+	
+	func addPlayer() {
+		var player = Player()
+		player.rack.replenish(fromBag: bag)
+		self.players.append(player)
+		if self.currentPlayer == nil {
+			self.currentPlayer = player
+		}
 	}
 	
 	func validate(squares: [Square], inout outWords: [Word]) -> (Bool, errors: [String]) {

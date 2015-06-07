@@ -42,10 +42,28 @@ class LocutionTests: XCTestCase {
 		if let g = game {
 			// Test squares
 			XCTAssert(g.board.squares.count == g.board.dimensions * g.board.dimensions, "Pass")
+			// Test player one
+			XCTAssert(g.players.count == 1, "Pass")
 			// Test rack
-			XCTAssert(g.rack.amount == 7, "Pass")
+			XCTAssert(g.rack?.amount == 7, "Pass")
 			// Test bag
 			XCTAssert(g.bag.total - 7 == g.bag.tiles.count, "Pass")
+			// Add player
+			game?.addPlayer()
+			XCTAssert(g.players.count == 2, "Pass")
+			game?.currentPlayer = g.players.last
+			// Test rack
+			XCTAssert(g.rack?.amount == 7, "Pass")
+			// Test bag
+			XCTAssert(g.bag.total - 14 == g.bag.tiles.count, "Pass")
+			// Add AI
+			game?.addAI(Locution.AIPlayer.Intelligence.Master)
+			XCTAssert(g.players.count == 3, "Pass")
+			game?.currentPlayer = g.players.last
+			// Test rack
+			XCTAssert(g.rack?.amount == 7, "Pass")
+			// Test bag
+			XCTAssert(g.bag.total - 21 == g.bag.tiles.count, "Pass")
 			// Test dictionary
 			XCTAssert(g.dictionary.defined("KITTY").0, "Pass")
 		}

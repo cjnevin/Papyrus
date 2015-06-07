@@ -10,6 +10,7 @@ import SpriteKit
 import SceneKit
 
 class GameScene: SKScene {
+	typealias Player = Locution.Player
     typealias Square = Locution.Board.Square
 	typealias Word = Locution.Board.Word
     typealias Tile = Locution.Tile
@@ -17,16 +18,7 @@ class GameScene: SKScene {
     typealias TileSprite = Sprites.TileSprite
     
     class GameState {
-        class Player {
-            var score = 0
-            func incrementScore(value: Int) {
-                score += value
-                println("Add Score: \(value), new score: \(score)")
-            }
-        }
-        
 		var game: Locution
-        var player: Player // Create array?
         var squareSprites: [SquareSprite]
         var rackSprites: [TileSprite]
         var draggedSprite: TileSprite?
@@ -46,7 +38,6 @@ class GameScene: SKScene {
 		
         init(view: SKView, node: SKNode) {
 			self.game = Locution()
-            self.player = Player()
             self.view = view
             self.node = node
             self.squareSprites = SquareSprite.createSprites(forGame: game, frame: view.frame)
@@ -75,7 +66,6 @@ class GameScene: SKScene {
             self.squareSprites.removeAll(keepCapacity: false)
             self.rackSprites.removeAll(keepCapacity: false)
             self.game = Locution()
-            self.player = Player()
             self.squareSprites = SquareSprite.createSprites(forGame: game, frame: view.frame)
             self.rackSprites = TileSprite.createRackSprites(forGame: game, frame: view.frame)
             self.view = view
@@ -103,7 +93,7 @@ class GameScene: SKScene {
 			if mutableSquareSprites.count == 7 {
 				sum += 50
 			}
-			player.incrementScore(sum)
+			game.currentPlayer?.incrementScore(sum)
 			
 			// Illuminate the wordss we changed
 			illuminateWords([immutableSquareSprites], illuminated: false)
@@ -114,7 +104,9 @@ class GameScene: SKScene {
 				sprite.tileSprite?.movable = false
 				if let spriteTile = sprite.tileSprite?.tile {
 					rackSprites = rackSprites.filter({$0.tile != spriteTile})
-					game.rack.tiles = game.rack.tiles.filter({$0 != spriteTile})
+					if let rack = game.rack {
+						rack.tiles = rack.tiles.filter({$0 != spriteTile})
+					}
 				}
 				if let square = sprite.square {
 					square.immutable = true
@@ -123,7 +115,9 @@ class GameScene: SKScene {
 			for sprite in rackSprites {
 				sprite.removeFromParent()
 			}
-			game.rack.replenish(fromBag: game.bag);
+			if let rack = game.rack {
+				rack.replenish(fromBag: game.bag)
+			}
 			rackSprites = TileSprite.createRackSprites(forGame: game, frame: view.frame)
 			for sprite in rackSprites {
 				node.addChild(sprite)
