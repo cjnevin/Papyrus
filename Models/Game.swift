@@ -42,15 +42,78 @@ class Game {
 	typealias Square = Board.Square
 	typealias SquareType = Square.SquareType
 	typealias Word = Board.Word
-
+	
+	// Shared
+	enum Language: String {
+		case English = "CSW12"
+	}
 	enum Orientation {
 		case Horizontal
 		case Vertical
 	}
 	
-	enum Language: String {
-		case English = "CSW12"
+	let bag: Bag
+	let board: Board
+	let dictionary: Dictionary
+	var players = [Player]()
+	var currentPlayer: Player?
+	var rack: Rack? {
+		get {
+			return currentPlayer?.rack
+		}
 	}
+	init() {
+		self.dictionary = Dictionary(language: .English)
+		self.board = Board(dimensions: 15)
+		self.bag = Bag(language:.English)
+		addPlayer()	// Need at least one
+	}
+	
+	
+	// MARK:- Player
+	
+	func addAI(intelligence: AIPlayer.Intelligence) {
+		var ai = AIPlayer(i: intelligence)
+		ai.rack.replenish(fromBag: bag)
+		self.players.append(ai)
+		if self.currentPlayer == nil {
+			self.currentPlayer = ai
+		}
+	}
+	
+	class AIPlayer : Player {
+		enum Intelligence {
+			case Newbie
+			case Master
+		}
+		let intelligence: Intelligence
+		init(i: Intelligence) {
+			intelligence = i
+		}
+	}
+	
+	func addPlayer() {
+		var player = Player()
+		player.rack.replenish(fromBag: bag)
+		self.players.append(player)
+		if self.currentPlayer == nil {
+			self.currentPlayer = player
+		}
+	}
+	
+	class Player {
+		let rack: Rack
+		var score = 0
+		init() {
+			self.rack = Rack()
+		}
+		func incrementScore(value: Int) {
+			score += value
+			println("Added Score: \(value), new score: \(score)")
+		}
+	}
+	
+	// MARK:- Dictionary / AI
 	
 	class Dictionary {
 		private let NameKey = "Name"
@@ -114,6 +177,9 @@ class Game {
 		}
 	}
 	
+	
+	// MARK:- Tile Management
+	
 	class Bag {
 		let total: Int
 		var tiles: [Tile]
@@ -135,38 +201,6 @@ class Game {
 		}
 	}
 	
-	class Tile: Equatable {
-		let letter: String
-		let value: Int
-		init(letter: String, value: Int) {
-			self.letter = letter
-			self.value = value
-		}
-	}
-	
-	class Player {
-		let rack: Rack
-		var score = 0
-		init() {
-			self.rack = Rack()
-		}
-		func incrementScore(value: Int) {
-			score += value
-			println("Added Score: \(value), new score: \(score)")
-		}
-	}
-	
-	class AIPlayer : Player {
-		enum Intelligence {
-			case Newbie
-			case Master
-		}
-		let intelligence: Intelligence
-		init(i: Intelligence) {
-			intelligence = i
-		}
-	}
-	
 	class Rack {
 		let amount = 7
 		var tiles = [Tile]()
@@ -185,31 +219,99 @@ class Game {
 		}
 	}
 	
-	class Board {
-		class Coordinate: Equatable {
-			let x: Int
-			let y: Int
-			init(_ coord:(Int, Int)) {
-				self.x = coord.0
-				self.y = coord.1
-			}
-			init(_ x: Int, y: Int) {
-				self.x = x
-				self.y = y
-			}
-			func next(o: Orientation, d:Int, b: Board) -> Coordinate? {
-				if o == .Horizontal {
-					var z = x + d
-					if z < b.dimensions && z >= 0 {
-						return Coordinate(z, y: y)
-					}
+	class Tile: Equatable {
+		let letter: String
+		let value: Int
+		init(letter: String, value: Int) {
+			self.letter = letter
+			self.value = value
+		}
+	}
+	
+	
+	// MARK:- Game Board
+	
+	func validate(squares: [Square], inout outWords: [Word]) -> (Bool, errors: [String]) {
+		let newWords = board.getWords(aroundSquares: squares)
+		outWords = newWords
+		if newWords.count == 0 {
+			return (false, ["Invalid tile arrangement."])
+		}
+		var errors = [String]()
+		for word in newWords {
+			if !word.isValidArrangement {
+				errors.append("Invalid tile arrangement.")
+			} else {
+				let (valid, definition) = dictionary.defined(word.word)
+				if valid {
+					println("Valid word: \(word.word),  definition: \(definition!)")
 				} else {
-					let z = y + d
-					if z < b.dimensions && z >= 0 {
-						return Coordinate(x, y: z)
+					errors.append("Invalid word: \(word.word)")
+				}
+			}
+		}
+		// Check if first play
+		if board.words.count == 0 {
+			if newWords.count != 1 {
+				errors.append("First play must have all tiles lined up.")
+			}
+			if let word = newWords.first {
+				// Ensure word is valid length
+				if word.length < 2 {
+					errors.append("You must play more than one letter.")
+				}
+				// Ensure word intersects center
+				if !board.containsCenterSquare(inArray: word.squares) {
+					errors.append("First play must intersect the center square.")
+				}
+			}
+		} else {
+			// Word must intersect the center tile, via another word
+			var output = Set<Square>()
+			for square in squares {
+				board.getAdjacentFilledSquares(square.c, vertically: true, horizontally: true, original: square, output: &output)
+			}
+			if !board.containsCenterSquare(inArray: Array(output)) {
+				errors.append("New words must intersect existing words.")
+			}
+		}
+		return (errors.count == 0, errors)
+	}
+	
+	
+	class Board {
+		let dimensions: Int
+		var squares = [Square]()
+		var words = [Word]()
+		init(dimensions: Int) {
+			self.dimensions = dimensions;
+			let m = dimensions/2+1
+			for row in 1...dimensions {
+				for col in 1...dimensions {
+					var c = Coordinate(row, y:col)
+					var cfg: [SquareType: [(Int, Int)]] = [
+						.Center: [(0,0)],
+						.TripleWord: [(m-1, m-1), (0, m-1)],
+						.DoubleLetter: [(1, 1), (1, 5), (0, 4), (m-1, 4)],
+						.TripleLetter: [(2, 6), (2, 2)],
+						.DoubleWord: [(3, 3), (4, 4), (5, 5), (6, 6)]]
+					var found = false
+					for (type, offsets) in cfg {
+						for offset in offsets {
+							if isSymmetrical(c, offset: offset, middle: m) {
+								squares.append(Square(type, c: c))
+								found = true
+								break
+							}
+						}
+						if found {
+							break
+						}
+					}
+					if !found {
+						squares.append(Square(.Normal, c:c))
 					}
 				}
-				return nil
 			}
 		}
 		
@@ -286,8 +388,106 @@ class Game {
 			return words
 		}
 		
+		private func isSymmetrical(c: Coordinate, offset: (Int, Int), middle m: Int) -> Bool {
+			let a = offset.0
+			let b = offset.1
+			return contains([Coordinate(m - a, y:m - b),
+				Coordinate(m - a, y:m + b),
+				Coordinate(m + a, y:m + b),
+				Coordinate(m + a, y:m - b),
+				Coordinate(m - b, y:m - a),
+				Coordinate(m - b, y:m + a),
+				Coordinate(m + b, y:m + a),
+				Coordinate(m + b, y:m - a)], c)
+		}
+		
 		func noTile(c: Coordinate) -> Bool {
 			return self.squares.filter({$0.tile == nil && $0.c == c}).count == 0
+		}
+		
+		class Coordinate: Equatable {
+			let x: Int
+			let y: Int
+			init(_ coord:(Int, Int)) {
+				self.x = coord.0
+				self.y = coord.1
+			}
+			init(_ x: Int, y: Int) {
+				self.x = x
+				self.y = y
+			}
+			func next(o: Orientation, d:Int, b: Board) -> Coordinate? {
+				if o == .Horizontal {
+					var z = x + d
+					if z < b.dimensions && z >= 0 {
+						return Coordinate(z, y: y)
+					}
+				} else {
+					let z = y + d
+					if z < b.dimensions && z >= 0 {
+						return Coordinate(x, y: z)
+					}
+				}
+				return nil
+			}
+		}
+		
+		// Square: Individual square on the board
+		class Square: Hashable {
+			enum SquareType {
+				case Normal
+				case Center
+				case DoubleLetter
+				case TripleLetter
+				case DoubleWord
+				case TripleWord
+			}
+			var hashValue: Int {
+				get {
+					return "\(c.x),\(c.y)".hashValue
+				}
+			}
+			let c: Coordinate
+			let squareType: SquareType
+			var immutable = false
+			var tile: Tile?
+			
+			init(_ squareType: SquareType, c: Coordinate) {
+				self.squareType = squareType
+				self.c = c
+			}
+			
+			func faceValue() -> Int {
+				var multiplier: Int = 1
+				if !immutable {
+					switch (squareType) {
+					case .DoubleLetter:
+						multiplier = 2
+					case .TripleLetter:
+						multiplier = 3
+					default:
+						multiplier = 1
+					}
+				}
+				if let value = self.tile?.value {
+					return value * multiplier;
+				}
+				return 0
+			}
+			
+			func wordMultiplier() -> Int {
+				if !immutable {
+					switch (squareType) {
+					case .Center, .DoubleWord:
+						return 2
+					case .TripleWord:
+						return 3
+					default:
+						return 1
+					}
+				}
+				return 1
+			}
 		}
 		
 		// Word: Collection of squares
@@ -356,195 +556,5 @@ class Game {
 				}
 			}
 		}
-		
-		// Square: Individual square on the board
-		class Square: Hashable {
-			enum SquareType {
-				case Normal
-				case Center
-				case DoubleLetter
-				case TripleLetter
-				case DoubleWord
-				case TripleWord
-			}
-			var hashValue: Int {
-				get {
-					return "\(c.x),\(c.y)".hashValue
-				}
-			}
-			let c: Coordinate
-			let squareType: SquareType
-			var immutable = false
-			var tile: Tile?
-			
-			init(_ squareType: SquareType, c: Coordinate) {
-				self.squareType = squareType
-				self.c = c
-			}
-			
-			func faceValue() -> Int {
-				var multiplier: Int = 1
-				if !immutable {
-					switch (squareType) {
-					case .DoubleLetter:
-						multiplier = 2
-					case .TripleLetter:
-						multiplier = 3
-					default:
-						multiplier = 1
-					}
-				}
-				if let value = self.tile?.value {
-					return value * multiplier;
-				}
-				return 0
-			}
-			
-			func wordMultiplier() -> Int {
-				if !immutable {
-					switch (squareType) {
-					case .Center, .DoubleWord:
-						return 2
-					case .TripleWord:
-						return 3
-					default:
-						return 1
-					}
-				}
-				return 1
-			}
-		}
-		
-		let dimensions: Int
-		var squares = [Square]()
-		var words = [Word]()
-		
-		init(dimensions: Int) {
-			self.dimensions = dimensions;
-			let m = dimensions/2+1
-			for row in 1...dimensions {
-				for col in 1...dimensions {
-					var c = Coordinate(row, y:col)
-					var cfg: [SquareType: [(Int, Int)]] = [
-						.Center: [(0,0)],
-						.TripleWord: [(m-1, m-1), (0, m-1)],
-						.DoubleLetter: [(1, 1), (1, 5), (0, 4), (m-1, 4)],
-						.TripleLetter: [(2, 6), (2, 2)],
-						.DoubleWord: [(3, 3), (4, 4), (5, 5), (6, 6)]]
-					var found = false
-					for (type, offsets) in cfg {
-						for offset in offsets {
-							if symmetrical(c, offset: offset, middle: m) {
-								squares.append(Square(type, c: c))
-								found = true
-								break
-							}
-						}
-						if found {
-							break
-						}
-					}
-					if !found {
-						squares.append(Square(.Normal, c:c))
-					}
-				}
-			}
-		}
-		
-		private func symmetrical(c: Coordinate, offset: (Int, Int), middle m: Int) -> Bool {
-			let a = offset.0
-			let b = offset.1
-			return contains([Coordinate(m - a, y:m - b),
-				Coordinate(m - a, y:m + b),
-				Coordinate(m + a, y:m + b),
-				Coordinate(m + a, y:m - b),
-				Coordinate(m - b, y:m - a),
-				Coordinate(m - b, y:m + a),
-				Coordinate(m + b, y:m + a),
-				Coordinate(m + b, y:m - a)], c)
-		}
-	}
-	
-	
-	let bag: Bag
-	let board: Board
-	let dictionary: Dictionary
-	var players = [Player]()
-	var currentPlayer: Player?
-	var rack: Rack? {
-		get {
-			return currentPlayer?.rack
-		}
-	}
-	init() {
-		self.dictionary = Dictionary(language: .English)
-		self.board = Board(dimensions: 15)
-		self.bag = Bag(language:.English)
-		addPlayer()	// Need at least one
-	}
-	
-	func addAI(intelligence: AIPlayer.Intelligence) {
-		var ai = AIPlayer(i: intelligence)
-		ai.rack.replenish(fromBag: bag)
-		self.players.append(ai)
-		if self.currentPlayer == nil {
-			self.currentPlayer = ai
-		}
-	}
-	
-	func addPlayer() {
-		var player = Player()
-		player.rack.replenish(fromBag: bag)
-		self.players.append(player)
-		if self.currentPlayer == nil {
-			self.currentPlayer = player
-		}
-	}
-	
-	func validate(squares: [Square], inout outWords: [Word]) -> (Bool, errors: [String]) {
-		let newWords = board.getWords(aroundSquares: squares)
-		outWords = newWords
-		if newWords.count == 0 {
-			return (false, ["Invalid tile arrangement."])
-		}
-		var errors = [String]()
-		for word in newWords {
-			if !word.isValidArrangement {
-				errors.append("Invalid tile arrangement.")
-			} else {
-				let (valid, definition) = dictionary.defined(word.word)
-				if valid {
-					println("Valid word: \(word.word),  definition: \(definition!)")
-				} else {
-					errors.append("Invalid word: \(word.word)")
-				}
-			}
-		}
-		// Check if first play
-		if board.words.count == 0 {
-			if newWords.count != 1 {
-				errors.append("First play must have all tiles lined up.")
-			}
-			if let word = newWords.first {
-				// Ensure word is valid length
-				if word.length < 2 {
-					errors.append("You must play more than one letter.")
-				}
-				// Ensure word intersects center
-				if !board.containsCenterSquare(inArray: word.squares) {
-					errors.append("First play must intersect the center square.")
-				}
-			}
-		} else {
-			// Word must intersect the center tile, via another word
-			var output = Set<Square>()
-			for square in squares {
-				board.getAdjacentFilledSquares(square.c, vertically: true, horizontally: true, original: square, output: &output)
-			}
-			if !board.containsCenterSquare(inArray: Array(output)) {
-				errors.append("New words must intersect existing words.")
-			}
-		}
-		return (errors.count == 0, errors)
 	}
 }
