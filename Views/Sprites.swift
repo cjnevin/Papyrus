@@ -18,8 +18,8 @@ class Sprites {
             let squareSize = CGRectGetWidth(frame) / CGFloat(game.board.dimensions)
             for square in game.board.squares {
                 let sprite = SquareSprite(square: square, edge: squareSize)
-                sprite.position = CGPointMake(squareSize * CGFloat(square.point.0 - 1) + squareSize / 2,
-					CGRectGetHeight(frame) - squareSize * CGFloat(square.point.1) + squareSize / 2)
+                sprite.position = CGPointMake(squareSize * CGFloat(square.c.x - 1) + squareSize / 2,
+					CGRectGetHeight(frame) - squareSize * CGFloat(square.c.y) + squareSize / 2)
                 sprites.append(sprite)
             }
             return sprites

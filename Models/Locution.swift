@@ -19,13 +19,13 @@ func |> <T,U>(lhs: T, rhs: T -> U) -> U {
 
 // MARK:- Locution Operators
 
-func == (lhs: Locution.BoardPoint, rhs: Locution.BoardPoint) -> Bool {
+func == (lhs: Locution.Board.Coordinate, rhs: Locution.Board.Coordinate) -> Bool {
 	return lhs.x == rhs.x && lhs.y == rhs.y
 }
-func < (lhs: Locution.BoardPoint, rhs: Locution.BoardPoint) -> Bool {
+func < (lhs: Locution.Board.Coordinate, rhs: Locution.Board.Coordinate) -> Bool {
 	return lhs.x + lhs.y < rhs.x + rhs.y
 }
-func > (lhs: Locution.BoardPoint, rhs: Locution.BoardPoint) -> Bool {
+func > (lhs: Locution.Board.Coordinate, rhs: Locution.Board.Coordinate) -> Bool {
 	return lhs.x + lhs.y > rhs.x + rhs.y
 }
 func == (lhs: Locution.Tile, rhs: Locution.Tile) -> Bool {
@@ -38,15 +38,23 @@ func == (lhs: Locution.Board.Square, rhs: Locution.Board.Square) -> Bool {
 // MARK:- Game
 
 class Locution {
-	typealias BoardPoint = (x: Int, y: Int)
+	// Create some aliases for easier use
+	typealias Coordinate = Board.Coordinate
 	typealias Square = Board.Square
+	typealias SquareType = Square.SquareType
 	typealias Word = Board.Word
+
+	enum Orientation {
+		case Horizontal
+		case Vertical
+	}
 	
 	enum Language: String {
 		case English = "CSW12"
 	}
 	
 	class Dictionary {
+		private let NameKey = "Name"
 		private let DefKey = "Def"
 		private let dictionary: NSDictionary
 		let language: Language
@@ -78,6 +86,32 @@ class Locution {
 				}
 			}
 			return (false, nil)
+		}
+		
+		private func findWords(forLetters letters: [String], prefix: String, source: NSDictionary, inout results: [[String: String]]) {
+			if let definition = source[DefKey] as? String {
+				results.append([NameKey: prefix, DefKey: definition])
+			}
+			for key in source.allKeys as! [String] {
+				// Could be cleaned up
+				if let index = find(letters, "?"),
+					newSource = source[key] as? NSDictionary {
+					var newLetters = letters
+					newLetters.removeAtIndex(index)
+					findWords(forLetters: newLetters, prefix: "\(prefix)\(key)", source: newSource, results: &results)
+				} else if let index = find(letters, key),
+					newSource = source[key] as? NSDictionary {
+						var newLetters = letters
+						newLetters.removeAtIndex(index)
+						findWords(forLetters: newLetters, prefix: "\(prefix)\(key)", source: newSource, results: &results)
+				}
+			}
+		}
+		
+		func possibleWords(forLetters letters: [String]) -> [[String: String]] {
+			var results = [[String: String]]()
+			findWords(forLetters: letters, prefix: "", source: dictionary, results: &results)
+			return results
 		}
 	}
 	
@@ -132,25 +166,61 @@ class Locution {
 	}
 	
 	class Board {
+		class Coordinate: Equatable {
+			let x: Int
+			let y: Int
+			init(_ coord:(Int, Int)) {
+				self.x = coord.0
+				self.y = coord.1
+			}
+			init(_ x: Int, y: Int) {
+				self.x = x
+				self.y = y
+			}
+			func next(o: Orientation, d:Int, b: Board) -> Coordinate? {
+				if o == .Horizontal {
+					var z = x + d
+					if z < b.dimensions && z >= 0 {
+						return Coordinate(z, y: y)
+					}
+				} else {
+					let z = y + d
+					if z < b.dimensions && z >= 0 {
+						return Coordinate(x, y: z)
+					}
+				}
+				return nil
+			}
+		}
+		
 		func containsCenterSquare(inArray squares: [Square]) -> Bool {
 			return (squares.filter{$0.squareType == Square.SquareType.Center}).count == 1
 		}
 		
-		func getFilledSquare(atPoint point: BoardPoint) -> Square? {
-			return self.squares.filter({$0.tile != nil && $0.point == point}).first
+		func getFilledSquare(c: Coordinate) -> Square? {
+			return self.squares
+				|> { s in filter(s) { $0.c == c && $0.tile != nil } }
+				|> { s in first(s) }
 		}
 		
-		func getAdjacentFilledSquares(atPoint point: BoardPoint, vertically v: Bool, horizontally h: Bool, original: Square, inout output: Set<Square>) {
-			if let sq = getFilledSquare(atPoint: point) {
+		func getLetter(c: Coordinate) -> String? {
+			return self.squares
+				|> { s in filter(s) { $0.c == c } }
+				|> { s in map(s) { $0.tile!.letter } }
+				|> { s in first(s) }
+		}
+		
+		func getAdjacentFilledSquares(c: Coordinate, vertically v: Bool, horizontally h: Bool, original: Square, inout output: Set<Square>) {
+			if let sq = getFilledSquare(c) {
 				if (sq == original || !output.contains(sq)) {
 					output.insert(sq)
 					if h {
-						getAdjacentFilledSquares(atPoint: (point.x + 1, point.y), vertically: v, horizontally: h, original: original, output: &output)
-						getAdjacentFilledSquares(atPoint: (point.x - 1, point.y), vertically: v, horizontally: h, original: original, output: &output)
+						getAdjacentFilledSquares(Coordinate(c.x + 1, y:c.y), vertically: v, horizontally: h, original: original, output: &output)
+						getAdjacentFilledSquares(Coordinate(c.x - 1, y:c.y), vertically: v, horizontally: h, original: original, output: &output)
 					}
 					if v {
-						getAdjacentFilledSquares(atPoint: (point.x, point.y + 1), vertically: v, horizontally: h, original: original, output: &output)
-						getAdjacentFilledSquares(atPoint: (point.x, point.y - 1), vertically: v, horizontally: h, original: original, output: &output)
+						getAdjacentFilledSquares(Coordinate(c.x, y:c.y + 1), vertically: v, horizontally: h, original: original, output: &output)
+						getAdjacentFilledSquares(Coordinate(c.x, y:c.y - 1), vertically: v, horizontally: h, original: original, output: &output)
 					}
 				}
 			}
@@ -162,32 +232,32 @@ class Locution {
 			var tempWord = Word(squares)
 			var output = Set<Square>()
 			for square in squares {
-				getAdjacentFilledSquares(atPoint: square.point, vertically: true, horizontally: false, original: square, output: &output)
-				getAdjacentFilledSquares(atPoint: square.point, vertically: false, horizontally: true, original: square, output: &output)
+				getAdjacentFilledSquares(square.c, vertically: true, horizontally: false, original: square, output: &output)
+				getAdjacentFilledSquares(square.c, vertically: false, horizontally: true, original: square, output: &output)
 			}
 			let adjacentSquares = Array(output)
-			if tempWord.isVertical {
+			if tempWord.orientation == .Vertical {
 				// Get the word that we played vertically
-				let fullWordSquares = adjacentSquares.filter({$0.point.x == tempWord.column})
+				let fullWordSquares = adjacentSquares.filter({$0.c.x == tempWord.column})
 				if fullWordSquares.count > 1 {
 					words.append(Word(fullWordSquares))
 				}
 				// Now collect all words played horizontally
 				for square in squares {
-					let rowWordSquares = adjacentSquares.filter({$0.point.y == square.point.y})
+					let rowWordSquares = adjacentSquares.filter({$0.c.y == square.c.y})
 					if rowWordSquares.count > 1 {
 						words.append(Word(rowWordSquares))
 					}
 				}
 			} else {
 				// Get the word that we played horizontally
-				let fullWordSquares = adjacentSquares.filter({$0.point.y == tempWord.row})
+				let fullWordSquares = adjacentSquares.filter({$0.c.y == tempWord.row})
 				if fullWordSquares.count > 1 {
 					words.append(Word(fullWordSquares))
 				}
 				// Now collect all words played vertically
 				for square in squares {
-					let columnWordSquares = adjacentSquares.filter({$0.point.x == square.point.x})
+					let columnWordSquares = adjacentSquares.filter({$0.c.x == square.c.x})
 					if columnWordSquares.count > 1 {
 						words.append(Word(columnWordSquares))
 					}
@@ -196,12 +266,16 @@ class Locution {
 			return words
 		}
 		
+		func noTile(c: Coordinate) -> Bool {
+			return self.squares.filter({$0.tile == nil && $0.c == c}).count == 0
+		}
+		
 		// Word: Collection of squares
 		class Word {
 			let squares: [Square]
 			let word: String
 			let length: Int
-			let isVertical: Bool
+			let orientation: Orientation
 			var isValidArrangement: Bool = true
 			let row: Int
 			let column: Int
@@ -219,7 +293,7 @@ class Locution {
 			}
 			init(_ squares: [Square]) {
 				// Sort squares as we add them
-				self.squares = (squares |> {s in sorted(s) {$0.point < $1.point} })
+				self.squares = (squares |> {s in sorted(s) {$0.c < $1.c} })
 				
 				// Get value of word
 				self.word = (self.squares
@@ -230,15 +304,15 @@ class Locution {
 				self.length = self.word.lengthOfBytesUsingEncoding(NSUTF8StringEncoding)
 				
 				// Determine bounding rect
-				let x = self.squares.map({$0.point.x})
-				let y = self.squares.map({$0.point.y})
+				let x = self.squares.map({$0.c.x})
+				let y = self.squares.map({$0.c.y})
 				let minX = x.reduce(Int.max, combine:{min($0, $1)})
 				let maxX = x.reduce(Int.min, combine:{max($0, $1)})
 				let minY = y.reduce(Int.max, combine:{min($0, $1)})
 				let maxY = y.reduce(Int.min, combine:{max($0, $1)})
 				
 				// Determine if arrangement is valid
-				self.isVertical = minX == maxX
+				self.orientation = minX == maxX ? .Vertical : .Horizontal
 				if minX == maxX {
 					self.column = maxX
 					self.row = -1
@@ -252,8 +326,8 @@ class Locution {
 				var previous: Square?
 				for square in self.squares {
 					if let prev = previous {
-						if minY == maxY && prev.point.x + 1 != square.point.x ||
-							minX == maxX && prev.point.y + 1 != square.point.y {
+						if minY == maxY && prev.c.x + 1 != square.c.x ||
+							minX == maxX && prev.c.y + 1 != square.c.y {
 								isValidArrangement = false
 								break
 						}
@@ -275,17 +349,17 @@ class Locution {
 			}
 			var hashValue: Int {
 				get {
-					return "\(point.x),\(point.y)".hashValue
+					return "\(c.x),\(c.y)".hashValue
 				}
 			}
+			let c: Coordinate
 			let squareType: SquareType
-			let point: BoardPoint
 			var immutable = false
 			var tile: Tile?
 			
-			init(squareType: SquareType, point: BoardPoint) {
+			init(_ squareType: SquareType, c: Coordinate) {
 				self.squareType = squareType
-				self.point = point
+				self.c = c
 			}
 			
 			func faceValue() -> Int {
@@ -321,50 +395,53 @@ class Locution {
 			}
 		}
 		
-		let centrePoint: BoardPoint
 		let dimensions: Int
 		var squares = [Square]()
 		var words = [Word]()
 		
 		init(dimensions: Int) {
 			self.dimensions = dimensions;
-			let middle = dimensions/2+1
-			self.centrePoint = (middle, middle)
+			let m = dimensions/2+1
 			for row in 1...dimensions {
 				for col in 1...dimensions {
-					var point = (row, col)
-					if symmetrical(point, offset: 0, offset2: 0, middle: middle) {
-						squares.append(Square(squareType: .Center, point: point))
-					} else if symmetrical(point, offset: middle - 1, offset2: middle - 1, middle: middle) || symmetrical(point, offset: 0, offset2: middle - 1, middle: middle) {
-						squares.append(Square(squareType: .TripleWord, point: point))
-					} else if symmetrical(point, offset: 1, offset2: 1, middle: middle) || symmetrical(point, offset: 1, offset2: 5, middle: middle) || symmetrical(point, offset: 0, offset2: 4, middle: middle) || symmetrical(point, offset: middle - 1, offset2: 4, middle: middle) {
-						squares.append(Square(squareType: .DoubleLetter, point: point))
-					} else if symmetrical(point, offset: 2, offset2: 6, middle: middle) || symmetrical(point, offset: 2, offset2: 2, middle: middle) {
-						squares.append(Square(squareType: .TripleLetter, point: point))
-					} else if symmetrical(point, offset: 3, offset2: 3, middle: middle) || symmetrical(point, offset: 4, offset2: 4, middle: middle) || symmetrical(point, offset: 5, offset2: 5, middle: middle) || symmetrical(point, offset: 6, offset2: 6, middle: middle) {
-						squares.append(Square(squareType: .DoubleWord, point: point))
-					} else {
-						squares.append(Square(squareType: .Normal, point: point))
+					var c = Coordinate(row, y:col)
+					var cfg: [SquareType: [(Int, Int)]] = [
+						.Center: [(0,0)],
+						.TripleWord: [(m-1, m-1), (0, m-1)],
+						.DoubleLetter: [(1, 1), (1, 5), (0, 4), (m-1, 4)],
+						.TripleLetter: [(2, 6), (2, 2)],
+						.DoubleWord: [(3, 3), (4, 4), (5, 5), (6, 6)]]
+					var found = false
+					for (type, offsets) in cfg {
+						for offset in offsets {
+							if symmetrical(c, offset: offset, middle: m) {
+								squares.append(Square(type, c: c))
+								found = true
+								break
+							}
+						}
+						if found {
+							break
+						}
+					}
+					if !found {
+						squares.append(Square(.Normal, c:c))
 					}
 				}
 			}
 		}
 		
-		private func symmetrical(point: BoardPoint, offset: Int, offset2: Int, middle: Int) -> Bool {
-			switch (point) {
-			case
-			(middle - offset, middle - offset2),
-			(middle - offset, middle + offset2),
-			(middle + offset, middle + offset2),
-			(middle + offset, middle - offset2),
-			(middle - offset2, middle - offset),
-			(middle - offset2, middle + offset),
-			(middle + offset2, middle + offset),
-			(middle + offset2, middle - offset):
-				return true
-			default:
-				return false
-			}
+		private func symmetrical(c: Coordinate, offset: (Int, Int), middle m: Int) -> Bool {
+			let a = offset.0
+			let b = offset.1
+			return contains([Coordinate(m - a, y:m - b),
+				Coordinate(m - a, y:m + b),
+				Coordinate(m + a, y:m + b),
+				Coordinate(m + a, y:m - b),
+				Coordinate(m - b, y:m - a),
+				Coordinate(m - b, y:m + a),
+				Coordinate(m + b, y:m + a),
+				Coordinate(m + b, y:m - a)], c)
 		}
 	}
 	
@@ -419,7 +496,7 @@ class Locution {
 			// Word must intersect the center tile, via another word
 			var output = Set<Square>()
 			for square in squares {
-				board.getAdjacentFilledSquares(atPoint: square.point, vertically: true, horizontally: true, original: square, output: &output)
+				board.getAdjacentFilledSquares(square.c, vertically: true, horizontally: true, original: square, output: &output)
 			}
 			if !board.containsCenterSquare(inArray: Array(output)) {
 				errors.append("New words must intersect existing words.")
