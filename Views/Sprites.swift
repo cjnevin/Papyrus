@@ -53,7 +53,7 @@ class Sprites {
             let color = SquareSprite.colorForSquare(square)
             let size = CGSizeMake(edge, edge)
 			super.init(texture: nil, color: color, size: size)
-            if let tile = self.square?.tile {
+			if let tile = self.square?.tile {
                 // For Testing
                 let newTileSprite = TileSprite(tile: tile, edge: edge, scale: 0.5)
                 self.dropTileSprite(newTileSprite, originalPoint:CGPointZero)
@@ -77,7 +77,7 @@ class Sprites {
         func dropTileSprite(sprite: TileSprite, originalPoint point: CGPoint) {
             if self.tileSprite == nil {
 				self.originalPoint = point
-				sprite.removeAllActions()
+				sprite.cancelAnimations()
 				sprite.removeFromParent()
 				self.addChild(sprite)
 				sprite.animateShrink()
@@ -91,8 +91,8 @@ class Sprites {
         func pickupTileSprite() -> TileSprite? {
             if let sprite = self.tileSprite {
 				if sprite.movable {
-					sprite.removeAllActions()
-                    sprite.removeFromParent()
+					sprite.cancelAnimations()
+					sprite.removeFromParent()
 					sprite.position = self.position
 					if let square = self.square {
                         square.tile = nil
@@ -127,8 +127,8 @@ class Sprites {
         let defaultColor = UIColor(red: 1, green: 1, blue: 200/255, alpha: 1)
         var movable: Bool = true
         var tile: Tile?
-        
-        init(tile: Tile, edge: CGFloat, scale: CGFloat) {
+		var animationPoint: CGPoint?
+		init(tile: Tile, edge: CGFloat, scale: CGFloat) {
             self.tile = tile;
             var color = defaultColor
             let size = CGSizeMake(edge, edge)
@@ -156,9 +156,45 @@ class Sprites {
 			super.init(coder: aDecoder)
 		}
 		
+		private func cancelAnimations() {
+			if hasActions() {
+				removeAllActions()
+				if let point = animationPoint {
+					position = point
+				}
+			}
+		}
+		
+		private func animateMoveTo(point: CGPoint) {
+			cancelAnimations()
+			animationPoint = point
+			var move = SKAction.sequence([
+				SKAction.moveTo(point, duration: 0.1),
+				SKAction.runBlock({
+					self.animationPoint = nil
+				})
+				])
+			runAction(move)
+		}
+		
+		func resetPosition(point: CGPoint) {
+			cancelAnimations()
+			position = point
+		}
+		
+		func animatePickupFromRack(point: CGPoint) {
+			zPosition = 100
+			animateMoveTo(point)
+		}
+		
+		func animateDropToRack(point: CGPoint) {
+			animateMoveTo(point)
+			zPosition = 0
+		}
+		
 		func animateShrink() {
-			self.position = CGPointZero
-			self.zPosition = 1
+			position = CGPointZero
+			zPosition = 100
 			var drop = SKAction.sequence([
 				SKAction.scaleTo(0.5, duration: 0.25),
 				SKAction.scaleTo(0.45, duration: 0.1),
@@ -167,17 +203,17 @@ class Sprites {
 					self.zPosition = 0
 				})
 			])
-			self.runAction(drop)
+			runAction(drop)
 		}
 		
 		func animateGrow() {
-			self.zPosition = 1.0
+			zPosition = 100
 			var pickup = SKAction.sequence([
 				SKAction.scaleTo(1.0, duration: 0.2),
 				SKAction.scaleTo(1.1, duration: 0.05),
 				SKAction.scaleTo(1.0, duration: 0.05),
 			])
-			self.runAction(pickup)
+			runAction(pickup)
 		}
     }
 }

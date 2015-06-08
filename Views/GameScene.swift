@@ -176,20 +176,20 @@ class GameScene: SKScene {
 		if let point = (touches.first as? UITouch)?.locationInNode(self) {
             for child in self.children {
                 if let sprite = child as? TileSprite {
-                    if sprite.containsPoint(point) {
+                    if sprite.containsPoint(point) && !sprite.hasActions() {
                         gameState?.originalPoint = sprite.position
                         gameState?.draggedSprite = sprite
-                        sprite.position = point
+						sprite.animatePickupFromRack(point)
                         break
                     }
                 } else if let squareSprite = child as? SquareSprite {
                     if let tileSprite = squareSprite.tileSprite {
                         if squareSprite.containsPoint(point) {
-                            if let pickedUpSprite = squareSprite.pickupTileSprite() {
+                            if let sprite = squareSprite.pickupTileSprite() {
                                 gameState?.originalPoint = squareSprite.originalPoint
-                                gameState?.draggedSprite = pickedUpSprite
-                                self.addChild(pickedUpSprite)
-								pickedUpSprite.animateGrow()
+                                gameState?.draggedSprite = sprite
+                                self.addChild(sprite)
+								sprite.animateGrow()
                                 break
                             }
                         }
@@ -202,7 +202,7 @@ class GameScene: SKScene {
 	override func touchesMoved(touches: Set<NSObject>, withEvent event: UIEvent) {
 		if let point = (touches.first as? UITouch)?.locationInNode(self) {
 			if let sprite = gameState?.draggedSprite {
-                sprite.position = point
+				sprite.resetPosition(point)
             }
         }
     }
@@ -238,8 +238,8 @@ class GameScene: SKScene {
                     if let originalPoint = gameState?.originalPoint {
                         if let squareSprite = fallback {
                             squareSprite.dropTileSprite(sprite, originalPoint: originalPoint)
-                        } else {
-                            sprite.position = originalPoint
+						} else {
+							sprite.animateDropToRack(originalPoint)
                         }
                     }
                 }
@@ -252,10 +252,11 @@ class GameScene: SKScene {
 	override func touchesCancelled(touches: Set<NSObject>!, withEvent event: UIEvent!) {
 		if let point = (touches.first as? UITouch)?.locationInNode(self) {
 			if let sprite = gameState?.draggedSprite {
-                if let origPoint = gameState?.originalPoint {
-                    sprite.position = origPoint
+				// Best not to animate this...
+				if let originalPoint = gameState?.originalPoint {
+					sprite.resetPosition(originalPoint)
                 } else {
-                    sprite.position = point
+					sprite.resetPosition(point)
                 }
             }
         }
