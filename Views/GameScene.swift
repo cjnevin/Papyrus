@@ -40,13 +40,13 @@ class GameScene: SKScene {
 			}
 		}
 		
-        init(view: SKView, node: SKNode) {
-			self.game = Game()
-            self.view = view
-            self.node = node
-            self.squareSprites = SquareSprite.createSprites(forGame: game, frame: view.frame)
-            self.rackSprites = TileSprite.createRackSprites(forGame: game, frame: view.frame)
-            self.setup(inView: view, node: node)
+        init(view v: SKView, node n: SKNode) {
+			game = Game()
+            view = v
+            node = n
+            squareSprites = SquareSprite.createSprites(forGame: game, frame: view.frame)
+            rackSprites = TileSprite.createRackSprites(forGame: game, frame: view.frame)
+            setup(inView: view, node: node)
         }
         
         private func setup(inView view: SKView, node: SKNode) {
@@ -58,29 +58,29 @@ class GameScene: SKScene {
             }
         }
         
-        func reset(inView view: SKView, node: SKNode) {
+        func reset(inView v: SKView, node n: SKNode) {
 			for sprite in self.squareSprites {
                 sprite.removeFromParent()
             }
             for sprite in self.rackSprites {
                 sprite.removeFromParent()
             }
-            self.draggedSprite = nil
-            self.originalPoint = nil
-            self.squareSprites.removeAll(keepCapacity: false)
-            self.rackSprites.removeAll(keepCapacity: false)
-            self.game = Game()
-            self.squareSprites = SquareSprite.createSprites(forGame: game, frame: view.frame)
-            self.rackSprites = TileSprite.createRackSprites(forGame: game, frame: view.frame)
-            self.view = view
-            self.node = node
-            self.setup(inView: view, node: node)
+            draggedSprite = nil
+            originalPoint = nil
+            squareSprites.removeAll(keepCapacity: false)
+            rackSprites.removeAll(keepCapacity: false)
+            game = Game()
+            squareSprites = SquareSprite.createSprites(forGame: game, frame: view.frame)
+            rackSprites = TileSprite.createRackSprites(forGame: game, frame: view.frame)
+            view = v
+            node = n
+			setup(inView: view, node: node)
         }
 		
 		func submit() -> (success: Bool, errors: [String]) {
 			var words = [Word]()
 			let squares = mutableSquareSprites.map({$0.square!})
-			let (success, errors) = self.game.validate(squares, outWords: &words)
+			let (success, errors) = game.validate(squares, outWords: &words)
 			if !success {
 				return (success, errors)
 			}
@@ -161,15 +161,15 @@ class GameScene: SKScene {
 	var actionDelegate: GameSceneProtocol?
 	
     func newGame() {
-        if let gameState = self.gameState {
-            gameState.reset(inView: view!, node: self)
+        if let state = gameState {
+            state.reset(inView: view!, node: self)
         } else {
-            self.gameState = GameState(view:view!, node:self)
+            gameState = GameState(view:view!, node:self)
         }
     }
 	
     override func didMoveToView(view: SKView) {
-        self.newGame()
+        newGame()
     }
 	
 	
@@ -177,18 +177,18 @@ class GameScene: SKScene {
 	
 	override func touchesBegan(touches: Set<NSObject>, withEvent event: UIEvent) {
 		if let point = (touches.first as? UITouch)?.locationInNode(self) {
-            for child in self.children {
+            for child in children {
                 if let sprite = child as? TileSprite where sprite.containsPoint(point) && !sprite.hasActions() {
 					gameState?.originalPoint = sprite.position
 					gameState?.draggedSprite = sprite
-					sprite.resetPosition(point)
-					//sprite.animatePickupFromRack(point)
+					//sprite.resetPosition(point)
+					sprite.animatePickupFromRack(point)
 					break
                 } else if let squareSprite = child as? SquareSprite, tileSprite = squareSprite.tileSprite where squareSprite.containsPoint(point) {
 					if let sprite = squareSprite.pickupTileSprite() {
 						gameState?.originalPoint = squareSprite.originalPoint
 						gameState?.draggedSprite = sprite
-						self.addChild(sprite)
+						addChild(sprite)
 						sprite.animateGrow()
 						break
 					}
@@ -208,7 +208,7 @@ class GameScene: SKScene {
 			var found = false
 			var fallback: SquareSprite?     // Closest square to drop tile if hovered square is filled
 			var fallbackOverlap: CGFloat = 0
-			for child in self.children {
+			for child in children {
 				if let squareSprite = child as? SquareSprite where squareSprite.intersectsNode(sprite) && squareSprite.isEmpty() {
 					if squareSprite.frame.contains(point) {
 						if let originalPoint = gameState?.originalPoint {
@@ -236,8 +236,8 @@ class GameScene: SKScene {
 					if let squareSprite = fallback {
 						squareSprite.animateDropTileSprite(sprite, originalPoint: originalPoint, completion: nil)
 					} else {
-						sprite.resetPosition(originalPoint)
-						//sprite.animateDropToRack(originalPoint)
+						//sprite.resetPosition(originalPoint)
+						sprite.animateDropToRack(originalPoint)
 					}
 				}
 			}

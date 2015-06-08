@@ -48,9 +48,9 @@ class Sprites {
 			return color
 		}
 		
-        init(square: Square, edge: CGFloat) {
-            self.square = square
-            let color = SquareSprite.colorForSquare(square)
+        init(square sq: Square, edge: CGFloat) {
+            square = sq
+            let color = SquareSprite.colorForSquare(sq)
             let size = CGSizeMake(edge, edge)
 			super.init(texture: nil, color: color, size: size)
 			if let tile = self.square?.tile {
@@ -66,7 +66,7 @@ class Sprites {
         }
         
         func isEmpty() -> Bool {
-            return self.tileSprite == nil
+            return tileSprite == nil
         }
         
         func makeImmutable() {
@@ -76,28 +76,28 @@ class Sprites {
 		
 		private func placeTileSprite(sprite: TileSprite) {
 			// Initial placement, no animation
-			if self.tileSprite == nil {
-				self.originalPoint = CGPointZero
+			if tileSprite == nil {
+				originalPoint = CGPointZero
 				sprite.removeFromParent()
 				sprite.setScale(0.5)
-				self.addChild(sprite)
-				self.tileSprite = sprite
-				if let square = self.square {
-					square.tile = sprite.tile
+				addChild(sprite)
+				tileSprite = sprite
+				if let sq = square {
+					sq.tile = sprite.tile
 				}
 			}
 		}
 		
 		func animateDropTileSprite(sprite: TileSprite, originalPoint point: CGPoint, completion: (() -> ())?) {
-            if self.tileSprite == nil {
-				self.originalPoint = point
+            if tileSprite == nil {
+				originalPoint = point
 				sprite.cancelAnimations()
 				sprite.removeFromParent()
-				self.addChild(sprite)
+				addChild(sprite)
                 if let square = self.square {
                     square.tile = sprite.tile
 				}
-				self.tileSprite = sprite
+				tileSprite = sprite
 				sprite.animateShrink(completion)
             }
         }
@@ -106,11 +106,11 @@ class Sprites {
             if let sprite = self.tileSprite where sprite.movable {
 				sprite.cancelAnimations()
 				sprite.removeFromParent()
-				sprite.position = self.position
-				if let square = self.square {
-					square.tile = nil
+				sprite.position = position
+				if let sq = square {
+					sq.tile = nil
 				}
-				self.tileSprite = nil
+				tileSprite = nil
 				return sprite
             }
             return nil
@@ -164,10 +164,10 @@ class Sprites {
 			points.position = CGPointMake(8, -7)
 			super.init(texture: nil, color: color, size: size)
 			if let label = letterLabel {
-				self.addChild(label)
+				addChild(label)
 			}
-			self.addChild(points)
-			self.setScale(scale)
+			addChild(points)
+			setScale(scale)
         }
 		
 		required init?(coder aDecoder: NSCoder) {
@@ -205,7 +205,11 @@ class Sprites {
 		}
 		
 		func resetPosition(point: CGPoint) {
-			//cancelAnimations()
+			cancelAnimations()
+			// Reset scale
+			if xScale != 1.0 {
+				setScale(1.0)
+			}
 			position = point
 		}
 		
@@ -215,8 +219,8 @@ class Sprites {
 		}
 		
 		func animateDropToRack(point: CGPoint) {
-			if self.tile?.value == 0 {
-				self.setLetter("?")
+			if tile?.value == 0 {
+				setLetter("?")
 			}
 			animateMoveTo(point)
 			zPosition = 0
@@ -240,7 +244,7 @@ class Sprites {
 		func animateGrow() {
 			zPosition = 100
 			var pickup = SKAction.sequence([
-				SKAction.scaleTo(1.0, duration: 0.2),
+				SKAction.scaleTo(1.0, duration: 0.1),
 				SKAction.scaleTo(1.1, duration: 0.05),
 				SKAction.scaleTo(1.0, duration: 0.05),
 			])

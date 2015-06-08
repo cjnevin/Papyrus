@@ -30,10 +30,10 @@ class GameViewController: UIViewController, GameSceneProtocol, UITextFieldDelega
 			gscene.scaleMode = SKSceneScaleMode.ResizeFill
 			view.presentScene(gscene)
 		}
-		self.scene = gscene
+		scene = gscene
 		gscene.actionDelegate = self
-		self.title = "Locution"
-		self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Submit", style: .Done, target: self, action: "submit:")
+		title = "Locution"
+		navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Submit", style: .Done, target: self, action: "submit:")
 	}
 	
 	func pickLetter(completion: (String) -> ()) {
@@ -48,7 +48,7 @@ class GameViewController: UIViewController, GameSceneProtocol, UITextFieldDelega
 			textField.delegate = self
 		}
 		alertController.addAction(OKAction)
-		self.presentViewController(alertController, animated: true, completion: nil)
+		presentViewController(alertController, animated: true, completion: nil)
 	}
 	
 	func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange, replacementString string: String) -> Bool {
@@ -70,9 +70,9 @@ class GameViewController: UIViewController, GameSceneProtocol, UITextFieldDelega
 				let OKAction = UIAlertAction(title: "OK", style: .Default) { (action) in
 				}
 				alertController.addAction(OKAction)
-				self.presentViewController(alertController, animated: true, completion: nil)
+				presentViewController(alertController, animated: true, completion: nil)
 			} else {
-				self.navigationItem.title = "Score: \(scene!.gameState!.game.currentPlayer!.score)"
+				navigationItem.title = "Score: \(scene!.gameState!.game.currentPlayer!.score)"
 			}
 		}
 	}

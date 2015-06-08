@@ -47,7 +47,7 @@ class LocutionTests: XCTestCase {
 			// Test rack
 			XCTAssert(g.rack?.amount == 7, "Pass")
 			// Test bag
-			XCTAssert(g.bag.total - 7 == g.bag.tiles.count, "Pass")
+			XCTAssert(g.bag.total - 7 == g.bag.remaining, "Pass")
 			// Add player
 			game?.addPlayer()
 			XCTAssert(g.players.count == 2, "Pass")
@@ -55,7 +55,7 @@ class LocutionTests: XCTestCase {
 			// Test rack
 			XCTAssert(g.rack?.amount == 7, "Pass")
 			// Test bag
-			XCTAssert(g.bag.total - 14 == g.bag.tiles.count, "Pass")
+			XCTAssert(g.bag.total - 14 == g.bag.remaining, "Pass")
 			// Add AI
 			game?.addAI(Game.AIPlayer.Intelligence.Master)
 			XCTAssert(g.players.count == 3, "Pass")
@@ -63,7 +63,7 @@ class LocutionTests: XCTestCase {
 			// Test rack
 			XCTAssert(g.rack?.amount == 7, "Pass")
 			// Test bag
-			XCTAssert(g.bag.total - 21 == g.bag.tiles.count, "Pass")
+			XCTAssert(g.bag.total - 21 == g.bag.remaining, "Pass")
 			// Test dictionary
 			XCTAssert(g.dictionary.defined("KITTY").0, "Pass")
 		}

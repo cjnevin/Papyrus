@@ -63,9 +63,9 @@ class Game {
 		}
 	}
 	init() {
-		self.dictionary = Dictionary(language: .English)
-		self.board = Board(dimensions: 15)
-		self.bag = Bag(language:.English)
+		dictionary = Dictionary(language: .English)
+		board = Board(dimensions: 15)
+		bag = Bag(language:.English)
 		addPlayer()	// Need at least one
 	}
 	
@@ -75,9 +75,9 @@ class Game {
 	func addAI(intelligence: AIPlayer.Intelligence) {
 		var ai = AIPlayer(i: intelligence)
 		ai.rack.replenish(fromBag: bag)
-		self.players.append(ai)
-		if self.currentPlayer == nil {
-			self.currentPlayer = ai
+		players.append(ai)
+		if currentPlayer == nil {
+			currentPlayer = ai
 		}
 	}
 	
@@ -95,9 +95,9 @@ class Game {
 	func addPlayer() {
 		var player = Player()
 		player.rack.replenish(fromBag: bag)
-		self.players.append(player)
-		if self.currentPlayer == nil {
-			self.currentPlayer = player
+		players.append(player)
+		if currentPlayer == nil {
+			currentPlayer = player
 		}
 	}
 	
@@ -105,7 +105,7 @@ class Game {
 		let rack: Rack
 		var score = 0
 		init() {
-			self.rack = Rack()
+			rack = Rack()
 		}
 		func incrementScore(value: Int) {
 			score += value
@@ -120,13 +120,13 @@ class Game {
 		private let DefKey = "Def"
 		private let dictionary: NSDictionary
 		let language: Language
-		init(language: Language) {
-			self.language = language
+		init(language l: Language) {
+			language = l
 			if let path = NSBundle.mainBundle().pathForResource(language.rawValue, ofType: "plist"),
 				values = NSDictionary(contentsOfFile: path) {
-					self.dictionary = values
+				dictionary = values
 			} else {
-				self.dictionary = NSDictionary()
+				dictionary = NSDictionary()
 			}
 		}
 		
@@ -180,15 +180,21 @@ class Game {
 	
 	class Bag {
 		let total: Int
-		var tiles: [Tile]
+		private var left = 0
+		var remaining: Int {
+			get {
+				return left
+			}
+		}
+		private var tiles: [Tile]
 		init(language: Language) {
 			tiles = [Tile]()
 			if language == .English {
-				var config = [/*(9, 1, "A"), (2, 3, "B"), (2, 3, "C"), (4, 2, "D"), (12, 1, "E"),
+				var config = [(9, 1, "A"), (2, 3, "B"), (2, 3, "C"), (4, 2, "D"), (12, 1, "E"),
 					(2, 4, "F"), (3, 2, "G"), (2, 4, "H"), (9, 1, "I"), (1, 8, "J"), (1, 5, "K"),
 					(4, 1, "L"), (2, 3, "M"), (6, 1, "N"), (8, 1, "O"), (2, 3, "P"), (1, 10, "Q"),
 					(6, 1, "R"), (4, 1, "S"), (6, 1, "T"), (4, 1, "U"), (2, 4, "V"), (2, 4, "W"),
-					(2, 4, "Y"), (1, 10, "Z"), */(8, 0, "?")]
+					(2, 4, "Y"), (1, 10, "Z"), (2, 0, "?")]
 				for (count, value, letter) in config {
 					for _ in 1...count {
 						tiles.append(Tile(letter: letter, value: value))
@@ -196,6 +202,17 @@ class Game {
 				}
 			}
 			total = tiles.count
+			left = total
+		}
+		func getTile() -> Tile? {
+			if tiles.count > 0 {
+				let index = Int(arc4random_uniform(UInt32(tiles.count)))
+				var tile = tiles[index]
+				tiles.removeAtIndex(index)
+				left = tiles.count
+				return tile
+			}
+			return nil
 		}
 	}
 	
@@ -204,15 +221,12 @@ class Game {
 		var tiles = [Tile]()
 		func replenish(fromBag bag: Bag) -> [Tile] {
 			var needed = amount - tiles.count
-			if needed > bag.tiles.count {
-				needed = bag.tiles.count
-			}
 			var newTiles = [Tile]()
 			if needed > 0 {
 				for _ in 1...needed {
-					let index = Int(arc4random_uniform(UInt32(bag.tiles.count)))
-					newTiles.append(bag.tiles[index])
-					bag.tiles.removeAtIndex(index)
+					if let tile = bag.getTile() {
+						newTiles.append(tile)
+					}
 				}
 			}
 			tiles.extend(newTiles)
@@ -223,9 +237,9 @@ class Game {
 	class Tile: Equatable {
 		let value: Int
 		var letter: String?
-		init(letter: String, value: Int) {
-			self.letter = letter
-			self.value = value
+		init(letter l: String, value v: Int) {
+			letter = l
+			value = v
 		}
 	}
 	
@@ -284,11 +298,11 @@ class Game {
 		let dimensions: Int
 		var squares = [Square]()
 		var words = [Word]()
-		init(dimensions: Int) {
-			self.dimensions = dimensions;
-			let m = dimensions/2+1
-			for row in 1...dimensions {
-				for col in 1...dimensions {
+		init(dimensions d: Int) {
+			dimensions = d;
+			let m = d/2+1
+			for row in 1...d {
+				for col in 1...d {
 					var c = Coordinate(row, y:col)
 					var cfg: [SquareType: [(Int, Int)]] = [
 						.Center: [(0,0)],
@@ -321,13 +335,13 @@ class Game {
 		}
 		
 		func getFilledSquare(c: Coordinate) -> Square? {
-			return self.squares
+			return squares
 				|> { s in filter(s) { $0.c == c && $0.tile != nil } }
 				|> { s in first(s) }
 		}
 		
 		func getLetter(c: Coordinate) -> String? {
-			return self.squares
+			return squares
 				|> { s in filter(s) { $0.c == c } }
 				|> { s in map(s) { $0.tile!.letter! } }
 				|> { s in first(s) }
@@ -402,15 +416,15 @@ class Game {
 		}
 		
 		func noTile(c: Coordinate) -> Bool {
-			return self.squares.filter({$0.tile == nil && $0.c == c}).count == 0
+			return squares.filter({$0.tile == nil && $0.c == c}).count == 0
 		}
 		
 		class Coordinate: Equatable {
 			let x: Int
 			let y: Int
 			init(_ coord:(Int, Int)) {
-				self.x = coord.0
-				self.y = coord.1
+				x = coord.0
+				y = coord.1
 			}
 			init(_ x: Int, y: Int) {
 				self.x = x
@@ -469,7 +483,7 @@ class Game {
 						multiplier = 1
 					}
 				}
-				if let value = self.tile?.value {
+				if let value = tile?.value {
 					return value * multiplier;
 				}
 				return 0
@@ -516,12 +530,12 @@ class Game {
 				self.squares = (squares |> {s in sorted(s) {$0.c < $1.c} })
 				
 				// Get value of word
-				self.word = (self.squares
+				word = (self.squares
 					|> { s in map(s) {$0.tile?.letter} }
 					|> { s in filter(s) {$0 != nil} }
 					|> { s in map(s) {$0!} }
 					|> String.join(""))
-				self.length = self.word.lengthOfBytesUsingEncoding(NSUTF8StringEncoding)
+				length = word.lengthOfBytesUsingEncoding(NSUTF8StringEncoding)
 				
 				// Determine bounding rect
 				let x = self.squares.map({$0.c.x})
@@ -532,16 +546,16 @@ class Game {
 				let maxY = y.reduce(Int.min, combine:{max($0, $1)})
 				
 				// Determine if arrangement is valid
-				self.orientation = minX == maxX ? .Vertical : .Horizontal
+				orientation = minX == maxX ? .Vertical : .Horizontal
 				if minX == maxX {
-					self.column = maxX
-					self.row = -1
+					column = maxX
+					row = -1
 				} else if minY == maxY {
-					self.row = maxY
-					self.column = -1
+					row = maxY
+					column = -1
 				} else {
-					self.column = -1
-					self.row = -1
+					column = -1
+					row = -1
 				}
 				var previous: Square?
 				for square in self.squares {
