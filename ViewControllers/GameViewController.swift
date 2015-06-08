@@ -9,8 +9,7 @@
 import UIKit
 import SpriteKit
 
-class GameViewController: UIViewController {
-
+class GameViewController: UIViewController, GameSceneProtocol, UITextFieldDelegate {
 	@IBOutlet var skView: SKView?
 	var scene: GameScene?
 	
@@ -32,17 +31,42 @@ class GameViewController: UIViewController {
 			view.presentScene(gscene)
 		}
 		self.scene = gscene
+		gscene.actionDelegate = self
 		self.title = "Locution"
 		self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Submit", style: .Done, target: self, action: "submit:")
-    }
-
+	}
+	
+	func pickLetter(completion: (String) -> ()) {
+		let alertController = UIAlertController(title: "Enter Replacement Letter", message: nil, preferredStyle: .Alert)
+		let OKAction = UIAlertAction(title: "OK", style: .Default) { (action) in
+			if let textField = alertController.textFields?[0] as? UITextField {
+				completion(textField.text)
+			}
+		}
+		alertController.addTextFieldWithConfigurationHandler { (textField) in
+			textField.autocapitalizationType = UITextAutocapitalizationType.AllCharacters
+			textField.delegate = self
+		}
+		alertController.addAction(OKAction)
+		self.presentViewController(alertController, animated: true, completion: nil)
+	}
+	
+	func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange, replacementString string: String) -> Bool {
+		// Filter alphabet, allow only one character
+		let charSet = NSCharacterSet(charactersInString: "ABCDEFGHIJKLMNOPQRSTUVWXYZ").invertedSet
+		let filtered = join("", string.componentsSeparatedByCharactersInSet(charSet))
+		let current: NSString = textField.text
+		let newLength = current.stringByReplacingCharactersInRange(range, withString: string).lengthOfBytesUsingEncoding(NSUTF8StringEncoding)
+		return filtered == string && (newLength == 0 || newLength == 1)
+	}
+	
 	func submit(sender: UIBarButtonItem) {
 		if let (success, errors) = scene?.gameState?.submit() {
 			if (!success) {
 				// TODO: Refactor this
 				// Present error (should pass this through a delegate?)
 				var errorString = join("\n", errors)
-				var alertController = UIAlertController(title: "Error", message: errorString, preferredStyle: UIAlertControllerStyle.Alert)
+				var alertController = UIAlertController(title: "Error", message: errorString, preferredStyle: .Alert)
 				let OKAction = UIAlertAction(title: "OK", style: .Default) { (action) in
 				}
 				alertController.addAction(OKAction)

@@ -9,6 +9,10 @@
 import SpriteKit
 import SceneKit
 
+protocol GameSceneProtocol {
+	func pickLetter(completion: (String) -> ())
+}
+
 class GameScene: SKScene {
 	typealias Player = Game.Player
     typealias Square = Game.Board.Square
@@ -145,10 +149,8 @@ class GameScene: SKScene {
 		private func getSquareSprites(forSquares squares: [Square]) -> [SquareSprite] {
 			var sprites = [SquareSprite]()
 			for sprite in squareSprites {
-				if let square = sprite.square {
-					if contains(squares, square) {
-						sprites.append(sprite)
-					}
+				if let square = sprite.square where contains(squares, square) {
+					sprites.append(sprite)
 				}
 			}
 			return sprites
@@ -156,6 +158,7 @@ class GameScene: SKScene {
     }
     
     var gameState: GameState?
+	var actionDelegate: GameSceneProtocol?
 	
     func newGame() {
         if let gameState = self.gameState {
@@ -175,93 +178,85 @@ class GameScene: SKScene {
 	override func touchesBegan(touches: Set<NSObject>, withEvent event: UIEvent) {
 		if let point = (touches.first as? UITouch)?.locationInNode(self) {
             for child in self.children {
-                if let sprite = child as? TileSprite {
-                    if sprite.containsPoint(point) && !sprite.hasActions() {
-                        gameState?.originalPoint = sprite.position
-                        gameState?.draggedSprite = sprite
-						sprite.animatePickupFromRack(point)
-                        break
-                    }
-                } else if let squareSprite = child as? SquareSprite {
-                    if let tileSprite = squareSprite.tileSprite {
-                        if squareSprite.containsPoint(point) {
-                            if let sprite = squareSprite.pickupTileSprite() {
-                                gameState?.originalPoint = squareSprite.originalPoint
-                                gameState?.draggedSprite = sprite
-                                self.addChild(sprite)
-								sprite.animateGrow()
-                                break
-                            }
-                        }
-                    }
+                if let sprite = child as? TileSprite where sprite.containsPoint(point) && !sprite.hasActions() {
+					gameState?.originalPoint = sprite.position
+					gameState?.draggedSprite = sprite
+					sprite.resetPosition(point)
+					//sprite.animatePickupFromRack(point)
+					break
+                } else if let squareSprite = child as? SquareSprite, tileSprite = squareSprite.tileSprite where squareSprite.containsPoint(point) {
+					if let sprite = squareSprite.pickupTileSprite() {
+						gameState?.originalPoint = squareSprite.originalPoint
+						gameState?.draggedSprite = sprite
+						self.addChild(sprite)
+						sprite.animateGrow()
+						break
+					}
                 }
             }
         }
     }
 	
 	override func touchesMoved(touches: Set<NSObject>, withEvent event: UIEvent) {
-		if let point = (touches.first as? UITouch)?.locationInNode(self) {
-			if let sprite = gameState?.draggedSprite {
-				sprite.resetPosition(point)
-            }
+		if let point = (touches.first as? UITouch)?.locationInNode(self), sprite = gameState?.draggedSprite {
+			sprite.resetPosition(point)
         }
     }
 	
 	override func touchesEnded(touches: Set<NSObject>, withEvent event: UIEvent) {
-		if let point = (touches.first as? UITouch)?.locationInNode(self) {
-			if let sprite = gameState?.draggedSprite {
-                var found = false
-                var fallback: SquareSprite?     // Closest square to drop tile if hovered square is filled
-                var fallbackOverlap: CGFloat = 0
-                for child in self.children {
-                    if let squareSprite = child as? SquareSprite {
-                        if squareSprite.intersectsNode(sprite) {
-                            if squareSprite.isEmpty() {
-                                if squareSprite.frame.contains(point) {
-                                    if let originalPoint = gameState?.originalPoint {
-                                        squareSprite.dropTileSprite(sprite, originalPoint: originalPoint)
-                                        found = true
-                                        break
-                                    }
-                                }
-                                let intersection = CGRectIntersection(squareSprite.frame, sprite.frame)
-                                let overlap = CGRectGetWidth(intersection) + CGRectGetHeight(intersection)
-                                if overlap > fallbackOverlap {
-                                    fallback = squareSprite
-                                    fallbackOverlap = overlap
-                                }
-                            }
-                        }
-                    }
-                }
-                if !found {
-                    if let originalPoint = gameState?.originalPoint {
-                        if let squareSprite = fallback {
-                            squareSprite.dropTileSprite(sprite, originalPoint: originalPoint)
-						} else {
-							sprite.animateDropToRack(originalPoint)
-                        }
-                    }
-                }
-                gameState?.originalPoint = nil
-                gameState?.draggedSprite = nil
-            }
+		if let point = (touches.first as? UITouch)?.locationInNode(self), sprite = gameState?.draggedSprite {
+			var found = false
+			var fallback: SquareSprite?     // Closest square to drop tile if hovered square is filled
+			var fallbackOverlap: CGFloat = 0
+			for child in self.children {
+				if let squareSprite = child as? SquareSprite where squareSprite.intersectsNode(sprite) && squareSprite.isEmpty() {
+					if squareSprite.frame.contains(point) {
+						if let originalPoint = gameState?.originalPoint {
+							squareSprite.animateDropTileSprite(sprite, originalPoint: originalPoint, completion: { () -> () in
+								if sprite.tile?.letter == "?" {
+									self.actionDelegate?.pickLetter({ (letter) -> () in
+										sprite.setLetter(letter)
+									})
+								}
+							})
+ 							found = true
+							break
+						}
+					}
+					let intersection = CGRectIntersection(squareSprite.frame, sprite.frame)
+					let overlap = CGRectGetWidth(intersection) + CGRectGetHeight(intersection)
+					if overlap > fallbackOverlap {
+						fallback = squareSprite
+						fallbackOverlap = overlap
+					}
+				}
+			}
+			if !found {
+				if let originalPoint = gameState?.originalPoint {
+					if let squareSprite = fallback {
+						squareSprite.animateDropTileSprite(sprite, originalPoint: originalPoint, completion: nil)
+					} else {
+						sprite.resetPosition(originalPoint)
+						//sprite.animateDropToRack(originalPoint)
+					}
+				}
+			}
+			gameState?.originalPoint = nil
+			gameState?.draggedSprite = nil
         }
     }
 	
 	override func touchesCancelled(touches: Set<NSObject>!, withEvent event: UIEvent!) {
-		if let point = (touches.first as? UITouch)?.locationInNode(self) {
-			if let sprite = gameState?.draggedSprite {
-				// Best not to animate this...
-				if let originalPoint = gameState?.originalPoint {
-					sprite.resetPosition(originalPoint)
-                } else {
-					sprite.resetPosition(point)
-                }
-            }
+		if let point = (touches.first as? UITouch)?.locationInNode(self), sprite = gameState?.draggedSprite {
+			// Best not to animate this...
+			if let originalPoint = gameState?.originalPoint {
+				sprite.resetPosition(originalPoint)
+			} else {
+				sprite.resetPosition(point)
+			}
         }
     }
-    
+	
     override func update(currentTime: CFTimeInterval) {
         /* Called before each frame is rendered */
     }

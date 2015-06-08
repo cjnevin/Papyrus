@@ -56,7 +56,7 @@ class Sprites {
 			if let tile = self.square?.tile {
                 // For Testing
                 let newTileSprite = TileSprite(tile: tile, edge: edge, scale: 0.5)
-                self.dropTileSprite(newTileSprite, originalPoint:CGPointZero)
+				placeTileSprite(newTileSprite)
                 newTileSprite.movable = false
             }
         }
@@ -73,33 +73,45 @@ class Sprites {
 			tileSprite?.movable = false
 			square?.immutable = true
         }
-        
-        func dropTileSprite(sprite: TileSprite, originalPoint point: CGPoint) {
+		
+		private func placeTileSprite(sprite: TileSprite) {
+			// Initial placement, no animation
+			if self.tileSprite == nil {
+				self.originalPoint = CGPointZero
+				sprite.removeFromParent()
+				sprite.setScale(0.5)
+				self.addChild(sprite)
+				self.tileSprite = sprite
+				if let square = self.square {
+					square.tile = sprite.tile
+				}
+			}
+		}
+		
+		func animateDropTileSprite(sprite: TileSprite, originalPoint point: CGPoint, completion: (() -> ())?) {
             if self.tileSprite == nil {
 				self.originalPoint = point
 				sprite.cancelAnimations()
 				sprite.removeFromParent()
 				self.addChild(sprite)
-				sprite.animateShrink()
-                self.tileSprite = sprite
                 if let square = self.square {
                     square.tile = sprite.tile
-                }
+				}
+				self.tileSprite = sprite
+				sprite.animateShrink(completion)
             }
         }
         
         func pickupTileSprite() -> TileSprite? {
-            if let sprite = self.tileSprite {
-				if sprite.movable {
-					sprite.cancelAnimations()
-					sprite.removeFromParent()
-					sprite.position = self.position
-					if let square = self.square {
-                        square.tile = nil
-                    }
-					self.tileSprite = nil
-					return sprite
-                }
+            if let sprite = self.tileSprite where sprite.movable {
+				sprite.cancelAnimations()
+				sprite.removeFromParent()
+				sprite.position = self.position
+				if let square = self.square {
+					square.tile = nil
+				}
+				self.tileSprite = nil
+				return sprite
             }
             return nil
         }
@@ -125,35 +137,49 @@ class Sprites {
         }
 		
         let defaultColor = UIColor(red: 1, green: 1, blue: 200/255, alpha: 1)
+		var letterLabel: SKLabelNode?
         var movable: Bool = true
         var tile: Tile?
 		var animationPoint: CGPoint?
 		init(tile: Tile, edge: CGFloat, scale: CGFloat) {
-            self.tile = tile;
-            var color = defaultColor
-            let size = CGSizeMake(edge, edge)
-            let label = SKLabelNode(text: tile.letter)
-            label.fontColor = UIColor.blackColor()
-            label.fontSize = 27
-            label.horizontalAlignmentMode = SKLabelHorizontalAlignmentMode.Center
-            label.verticalAlignmentMode = SKLabelVerticalAlignmentMode.Baseline
-            label.fontName = "AppleSDGothicNeo-Light"
-            label.position = CGPointMake(0, -8)
-            let points = SKLabelNode(text: String(tile.value))
-            points.fontColor = UIColor.blackColor()
-            points.fontSize = 12
-            points.fontName = "AppleSDGothicNeo-Light"
-            points.horizontalAlignmentMode = SKLabelHorizontalAlignmentMode.Left
-            points.verticalAlignmentMode = SKLabelVerticalAlignmentMode.Top
-            points.position = CGPointMake(8, -7)
-            super.init(texture: nil, color: color, size: size)
-            self.addChild(label)
-            self.addChild(points)
+			self.tile = tile;
+			var color = defaultColor
+			let size = CGSizeMake(edge, edge)
+			if let letter = tile.letter {
+				let label = SKLabelNode(text: letter)
+				label.fontColor = UIColor.blackColor()
+				label.fontSize = 27
+				label.horizontalAlignmentMode = SKLabelHorizontalAlignmentMode.Center
+				label.verticalAlignmentMode = SKLabelVerticalAlignmentMode.Baseline
+				label.fontName = "AppleSDGothicNeo-Light"
+				label.position = CGPointMake(0, -8)
+				letterLabel = label
+			}
+			let points = SKLabelNode(text: String(tile.value))
+			points.fontColor = UIColor.blackColor()
+			points.fontSize = 12
+			points.fontName = "AppleSDGothicNeo-Light"
+			points.horizontalAlignmentMode = SKLabelHorizontalAlignmentMode.Left
+			points.verticalAlignmentMode = SKLabelVerticalAlignmentMode.Top
+			points.position = CGPointMake(8, -7)
+			super.init(texture: nil, color: color, size: size)
+			if let label = letterLabel {
+				self.addChild(label)
+			}
+			self.addChild(points)
 			self.setScale(scale)
         }
 		
 		required init?(coder aDecoder: NSCoder) {
 			super.init(coder: aDecoder)
+		}
+		
+		func setLetter(letter: String) {
+			if let t = tile, label = letterLabel {
+				t.letter = letter
+				label.fontColor = UIColor.blackColor().colorWithAlphaComponent(letter == "?" ? 1.0 : 0.6)
+				label.text = letter
+			}
 		}
 		
 		private func cancelAnimations() {
@@ -169,16 +195,17 @@ class Sprites {
 			cancelAnimations()
 			animationPoint = point
 			var move = SKAction.sequence([
+				SKAction.scaleTo(1.0, duration: 0.1),
 				SKAction.moveTo(point, duration: 0.1),
 				SKAction.runBlock({
 					self.animationPoint = nil
 				})
-				])
+			])
 			runAction(move)
 		}
 		
 		func resetPosition(point: CGPoint) {
-			cancelAnimations()
+			//cancelAnimations()
 			position = point
 		}
 		
@@ -188,11 +215,14 @@ class Sprites {
 		}
 		
 		func animateDropToRack(point: CGPoint) {
+			if self.tile?.value == 0 {
+				self.setLetter("?")
+			}
 			animateMoveTo(point)
 			zPosition = 0
 		}
 		
-		func animateShrink() {
+		func animateShrink(completion: (() -> ())?) {
 			position = CGPointZero
 			zPosition = 100
 			var drop = SKAction.sequence([
@@ -201,6 +231,7 @@ class Sprites {
 				SKAction.scaleTo(0.5, duration: 0.1),
 				SKAction.runBlock({
 					self.zPosition = 0
+					completion?()
 				})
 			])
 			runAction(drop)

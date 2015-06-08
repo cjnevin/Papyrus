@@ -156,16 +156,14 @@ class Game {
 			}
 			for key in source.allKeys as! [String] {
 				// Could be cleaned up
-				if let index = find(letters, "?"),
-					newSource = source[key] as? NSDictionary {
+				if let index = find(letters, "?"), newSource = source[key] as? NSDictionary {
 					var newLetters = letters
 					newLetters.removeAtIndex(index)
 					findWords(forLetters: newLetters, prefix: "\(prefix)\(key)", source: newSource, results: &results)
-				} else if let index = find(letters, key),
-					newSource = source[key] as? NSDictionary {
-						var newLetters = letters
-						newLetters.removeAtIndex(index)
-						findWords(forLetters: newLetters, prefix: "\(prefix)\(key)", source: newSource, results: &results)
+				} else if let index = find(letters, key), newSource = source[key] as? NSDictionary {
+					var newLetters = letters
+					newLetters.removeAtIndex(index)
+					findWords(forLetters: newLetters, prefix: "\(prefix)\(key)", source: newSource, results: &results)
 				}
 			}
 		}
@@ -186,11 +184,11 @@ class Game {
 		init(language: Language) {
 			tiles = [Tile]()
 			if language == .English {
-				var config = [(9, 1, "A"), (2, 3, "B"), (2, 3, "C"), (4, 2, "D"), (12, 1, "E"),
+				var config = [/*(9, 1, "A"), (2, 3, "B"), (2, 3, "C"), (4, 2, "D"), (12, 1, "E"),
 					(2, 4, "F"), (3, 2, "G"), (2, 4, "H"), (9, 1, "I"), (1, 8, "J"), (1, 5, "K"),
 					(4, 1, "L"), (2, 3, "M"), (6, 1, "N"), (8, 1, "O"), (2, 3, "P"), (1, 10, "Q"),
 					(6, 1, "R"), (4, 1, "S"), (6, 1, "T"), (4, 1, "U"), (2, 4, "V"), (2, 4, "W"),
-					(2, 4, "Y"), (1, 10, "Z"), (2, 0, "?")]
+					(2, 4, "Y"), (1, 10, "Z"), */(8, 0, "?")]
 				for (count, value, letter) in config {
 					for _ in 1...count {
 						tiles.append(Tile(letter: letter, value: value))
@@ -220,8 +218,8 @@ class Game {
 	}
 	
 	class Tile: Equatable {
-		let letter: String
 		let value: Int
+		var letter: String?
 		init(letter: String, value: Int) {
 			self.letter = letter
 			self.value = value
@@ -328,22 +326,21 @@ class Game {
 		func getLetter(c: Coordinate) -> String? {
 			return self.squares
 				|> { s in filter(s) { $0.c == c } }
-				|> { s in map(s) { $0.tile!.letter } }
+				|> { s in map(s) { $0.tile!.letter! } }
 				|> { s in first(s) }
 		}
 		
 		func getAdjacentFilledSquares(c: Coordinate?, vertically v: Bool, horizontally h: Bool, original: Square, inout output: Set<Square>) {
-			if let coord = c, sq = getFilledSquare(coord) {
-				if (sq == original || !output.contains(sq)) {
-					output.insert(sq)
-					if h {
-						getAdjacentFilledSquares(coord.next(.Horizontal, d: 1, b: self), vertically: v, horizontally: h, original: original, output: &output)
-						getAdjacentFilledSquares(coord.next(.Horizontal, d: -1, b: self), vertically: v, horizontally: h, original: original, output: &output)
-					}
-					if v {
-						getAdjacentFilledSquares(coord.next(.Vertical, d: 1, b: self), vertically: v, horizontally: h, original: original, output: &output)
-						getAdjacentFilledSquares(coord.next(.Vertical, d: -1, b: self), vertically: v, horizontally: h, original: original, output: &output)
-					}
+			// We may hit the original square several times in different directions, so we allow it through multiple times
+			if let coord = c, sq = getFilledSquare(coord) where sq == original || !output.contains(sq) {
+				output.insert(sq)
+				if h {
+					getAdjacentFilledSquares(coord.next(.Horizontal, d: 1, b: self), vertically: v, horizontally: h, original: original, output: &output)
+					getAdjacentFilledSquares(coord.next(.Horizontal, d: -1, b: self), vertically: v, horizontally: h, original: original, output: &output)
+				}
+				if v {
+					getAdjacentFilledSquares(coord.next(.Vertical, d: 1, b: self), vertically: v, horizontally: h, original: original, output: &output)
+					getAdjacentFilledSquares(coord.next(.Vertical, d: -1, b: self), vertically: v, horizontally: h, original: original, output: &output)
 				}
 			}
 		}
@@ -419,12 +416,12 @@ class Game {
 			func next(o: Orientation, d:Int, b: Board) -> Coordinate? {
 				if o == .Horizontal {
 					var z = x + d
-					if z < b.dimensions && z >= 0 {
+					if z >= 0 && z < b.dimensions {
 						return Coordinate(z, y: y)
 					}
 				} else {
 					let z = y + d
-					if z < b.dimensions && z >= 0 {
+					if z >= 0 && z < b.dimensions {
 						return Coordinate(x, y: z)
 					}
 				}
@@ -545,12 +542,9 @@ class Game {
 				}
 				var previous: Square?
 				for square in self.squares {
-					if let prev = previous {
-						if minY == maxY && prev.c.x + 1 != square.c.x ||
-							minX == maxX && prev.c.y + 1 != square.c.y {
-								isValidArrangement = false
-								break
-						}
+					if let prev = previous where (minY == maxY && prev.c.x + 1 != square.c.x) || (minX == maxX && prev.c.y + 1 != square.c.y) {
+						isValidArrangement = false
+						break
 					}
 					previous = square
 				}
