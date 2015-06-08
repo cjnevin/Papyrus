@@ -204,6 +204,9 @@ class Game {
 		var tiles = [Tile]()
 		func replenish(fromBag bag: Bag) -> [Tile] {
 			var needed = amount - tiles.count
+			if needed > bag.tiles.count {
+				needed = bag.tiles.count
+			}
 			var newTiles = [Tile]()
 			if needed > 0 {
 				for _ in 1...needed {
