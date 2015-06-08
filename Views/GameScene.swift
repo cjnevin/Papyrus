@@ -189,6 +189,7 @@ class GameScene: SKScene {
                                 gameState?.originalPoint = squareSprite.originalPoint
                                 gameState?.draggedSprite = pickedUpSprite
                                 self.addChild(pickedUpSprite)
+								pickedUpSprite.animateGrow()
                                 break
                             }
                         }

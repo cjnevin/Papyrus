@@ -11,7 +11,7 @@ import SpriteKit
 class Sprites {
     typealias Square = Game.Board.Square
     typealias Tile = Game.Tile
-    
+	
     class SquareSprite: SKSpriteNode {
         class func createSprites(forGame game: Game, frame: CGRect) -> [SquareSprite] {
             var sprites = [SquareSprite]()
@@ -52,7 +52,7 @@ class Sprites {
             self.square = square
             let color = SquareSprite.colorForSquare(square)
             let size = CGSizeMake(edge, edge)
-            super.init(texture: nil, color: color, size: size)
+			super.init(texture: nil, color: color, size: size)
             if let tile = self.square?.tile {
                 // For Testing
                 let newTileSprite = TileSprite(tile: tile, edge: edge, scale: 0.5)
@@ -76,12 +76,11 @@ class Sprites {
         
         func dropTileSprite(sprite: TileSprite, originalPoint point: CGPoint) {
             if self.tileSprite == nil {
-                self.originalPoint = point
-                sprite.removeFromParent()
-                sprite.xScale = 0.5
-                sprite.yScale = 0.5
-                sprite.position = CGPointZero
-                self.addChild(sprite)
+				self.originalPoint = point
+				sprite.removeAllActions()
+				sprite.removeFromParent()
+				self.addChild(sprite)
+				sprite.animateShrink()
                 self.tileSprite = sprite
                 if let square = self.square {
                     square.tile = sprite.tile
@@ -90,17 +89,16 @@ class Sprites {
         }
         
         func pickupTileSprite() -> TileSprite? {
-            if let tileSprite = self.tileSprite {
-                if tileSprite.movable {
-                    tileSprite.xScale = 1.0
-                    tileSprite.yScale = 1.0
-                    tileSprite.position = self.position
-                    tileSprite.removeFromParent()
-                    self.tileSprite = nil
-                    if let square = self.square {
+            if let sprite = self.tileSprite {
+				if sprite.movable {
+					sprite.removeAllActions()
+                    sprite.removeFromParent()
+					sprite.position = self.position
+					if let square = self.square {
                         square.tile = nil
                     }
-                    return tileSprite
+					self.tileSprite = nil
+					return sprite
                 }
             }
             return nil
@@ -151,14 +149,36 @@ class Sprites {
             super.init(texture: nil, color: color, size: size)
             self.addChild(label)
             self.addChild(points)
-            self.yScale = scale
-            self.xScale = scale
+			self.setScale(scale)
         }
 		
 		required init?(coder aDecoder: NSCoder) {
 			super.init(coder: aDecoder)
 		}
 		
+		func animateShrink() {
+			self.position = CGPointZero
+			self.zPosition = 1
+			var drop = SKAction.sequence([
+				SKAction.scaleTo(0.5, duration: 0.25),
+				SKAction.scaleTo(0.45, duration: 0.1),
+				SKAction.scaleTo(0.5, duration: 0.1),
+				SKAction.runBlock({
+					self.zPosition = 0
+				})
+			])
+			self.runAction(drop)
+		}
+		
+		func animateGrow() {
+			self.zPosition = 1.0
+			var pickup = SKAction.sequence([
+				SKAction.scaleTo(1.0, duration: 0.2),
+				SKAction.scaleTo(1.1, duration: 0.05),
+				SKAction.scaleTo(1.0, duration: 0.05),
+			])
+			self.runAction(pickup)
+		}
     }
 }
     
