@@ -24,7 +24,22 @@ class Sprites {
             }
             return sprites
         }
-		        
+	
+		class func illuminateSprites(sprites: [[SquareSprite]], illuminated: Bool) {
+			// TODO: Do a nice animation if submission is successful
+			for sprite in sprites {
+				for square in sprite {
+					if let tile = square.tileSprite {
+						if illuminated {
+							tile.color = UIColor.whiteColor()
+						} else {
+							tile.color = tile.defaultColor
+						}
+					}
+				}
+			}
+		}
+		
         var square: Square?
         var originalPoint: CGPoint?
         var tileSprite: TileSprite?

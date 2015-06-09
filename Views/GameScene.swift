@@ -20,64 +20,60 @@ class GameScene: SKScene {
     typealias Tile = Game.Tile
     typealias SquareSprite = Sprites.SquareSprite
     typealias TileSprite = Sprites.TileSprite
-    
-    class GameState {
-		var game: Game
-        var squareSprites: [SquareSprite]
-        var rackSprites: [TileSprite]
-        var draggedSprite: TileSprite?
-        var originalPoint: CGPoint?
-        var view: SKView
-		var node: SKNode
-		private var mutableSquareSprites: [SquareSprite] {
-			get {
-				return squareSprites.filter({$0.tileSprite?.movable == true})
-			}
+	
+	//var gameState: GameState?
+	var actionDelegate: GameSceneProtocol?
+	
+	var squareSprites = [SquareSprite]()
+	var rackSprites = [TileSprite]()
+	var draggedSprite: TileSprite?
+	var originalPoint: CGPoint?
+	private var mutableSquareSprites: [SquareSprite] {
+		get {
+			return squareSprites.filter({$0.tileSprite?.movable == true})
 		}
-		private var immutableSquareSprites: [SquareSprite] {
-			get {
-				return squareSprites.filter({$0.tileSprite?.movable == false})
-			}
+	}
+	private var immutableSquareSprites: [SquareSprite] {
+		get {
+			return squareSprites.filter({$0.tileSprite?.movable == false})
 		}
-		
-        init(view v: SKView, node n: SKNode) {
-			game = Game()
-            view = v
-            node = n
-            squareSprites = SquareSprite.createSprites(forGame: game, frame: view.frame)
-            rackSprites = TileSprite.createRackSprites(forGame: game, frame: view.frame)
-            setup(inView: view, node: node)
-        }
-        
-        private func setup(inView view: SKView, node: SKNode) {
-            for sprite in self.squareSprites {
-                node.addChild(sprite)
-            }
-            for sprite in self.rackSprites {
-                node.addChild(sprite)
-            }
-        }
-        
-        func reset(inView v: SKView, node n: SKNode) {
+	}
+	
+	// MARK:- Game Management
+	
+	func changedGameState(state: GameWrapperState) {
+		switch (state) {
+		case .Preparing:
+			println("Preparing")
 			for sprite in self.squareSprites {
-                sprite.removeFromParent()
-            }
-            for sprite in self.rackSprites {
-                sprite.removeFromParent()
-            }
-            draggedSprite = nil
-            originalPoint = nil
-            squareSprites.removeAll(keepCapacity: false)
-            rackSprites.removeAll(keepCapacity: false)
-            game = Game()
-            squareSprites = SquareSprite.createSprites(forGame: game, frame: view.frame)
-            rackSprites = TileSprite.createRackSprites(forGame: game, frame: view.frame)
-            view = v
-            node = n
-			setup(inView: view, node: node)
-        }
-		
-		func submit() -> (success: Bool, errors: [String]) {
+				sprite.removeFromParent()
+			}
+			for sprite in self.rackSprites {
+				sprite.removeFromParent()
+			}
+			self.draggedSprite = nil
+			self.originalPoint = nil
+			self.squareSprites.removeAll(keepCapacity: false)
+			self.rackSprites.removeAll(keepCapacity: false)
+		case .Ready:
+			println("Ready")
+			if let game = GameWrapper.sharedInstance.game {
+				self.squareSprites = SquareSprite.createSprites(forGame: game, frame: self.frame)
+				self.rackSprites = TileSprite.createRackSprites(forGame: game, frame: self.frame)
+				for sprite in self.squareSprites {
+					self.addChild(sprite)
+				}
+				for sprite in self.rackSprites {
+					self.addChild(sprite)
+				}
+			}
+		default:
+			println("Other")
+		}
+	}
+	
+	func submit() -> (success: Bool, errors: [String]) {
+		if let game = GameWrapper.sharedInstance.game {
 			var words = [Word]()
 			let squares = mutableSquareSprites.map({$0.square!})
 			let (success, errors) = game.validate(squares, outWords: &words)
@@ -99,9 +95,9 @@ class GameScene: SKScene {
 			}
 			game.currentPlayer?.incrementScore(sum)
 			
-			// Illuminate the wordss we changed
-			illuminateWords([immutableSquareSprites], illuminated: false)
-			illuminateWords([sprites], illuminated: true)
+			// Illuminate the words we changed
+			SquareSprite.illuminateSprites([immutableSquareSprites], illuminated: false)
+			SquareSprite.illuminateSprites([sprites], illuminated: true)
 			
 			// Remove the sprites from the rack
 			for sprite in sprites {
@@ -122,96 +118,55 @@ class GameScene: SKScene {
 			if let rack = game.rack {
 				rack.replenish(fromBag: game.bag)
 			}
-			rackSprites = TileSprite.createRackSprites(forGame: game, frame: view.frame)
+			rackSprites = TileSprite.createRackSprites(forGame: game, frame: self.frame)
 			for sprite in rackSprites {
-				node.addChild(sprite)
+				self.addChild(sprite)
 			}
 			return (true, errors)
-        }
-        
-        // MARK: Private
-        
-        private func illuminateWords(words: [[SquareSprite]], illuminated: Bool) {
-            // TODO: Do a nice animation if submission is successful
-            for word in words {
-                for square in word {
-                    if let tile = square.tileSprite {
-                        if illuminated {
-                            tile.color = UIColor.whiteColor()
-                        } else {
-                            tile.color = tile.defaultColor
-                        }
-                    }
-                }
-            }
-        }
-		
-		private func getSquareSprites(forSquares squares: [Square]) -> [SquareSprite] {
-			var sprites = [SquareSprite]()
-			for sprite in squareSprites {
-				if let square = sprite.square where contains(squares, square) {
-					sprites.append(sprite)
-				}
-			}
-			return sprites
+		} else {
+			return (false, ["Game not created yet."])
 		}
-    }
-    
-    var gameState: GameState?
-	var actionDelegate: GameSceneProtocol?
-	
-    func newGame() {
-        if let state = gameState {
-            state.reset(inView: view!, node: self)
-        } else {
-            gameState = GameState(view:view!, node:self)
-        }
-    }
-	
-    override func didMoveToView(view: SKView) {
-        newGame()
-    }
-	
+	}
 	
 	// MARK:- Touches
 	
 	override func touchesBegan(touches: Set<NSObject>, withEvent event: UIEvent) {
 		if let point = (touches.first as? UITouch)?.locationInNode(self) {
-            for child in children {
-                if let sprite = child as? TileSprite where sprite.containsPoint(point) && !sprite.hasActions() {
-					gameState?.originalPoint = sprite.position
-					gameState?.draggedSprite = sprite
+			for child in children {
+				if let sprite = child as? TileSprite where sprite.containsPoint(point) && !sprite.hasActions() {
+					originalPoint = sprite.position
+					draggedSprite = sprite
 					//sprite.resetPosition(point)
 					sprite.animatePickupFromRack(point)
 					break
-                } else if let squareSprite = child as? SquareSprite, tileSprite = squareSprite.tileSprite where squareSprite.containsPoint(point) {
+				} else if let squareSprite = child as? SquareSprite, tileSprite = squareSprite.tileSprite where squareSprite.containsPoint(point) {
 					if let sprite = squareSprite.pickupTileSprite() {
-						gameState?.originalPoint = squareSprite.originalPoint
-						gameState?.draggedSprite = sprite
+						originalPoint = squareSprite.originalPoint
+						draggedSprite = sprite
 						addChild(sprite)
 						sprite.animateGrow()
 						break
 					}
-                }
-            }
-        }
-    }
+				}
+			}
+		}
+	}
 	
 	override func touchesMoved(touches: Set<NSObject>, withEvent event: UIEvent) {
-		if let point = (touches.first as? UITouch)?.locationInNode(self), sprite = gameState?.draggedSprite {
+		if let point = (touches.first as? UITouch)?.locationInNode(self), sprite = draggedSprite {
 			sprite.resetPosition(point)
-        }
-    }
+		}
+	}
 	
 	override func touchesEnded(touches: Set<NSObject>, withEvent event: UIEvent) {
-		if let point = (touches.first as? UITouch)?.locationInNode(self), sprite = gameState?.draggedSprite {
+		if let point = (touches.first as? UITouch)?.locationInNode(self), sprite = draggedSprite {
 			var found = false
 			var fallback: SquareSprite?     // Closest square to drop tile if hovered square is filled
 			var fallbackOverlap: CGFloat = 0
 			for child in children {
 				if let squareSprite = child as? SquareSprite where squareSprite.intersectsNode(sprite) && squareSprite.isEmpty() {
 					if squareSprite.frame.contains(point) {
-						if let originalPoint = gameState?.originalPoint {
+						if let originalPoint = originalPoint {
 							squareSprite.animateDropTileSprite(sprite, originalPoint: originalPoint, completion: { () -> () in
 								if sprite.tile?.letter == "?" {
 									self.actionDelegate?.pickLetter({ (letter) -> () in
@@ -219,7 +174,7 @@ class GameScene: SKScene {
 									})
 								}
 							})
- 							found = true
+							found = true
 							break
 						}
 					}
@@ -232,32 +187,44 @@ class GameScene: SKScene {
 				}
 			}
 			if !found {
-				if let originalPoint = gameState?.originalPoint {
+				if let origPoint = originalPoint {
 					if let squareSprite = fallback {
-						squareSprite.animateDropTileSprite(sprite, originalPoint: originalPoint, completion: nil)
+						squareSprite.animateDropTileSprite(sprite, originalPoint: origPoint, completion: nil)
 					} else {
 						//sprite.resetPosition(originalPoint)
-						sprite.animateDropToRack(originalPoint)
+						sprite.animateDropToRack(origPoint)
 					}
 				}
 			}
-			gameState?.originalPoint = nil
-			gameState?.draggedSprite = nil
-        }
-    }
+			originalPoint = nil
+			draggedSprite = nil
+		}
+	}
 	
 	override func touchesCancelled(touches: Set<NSObject>!, withEvent event: UIEvent!) {
-		if let point = (touches.first as? UITouch)?.locationInNode(self), sprite = gameState?.draggedSprite {
+		if let point = (touches.first as? UITouch)?.locationInNode(self), sprite = draggedSprite {
 			// Best not to animate this...
-			if let originalPoint = gameState?.originalPoint {
-				sprite.resetPosition(originalPoint)
+			if let origPoint = originalPoint {
+				sprite.resetPosition(origPoint)
 			} else {
 				sprite.resetPosition(point)
 			}
-        }
-    }
+		}
+	}
 	
-    override func update(currentTime: CFTimeInterval) {
-        /* Called before each frame is rendered */
-    }
+	override func update(currentTime: CFTimeInterval) {
+		/* Called before each frame is rendered */
+	}
+	
+	// MARK:- Helpers
+	
+	private func getSquareSprites(forSquares squares: [Square]) -> [SquareSprite] {
+		var sprites = [SquareSprite]()
+		for sprite in squareSprites {
+			if let square = sprite.square where contains(squares, square) {
+				sprites.append(sprite)
+			}
+		}
+		return sprites
+	}
 }

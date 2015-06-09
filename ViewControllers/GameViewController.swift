@@ -15,8 +15,7 @@ class GameViewController: UIViewController, GameSceneProtocol, UITextFieldDelega
 	
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        /* Pick a size for the scene */
+		/* Pick a size for the scene */
 		let gscene = GameScene(fileNamed:"GameScene")
 		// Configure the view.
 		if let view = skView {
@@ -34,6 +33,8 @@ class GameViewController: UIViewController, GameSceneProtocol, UITextFieldDelega
 		gscene.actionDelegate = self
 		title = "Locution"
 		navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Submit", style: .Done, target: self, action: "submit:")
+		navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Refresh, target: self, action: "restart:")
+		self.restart(navigationItem.leftBarButtonItem!)
 	}
 	
 	func pickLetter(completion: (String) -> ()) {
@@ -60,8 +61,26 @@ class GameViewController: UIViewController, GameSceneProtocol, UITextFieldDelega
 		return filtered == string && (newLength == 0 || newLength == 1)
 	}
 	
+	func restart(sender: UIBarButtonItem) {
+		GameWrapper.sharedInstance.newGame { (state) -> () in
+			self.scene?.changedGameState(state)
+			switch (state) {
+			case .Preparing:
+				self.title = "Loading..."
+				sender.enabled = false
+				self.navigationItem.rightBarButtonItem?.enabled = false
+			case .Ready:
+				self.title = "Score: 0"
+				sender.enabled = true
+				self.navigationItem.rightBarButtonItem?.enabled = true
+			default:
+				self.title = "Complete"
+			}
+		}
+	}
+	
 	func submit(sender: UIBarButtonItem) {
-		if let (success, errors) = scene?.gameState?.submit() {
+		if let (success, errors) = scene?.submit() {
 			if (!success) {
 				// TODO: Refactor this
 				// Present error (should pass this through a delegate?)
@@ -72,7 +91,9 @@ class GameViewController: UIViewController, GameSceneProtocol, UITextFieldDelega
 				alertController.addAction(OKAction)
 				presentViewController(alertController, animated: true, completion: nil)
 			} else {
-				navigationItem.title = "Score: \(scene!.gameState!.game.currentPlayer!.score)"
+				if let player = GameWrapper.sharedInstance.game?.currentPlayer {
+					navigationItem.title = "Score: \(player.score)"
+				}
 			}
 		}
 	}

@@ -41,31 +41,31 @@ class LocutionTests: XCTestCase {
 		}
 		if let g = game {
 			// Test squares
-			XCTAssert(g.board.squares.count == g.board.dimensions * g.board.dimensions, "Pass")
+			XCTAssert(g.board.squares.count == g.board.dimensions * g.board.dimensions, "Invalid square count")
 			// Test player one
-			XCTAssert(g.players.count == 1, "Pass")
+			XCTAssert(g.players.count == 1, "Invalid player count")
 			// Test rack
-			XCTAssert(g.rack?.amount == 7, "Pass")
+			XCTAssert(g.rack?.amount == 7, "Invalid rack amount")
 			// Test bag
-			XCTAssert(g.bag.total - 7 == g.bag.remaining, "Pass")
+			XCTAssert(g.bag.total - 7 == g.bag.remaining, "Invalid bag remaining")
 			// Add player
 			game?.addPlayer()
-			XCTAssert(g.players.count == 2, "Pass")
+			XCTAssert(g.players.count == 2, "Invalid player count")
 			game?.currentPlayer = g.players.last
 			// Test rack
-			XCTAssert(g.rack?.amount == 7, "Pass")
+			XCTAssert(g.rack?.amount == 7, "Invalid rack amount")
 			// Test bag
-			XCTAssert(g.bag.total - 14 == g.bag.remaining, "Pass")
+			XCTAssert(g.bag.total - 14 == g.bag.remaining, "Invalid bag remaining")
 			// Add AI
 			game?.addAI(Game.AIPlayer.Intelligence.Master)
-			XCTAssert(g.players.count == 3, "Pass")
+			XCTAssert(g.players.count == 3, "Invalid player count")
 			game?.currentPlayer = g.players.last
 			// Test rack
-			XCTAssert(g.rack?.amount == 7, "Pass")
+			XCTAssert(g.rack?.amount == 7, "Invalid rack amount")
 			// Test bag
-			XCTAssert(g.bag.total - 21 == g.bag.remaining, "Pass")
-			// Test dictionary
-			XCTAssert(g.dictionary.defined("KITTY").0, "Pass")
+			XCTAssert(g.bag.total - 21 == g.bag.remaining, "Invalid bag remaining")
+			// Test dictionary (not initialized yet)
+			XCTAssert(g.dictionary.defined("KITTY").0, "Invalid dictionary entry")
 		}
 	}
     

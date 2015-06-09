@@ -36,6 +36,27 @@ func == (lhs: Game.Board.Square, rhs: Game.Board.Square) -> Bool {
 
 // MARK:- Game
 
+enum GameWrapperState {
+	case Preparing
+	case Ready
+	case Completed
+}
+
+class GameWrapper {
+	static let sharedInstance = GameWrapper()
+	var game: Game?
+	func newGame(stateChanged: (GameWrapperState) -> ()) {
+		game = nil
+		stateChanged(.Preparing)
+		dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
+			self.game = Game()
+			dispatch_async(dispatch_get_main_queue()) {
+				stateChanged(.Ready)
+			}
+		}
+	}
+}
+
 class Game {
 	// Create some aliases for easier use
 	typealias Coordinate = Board.Coordinate
