@@ -49,6 +49,7 @@ class GameWrapper {
 		game = nil
 		stateChanged(.Preparing)
 		dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
+			// TODO: Make Game send us updates for critical events, like no tiles remaining.
 			self.game = Game()
 			dispatch_async(dispatch_get_main_queue()) {
 				stateChanged(.Ready)
