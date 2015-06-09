@@ -4,4 +4,5 @@ Incomplete scrabble game written in Swift using SceneKit. This game handles all 
 Major Features:
 * Flood fill approach to detecting touching tiles.
 * Support for larger boards by using a 'symmetrical' algorithm rather than hardcoding the multiplier squares.
-* Trie dictionary lookup (proposed by Appel & Guy "The World's Fastest Scrabble Algorithm", 1988). Considering switching to GADDAG for bidirectional lookup (proposed by Steven Gordon, 1994).
+* Trie dictionary lookup (proposed by Appel & Guy "The World's Fastest Scrabble Algorithm", 1988). 
+** Considering switching to GADDAG for bidirectional lookup (proposed by Steven Gordon, 1994).
