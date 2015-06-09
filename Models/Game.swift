@@ -74,6 +74,9 @@ class Game {
 	enum Orientation {
 		case Horizontal
 		case Vertical
+		func opposite() -> Orientation {
+			return self == .Horizontal ? .Vertical : .Horizontal
+		}
 	}
 	
 	let bag: Bag
@@ -366,6 +369,36 @@ class Game {
 			}
 		}
 		
+		func calculatePossibleWords(tiles: [Tile], o: Orientation) -> [String] {
+			// Iterate a = 1...d in orientation
+			// Collect all filled perpendicular squares
+			
+			
+			// Iterate b = 1...d in opposite orientation
+			// - For each (a, b) see
+			
+			var c: Coordinate? = Coordinate(1, y:1)
+			var yo = o.opposite()
+			while c != nil {
+				println(join(",",self.perpendicularSquares(o, c: c!).map({($0.tile?.letter != nil ? $0.tile!.letter : "_")!})))
+				/*
+				
+				var yc: Coordinate? = c
+				while yc != nil {
+					var filled = Set<Square>()
+					getAdjacentFilledSquares(yc, vertically: true, horizontally: true, original: squares.filter({$0.c == yc}).first!, output: &filled)
+					if filled.count > 0 {
+						// Linked to tiles
+						println("\(yc!.x) : \(yc!.y)")
+					}
+					
+					yc = yc?.next(yo, d: 1, b: self)
+				}*/
+				c = c?.next(o, d: 1, b: self)
+			}
+			return [String]()
+		}
+		
 		func containsCenterSquare(inArray squares: [Square]) -> Bool {
 			return (squares.filter{$0.squareType == Square.SquareType.Center}).count == 1
 		}
@@ -451,6 +484,10 @@ class Game {
 				Coordinate(m + b, y:m - a)], c)
 		}
 		
+		func perpendicularSquares(o: Orientation, c: Coordinate) -> [Square] {
+			return squares.filter({ o.opposite() == .Vertical ? $0.c.y == c.x : $0.c.x == c.y })
+		}
+		
 		func noTile(c: Coordinate) -> Bool {
 			return squares.filter({$0.tile == nil && $0.c == c}).count == 0
 		}
@@ -469,12 +506,12 @@ class Game {
 			func next(o: Orientation, d:Int, b: Board) -> Coordinate? {
 				if o == .Horizontal {
 					var z = x + d
-					if z >= 0 && z < b.dimensions {
+					if z >= 0 && z <= b.dimensions {
 						return Coordinate(z, y: y)
 					}
 				} else {
 					let z = y + d
-					if z >= 0 && z < b.dimensions {
+					if z >= 0 && z <= b.dimensions {
 						return Coordinate(x, y: z)
 					}
 				}

@@ -204,7 +204,7 @@ class Sprites {
 			}
 		}
 		
-		private func animateMoveTo(point: CGPoint) {
+		private func animateMoveTo(point: CGPoint, completion: (() -> ())?) {
 			cancelAnimations()
 			animationPoint = point
 			var move = SKAction.sequence([
@@ -212,6 +212,7 @@ class Sprites {
 				SKAction.moveTo(point, duration: 0.1),
 				SKAction.runBlock({
 					self.animationPoint = nil
+					completion?()
 				})
 			])
 			runAction(move)
@@ -228,15 +229,16 @@ class Sprites {
 		
 		func animatePickupFromRack(point: CGPoint) {
 			zPosition = 100
-			animateMoveTo(point)
+			animateMoveTo(point, completion: nil)
 		}
 		
 		func animateDropToRack(point: CGPoint) {
 			if tile?.value == 0 {
 				setLetter("?")
 			}
-			animateMoveTo(point)
-			zPosition = 0
+			animateMoveTo(point, completion: { () -> () in
+				self.zPosition = 0
+			})
 		}
 		
 		func animateIllumination(illuminate: Bool) {

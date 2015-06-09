@@ -133,7 +133,9 @@ class GameScene: SKScene {
 			// Recreate rack
 			if let rack = game.rack {
 				rack.replenish(fromBag: game.bag)
-				println("Words for rack: " + join(", ", game.dictionary.possibleWords(forLetters: rack.tiles.map({$0.letter!}))))
+				//println("Words for rack: " + join(", ", game.dictionary.possibleWords(forLetters: rack.tiles.map({$0.letter!}))))
+				game.board.calculatePossibleWords(rack.tiles, o: .Horizontal)
+				//game.board.calculatePossibleWords(rack.tiles, o: .Vertical)
 			}
 			rackSprites = TileSprite.createRackSprites(forGame: game, frame: self.frame)
 			for sprite in rackSprites {
