@@ -29,13 +29,7 @@ class Sprites {
 			// TODO: Do a nice animation if submission is successful
 			for sprite in sprites {
 				for square in sprite {
-					if let tile = square.tileSprite {
-						if illuminated {
-							tile.color = UIColor.whiteColor()
-						} else {
-							tile.color = UIColor.TileColor()
-						}
-					}
+					square.tileSprite?.animateIllumination(illuminated)
 				}
 			}
 		}
@@ -65,9 +59,9 @@ class Sprites {
 		
         init(square sq: Square, edge: CGFloat) {
             square = sq
-            let color = SquareSprite.colorForSquare(sq)
-            let size = CGSizeMake(edge, edge)
-			super.init(texture: nil, color: color, size: size)
+			super.init(texture: nil, color: UIColor.SquareBorderColor(), size: CGSizeMake(edge, edge))
+			let innerSquare = SKSpriteNode(texture: nil, color: SquareSprite.colorForSquare(sq), size: CGSizeMake(edge-1, edge-1))
+			self.addChild(innerSquare)
 			if let tile = self.square?.tile {
                 // For Testing
                 let newTileSprite = TileSprite(tile: tile, edge: edge, scale: 0.5)
@@ -151,7 +145,8 @@ class Sprites {
 			return sprites
         }
 		
-        var letterLabel: SKLabelNode?
+		private var tileBackground: SKSpriteNode?
+        private var letterLabel: SKLabelNode?
         var movable: Bool = true
         var tile: Tile?
 		var animationPoint: CGPoint?
@@ -175,11 +170,12 @@ class Sprites {
 			points.verticalAlignmentMode = SKLabelVerticalAlignmentMode.Top
 			points.position = CGPointMake(8, -7)
 			
-			super.init(texture: nil, color: UIColor.TileBorderColor(), size: CGSizeMake(edge, edge))
+			let background = SKSpriteNode(texture: nil, color: UIColor.TileColor(), size: CGSizeMake(edge - 2, edge - 2))
+			background.position = CGPointZero
+			tileBackground = background
 			
-			let innerNode = SKSpriteNode(texture: nil, color: UIColor.TileColor(), size: CGSizeMake(edge - 2, edge - 2))
-			innerNode.position = CGPointZero
-			addChild(innerNode)
+			super.init(texture: nil, color: UIColor.TileBorderColor(), size: CGSizeMake(edge, edge))
+			addChild(background)
 			if let label = letterLabel {
 				addChild(label)
 			}
@@ -243,13 +239,21 @@ class Sprites {
 			zPosition = 0
 		}
 		
+		func animateIllumination(illuminate: Bool) {
+			var glow = SKAction.sequence([
+				SKAction.colorizeWithColor(illuminate ? UIColor.TileColorIlluminated() : UIColor.TileColor(), colorBlendFactor: 1.0, duration: 0.25)
+			])
+			tileBackground?.removeAllActions()
+			tileBackground?.runAction(glow)
+		}
+		
 		func animateShrink(completion: (() -> ())?) {
 			position = CGPointZero
 			zPosition = 100
 			var drop = SKAction.sequence([
-				SKAction.scaleTo(0.5, duration: 0.25),
-				SKAction.scaleTo(0.45, duration: 0.1),
 				SKAction.scaleTo(0.5, duration: 0.1),
+				SKAction.scaleTo(0.45, duration: 0.05),
+				SKAction.scaleTo(0.5, duration: 0.05),
 				SKAction.runBlock({
 					self.zPosition = 0
 					completion?()
@@ -261,9 +265,9 @@ class Sprites {
 		func animateGrow() {
 			zPosition = 100
 			var pickup = SKAction.sequence([
-				SKAction.scaleTo(1.0, duration: 0.1),
-				SKAction.scaleTo(1.1, duration: 0.05),
 				SKAction.scaleTo(1.0, duration: 0.05),
+				SKAction.scaleTo(1.1, duration: 0.025),
+				SKAction.scaleTo(1.0, duration: 0.025),
 			])
 			runAction(pickup)
 		}

@@ -50,9 +50,11 @@ class GameWrapper {
 		stateChanged(.Preparing)
 		dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
 			// TODO: Make Game send us updates for critical events, like no tiles remaining.
-			self.game = Game()
-			dispatch_async(dispatch_get_main_queue()) {
-				stateChanged(.Ready)
+			autoreleasepool {
+				self.game = Game()
+				dispatch_async(dispatch_get_main_queue()) {
+					stateChanged(.Ready)
+				}
 			}
 		}
 	}
@@ -172,26 +174,28 @@ class Game {
 			return (false, nil)
 		}
 		
-		private func findWords(forLetters letters: [String], prefix: String, source: NSDictionary, inout results: [[String: String]]) {
+		private func findWords(forLetters letters: [String], prefix: String, source: NSDictionary, inout results: [String]) {
 			if let definition = source[DefKey] as? String {
-				results.append([NameKey: prefix, DefKey: definition])
+				results.append(prefix)
 			}
 			for key in source.allKeys as! [String] {
 				// Could be cleaned up
-				if let index = find(letters, "?"), newSource = source[key] as? NSDictionary {
-					var newLetters = letters
-					newLetters.removeAtIndex(index)
-					findWords(forLetters: newLetters, prefix: "\(prefix)\(key)", source: newSource, results: &results)
-				} else if let index = find(letters, key), newSource = source[key] as? NSDictionary {
-					var newLetters = letters
-					newLetters.removeAtIndex(index)
-					findWords(forLetters: newLetters, prefix: "\(prefix)\(key)", source: newSource, results: &results)
+				autoreleasepool {
+					if let index = find(letters, "?"), newSource = source[key] as? NSDictionary {
+						var newLetters = letters
+						newLetters.removeAtIndex(index)
+						findWords(forLetters: newLetters, prefix: "\(prefix)\(key)", source: newSource, results: &results)
+					} else if let index = find(letters, key), newSource = source[key] as? NSDictionary {
+						var newLetters = letters
+						newLetters.removeAtIndex(index)
+						findWords(forLetters: newLetters, prefix: "\(prefix)\(key)", source: newSource, results: &results)
+					}
 				}
 			}
 		}
 		
-		func possibleWords(forLetters letters: [String]) -> [[String: String]] {
-			var results = [[String: String]]()
+		func possibleWords(forLetters letters: [String]) -> [String] {
+			var results = [String]()
 			findWords(forLetters: letters, prefix: "", source: dictionary, results: &results)
 			return results
 		}
@@ -201,7 +205,8 @@ class Game {
 	// MARK:- Tile Management
 	
 	class Bag {
-		let total: Int
+		let language: Language
+		var total = 0
 		private var left = 0
 		var remaining: Int {
 			get {
@@ -209,15 +214,24 @@ class Game {
 			}
 		}
 		private var tiles: [Tile]
+		var config: [(Int, Int, String)]? {
+			get {
+				if language == .English {
+					return [(9, 1, "A"), (2, 3, "B"), (2, 3, "C"), (4, 2, "D"), (12, 1, "E"),
+						(2, 4, "F"), (3, 2, "G"), (2, 4, "H"), (9, 1, "I"), (1, 8, "J"), (1, 5, "K"),
+						(4, 1, "L"), (2, 3, "M"), (6, 1, "N"), (8, 1, "O"), (2, 3, "P"), (1, 10, "Q"),
+						(6, 1, "R"), (4, 1, "S"), (6, 1, "T"), (4, 1, "U"), (2, 4, "V"), (2, 4, "W"),
+						(2, 4, "Y"), (1, 10, "Z"), (2, 0, "?")]
+				} else {
+					return nil
+				}
+			}
+		}
 		init(language: Language) {
 			tiles = [Tile]()
-			if language == .English {
-				var config = [(9, 1, "A"), (2, 3, "B"), (2, 3, "C"), (4, 2, "D"), (12, 1, "E"),
-					(2, 4, "F"), (3, 2, "G"), (2, 4, "H"), (9, 1, "I"), (1, 8, "J"), (1, 5, "K"),
-					(4, 1, "L"), (2, 3, "M"), (6, 1, "N"), (8, 1, "O"), (2, 3, "P"), (1, 10, "Q"),
-					(6, 1, "R"), (4, 1, "S"), (6, 1, "T"), (4, 1, "U"), (2, 4, "V"), (2, 4, "W"),
-					(2, 4, "Y"), (1, 10, "Z"), (2, 0, "?")]
-				for (count, value, letter) in config {
+			self.language = language
+			if let cfg = config {
+				for (count, value, letter) in cfg {
 					for _ in 1...count {
 						tiles.append(Tile(letter: letter, value: value))
 					}
@@ -229,7 +243,7 @@ class Game {
 		func getTile() -> Tile? {
 			if tiles.count > 0 {
 				let index = Int(arc4random_uniform(UInt32(tiles.count)))
-				var tile = tiles[index]
+				let tile = tiles[index]
 				tiles.removeAtIndex(index)
 				left = tiles.count
 				return tile
@@ -323,15 +337,15 @@ class Game {
 		init(dimensions d: Int) {
 			dimensions = d;
 			let m = d/2+1
+			let cfg: [SquareType: [(Int, Int)]] = [
+				.Center: [(0,0)],
+				.TripleWord: [(m-1, m-1), (0, m-1)],
+				.DoubleLetter: [(1, 1), (1, 5), (0, 4), (m-1, 4)],
+				.TripleLetter: [(2, 6), (2, 2)],
+				.DoubleWord: [(3, 3), (4, 4), (5, 5), (6, 6)]]
 			for row in 1...d {
 				for col in 1...d {
 					var c = Coordinate(row, y:col)
-					var cfg: [SquareType: [(Int, Int)]] = [
-						.Center: [(0,0)],
-						.TripleWord: [(m-1, m-1), (0, m-1)],
-						.DoubleLetter: [(1, 1), (1, 5), (0, 4), (m-1, 4)],
-						.TripleLetter: [(2, 6), (2, 2)],
-						.DoubleWord: [(3, 3), (4, 4), (5, 5), (6, 6)]]
 					var found = false
 					for (type, offsets) in cfg {
 						for offset in offsets {

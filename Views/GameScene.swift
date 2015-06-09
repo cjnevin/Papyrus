@@ -72,6 +72,16 @@ class GameScene: SKScene {
 		}
 	}
 	
+	private func squareSprites(forSquares squares: [Square]) -> [SquareSprite] {
+		var sprites = [SquareSprite]()
+		for sprite in squareSprites {
+			if let square = sprite.square where contains(squares, square) {
+				sprites.append(sprite)
+			}
+		}
+		return sprites
+	}
+	
 	func submit() -> (success: Bool, errors: [String]) {
 		if let game = GameWrapper.sharedInstance.game {
 			// Collect words we changed
@@ -85,7 +95,7 @@ class GameScene: SKScene {
 			// Get new sprites for played words
 			var sprites = [SquareSprite]()
 			for word in words {
-				sprites.extend(getSquareSprites(forSquares:word.squares))
+				sprites.extend(squareSprites(forSquares:word.squares))
 			}
 			
 			// Add words to board
@@ -123,6 +133,7 @@ class GameScene: SKScene {
 			// Recreate rack
 			if let rack = game.rack {
 				rack.replenish(fromBag: game.bag)
+				println("Words for rack: " + join(", ", game.dictionary.possibleWords(forLetters: rack.tiles.map({$0.letter!}))))
 			}
 			rackSprites = TileSprite.createRackSprites(forGame: game, frame: self.frame)
 			for sprite in rackSprites {
@@ -222,17 +233,5 @@ class GameScene: SKScene {
 	
 	override func update(currentTime: CFTimeInterval) {
 		/* Called before each frame is rendered */
-	}
-	
-	// MARK:- Helpers
-	
-	private func getSquareSprites(forSquares squares: [Square]) -> [SquareSprite] {
-		var sprites = [SquareSprite]()
-		for sprite in squareSprites {
-			if let square = sprite.square where contains(squares, square) {
-				sprites.append(sprite)
-			}
-		}
-		return sprites
 	}
 }
