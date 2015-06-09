@@ -33,4 +33,12 @@ extension UIColor {
 	class func BoardTileColor() -> UIColor {
 		return UIColor(red: 245/255, green: 245/255, blue: 220/255, alpha: 1)
 	}
+	
+	class func TileBorderColor() -> UIColor {
+		return UIColor(red: 100/255, green: 100/255, blue: 80/255, alpha: 1)
+	}
+	
+	class func TileColor() -> UIColor {
+		return UIColor(red: 240/255, green: 240/255, blue: 200/255, alpha: 1)
+	}
 }

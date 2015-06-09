@@ -33,7 +33,7 @@ class Sprites {
 						if illuminated {
 							tile.color = UIColor.whiteColor()
 						} else {
-							tile.color = tile.defaultColor
+							tile.color = UIColor.TileColor()
 						}
 					}
 				}
@@ -151,15 +151,12 @@ class Sprites {
 			return sprites
         }
 		
-        let defaultColor = UIColor(red: 1, green: 1, blue: 200/255, alpha: 1)
-		var letterLabel: SKLabelNode?
+        var letterLabel: SKLabelNode?
         var movable: Bool = true
         var tile: Tile?
 		var animationPoint: CGPoint?
 		init(tile: Tile, edge: CGFloat, scale: CGFloat) {
 			self.tile = tile;
-			var color = defaultColor
-			let size = CGSizeMake(edge, edge)
 			if let letter = tile.letter {
 				let label = SKLabelNode(text: letter)
 				label.fontColor = UIColor.blackColor()
@@ -177,7 +174,12 @@ class Sprites {
 			points.horizontalAlignmentMode = SKLabelHorizontalAlignmentMode.Left
 			points.verticalAlignmentMode = SKLabelVerticalAlignmentMode.Top
 			points.position = CGPointMake(8, -7)
-			super.init(texture: nil, color: color, size: size)
+			
+			super.init(texture: nil, color: UIColor.TileBorderColor(), size: CGSizeMake(edge, edge))
+			
+			let innerNode = SKSpriteNode(texture: nil, color: UIColor.TileColor(), size: CGSizeMake(edge - 2, edge - 2))
+			innerNode.position = CGPointZero
+			addChild(innerNode)
 			if let label = letterLabel {
 				addChild(label)
 			}
