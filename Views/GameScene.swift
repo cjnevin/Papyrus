@@ -74,12 +74,15 @@ class GameScene: SKScene {
 	
 	func submit() -> (success: Bool, errors: [String]) {
 		if let game = GameWrapper.sharedInstance.game {
+			// Collect words we changed
 			var words = [Word]()
 			let squares = mutableSquareSprites.map({$0.square!})
 			let (success, errors) = game.validate(squares, outWords: &words)
 			if !success {
 				return (success, errors)
 			}
+			
+			// Get new sprites for played words
 			var sprites = [SquareSprite]()
 			for word in words {
 				sprites.extend(getSquareSprites(forSquares:word.squares))
@@ -88,6 +91,7 @@ class GameScene: SKScene {
 			// Add words to board
 			game.board.words.extend(words)
 			
+			// Calculate score
 			var sum = words.map{$0.points}.reduce(0, combine: +)
 			// Player used all tiles, reward them
 			if mutableSquareSprites.count == 7 {
@@ -101,6 +105,7 @@ class GameScene: SKScene {
 			
 			// Remove the sprites from the rack
 			for sprite in sprites {
+				// Stop movement of these tiles
 				sprite.tileSprite?.movable = false
 				if let spriteTile = sprite.tileSprite?.tile {
 					rackSprites = rackSprites.filter({$0.tile != spriteTile})
@@ -108,13 +113,14 @@ class GameScene: SKScene {
 						rack.tiles = rack.tiles.filter({$0 != spriteTile})
 					}
 				}
-				if let square = sprite.square {
-					square.immutable = true
-				}
+				// Set square to immutable, so score won't include multipliers in future
+				sprite.square?.immutable = true
 			}
 			for sprite in rackSprites {
 				sprite.removeFromParent()
 			}
+			
+			// Recreate rack
 			if let rack = game.rack {
 				rack.replenish(fromBag: game.bag)
 			}
@@ -122,6 +128,8 @@ class GameScene: SKScene {
 			for sprite in rackSprites {
 				self.addChild(sprite)
 			}
+			
+			// Return success
 			return (true, errors)
 		} else {
 			return (false, ["Game not created yet."])
