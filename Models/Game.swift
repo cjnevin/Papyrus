@@ -49,7 +49,7 @@ class GameWrapper {
 		game = nil
 		stateChanged(.Preparing)
 		dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
-			// TODO: Make Game send us updates for critical events, like no tiles remaining.
+			// TODO: Make Game send updates for critical events, like no tiles remaining.
 			autoreleasepool {
 				self.game = Game()
 				dispatch_async(dispatch_get_main_queue()) {
@@ -82,7 +82,7 @@ class Game {
 	let bag: Bag
 	let board: Board
 	let dictionary: Dictionary
-	var players = [Player]()
+	lazy var players = [Player]()
 	var currentPlayer: Player?
 	var rack: Rack? {
 		get {
@@ -143,8 +143,7 @@ class Game {
 	// MARK:- Dictionary / AI
 	
 	class Dictionary {
-		private let NameKey = "Name"
-		private let DefKey = "Def"
+		private let NameKey = "Name", DefKey = "Def"
 		private let dictionary: NSDictionary
 		let language: Language
 		init(language l: Language) {
@@ -257,7 +256,7 @@ class Game {
 	
 	class Rack {
 		let amount = 7
-		var tiles = [Tile]()
+		lazy var tiles = [Tile]()
 		func replenish(fromBag bag: Bag) -> [Tile] {
 			var needed = amount - tiles.count
 			var newTiles = [Tile]()
@@ -275,7 +274,7 @@ class Game {
 	
 	class Tile: Equatable {
 		let value: Int
-		var letter: String?
+		var letter: String?		// Changeable from blank (?)
 		init(letter l: String, value v: Int) {
 			letter = l
 			value = v
@@ -335,8 +334,8 @@ class Game {
 	
 	class Board {
 		let dimensions: Int
-		var squares = [Square]()
-		var words = [Word]()
+		lazy var squares = [Square]()
+		lazy var words = [Word]()
 		init(dimensions d: Int) {
 			dimensions = d;
 			let m = d/2+1
@@ -472,8 +471,7 @@ class Game {
 		}
 		
 		private func isSymmetrical(c: Coordinate, offset: (Int, Int), middle m: Int) -> Bool {
-			let a = offset.0
-			let b = offset.1
+			let a = offset.0, b = offset.1
 			return contains([Coordinate(m - a, y:m - b),
 				Coordinate(m - a, y:m + b),
 				Coordinate(m + a, y:m + b),
@@ -493,8 +491,7 @@ class Game {
 		}
 		
 		class Coordinate: Equatable {
-			let x: Int
-			let y: Int
+			let x, y: Int
 			init(_ coord:(Int, Int)) {
 				x = coord.0
 				y = coord.1
@@ -538,7 +535,6 @@ class Game {
 			let squareType: SquareType
 			var immutable = false
 			var tile: Tile?
-			
 			init(_ squareType: SquareType, c: Coordinate) {
 				self.squareType = squareType
 				self.c = c
@@ -581,11 +577,14 @@ class Game {
 		class Word {
 			let squares: [Square]
 			let word: String
-			let length: Int
 			let orientation: Orientation
-			var isValidArrangement: Bool = true
-			let row: Int
-			let column: Int
+			private var validArrangement = true
+			var isValidArrangement: Bool {
+				get {
+					return validArrangement
+				}
+			}
+			let length, row, column: Int
 			var points: Int {
 				get {
 					var total = 0
@@ -633,7 +632,7 @@ class Game {
 				var previous: Square?
 				for square in self.squares {
 					if let prev = previous where (minY == maxY && prev.c.x + 1 != square.c.x) || (minX == maxX && prev.c.y + 1 != square.c.y) {
-						isValidArrangement = false
+						validArrangement = false
 						break
 					}
 					previous = square

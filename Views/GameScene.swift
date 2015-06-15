@@ -21,11 +21,9 @@ class GameScene: SKScene {
     typealias SquareSprite = Sprites.SquareSprite
     typealias TileSprite = Sprites.TileSprite
 	
-	//var gameState: GameState?
 	var actionDelegate: GameSceneProtocol?
-	
-	var squareSprites = [SquareSprite]()
-	var rackSprites = [TileSprite]()
+	lazy var squareSprites = [SquareSprite]()
+	lazy var rackSprites = [TileSprite]()
 	var draggedSprite: TileSprite?
 	var originalPoint: CGPoint?
 	private var mutableSquareSprites: [SquareSprite] {
