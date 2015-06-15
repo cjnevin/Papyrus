@@ -100,7 +100,7 @@ class Game {
 	// MARK:- Player
 	
 	func addAI(intelligence: AIPlayer.Intelligence) {
-		var ai = AIPlayer(i: intelligence)
+		let ai = AIPlayer(i: intelligence)
 		ai.rack.replenish(fromBag: bag)
 		players.append(ai)
 		if currentPlayer == nil {
@@ -130,20 +130,25 @@ class Game {
 	
 	class Player {
 		let rack: Rack
-		var score = 0
+		private var points = 0
+		var score: Int {
+			get {
+				return points
+			}
+		}
 		init() {
 			rack = Rack()
 		}
 		func incrementScore(value: Int) {
-			score += value
-			println("Added Score: \(value), new score: \(score)")
+			points += value
+			println("Added Score: \(value), new score: \(points)")
 		}
 	}
 	
 	// MARK:- Dictionary / AI
 	
 	class Dictionary {
-		private let NameKey = "Name", DefKey = "Def"
+		private static let DefKey = "Def"
 		private let dictionary: NSDictionary
 		let language: Language
 		init(language l: Language) {
@@ -163,7 +168,7 @@ class Game {
 				if let inner = current.objectForKey(String(char)) as? NSDictionary {
 					index = advance(index, 1)
 					if index == word.endIndex {
-						if let definition = inner.objectForKey(DefKey) as? String {
+						if let definition = inner.objectForKey(Dictionary.DefKey) as? String {
 							return (true, definition)
 						}
 					}
@@ -177,7 +182,7 @@ class Game {
 		}
 		
 		private func findWords(forLetters letters: [String], prefix: String, source: NSDictionary, inout results: [String]) {
-			if let definition = source[DefKey] as? String {
+			if let definition = source[Dictionary.DefKey] as? String {
 				results.append(prefix)
 			}
 			for key in source.allKeys as! [String] {
@@ -207,40 +212,37 @@ class Game {
 	// MARK:- Tile Management
 	
 	class Bag {
-		let language: Language
-		var total = 0
-		private var left = 0
+		var total: Int {
+			get {
+				return totalTiles
+			}
+		}
 		var remaining: Int {
 			get {
 				return left
 			}
 		}
+		let language: Language
+		
+		private let totalTiles: Int
+		private var left = 0
 		private var tiles: [Tile]
-		var config: [(Int, Int, String)]? {
-			get {
-				if language == .English {
-					return [(9, 1, "A"), (2, 3, "B"), (2, 3, "C"), (4, 2, "D"), (12, 1, "E"),
-						(2, 4, "F"), (3, 2, "G"), (2, 4, "H"), (9, 1, "I"), (1, 8, "J"), (1, 5, "K"),
-						(4, 1, "L"), (2, 3, "M"), (6, 1, "N"), (8, 1, "O"), (2, 3, "P"), (1, 10, "Q"),
-						(6, 1, "R"), (4, 1, "S"), (6, 1, "T"), (4, 1, "U"), (2, 4, "V"), (2, 4, "W"),
-						(2, 4, "Y"), (1, 10, "Z"), (2, 0, "?")]
-				} else {
-					return nil
-				}
-			}
-		}
+		
 		init(language: Language) {
 			tiles = [Tile]()
 			self.language = language
-			if let cfg = config {
-				for (count, value, letter) in cfg {
-					for _ in 1...count {
-						tiles.append(Tile(letter: letter, value: value))
-					}
+			let cfg = [(9, 1, "A"), (2, 3, "B"), (2, 3, "C"), (4, 2, "D"), (12, 1, "E"),
+				(2, 4, "F"), (3, 2, "G"), (2, 4, "H"), (9, 1, "I"), (1, 8, "J"), (1, 5, "K"),
+				(4, 1, "L"), (2, 3, "M"), (6, 1, "N"), (8, 1, "O"), (2, 3, "P"), (1, 10, "Q"),
+				(6, 1, "R"), (4, 1, "S"), (6, 1, "T"), (4, 1, "U"), (2, 4, "V"), (2, 4, "W"),
+				(2, 4, "Y"), (1, 10, "Z"), (2, 0, "?")]
+			for (count, value, letter) in cfg {
+				for _ in 1...count {
+					tiles.append(Tile(letter: letter, value: value))
 				}
 			}
-			total = tiles.count
-			left = total
+			totalTiles = tiles.count
+			left = totalTiles
 		}
 		func getTile() -> Tile? {
 			if tiles.count > 0 {
