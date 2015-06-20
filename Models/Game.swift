@@ -36,16 +36,16 @@ func == (lhs: Game.Board.Square, rhs: Game.Board.Square) -> Bool {
 
 // MARK:- Game
 
-enum GameWrapperState {
+enum GameFactoryState {
 	case Preparing
 	case Ready
 	case Completed
 }
 
-class GameWrapper {
-	static let sharedInstance = GameWrapper()
+class GameFactory {
+	static let sharedInstance = GameFactory()
 	var game: Game?
-	func newGame(stateChanged: (GameWrapperState) -> ()) {
+	func newGame(stateChanged: (GameFactoryState) -> ()) {
 		game = nil
 		stateChanged(.Preparing)
 		dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {

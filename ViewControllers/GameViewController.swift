@@ -62,7 +62,7 @@ class GameViewController: UIViewController, GameSceneProtocol, UITextFieldDelega
 	}
 	
 	func restart(sender: UIBarButtonItem) {
-		GameWrapper.sharedInstance.newGame { (state) -> () in
+		GameFactory.sharedInstance.newGame { (state) -> () in
 			self.scene?.changedGameState(state)
 			switch (state) {
 			case .Preparing:
@@ -91,7 +91,7 @@ class GameViewController: UIViewController, GameSceneProtocol, UITextFieldDelega
 				alertController.addAction(OKAction)
 				presentViewController(alertController, animated: true, completion: nil)
 			} else {
-				if let player = GameWrapper.sharedInstance.game?.currentPlayer {
+				if let player = GameFactory.sharedInstance.game?.currentPlayer {
 					navigationItem.title = "Score: \(player.score)"
 				}
 			}

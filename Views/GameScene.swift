@@ -39,7 +39,7 @@ class GameScene: SKScene {
 	
 	// MARK:- Game Management
 	
-	func changedGameState(state: GameWrapperState) {
+	func changedGameState(state: GameFactoryState) {
 		switch (state) {
 		case .Preparing:
 			println("Preparing")
@@ -55,7 +55,7 @@ class GameScene: SKScene {
 			self.rackSprites.removeAll(keepCapacity: false)
 		case .Ready:
 			println("Ready")
-			if let game = GameWrapper.sharedInstance.game {
+			if let game = GameFactory.sharedInstance.game {
 				self.squareSprites = SquareSprite.createSprites(forGame: game, frame: self.frame)
 				self.rackSprites = TileSprite.createRackSprites(forGame: game, frame: self.frame)
 				for sprite in self.squareSprites {
@@ -81,7 +81,11 @@ class GameScene: SKScene {
 	}
 	
 	func submit() -> (success: Bool, errors: [String]) {
-		if let game = GameWrapper.sharedInstance.game {
+		if let game = GameFactory.sharedInstance.game {
+			if let sprite = draggedSprite, point = originalPoint {
+				sprite.resetPosition(point)
+			}
+			
 			// Collect words we changed
 			var words = [Word]()
 			let squares = mutableSquareSprites.map({$0.square!})
