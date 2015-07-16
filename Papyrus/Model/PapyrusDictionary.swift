@@ -30,7 +30,7 @@ struct Dictionary {
 		var current = dictionary
 		var index = word.startIndex
 		for char in word.uppercaseString.characters {
-			if let inner = current.objectForKey(String(char)) as? NSDictionary {
+			if let inner = current[String(char)] as? NSDictionary {
 				index = advance(index, 1)
 				if index == word.endIndex {
 					if let definition = inner.objectForKey(Dictionary.DefKey) as? String {

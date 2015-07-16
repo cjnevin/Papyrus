@@ -26,14 +26,19 @@ extension Papyrus {
 	
 	private func prepareTiles(inout letters: [Tile]) throws -> (o: Orientation, range: (start: Offset, end: Offset)) {
 		var sorted = sortTiles(letters)
-		guard let first = sorted.first?.square?.offset, last = sorted.last?.square?.offset, orientation: Orientation = first.x == last.x ? .Vertical : first.y == last.y ? .Horizontal : nil else {
+		guard let first = sorted.first?.square?.offset, last = sorted.last?.square?.offset else {
 			throw ValidationError.InvalidTileArrangement
 		}
 		// For a single tile, lets make sure we have the right orientation
 		// Otherwise, use orientation calculated above
-		let o: Orientation = first == last ?
-			(nil != tile(first.prev(.Horizontal)) || nil != tile(first.next(.Horizontal))) ?
-			.Horizontal : .Vertical : orientation
+		guard let o: Orientation = first == last ?
+			(nil != tile(first.prev(.Horizontal)) ||
+				nil != tile(first.next(.Horizontal))) ?
+				.Horizontal : .Vertical : (first.x == last.x ?
+					.Vertical : first.y == last.y ?
+						.Horizontal : nil) else {
+							throw ValidationError.InvalidTileArrangement
+		}
 		// Go through tiles to see if there are any gaps
 		var tileSet = Set(sorted)
 		let offset = addTiles(&tileSet, offset: first, maxOffset: last, o: o, f: Offset.next)
@@ -44,8 +49,7 @@ extension Papyrus {
 			addTiles(&tileSet, offset: last, maxOffset: nil, o: o, f: Offset.next))
 		// Resort the tiles
 		letters = sortTiles(Array(tileSet))
-		// Ensure all tiles are on same row, cannot be in multiple directions
-		// TODO: Move this to after guard?
+		// Ensure all tiles are on same line, cannot be in multiple directions
 		if letters.filter({ o == .Horizontal ? $0.square!.offset.y == first.y : $0.square!.offset.x == first.x }).count != letters.count {
 			throw ValidationError.InvalidTileArrangement
 		}
