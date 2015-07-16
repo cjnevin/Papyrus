@@ -1,0 +1,623 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		99629C091B547DE800510036 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99629C081B547DE800510036 /* AppDelegate.swift */; };
+		99629C0B1B547DE800510036 /* GameScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = 99629C0A1B547DE800510036 /* GameScene.sks */; };
+		99629C121B547DE800510036 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 99629C101B547DE800510036 /* Main.storyboard */; };
+		99629C141B547DE800510036 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 99629C131B547DE800510036 /* Assets.xcassets */; };
+		99629C171B547DE800510036 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 99629C151B547DE800510036 /* LaunchScreen.storyboard */; };
+		99629C221B547DE800510036 /* PapyrusTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99629C211B547DE800510036 /* PapyrusTests.swift */; };
+		99629C2D1B547DE800510036 /* PapyrusUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99629C2C1B547DE800510036 /* PapyrusUITests.swift */; };
+		99629C4A1B547E3800510036 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99629C3B1B547E3800510036 /* Extensions.swift */; };
+		99629C4B1B547E3800510036 /* Papyrus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99629C3C1B547E3800510036 /* Papyrus.swift */; };
+		99629C4C1B547E3800510036 /* PapyrusDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99629C3D1B547E3800510036 /* PapyrusDictionary.swift */; };
+		99629C4D1B547E3800510036 /* PapyrusPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99629C3E1B547E3800510036 /* PapyrusPlayer.swift */; };
+		99629C4E1B547E3800510036 /* PapyrusSquare.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99629C3F1B547E3800510036 /* PapyrusSquare.swift */; };
+		99629C4F1B547E3800510036 /* PapyrusTile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99629C401B547E3800510036 /* PapyrusTile.swift */; };
+		99629C501B547E3800510036 /* PapyrusWord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99629C411B547E3800510036 /* PapyrusWord.swift */; };
+		99629C611B547E8200510036 /* GameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99629C591B547E8200510036 /* GameViewController.swift */; };
+		99629C621B547E8200510036 /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99629C5B1B547E8200510036 /* GameScene.swift */; };
+		99629C631B547E8200510036 /* GameSceneTouches.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99629C5C1B547E8200510036 /* GameSceneTouches.swift */; };
+		99629C641B547E8200510036 /* PapyrusSquareSprite.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99629C5D1B547E8200510036 /* PapyrusSquareSprite.swift */; };
+		99629C651B547E8200510036 /* PapyrusSquareSpriteAnimations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99629C5E1B547E8200510036 /* PapyrusSquareSpriteAnimations.swift */; };
+		99629C661B547E8200510036 /* PapyrusTileSprite.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99629C5F1B547E8200510036 /* PapyrusTileSprite.swift */; };
+		99629C671B547E8200510036 /* PapyrusTileSpriteAnimations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99629C601B547E8200510036 /* PapyrusTileSpriteAnimations.swift */; };
+		99629C6A1B54901900510036 /* CSW12.plist in Resources */ = {isa = PBXBuildFile; fileRef = 99629C691B54901900510036 /* CSW12.plist */; };
+		9990CBD41B5714F200632CB8 /* PapyrusValidation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9990CBD31B5714F200632CB8 /* PapyrusValidation.swift */; };
+		9990CBD61B57364500632CB8 /* PapyrusOffset.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9990CBD51B57364500632CB8 /* PapyrusOffset.swift */; };
+		99DF9E0F1B54ED8200F58DA7 /* Styling.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99DF9E0E1B54ED8200F58DA7 /* Styling.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		99629C1E1B547DE800510036 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 99629BFD1B547DE800510036 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 99629C041B547DE800510036;
+			remoteInfo = Papyrus;
+		};
+		99629C291B547DE800510036 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 99629BFD1B547DE800510036 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 99629C041B547DE800510036;
+			remoteInfo = Papyrus;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		99629C051B547DE800510036 /* Papyrus.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Papyrus.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		99629C081B547DE800510036 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		99629C0A1B547DE800510036 /* GameScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = GameScene.sks; sourceTree = "<group>"; };
+		99629C111B547DE800510036 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		99629C131B547DE800510036 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		99629C161B547DE800510036 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		99629C181B547DE800510036 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		99629C1D1B547DE800510036 /* PapyrusTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PapyrusTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		99629C211B547DE800510036 /* PapyrusTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PapyrusTests.swift; sourceTree = "<group>"; };
+		99629C231B547DE800510036 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		99629C281B547DE800510036 /* PapyrusUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PapyrusUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		99629C2C1B547DE800510036 /* PapyrusUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PapyrusUITests.swift; sourceTree = "<group>"; };
+		99629C2E1B547DE800510036 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		99629C3B1B547E3800510036 /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
+		99629C3C1B547E3800510036 /* Papyrus.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Papyrus.swift; sourceTree = "<group>"; };
+		99629C3D1B547E3800510036 /* PapyrusDictionary.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PapyrusDictionary.swift; sourceTree = "<group>"; };
+		99629C3E1B547E3800510036 /* PapyrusPlayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PapyrusPlayer.swift; sourceTree = "<group>"; };
+		99629C3F1B547E3800510036 /* PapyrusSquare.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PapyrusSquare.swift; sourceTree = "<group>"; };
+		99629C401B547E3800510036 /* PapyrusTile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PapyrusTile.swift; sourceTree = "<group>"; };
+		99629C411B547E3800510036 /* PapyrusWord.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PapyrusWord.swift; sourceTree = "<group>"; };
+		99629C591B547E8200510036 /* GameViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameViewController.swift; sourceTree = "<group>"; };
+		99629C5B1B547E8200510036 /* GameScene.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameScene.swift; sourceTree = "<group>"; };
+		99629C5C1B547E8200510036 /* GameSceneTouches.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameSceneTouches.swift; sourceTree = "<group>"; };
+		99629C5D1B547E8200510036 /* PapyrusSquareSprite.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PapyrusSquareSprite.swift; sourceTree = "<group>"; };
+		99629C5E1B547E8200510036 /* PapyrusSquareSpriteAnimations.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PapyrusSquareSpriteAnimations.swift; sourceTree = "<group>"; };
+		99629C5F1B547E8200510036 /* PapyrusTileSprite.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PapyrusTileSprite.swift; sourceTree = "<group>"; };
+		99629C601B547E8200510036 /* PapyrusTileSpriteAnimations.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PapyrusTileSpriteAnimations.swift; sourceTree = "<group>"; };
+		99629C691B54901900510036 /* CSW12.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = CSW12.plist; sourceTree = "<group>"; };
+		9990CBD31B5714F200632CB8 /* PapyrusValidation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PapyrusValidation.swift; sourceTree = "<group>"; };
+		9990CBD51B57364500632CB8 /* PapyrusOffset.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PapyrusOffset.swift; sourceTree = "<group>"; };
+		99DF9E0E1B54ED8200F58DA7 /* Styling.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Styling.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		99629C021B547DE800510036 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		99629C1A1B547DE800510036 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		99629C251B547DE800510036 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		99629BFC1B547DE800510036 = {
+			isa = PBXGroup;
+			children = (
+				99629C071B547DE800510036 /* Papyrus */,
+				99629C201B547DE800510036 /* PapyrusTests */,
+				99629C2B1B547DE800510036 /* PapyrusUITests */,
+				99629C061B547DE800510036 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		99629C061B547DE800510036 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				99629C051B547DE800510036 /* Papyrus.app */,
+				99629C1D1B547DE800510036 /* PapyrusTests.xctest */,
+				99629C281B547DE800510036 /* PapyrusUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		99629C071B547DE800510036 /* Papyrus */ = {
+			isa = PBXGroup;
+			children = (
+				99629C081B547DE800510036 /* AppDelegate.swift */,
+				99629C681B54901900510036 /* Dictionaries */,
+				99DF9E0D1B54ED7300F58DA7 /* Extensions */,
+				99629C3A1B547E3800510036 /* Model */,
+				99629C581B547E8200510036 /* ViewControllers */,
+				99629C5A1B547E8200510036 /* Views */,
+				99629C0A1B547DE800510036 /* GameScene.sks */,
+				99629C101B547DE800510036 /* Main.storyboard */,
+				99629C131B547DE800510036 /* Assets.xcassets */,
+				99629C151B547DE800510036 /* LaunchScreen.storyboard */,
+				99629C181B547DE800510036 /* Info.plist */,
+			);
+			path = Papyrus;
+			sourceTree = "<group>";
+		};
+		99629C201B547DE800510036 /* PapyrusTests */ = {
+			isa = PBXGroup;
+			children = (
+				99629C211B547DE800510036 /* PapyrusTests.swift */,
+				99629C231B547DE800510036 /* Info.plist */,
+			);
+			path = PapyrusTests;
+			sourceTree = "<group>";
+		};
+		99629C2B1B547DE800510036 /* PapyrusUITests */ = {
+			isa = PBXGroup;
+			children = (
+				99629C2C1B547DE800510036 /* PapyrusUITests.swift */,
+				99629C2E1B547DE800510036 /* Info.plist */,
+			);
+			path = PapyrusUITests;
+			sourceTree = "<group>";
+		};
+		99629C3A1B547E3800510036 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				99629C3B1B547E3800510036 /* Extensions.swift */,
+				99629C3C1B547E3800510036 /* Papyrus.swift */,
+				99629C3D1B547E3800510036 /* PapyrusDictionary.swift */,
+				9990CBD51B57364500632CB8 /* PapyrusOffset.swift */,
+				99629C3E1B547E3800510036 /* PapyrusPlayer.swift */,
+				99629C3F1B547E3800510036 /* PapyrusSquare.swift */,
+				99629C401B547E3800510036 /* PapyrusTile.swift */,
+				99629C411B547E3800510036 /* PapyrusWord.swift */,
+				9990CBD31B5714F200632CB8 /* PapyrusValidation.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		99629C581B547E8200510036 /* ViewControllers */ = {
+			isa = PBXGroup;
+			children = (
+				99629C591B547E8200510036 /* GameViewController.swift */,
+			);
+			name = ViewControllers;
+			path = Papyrus/ViewControllers;
+			sourceTree = SOURCE_ROOT;
+		};
+		99629C5A1B547E8200510036 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				99629C5B1B547E8200510036 /* GameScene.swift */,
+				99629C5C1B547E8200510036 /* GameSceneTouches.swift */,
+				99629C5D1B547E8200510036 /* PapyrusSquareSprite.swift */,
+				99629C5E1B547E8200510036 /* PapyrusSquareSpriteAnimations.swift */,
+				99629C5F1B547E8200510036 /* PapyrusTileSprite.swift */,
+				99629C601B547E8200510036 /* PapyrusTileSpriteAnimations.swift */,
+			);
+			name = Views;
+			path = Papyrus/Views;
+			sourceTree = SOURCE_ROOT;
+		};
+		99629C681B54901900510036 /* Dictionaries */ = {
+			isa = PBXGroup;
+			children = (
+				99629C691B54901900510036 /* CSW12.plist */,
+			);
+			path = Dictionaries;
+			sourceTree = "<group>";
+		};
+		99DF9E0D1B54ED7300F58DA7 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				99DF9E0E1B54ED8200F58DA7 /* Styling.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		99629C041B547DE800510036 /* Papyrus */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 99629C311B547DE800510036 /* Build configuration list for PBXNativeTarget "Papyrus" */;
+			buildPhases = (
+				99629C011B547DE800510036 /* Sources */,
+				99629C021B547DE800510036 /* Frameworks */,
+				99629C031B547DE800510036 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Papyrus;
+			productName = Papyrus;
+			productReference = 99629C051B547DE800510036 /* Papyrus.app */;
+			productType = "com.apple.product-type.application";
+		};
+		99629C1C1B547DE800510036 /* PapyrusTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 99629C341B547DE800510036 /* Build configuration list for PBXNativeTarget "PapyrusTests" */;
+			buildPhases = (
+				99629C191B547DE800510036 /* Sources */,
+				99629C1A1B547DE800510036 /* Frameworks */,
+				99629C1B1B547DE800510036 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				99629C1F1B547DE800510036 /* PBXTargetDependency */,
+			);
+			name = PapyrusTests;
+			productName = PapyrusTests;
+			productReference = 99629C1D1B547DE800510036 /* PapyrusTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		99629C271B547DE800510036 /* PapyrusUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 99629C371B547DE800510036 /* Build configuration list for PBXNativeTarget "PapyrusUITests" */;
+			buildPhases = (
+				99629C241B547DE800510036 /* Sources */,
+				99629C251B547DE800510036 /* Frameworks */,
+				99629C261B547DE800510036 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				99629C2A1B547DE800510036 /* PBXTargetDependency */,
+			);
+			name = PapyrusUITests;
+			productName = PapyrusUITests;
+			productReference = 99629C281B547DE800510036 /* PapyrusUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		99629BFD1B547DE800510036 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0700;
+				ORGANIZATIONNAME = CJNevin;
+				TargetAttributes = {
+					99629C041B547DE800510036 = {
+						CreatedOnToolsVersion = 7.0;
+					};
+					99629C1C1B547DE800510036 = {
+						CreatedOnToolsVersion = 7.0;
+						TestTargetID = 99629C041B547DE800510036;
+					};
+					99629C271B547DE800510036 = {
+						CreatedOnToolsVersion = 7.0;
+						TestTargetID = 99629C041B547DE800510036;
+					};
+				};
+			};
+			buildConfigurationList = 99629C001B547DE800510036 /* Build configuration list for PBXProject "Papyrus" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 99629BFC1B547DE800510036;
+			productRefGroup = 99629C061B547DE800510036 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				99629C041B547DE800510036 /* Papyrus */,
+				99629C1C1B547DE800510036 /* PapyrusTests */,
+				99629C271B547DE800510036 /* PapyrusUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		99629C031B547DE800510036 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				99629C0B1B547DE800510036 /* GameScene.sks in Resources */,
+				99629C6A1B54901900510036 /* CSW12.plist in Resources */,
+				99629C171B547DE800510036 /* LaunchScreen.storyboard in Resources */,
+				99629C141B547DE800510036 /* Assets.xcassets in Resources */,
+				99629C121B547DE800510036 /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		99629C1B1B547DE800510036 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		99629C261B547DE800510036 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		99629C011B547DE800510036 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				99629C501B547E3800510036 /* PapyrusWord.swift in Sources */,
+				9990CBD41B5714F200632CB8 /* PapyrusValidation.swift in Sources */,
+				99629C4F1B547E3800510036 /* PapyrusTile.swift in Sources */,
+				99629C4D1B547E3800510036 /* PapyrusPlayer.swift in Sources */,
+				99629C671B547E8200510036 /* PapyrusTileSpriteAnimations.swift in Sources */,
+				99629C631B547E8200510036 /* GameSceneTouches.swift in Sources */,
+				99629C4E1B547E3800510036 /* PapyrusSquare.swift in Sources */,
+				99629C661B547E8200510036 /* PapyrusTileSprite.swift in Sources */,
+				99629C4B1B547E3800510036 /* Papyrus.swift in Sources */,
+				99629C091B547DE800510036 /* AppDelegate.swift in Sources */,
+				99629C621B547E8200510036 /* GameScene.swift in Sources */,
+				99629C4C1B547E3800510036 /* PapyrusDictionary.swift in Sources */,
+				99629C611B547E8200510036 /* GameViewController.swift in Sources */,
+				99DF9E0F1B54ED8200F58DA7 /* Styling.swift in Sources */,
+				99629C4A1B547E3800510036 /* Extensions.swift in Sources */,
+				9990CBD61B57364500632CB8 /* PapyrusOffset.swift in Sources */,
+				99629C651B547E8200510036 /* PapyrusSquareSpriteAnimations.swift in Sources */,
+				99629C641B547E8200510036 /* PapyrusSquareSprite.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		99629C191B547DE800510036 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				99629C221B547DE800510036 /* PapyrusTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		99629C241B547DE800510036 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				99629C2D1B547DE800510036 /* PapyrusUITests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		99629C1F1B547DE800510036 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 99629C041B547DE800510036 /* Papyrus */;
+			targetProxy = 99629C1E1B547DE800510036 /* PBXContainerItemProxy */;
+		};
+		99629C2A1B547DE800510036 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 99629C041B547DE800510036 /* Papyrus */;
+			targetProxy = 99629C291B547DE800510036 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		99629C101B547DE800510036 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				99629C111B547DE800510036 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		99629C151B547DE800510036 /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				99629C161B547DE800510036 /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		99629C2F1B547DE800510036 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		99629C301B547DE800510036 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		99629C321B547DE800510036 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				INFOPLIST_FILE = Papyrus/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.cjnevin.Papyrus;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		99629C331B547DE800510036 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				INFOPLIST_FILE = Papyrus/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.cjnevin.Papyrus;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+		99629C351B547DE800510036 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				INFOPLIST_FILE = PapyrusTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.cjnevin.PapyrusTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Papyrus.app/Papyrus";
+			};
+			name = Debug;
+		};
+		99629C361B547DE800510036 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				INFOPLIST_FILE = PapyrusTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.cjnevin.PapyrusTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Papyrus.app/Papyrus";
+			};
+			name = Release;
+		};
+		99629C381B547DE800510036 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				INFOPLIST_FILE = PapyrusUITests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.cjnevin.PapyrusUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_TARGET_NAME = Papyrus;
+				USES_XCTRUNNER = YES;
+			};
+			name = Debug;
+		};
+		99629C391B547DE800510036 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				INFOPLIST_FILE = PapyrusUITests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.cjnevin.PapyrusUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_TARGET_NAME = Papyrus;
+				USES_XCTRUNNER = YES;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		99629C001B547DE800510036 /* Build configuration list for PBXProject "Papyrus" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				99629C2F1B547DE800510036 /* Debug */,
+				99629C301B547DE800510036 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		99629C311B547DE800510036 /* Build configuration list for PBXNativeTarget "Papyrus" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				99629C321B547DE800510036 /* Debug */,
+				99629C331B547DE800510036 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		99629C341B547DE800510036 /* Build configuration list for PBXNativeTarget "PapyrusTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				99629C351B547DE800510036 /* Debug */,
+				99629C361B547DE800510036 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		99629C371B547DE800510036 /* Build configuration list for PBXNativeTarget "PapyrusUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				99629C381B547DE800510036 /* Debug */,
+				99629C391B547DE800510036 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 99629BFD1B547DE800510036 /* Project object */;
+}
