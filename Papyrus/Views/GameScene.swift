@@ -32,7 +32,6 @@ class GameScene: SKScene {
 				let moveTileSprites = tileSprites.filter({moveTiles.contains($0.tile)})
 				tileSprites.map({$0.deilluminate()})
 				moveTileSprites.map({$0.illuminate()})
-				
 				// Fix all tiles that we dropped on the board.
 				dropped.map({$0.placement = Tile.Placement.Fixed})
 				// Remove existing rack sprites.
@@ -41,7 +40,7 @@ class GameScene: SKScene {
 				rackSprites.map({$0.removeFromParent()})
 				// Create new sprites in new positions.
 				createTileSprites(g)
-				print("Sprites in play: \(tileSprites.count)")
+				print("Sprites: \(tileSprites.count)")
 			} catch (let err) {
 				throw err
 			}

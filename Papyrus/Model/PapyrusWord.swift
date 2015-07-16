@@ -37,7 +37,7 @@ struct Word: Hashable, Equatable {
 	let range: (start: Offset, end: Offset)
 	let tiles: [Tile]
 	let value: String
-	let points: UInt
+	let points: Int
 	let intersectsCenter: Bool
 	var immutable: Bool {
 		return tiles.filter({$0.placement == Tile.Placement.Fixed}).count == tiles.count
@@ -61,7 +61,7 @@ struct Word: Hashable, Equatable {
 			squares = tiles.filter({$0 != nil}).map({$0.square!})
 			offsets = squares.map({$0.offset})
 			intersectsCenter = offsets.contains(PapyrusMiddleOffset!)
-			var total: UInt = tiles.map({$0.letterValue}).reduce(0, combine: +)
+			var total: Int = tiles.map({$0.letterValue}).reduce(0, combine: +)
 			total = tiles.map({$0.wordMultiplier}).reduce(total, combine: *)
 			points = total
 		}

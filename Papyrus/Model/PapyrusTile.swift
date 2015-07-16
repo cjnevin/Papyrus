@@ -20,16 +20,16 @@ class Tile: NSObject {
 	var square: Square?
 	var placement = Placement.Bag
 	var letter: Character
-	let value: UInt
-	var letterValue: UInt {
+	let value: Int
+	var letterValue: Int {
 		guard let sq = square else { return 0 }
 		return (placement == .Fixed ? 1 : sq.modifier.letterMultiplier) * value
 	}
-	var wordMultiplier: UInt {
+	var wordMultiplier: Int {
 		guard let sq = square else { return 1 }
 		return (placement == .Fixed ? 1 : sq.modifier.wordMultiplier)
 	}
-	init(_ letter: Character, value: UInt) {
+	init(_ letter: Character, value: Int) {
 		self.letter = letter
 		self.value = value
 	}
@@ -39,7 +39,7 @@ class Tile: NSObject {
 }
 
 extension Papyrus {
-	static let TileConfiguration: [(Int, UInt, Character)] = [(9, 1, "A"), (2, 3, "B"), (2, 3, "C"), (4, 2, "D"), (12, 1, "E"),
+	static let TileConfiguration: [(Int, Int, Character)] = [(9, 1, "A"), (2, 3, "B"), (2, 3, "C"), (4, 2, "D"), (12, 1, "E"),
 		(2, 4, "F"), (3, 2, "G"), (2, 4, "H"), (9, 1, "I"), (1, 8, "J"), (1, 5, "K"),
 		(4, 1, "L"), (2, 3, "M"), (6, 1, "N"), (8, 1, "O"), (2, 3, "P"), (1, 10, "Q"),
 		(6, 1, "R"), (4, 1, "S"), (6, 1, "T"), (4, 1, "U"), (2, 4, "V"), (2, 4, "W"),

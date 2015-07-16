@@ -12,8 +12,8 @@ class Player: NSObject {
 	typealias DrawFunction = (Int, Int, Player?, Tile.Placement, Tile.Placement) -> (Int)
 	typealias CountFunction = (Tile.Placement, Player?) -> (Int)
 	
-	var score: UInt = 0
-	init(_ score: UInt) {
+	var score: Int = 0
+	init(_ score: Int) {
 		self.score = score
 	}
 	func count(f: CountFunction) -> Int {

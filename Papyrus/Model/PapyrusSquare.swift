@@ -20,14 +20,14 @@ struct Square: Equatable, Hashable {
 		case Letterx3 = "T"
 		case Wordx2 = "W"
 		case Wordx3 = "Z"
-		var wordMultiplier: UInt {
+		var wordMultiplier: Int {
 			switch (self) {
 			case .Center, .Wordx2: return 2
 			case .Wordx3: return 3
 			default: return 1
 			}
 		}
-		var letterMultiplier: UInt {
+		var letterMultiplier: Int {
 			switch (self) {
 			case .Letterx2: return 2
 			case .Letterx3: return 3

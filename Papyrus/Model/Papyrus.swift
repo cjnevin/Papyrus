@@ -27,7 +27,7 @@ class Papyrus {
 	var tiles: [Tile]
 	var tileIndex: Int = 0
 	let dictionary: Dictionary
-	lazy var words = [Word]()
+	lazy var words = Set<Word>()
 	lazy var players = [Player]()
 	var player: Player?
 	
