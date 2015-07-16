@@ -69,11 +69,7 @@ extension Papyrus {
 					.filter({$0 != nil})
 					.map({$0!})
 			}
-			var output = [Offset]()
-			for offset in offsets {
-				output.extend(symmetrical(Offset(x: offset.0, y: offset.1)!))
-			}
-			return output
+			return offsets.flatMap({symmetrical(Offset(x: $0.0, y: $0.1)!)})
 		}
 		let modifiers: [Square.Modifier: [Offset]] = [
 			.Center: symmetricalOffsets([(0,0)]),
@@ -88,11 +84,9 @@ extension Papyrus {
 			for y in (1...PapyrusDimensions) {
 				var modifier = Square.Modifier.None
 				if let offset = Offset(x: x, y: y) {
-					for (mod, offsets) in modifiers {
-						if offsets.contains(offset) {
-							modifier = mod
-							break
-						}
+					for (mod, offsets) in modifiers where offsets.contains(offset) {
+						modifier = mod
+						break
 					}
 					xSquares.append(Square(modifier: modifier, offset: offset))
 				}

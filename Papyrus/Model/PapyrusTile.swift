@@ -33,6 +33,9 @@ class Tile: NSObject {
 		self.letter = letter
 		self.value = value
 	}
+	func placed(p: Placement, owner: Player?) -> Tile? {
+		return self.placement == p && self.owner == owner ? self : nil
+	}
 }
 
 extension Papyrus {
@@ -52,10 +55,6 @@ extension Papyrus {
 		return output.sort({_, _ in arc4random() % 2 == 0})
 	}
 	
-	func countTiles(placement: Tile.Placement, owner: Player?) -> Int {
-		return tiles.filter({$0.placement == placement && $0.owner == owner}).count
-	}
-	
 	func drawTiles(start: Int, end: Int, owner: Player?, from: Tile.Placement, to: Tile.Placement) -> Int {
 		var count = 0
 		for i in start..<tiles.count {
@@ -72,12 +71,16 @@ extension Papyrus {
 		return count
 	}
 	
-	var rackTiles: [Tile] {
-		return tiles(withPlacement: .Rack, owner: player)
+	func countTiles(withPlacement p: Tile.Placement, owner: Player?) -> Int {
+		return tiles(withPlacement: p, owner: owner).count
 	}
 	
 	var droppedTiles: [Tile] {
 		return tiles(withPlacement: .Board, owner: player)
+	}
+	
+	var rackTiles: [Tile] {
+		return tiles(withPlacement: .Rack, owner: player)
 	}
 	
 	func tile(at: Offset?) -> Tile? {
@@ -87,7 +90,7 @@ extension Papyrus {
 	}
 	
 	func tiles(withPlacement p: Tile.Placement, owner: Player?) -> [Tile] {
-		return tiles.filter{$0.placement == p && $0.owner == owner}
+		return tiles.filter{Tile.placed($0)(p, owner:owner) != nil}
 	}
 	
 	func sortTiles(letters: [Tile]) -> [Tile] {

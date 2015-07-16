@@ -33,9 +33,10 @@ struct Dictionary {
 			if let inner = current[String(char)] as? NSDictionary {
 				index = advance(index, 1)
 				if index == word.endIndex {
-					if let definition = inner.objectForKey(Dictionary.DefKey) as? String {
-						return definition
+					guard let def = inner.objectForKey(Dictionary.DefKey) as? String else {
+						throw ValidationError.InvalidWord
 					}
+					return def
 				}
 				current = inner
 			} else {
