@@ -49,6 +49,13 @@ class TileSprite: SKSpriteNode {
 		setScale(scale)
 	}
 	
+	func changeLetter(newLetter: Character) {
+		if self.tile.letterValue == 0 {
+			self.tile.letter = newLetter
+			self.letterLabel.text = String(newLetter)
+		}
+	}
+	
 	required init?(coder aDecoder: NSCoder) {
 		fatalError("init(coder:) has not been implemented")
 	}
@@ -57,7 +64,7 @@ class TileSprite: SKSpriteNode {
 extension Papyrus {
 	class func createRackSprites(forGame game: Papyrus, frame: CGRect) -> [TileSprite] {
 		var sprites = [TileSprite]()
-		let squareSize = CGRectGetWidth(frame) / CGFloat(Papyrus.Dimensions)
+		let squareSize = CGRectGetWidth(frame) / CGFloat(PapyrusDimensions)
 		let tileSize = squareSize * 2.0
 		let rack = game.tiles(withPlacement: .Rack, owner: game.player)
 		let spacing = (CGRectGetWidth(frame) - tileSize * CGFloat(rack.count)) / 2

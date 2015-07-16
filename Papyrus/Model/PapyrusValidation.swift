@@ -8,7 +8,7 @@
 
 import Foundation
 
-// TODO: Create orientation/offset tuple (Orientation, Offset)
+// TODO: Create orientation/offset tuple (Orientation, Offset) to cleanup func logic...
 
 typealias ValidationFunction = (inout tiles: [Tile]) throws -> (o: Orientation, range: (start: Offset, end: Offset))
 
@@ -94,8 +94,9 @@ extension Papyrus {
 				allWords.append(word)
 				// Calculate score for current move.
 				// Filter out calculation for words with ALL fixed tiles.
+				// If all tiles used add 50 to score.
 				let sum = allWords.filter({$0.immutable == false}).map({$0.points}).reduce(0, combine: +) +
-					(word.length == RackAmount ? 50 : 0)
+					(word.length == PapyrusRackAmount ? 50 : 0)
 				// Make tile fixed, no one will be able to drag them from this point onward.
 				allWords.flatMap{$0.tiles}.map{$0.placement = .Fixed}
 				// Add words to played words.

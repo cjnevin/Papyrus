@@ -23,7 +23,7 @@ class Player: NSObject {
 		return f(start, end, self, .Bag, .Rack)
 	}
 	func refill(start: Int, f: DrawFunction, countf: CountFunction) -> Int {
-		return draw(start, end: RackAmount - count(countf), f: f)
+		return draw(start, end: PapyrusRackAmount - count(countf), f: f)
 	}
 }
 

@@ -60,7 +60,7 @@ struct Word: Hashable, Equatable {
 			length = value.lengthOfBytesUsingEncoding(NSUTF8StringEncoding)
 			squares = tiles.filter({$0 != nil}).map({$0.square!})
 			offsets = squares.map({$0.offset})
-			intersectsCenter = offsets.contains(Papyrus.CenterOffset!)
+			intersectsCenter = offsets.contains(PapyrusMiddleOffset!)
 			var total: UInt = tiles.map({$0.letterValue}).reduce(0, combine: +)
 			total = tiles.map({$0.wordMultiplier}).reduce(total, combine: *)
 			points = total

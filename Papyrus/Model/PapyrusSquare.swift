@@ -57,13 +57,8 @@ struct Square: Equatable, Hashable {
 }
 
 extension Papyrus {
-	static let Dimensions: Int = 15
-	static let Middle: Int = Dimensions/2 + 1
-	static let CenterOffset = Offset(x: Middle, y: Middle)
-	static let BoardSize = (-1, Dimensions + 1)
-	
 	class func createSquares() -> [[Square]] {
-		let m = Papyrus.Middle
+		let m = PapyrusMiddle
 		func symmetricalOffsets(offsets: [(Int, Int)]) -> [Offset] {
 			func symmetrical(offset: Offset) -> [Offset] {
 				let a = offset.x, b = offset.y
@@ -88,9 +83,9 @@ extension Papyrus {
 			.Wordx2: symmetricalOffsets([(3, 3), (4, 4), (5, 5), (6, 6)])
 		]
 		var output = [[Square]]()
-		for x in (1...Papyrus.Dimensions) {
+		for x in (1...PapyrusDimensions) {
 			var xSquares = [Square]()
-			for y in (1...Papyrus.Dimensions) {
+			for y in (1...PapyrusDimensions) {
 				var modifier = Square.Modifier.None
 				if let offset = Offset(x: x, y: y) {
 					for (mod, offsets) in modifiers {

@@ -34,11 +34,11 @@ struct Offset: Comparable {
 		y = tuple.1
 	}
 	private static func valid(x: Int, y: Int) -> Bool {
-		guard let _ = (x, y) <~> Papyrus.BoardSize else { return false }
+		guard let _ = (x, y) <~> PapyrusDimensionsRange else { return false }
 		return true
 	}
 	func at(x xx: Int, y yy: Int) -> Offset? {
-		guard let n = (xx, yy) <~> Papyrus.BoardSize else { return nil }
+		guard let n = (xx, yy) <~> PapyrusDimensionsRange else { return nil }
 		return Offset(n)
 	}
 	func stride(o: Orientation, amount: Int) -> Offset? {

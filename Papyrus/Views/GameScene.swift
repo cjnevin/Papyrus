@@ -43,7 +43,7 @@ class GameScene: SKScene {
 	}
 	
 	func createTileSprites(g: Papyrus) {
-		let boardSize = CGRectGetWidth(frame) / CGFloat(Papyrus.Dimensions) * CGFloat(Papyrus.Dimensions + 1)
+		let boardSize = CGRectGetWidth(frame) / CGFloat(PapyrusDimensions) * CGFloat(PapyrusDimensions + 1)
 		let newFrame = CGRectMake(frame.origin.x, frame.origin.y, frame.size.width, frame.size.height - boardSize)
 		tileSprites.extend(Papyrus.createRackSprites(forGame: g, frame: newFrame))
 		tileSprites.filter({$0.parent == nil}).map({self.addChild($0)})

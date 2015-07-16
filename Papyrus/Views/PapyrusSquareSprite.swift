@@ -43,7 +43,7 @@ extension Papyrus {
 	
 	class func createSquareSprites(forGame game: Papyrus, frame: CGRect) -> [SquareSprite] {
 		var sprites = [SquareSprite]()
-		let squareSize = CGRectGetWidth(frame) / CGFloat(Papyrus.Dimensions)
+		let squareSize = CGRectGetWidth(frame) / CGFloat(PapyrusDimensions)
 		for square in game.squares.flatMap({$0}) {
 			let sprite = SquareSprite(square: square, edge: squareSize)
 			let o = square.offset

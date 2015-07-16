@@ -8,7 +8,11 @@
 
 import Foundation
 
-let RackAmount: Int = 7
+let PapyrusRackAmount: Int = 7
+let PapyrusDimensions: Int = 15
+let PapyrusDimensionsRange = (-1, PapyrusDimensions + 1)
+let PapyrusMiddle: Int = PapyrusDimensions/2 + 1
+let PapyrusMiddleOffset = Offset(x: PapyrusMiddle, y: PapyrusMiddle)
 
 class Papyrus {
 	enum State {
@@ -55,31 +59,6 @@ class Papyrus {
 		dispatch_async(dispatch_get_main_queue()) { () -> Void in
 			self.fState(state, self)
 		}
-	}
-	
-	func submit(word: Word) throws {
-		// Validate the word that we played, and all words that intersect our word.
-		/*
-		
-		
-		var affectedWords = Set<Word>()
-		var definitions = [String]()
-		do {
-			try validate(word: word, affectedWords: &affectedWords, definitions: &definitions)
-		}
-		catch (let err) {
-			throw err
-		}
-		// Make tile fixed, no one will be able to drag them from this point onward.
-		affectedWords.flatMap{$0.tiles}.map{$0.placement = .Fixed}
-		// Add words to played words.
-		words.extend(affectedWords)
-		// Increment score for current player.
-		var sum = affectedWords.flatMap{$0.points}.reduce(0, combine: +)
-		if word.length == RackAmount { sum += 50 }
-		player?.score += sum
-		// Refill their rack.
-		player?.refill(tileIndex, f: drawTiles, countf: countTiles)*/
 	}
 }
 

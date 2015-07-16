@@ -65,7 +65,7 @@ extension GameScene {
 						squareSprite.animateDropTileSprite(tileSprite, originalPoint: origin, completion: { () -> () in
 							if tileSprite.tile.letter == "?" {
 								self.actionDelegate?.pickLetter({ (letter) -> () in
-									tileSprite.tile.letter = letter
+									tileSprite.changeLetter(letter)
 								})
 							}
 						})
