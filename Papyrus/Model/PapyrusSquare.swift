@@ -41,15 +41,15 @@ struct Square: Equatable, Hashable {
 		guard let n = offset.at(x: xx, y: yy) else { return nil }
 		return arr[n.x][n.y]
 	}
-	func stride(o: Orientation, amount: Int, inArray arr: [[Square]]) -> Square? {
-		guard let n = offset.stride(o, amount: amount) else { return nil }
+	func advance(o: Orientation, amount: Int, inArray arr: [[Square]]) -> Square? {
+		guard let n = offset.advance(o, amount: amount) else { return nil }
 		return arr[n.x][n.y]
 	}
 	func next(o: Orientation, inArray arr: [[Square]]) -> Square? {
-		return stride(o, amount: 1, inArray: arr)
+		return advance(o, amount: 1, inArray: arr)
 	}
 	func prev(o: Orientation, inArray arr: [[Square]]) -> Square? {
-		return stride(o, amount: -1, inArray: arr)
+		return advance(o, amount: -1, inArray: arr)
 	}
 	var hashValue: Int {
 		return "\(offset.x),\(offset.y)".hashValue

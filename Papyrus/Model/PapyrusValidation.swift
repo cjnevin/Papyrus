@@ -13,9 +13,9 @@ import Foundation
 typealias ValidationFunction = (inout tiles: [Tile]) throws -> (o: Orientation, range: (start: Offset, end: Offset))
 
 extension Papyrus {
-	private func addTiles(inout letters: Set<Tile>, offset: Offset, maxOffset: Offset?, o: Orientation, f: (offset: Offset, o: Orientation) -> Offset?) -> Offset {
+	private func addTiles(inout letters: Set<Tile>, offset: Offset, maxOffset: Offset?, o: Orientation, f: Offset -> (o: Orientation) -> Offset?) -> Offset {
 		var start = offset
-		while let n = f(offset: start, o: o) {
+		while let n = f(start)(o: o) {
 			guard let matched = tile(n) else { break }
 			letters.insert(matched)
 			start = n
@@ -36,15 +36,16 @@ extension Papyrus {
 			.Horizontal : .Vertical : orientation
 		// Go through tiles to see if there are any gaps
 		var tileSet = Set(sorted)
-		let offset = addTiles(&tileSet, offset: first, maxOffset: last, o: o, f: next)
+		let offset = addTiles(&tileSet, offset: first, maxOffset: last, o: o, f: Offset.next)
 		if offset != last { throw ValidationError.InvalidTileArrangement }
 		// Go in direction tiles were played to determine where word ends
 		// Pad range with tiles played arround these `tiles`
-		let range = (addTiles(&tileSet, offset: first, maxOffset: nil, o: o, f: prev),
-			addTiles(&tileSet, offset: last, maxOffset: nil, o: o, f: next))
+		let range = (addTiles(&tileSet, offset: first, maxOffset: nil, o: o, f: Offset.prev),
+			addTiles(&tileSet, offset: last, maxOffset: nil, o: o, f: Offset.next))
 		// Resort the tiles
 		letters = sortTiles(Array(tileSet))
 		// Ensure all tiles are on same row, cannot be in multiple directions
+		// TODO: Move this to after guard?
 		if letters.filter({ o == .Horizontal ? $0.square!.offset.y == first.y : $0.square!.offset.x == first.x }).count != letters.count {
 			throw ValidationError.InvalidTileArrangement
 		}
@@ -57,8 +58,8 @@ extension Papyrus {
 		for tile in word.tiles {
 			if let offset = tile.square?.offset {
 				var tileSet = Set([tile])
-				addTiles(&tileSet, offset: offset, maxOffset: nil, o: inverted, f: prev)
-				addTiles(&tileSet, offset: offset, maxOffset: nil, o: inverted, f: next)
+				addTiles(&tileSet, offset: offset, maxOffset: nil, o: inverted, f: Offset.prev)
+				addTiles(&tileSet, offset: offset, maxOffset: nil, o: inverted, f: Offset.next)
 				if tileSet.count > 1 {
 					do {
 						if let intersectingWord = try Word(Array(tileSet), f: prepareTiles) {
@@ -115,13 +116,5 @@ extension Papyrus {
 			throw err
 		}
 		return allWords
-	}
-	
-	// MARK:- Helpers
-	private func next(offset: Offset, o: Orientation) -> Offset? {
-		return offset.next(o)
-	}
-	private func prev(offset: Offset, o: Orientation) -> Offset? {
-		return offset.prev(o)
 	}
 }

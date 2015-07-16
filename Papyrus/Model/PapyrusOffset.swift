@@ -41,13 +41,13 @@ struct Offset: Comparable {
 		guard let n = (xx, yy) <~> PapyrusDimensionsRange else { return nil }
 		return Offset(n)
 	}
-	func stride(o: Orientation, amount: Int) -> Offset? {
+	func advance(o: Orientation, amount: Int) -> Offset? {
 		return at(x: x + (o == .Horizontal ? amount : 0), y: y + (o == .Vertical ? amount: 0))
 	}
 	func next(o: Orientation) -> Offset? {
-		return stride(o, amount: 1)
+		return advance(o, amount: 1)
 	}
 	func prev(o: Orientation) -> Offset? {
-		return stride(o, amount: -1)
+		return advance(o, amount: -1)
 	}
 }
