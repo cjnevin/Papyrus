@@ -26,19 +26,25 @@ class GameScene: SKScene {
 		}
 		if let g = game, dropped = game?.droppedTiles, racked = game?.rackTiles {
 			do {
-				try g.move(dropped)
+				let moveWords = try g.move(dropped)
+				// Light up the words we touched...
+				let moveTiles = moveWords.flatMap({$0.tiles})
+				let moveTileSprites = tileSprites.filter({moveTiles.contains($0.tile)})
+				tileSprites.map({$0.deilluminate()})
+				moveTileSprites.map({$0.illuminate()})
+				
+				// Fix all tiles that we dropped on the board.
+				dropped.map({$0.placement = Tile.Placement.Fixed})
+				// Remove existing rack sprites.
+				let rackSprites = tileSprites.filter({racked.contains($0.tile)})
+				tileSprites = tileSprites.filter({!rackSprites.contains($0)})
+				rackSprites.map({$0.removeFromParent()})
+				// Create new sprites in new positions.
+				createTileSprites(g)
+				print("Sprites in play: \(tileSprites.count)")
 			} catch (let err) {
 				throw err
 			}
-			// Fix all tiles that we dropped on the board.
-			dropped.map({$0.placement = Tile.Placement.Fixed})
-			// Remove existing rack sprites.
-			let rackSprites = tileSprites.filter({racked.contains($0.tile)})
-			tileSprites = tileSprites.filter({!rackSprites.contains($0)})
-			rackSprites.map({$0.removeFromParent()})
-			// Create new sprites in new positions.
-			createTileSprites(g)
-			print("Sprites in play: \(tileSprites.count)")
 		}
 	}
 	

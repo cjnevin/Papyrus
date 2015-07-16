@@ -73,7 +73,8 @@ extension Papyrus {
 		return output
 	}
 	
-	func move(letters: [Tile]) throws {
+	func move(letters: [Tile]) throws -> [Word] {
+		var allWords = [Word]()
 		do {
 			if let word = try Word(letters, f: prepareTiles) {
 				print("Main word: \(word.value)")
@@ -90,7 +91,7 @@ extension Papyrus {
 				} else if words.count > 0 && intersectedWords.count == 0 {
 					throw ValidationError.NoWordIntersection
 				}
-				var allWords = intersectedWords
+				allWords.extend(intersectedWords)
 				allWords.append(word)
 				// Calculate score for current move.
 				// Filter out calculation for words with ALL fixed tiles.
@@ -109,11 +110,11 @@ extension Papyrus {
 				// TODO: If tiles.count == 0
 				// TODO: Wait until all other players forfeit or have no tiles left.
 			}
-			
 		}
 		catch (let err) {
 			throw err
 		}
+		return allWords
 	}
 	
 	// MARK:- Helpers
