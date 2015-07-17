@@ -51,52 +51,45 @@ extension GameScene {
 			tileSprite.resetPosition(point)
 		}
 	}
-	
-	override func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?) {
-		if let point = point(inTouches: touches), tileSprite = heldTile {
-			var found = false
-			var fallback: SquareSprite?     // Closest square to drop tile if hovered square is filled
-			var fallbackOverlap: CGFloat = 0
-			for squareSprite in (children.filter({$0 is SquareSprite}) as! [SquareSprite]).filter({$0.isEmpty() && $0.intersectsNode(tileSprite)}) {
-				if let origin = heldOrigin {
-					if squareSprite.frame.contains(point) {
-						tileSprite.tile.placement = .Board
-						tileSprite.tile.square = squareSprite.square
-						squareSprite.animateDropTileSprite(tileSprite, originalPoint: origin, completion: { () -> () in
-							if tileSprite.tile.letter == "?" {
-								self.actionDelegate?.pickLetter({ (letter) -> () in
-									tileSprite.changeLetter(letter)
-								})
-							}
-						})
-						found = true
-						break
-					}
-					let intersection = CGRectIntersection(squareSprite.frame, tileSprite.frame)
-					let overlap = CGRectGetWidth(intersection) + CGRectGetHeight(intersection)
-					if overlap > fallbackOverlap {
-						fallback = squareSprite
-						fallbackOverlap = overlap
-					}
-				}
-			}
-			if !found {
-				if let origin = heldOrigin {
-					if let squareSprite = fallback {
-						squareSprite.animateDropTileSprite(tileSprite, originalPoint: origin, completion: nil)
-						tileSprite.tile.placement = .Board
-						tileSprite.tile.square = squareSprite.square
-					} else {
-						//tileSprite.resetPosition(originalPoint)
-						tileSprite.animateDropToRack(origin)
-						tileSprite.tile.placement = .Rack
-						tileSprite.tile.square = nil
-					}
-				}
-			}
-		}
-	}
-	
+    
+    override func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?) {
+        guard let point = point(inTouches: touches), tileSprite = heldTile, origin = heldOrigin else { return }
+        var found = false
+        var fallback: (square: SquareSprite?, overlap: CGFloat) = (nil, 0) // Closest square to drop tile if hovered square is filled
+        for squareSprite in (children.filter({$0 is SquareSprite}) as! [SquareSprite]).filter({$0.isEmpty() && $0.intersectsNode(tileSprite)}) {
+            if squareSprite.frame.contains(point) {
+                tileSprite.tile.placement = .Board
+                tileSprite.tile.square = squareSprite.square
+                squareSprite.animateDropTileSprite(tileSprite, originalPoint: origin, completion: { () -> () in
+                    if tileSprite.tile.letter == "?" {
+                        self.actionDelegate?.pickLetter({ (letter) -> () in
+                            tileSprite.changeLetter(letter)
+                        })
+                    }
+                })
+                found = true
+                break
+            }
+            let intersection = CGRectIntersection(squareSprite.frame, tileSprite.frame)
+            let overlap = CGRectGetWidth(intersection) + CGRectGetHeight(intersection)
+            if overlap > fallback.overlap {
+                fallback = (squareSprite, overlap)
+            }
+        }
+        if !found {
+            if let squareSprite = fallback.square {
+                squareSprite.animateDropTileSprite(tileSprite, originalPoint: origin, completion: nil)
+                tileSprite.tile.placement = .Board
+                tileSprite.tile.square = squareSprite.square
+            } else {
+                //tileSprite.resetPosition(originalPoint)
+                tileSprite.animateDropToRack(origin)
+                tileSprite.tile.placement = .Rack
+                tileSprite.tile.square = nil
+            }
+        }
+    }
+    
 	override func touchesCancelled(touches: Set<UITouch>?, withEvent event: UIEvent?) {
 		if let point = point(inTouches: touches), tileSprite = heldTile {
 			// Best not to animate this...

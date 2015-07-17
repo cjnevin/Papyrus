@@ -25,7 +25,7 @@ class SquareSprite: SKSpriteNode {
 	}
 	
 	func isEmpty() -> Bool {
-		return tileSprite?.movable ?? true
+        return tileSprite == nil
 	}
 }
 
