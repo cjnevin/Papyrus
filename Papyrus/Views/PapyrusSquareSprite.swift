@@ -9,19 +9,20 @@
 import SpriteKit
 
 class SquareSprite: SKSpriteNode {
-    var square: Square?
+    let square: Square
+    let background: SKSpriteNode
     var origin: CGPoint?
     var tileSprite: TileSprite?
     
     init(square: Square, edge: CGFloat) {
         self.square = square
-        super.init(texture: nil, color: UIColor.SquareBorderColor(), size: CGSizeMake(edge, edge))
-        let innerSquare = SKSpriteNode(texture: nil, color: Papyrus.colorForSquare(square), size: CGSizeMake(edge-1, edge-1))
-        self.addChild(innerSquare)
+        self.background = SKSpriteNode(texture: nil, color: Papyrus.colorForSquare(square), size: CGSizeMake(edge-1, edge-1))
+        super.init(texture: nil, color: UIColor.Papyrus_SquareBorder, size: CGSizeMake(edge, edge))
+        self.addChild(self.background)
     }
     
     required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
+        fatalError("init(coder:) has not been implemented")
     }
     
     func isEmpty() -> Bool {
@@ -30,15 +31,18 @@ class SquareSprite: SKSpriteNode {
 }
 
 extension Papyrus {
+    static let colorMap: [Square.Modifier: UIColor] = [
+        .Center: .Papyrus_Center,
+        .Letterx2: .Papyrus_Letterx2,
+        .Letterx3: .Papyrus_Letterx3,
+        .Wordx2: .Papyrus_Wordx2,
+        .Wordx3: .Papyrus_Wordx3,
+        .None: .Papyrus_Tile
+    ]
+    
     class func colorForSquare(square: Square) -> UIColor {
-        switch (square.modifier) {
-        case .Center:    return UIColor.CenterTileColor()
-        case .Letterx2: return UIColor.DoubleLetterTileColor()
-        case .Wordx2:    return UIColor.DoubleWordTileColor()
-        case .Letterx3:    return UIColor.TripleLetterTileColor()
-        case .Wordx3:    return UIColor.TripleWordTileColor()
-        default:        return UIColor.BoardTileColor()
-        }
+        guard let color = colorMap[square.modifier] else { return colorMap[.None]! }
+        return color
     }
     
     class func createSquareSprites(forGame game: Papyrus, frame: CGRect) -> [SquareSprite] {

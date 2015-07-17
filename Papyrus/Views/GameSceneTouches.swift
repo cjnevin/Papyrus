@@ -29,8 +29,7 @@ extension GameScene {
                     tileSprite.origin = tileSprite.position
                     tileSprite.tile.placement = .Held
                     tileSprite.tile.square = nil
-                    tileSprite.animatePickupFromRack(point)
-                    //tileSprite.resetPosition(point)
+                    tileSprite.animatePickupFromRack(point) //resetPosition(point)
                     break
                 } else if let squareSprite = child as? SquareSprite where squareSprite.containsPoint(point) {
                     if let tileSprite = squareSprite.pickupTileSprite() {
@@ -72,9 +71,7 @@ extension GameScene {
             }
             let intersection = CGRectIntersection(squareSprite.frame, tileSprite.frame)
             let overlap = CGRectGetWidth(intersection) + CGRectGetHeight(intersection)
-            if overlap > fallback.overlap {
-                fallback = (squareSprite, overlap)
-            }
+            fallback = overlap > fallback.overlap ? (squareSprite, overlap) : fallback
         }
         if !found {
             if let squareSprite = fallback.square {
@@ -82,8 +79,7 @@ extension GameScene {
                 tileSprite.tile.placement = .Board
                 tileSprite.tile.square = squareSprite.square
             } else {
-                //tileSprite.resetPosition(originalPoint)
-                tileSprite.animateDropToRack(origin)
+                tileSprite.animateDropToRack(origin) //resetPosition(origin)
                 tileSprite.tile.placement = .Rack
                 tileSprite.tile.square = nil
             }
@@ -92,16 +88,10 @@ extension GameScene {
     
     override func touchesCancelled(touches: Set<UITouch>?, withEvent event: UIEvent?) {
         if let point = point(inTouches: touches), tileSprite = heldTile {
-            // Best not to animate this...
-            if let origin = heldOrigin {
-                tileSprite.resetPosition(origin)
-                tileSprite.tile.placement = .Rack
-                tileSprite.tile.square = nil
-            } else {
-                tileSprite.resetPosition(point)
-                tileSprite.tile.placement = .Rack
-                tileSprite.tile.square = nil
-            }
+            let origin = heldOrigin ?? point
+            tileSprite.resetPosition(origin)
+            tileSprite.tile.placement = .Rack
+            tileSprite.tile.square = nil
         }
     }
     

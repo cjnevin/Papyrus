@@ -16,7 +16,7 @@ class TileSprite: SKSpriteNode {
     var origin: CGPoint?
     var tile: Tile
     let letterLabel: SKLabelNode
-    let tileBackground: SKSpriteNode
+    let background: SKSpriteNode
     
     init(tile: Tile, edge: CGFloat, scale: CGFloat) {
         self.tile = tile;
@@ -38,11 +38,10 @@ class TileSprite: SKSpriteNode {
         points.verticalAlignmentMode = SKLabelVerticalAlignmentMode.Top
         points.position = CGPointMake(8, -7)
         
-        let background = SKSpriteNode(texture: nil, color: UIColor.TileColor(), size: CGSizeMake(edge - 2, edge - 2))
+        background = SKSpriteNode(texture: nil, color: UIColor.Papyrus_Tile, size: CGSizeMake(edge - 2, edge - 2))
         background.position = CGPointZero
-        tileBackground = background
-        
-        super.init(texture: nil, color: UIColor.TileBorderColor(), size: CGSizeMake(edge, edge))
+
+        super.init(texture: nil, color: UIColor.Papyrus_TileBorder, size: CGSizeMake(edge, edge))
         addChild(background)
         addChild(label)
         addChild(points)
@@ -57,11 +56,11 @@ class TileSprite: SKSpriteNode {
     }
     
     func illuminate() {
-        tileBackground.color = UIColor.TileColorIlluminated()
+        background.color = UIColor.Papyrus_TileIlluminated
     }
     
     func deilluminate() {
-        tileBackground.color = UIColor.TileColor()
+        background.color = UIColor.Papyrus_Tile
     }
     
     required init?(coder aDecoder: NSCoder) {

@@ -9,6 +9,10 @@
 import SpriteKit
 
 extension SquareSprite {
+    override func warningGlow() {
+        background.warningGlow()
+    }
+    
     private func placeTileSprite(t: TileSprite) {
         // Initial placement, no animation
         if tileSprite == nil {

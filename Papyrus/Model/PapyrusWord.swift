@@ -15,16 +15,6 @@ enum Orientation {
     var invert: Orientation { return self == .Horizontal ? .Vertical : .Horizontal }
 }
 
-enum ValidationError: String, ErrorType {
-    case InvalidTileArrangement = "Invalid tile arrangement."
-    case InvalidFirstPlay = "First play must have all tiles lined up."
-    case NoWordIntersection = "New words must intersect existing words."
-    case InvalidSingleLetterPlay = "You must play more than one letter."
-    case NoCenterIntersection = "First play must intersect the center square."
-    case InvalidWords = "Invalid word(s)"
-    case InvalidWord = "Invalid word"
-}
-
 func ==(lhs: Word, rhs: Word) -> Bool {
     return lhs.tiles.filter({rhs.tiles.contains($0)}).count == lhs.tiles.count
 }
@@ -37,8 +27,14 @@ struct Word: Hashable, Equatable {
     let range: (start: Offset, end: Offset)
     let tiles: [Tile]
     let value: String
-    let points: Int
     let intersectsCenter: Bool
+    private var _points: Int
+    var points: Int {
+        return immutable ? 0 : _points
+    }
+    var bonus: Int {
+        return tiles.filter({$0.placement == Tile.Placement.Board}).count == PapyrusRackAmount ? 50 : 0
+    }
     var immutable: Bool {
         return tiles.filter({$0.placement == Tile.Placement.Fixed}).count == tiles.count
     }
@@ -63,9 +59,9 @@ struct Word: Hashable, Equatable {
             intersectsCenter = offsets.contains(PapyrusMiddleOffset!)
             var total: Int = tiles.map({$0.letterValue}).reduce(0, combine: +)
             total = tiles.map({$0.wordMultiplier}).reduce(total, combine: *)
-            points = total
+            _points = total
         }
-        catch (let err) {
+        catch let err {
             throw err
         }
     }

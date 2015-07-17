@@ -34,15 +34,15 @@ struct Dictionary {
                 index = advance(index, 1)
                 if index == word.endIndex {
                     guard let def = inner.objectForKey(Dictionary.DefKey) as? String else {
-                        throw ValidationError.InvalidWord
+                        throw ValidationError.Undefined(word)
                     }
                     return def
                 }
                 current = inner
             } else {
-                throw ValidationError.InvalidWord
+                throw ValidationError.Undefined(word)
             }
         }
-        throw ValidationError.InvalidWord
+        throw ValidationError.Undefined(word)
     }
 }

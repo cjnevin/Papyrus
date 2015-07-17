@@ -9,6 +9,10 @@
 import SpriteKit
 
 extension TileSprite {
+    override func warningGlow() {
+        background.warningGlow()
+    }
+    
     func cancelAnimations() {
         if hasActions() {
             removeAllActions()
@@ -52,10 +56,11 @@ extension TileSprite {
     
     func animateIllumination(illuminate: Bool) {
         let glow = SKAction.sequence([
-            SKAction.colorizeWithColor(illuminate ? UIColor.TileColorIlluminated() : UIColor.TileColor(), colorBlendFactor: 1.0, duration: 0.25)
+            SKAction.colorizeWithColor(illuminate ? UIColor.Papyrus_TileIlluminated :
+                UIColor.Papyrus_Tile, colorBlendFactor: 1.0, duration: 0.25)
         ])
-        tileBackground.removeAllActions()
-        tileBackground.runAction(glow)
+        background.removeAllActions()
+        background.runAction(glow)
     }
     
     func animateShrink(completion: (() -> ())?) {

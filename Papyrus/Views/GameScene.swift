@@ -10,14 +10,22 @@ import SpriteKit
 import SceneKit
 
 protocol GameSceneProtocol {
-    func pickLetter(completion: (Character) -> ())    // FIXME: Character
+    func pickLetter(completion: (Character) -> ())
 }
 
 class GameScene: SKScene {
     var actionDelegate: GameSceneProtocol?
     var game: Papyrus?
-    lazy var tileSprites = [TileSprite]()
     lazy var squareSprites = [SquareSprite]()
+    lazy var tileSprites = [TileSprite]()
+    
+    func sprites(s: [Square]) -> [SquareSprite] {
+        return squareSprites.filter({s.contains($0.square)})
+    }
+    
+    func sprites(t: [Tile]) -> [TileSprite] {
+        return tileSprites.filter({t.contains($0.tile)})
+    }
     
     func submitPlay() throws {
         // Reset position of any held tile (edge case).
@@ -29,19 +37,38 @@ class GameScene: SKScene {
                 let moveWords = try g.move(dropped)
                 // Light up the words we touched...
                 let moveTiles = moveWords.flatMap({$0.tiles})
-                let moveTileSprites = tileSprites.filter({moveTiles.contains($0.tile)})
+                let moveTileSprites = tileSprites.filter{moveTiles.contains($0.tile)}
                 tileSprites.map({$0.deilluminate()})
                 moveTileSprites.map({$0.illuminate()})
                 // Fix all tiles that we dropped on the board.
                 dropped.map({$0.placement = Tile.Placement.Fixed})
                 // Remove existing rack sprites.
-                let rackSprites = tileSprites.filter({racked.contains($0.tile)})
-                tileSprites = tileSprites.filter({!rackSprites.contains($0)})
+                let rackSprites = tileSprites.filter{racked.contains($0.tile)}
+                tileSprites = tileSprites.filter{!rackSprites.contains($0)}
                 rackSprites.map({$0.removeFromParent()})
                 // Create new sprites in new positions.
                 createTileSprites(g)
                 print("Sprites: \(tileSprites.count)")
-            } catch (let err) {
+            } catch let err as ValidationError {
+                //let f = warningGlow
+                switch err {
+                case .Center(let o, let w):
+                    squareSprites.filter{$0.square.offset == o}.map{$0.warningGlow()}
+                    sprites(w.tiles).map{$0.warningGlow()}
+                case .Arrangement(let tiles):
+                    sprites(tiles).map{$0.warningGlow()}
+                case .Invalid(let w):
+                    sprites(w.tiles).map{$0.warningGlow()}
+                case .Intersection(let w):
+                    sprites(w.tiles).map{$0.warningGlow()}
+                    tileSprites.filter{$0.tile.placement == Tile.Placement.Fixed}.map{$0.warningGlow()}
+                case .Message(let s):
+                    throw ValidationError.Message(s)
+                case .Undefined(let s):
+                    throw ValidationError.Message("Undefined word:\n\(s)")
+                case .NoTiles:
+                    print("Silent failure")
+                }
                 throw err
             }
         }
@@ -55,7 +82,6 @@ class GameScene: SKScene {
     }
     
     func resetGame() {
-        // Clear state.
         self.squareSprites.map({$0.removeFromParent()})
         self.tileSprites.map({$0.removeFromParent()})
         self.squareSprites.removeAll()

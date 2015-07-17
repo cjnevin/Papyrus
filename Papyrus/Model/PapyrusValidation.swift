@@ -10,24 +10,38 @@ import Foundation
 
 // TODO: Create orientation/offset tuple (Orientation, Offset) to cleanup func logic...
 
+enum ValidationError: ErrorType {
+    case Arrangement([Tile])
+    case Center(Offset, Word)
+    case Intersection(Word)
+    case Invalid(Word)
+    case Undefined(String)
+    case Message(String)
+    case NoTiles
+}
+
 typealias ValidationFunction = (inout tiles: [Tile]) throws -> (o: Orientation, range: (start: Offset, end: Offset))
 
 extension Papyrus {
-    private func addTiles(inout letters: Set<Tile>, offset: Offset, maxOffset: Offset?, o: Orientation, f: Offset -> (o: Orientation) -> Offset?) -> Offset {
-        var start = offset
+    private func addTiles(inout letters: Set<Tile>, o: Orientation, range: (Offset, Offset?), f:  Offset -> (o: Orientation) -> Offset?) -> Offset {
+        var start = range.0
         while let n = f(start)(o: o) {
             guard let matched = tile(n) else { break }
             letters.insert(matched)
             start = n
-            if let maximum = maxOffset where maximum == n { break }
+            if let m = range.1 where m == n { break }
         }
         return start
+    }
+    
+    private func addTiles(inout letters: Set<Tile>, o: Orientation, range: (Offset, Offset?), f:  [Offset -> (o: Orientation) -> Offset?]) -> [Offset] {
+        return f.map({(self.addTiles(&letters, o: o, range: range, f: $0))})
     }
     
     private func prepareTiles(inout letters: [Tile]) throws -> (o: Orientation, range: (start: Offset, end: Offset)) {
         var sorted = sortTiles(letters)
         guard let first = sorted.first?.square?.offset, last = sorted.last?.square?.offset else {
-            throw ValidationError.InvalidTileArrangement
+            throw ValidationError.NoTiles
         }
         // For a single tile, lets make sure we have the right orientation
         // Otherwise, use orientation calculated above
@@ -37,21 +51,21 @@ extension Papyrus {
                 .Horizontal : .Vertical : (first.x == last.x ?
                     .Vertical : first.y == last.y ?
                         .Horizontal : nil) else {
-                            throw ValidationError.InvalidTileArrangement
+                            throw ValidationError.Arrangement(sorted)
         }
         // Go through tiles to see if there are any gaps
         var tileSet = Set(sorted)
-        let offset = addTiles(&tileSet, offset: first, maxOffset: last, o: o, f: Offset.next)
-        if offset < last { throw ValidationError.InvalidTileArrangement }
+        let offset = addTiles(&tileSet, o: o, range: (first, last), f: Offset.next)
+        if offset < last { throw ValidationError.Arrangement(Array(tileSet)) }
         // Go in direction tiles were played to determine where word ends
         // Pad range with tiles played arround these `tiles`
-        let range = (addTiles(&tileSet, offset: first, maxOffset: nil, o: o, f: Offset.prev),
-            addTiles(&tileSet, offset: last, maxOffset: nil, o: o, f: Offset.next))
+        let range = (addTiles(&tileSet, o: o, range: (first, nil), f: Offset.prev),
+                     addTiles(&tileSet, o: o, range: (last, nil), f: Offset.next))
         // Resort the tiles
         letters = sortTiles(Array(tileSet))
         // Ensure all tiles are on same line, cannot be in multiple directions
         if letters.filter({ o == .Horizontal ? $0.square!.offset.y == first.y : $0.square!.offset.x == first.x }).count != letters.count {
-            throw ValidationError.InvalidTileArrangement
+            throw ValidationError.Arrangement(letters)
         }
         return (o, range)
     }
@@ -62,14 +76,13 @@ extension Papyrus {
         for tile in word.tiles {
             if let offset = tile.square?.offset {
                 var tileSet = Set([tile])
-                addTiles(&tileSet, offset: offset, maxOffset: nil, o: inverted, f: Offset.prev)
-                addTiles(&tileSet, offset: offset, maxOffset: nil, o: inverted, f: Offset.next)
+                addTiles(&tileSet, o: inverted, range: (offset, nil), f: [Offset.prev, Offset.next])
                 if tileSet.count > 1 {
                     do {
                         if let intersectingWord = try Word(Array(tileSet), f: prepareTiles) {
                             output.append(intersectingWord)
                         }
-                    } catch (let err) {
+                    } catch let err {
                         throw err
                     }
                 }
@@ -92,9 +105,9 @@ extension Papyrus {
                     print("-- Definition: \(definition)")
                 }
                 if words.count == 0 && !word.intersectsCenter {
-                    throw ValidationError.NoCenterIntersection
+                    throw ValidationError.Center(PapyrusMiddleOffset!, word)
                 } else if words.count > 0 && intersectedWords.count == 0 && words.flatMap({$0.tiles}).filter({(word.tiles.contains($0))}).count == 0 {
-                    throw ValidationError.NoWordIntersection
+                    throw ValidationError.Intersection(word)
                 }
                 // Prepare words to be returned, modified later
                 outWords.extend(intersectedWords)
@@ -102,13 +115,12 @@ extension Papyrus {
                 // Calculate score for current move.
                 // Filter out calculation for words with ALL fixed tiles.
                 // If all tiles used add 50 to score.
-                let summableWords = outWords.filter{!$0.immutable}
-                let sum = summableWords.map({$0.points}).reduce(0, combine: +) +
-                    (word.length == PapyrusRackAmount ? 50 : 0)
+                let sum = word.bonus + outWords.map({$0.points}).reduce(0, combine: +)
                 // Make tile fixed, no one will be able to drag them from this point onward.
-                outWords.flatMap{$0.tiles}.map{$0.placement = .Fixed}
-                // Assign `summableWords` to `outWords` so we can return them.
-                outWords = summableWords
+                // Assign `mutableWords` to `outWords` so we can return them.
+                let mutableWords = outWords.filter{!$0.immutable}
+                mutableWords.flatMap{$0.tiles}.map{$0.placement = .Fixed}
+                outWords = mutableWords
                 // Add words to played words.
                 words.unionInPlace(outWords)
                 // Add score to current player.
@@ -131,7 +143,7 @@ extension Papyrus {
                 }
             }
         }
-        catch (let err) {
+        catch let err {
             throw err
         }
         return outWords

@@ -76,12 +76,17 @@ class GameViewController: UIViewController, GameSceneProtocol, UITextFieldDelega
     func submit(sender: UIBarButtonItem) {
         do {
             try scene?.submitPlay()
-        } catch (let err as ValidationError) {
-            let alertController = UIAlertController(title: "Error", message: err.rawValue, preferredStyle: .Alert)
-            let OKAction = UIAlertAction(title: "OK", style: .Default) { (action) in
+        } catch let err as ValidationError {
+            switch err {
+            case .Message(let s):
+                let alertController = UIAlertController(title: s, message: nil, preferredStyle: .Alert)
+                let OKAction = UIAlertAction(title: "OK", style: .Default) { (action) in
+                }
+                alertController.addAction(OKAction)
+                presentViewController(alertController, animated: true, completion: nil)
+            default:
+                print(err)
             }
-            alertController.addAction(OKAction)
-            presentViewController(alertController, animated: true, completion: nil)
         } catch _ {
             
         }
