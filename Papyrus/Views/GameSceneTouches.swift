@@ -31,15 +31,13 @@ extension GameScene {
                     tileSprite.tile.square = nil
                     tileSprite.animatePickupFromRack(point) //resetPosition(point)
                     break
-                } else if let squareSprite = child as? SquareSprite where squareSprite.containsPoint(point) {
-                    if let tileSprite = squareSprite.pickupTileSprite() {
-                        tileSprite.origin = squareSprite.origin
-                        tileSprite.tile.placement = .Held
-                        tileSprite.tile.square = nil
-                        tileSprite.animateGrow()
-                        addChild(tileSprite)
-                        break
-                    }
+                } else if let squareSprite = child as? SquareSprite, tileSprite = squareSprite.pickupTileSprite() where squareSprite.containsPoint(point) {
+                    tileSprite.origin = squareSprite.origin
+                    tileSprite.tile.placement = .Held
+                    tileSprite.tile.square = nil
+                    tileSprite.animateGrow()
+                    addChild(tileSprite)
+                    break
                 }
             }
         }

@@ -118,9 +118,8 @@ extension Papyrus {
                 let sum = word.bonus + outWords.map({$0.points}).reduce(0, combine: +)
                 // Make tile fixed, no one will be able to drag them from this point onward.
                 // Assign `mutableWords` to `outWords` so we can return them.
-                let mutableWords = outWords.filter{!$0.immutable}
-                mutableWords.flatMap{$0.tiles}.map{$0.placement = .Fixed}
-                outWords = mutableWords
+                outWords = outWords.filter{!$0.immutable}
+                outWords.flatMap{$0.tiles}.map{$0.placement = .Fixed}
                 // Add words to played words.
                 words.unionInPlace(outWords)
                 // Add score to current player.
