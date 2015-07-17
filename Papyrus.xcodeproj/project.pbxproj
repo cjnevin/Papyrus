@@ -14,7 +14,6 @@
 		99629C171B547DE800510036 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 99629C151B547DE800510036 /* LaunchScreen.storyboard */; };
 		99629C221B547DE800510036 /* PapyrusTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99629C211B547DE800510036 /* PapyrusTests.swift */; };
 		99629C2D1B547DE800510036 /* PapyrusUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99629C2C1B547DE800510036 /* PapyrusUITests.swift */; };
-		99629C4A1B547E3800510036 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99629C3B1B547E3800510036 /* Extensions.swift */; };
 		99629C4B1B547E3800510036 /* Papyrus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99629C3C1B547E3800510036 /* Papyrus.swift */; };
 		99629C4C1B547E3800510036 /* PapyrusDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99629C3D1B547E3800510036 /* PapyrusDictionary.swift */; };
 		99629C4D1B547E3800510036 /* PapyrusPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99629C3E1B547E3800510036 /* PapyrusPlayer.swift */; };
@@ -29,6 +28,7 @@
 		99629C661B547E8200510036 /* PapyrusTileSprite.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99629C5F1B547E8200510036 /* PapyrusTileSprite.swift */; };
 		99629C671B547E8200510036 /* PapyrusTileSpriteAnimations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99629C601B547E8200510036 /* PapyrusTileSpriteAnimations.swift */; };
 		99629C6A1B54901900510036 /* CSW12.plist in Resources */ = {isa = PBXBuildFile; fileRef = 99629C691B54901900510036 /* CSW12.plist */; };
+		9986F60C1B58EB7400166721 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9986F60B1B58EB7400166721 /* Extensions.swift */; };
 		9990CBD41B5714F200632CB8 /* PapyrusValidation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9990CBD31B5714F200632CB8 /* PapyrusValidation.swift */; };
 		9990CBD61B57364500632CB8 /* PapyrusOffset.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9990CBD51B57364500632CB8 /* PapyrusOffset.swift */; };
 		99DF9E0F1B54ED8200F58DA7 /* Styling.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99DF9E0E1B54ED8200F58DA7 /* Styling.swift */; };
@@ -65,7 +65,6 @@
 		99629C281B547DE800510036 /* PapyrusUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PapyrusUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		99629C2C1B547DE800510036 /* PapyrusUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PapyrusUITests.swift; sourceTree = "<group>"; };
 		99629C2E1B547DE800510036 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		99629C3B1B547E3800510036 /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		99629C3C1B547E3800510036 /* Papyrus.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Papyrus.swift; sourceTree = "<group>"; };
 		99629C3D1B547E3800510036 /* PapyrusDictionary.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PapyrusDictionary.swift; sourceTree = "<group>"; };
 		99629C3E1B547E3800510036 /* PapyrusPlayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PapyrusPlayer.swift; sourceTree = "<group>"; };
@@ -80,6 +79,7 @@
 		99629C5F1B547E8200510036 /* PapyrusTileSprite.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PapyrusTileSprite.swift; sourceTree = "<group>"; };
 		99629C601B547E8200510036 /* PapyrusTileSpriteAnimations.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PapyrusTileSpriteAnimations.swift; sourceTree = "<group>"; };
 		99629C691B54901900510036 /* CSW12.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = CSW12.plist; sourceTree = "<group>"; };
+		9986F60B1B58EB7400166721 /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		9990CBD31B5714F200632CB8 /* PapyrusValidation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PapyrusValidation.swift; sourceTree = "<group>"; };
 		9990CBD51B57364500632CB8 /* PapyrusOffset.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PapyrusOffset.swift; sourceTree = "<group>"; };
 		99DF9E0E1B54ED8200F58DA7 /* Styling.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Styling.swift; sourceTree = "<group>"; };
@@ -169,7 +169,6 @@
 		99629C3A1B547E3800510036 /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				99629C3B1B547E3800510036 /* Extensions.swift */,
 				99629C3C1B547E3800510036 /* Papyrus.swift */,
 				99629C3D1B547E3800510036 /* PapyrusDictionary.swift */,
 				9990CBD51B57364500632CB8 /* PapyrusOffset.swift */,
@@ -216,6 +215,7 @@
 		99DF9E0D1B54ED7300F58DA7 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				9986F60B1B58EB7400166721 /* Extensions.swift */,
 				99DF9E0E1B54ED8200F58DA7 /* Styling.swift */,
 			);
 			path = Extensions;
@@ -360,6 +360,7 @@
 				99629C671B547E8200510036 /* PapyrusTileSpriteAnimations.swift in Sources */,
 				99629C631B547E8200510036 /* GameSceneTouches.swift in Sources */,
 				99629C4E1B547E3800510036 /* PapyrusSquare.swift in Sources */,
+				9986F60C1B58EB7400166721 /* Extensions.swift in Sources */,
 				99629C661B547E8200510036 /* PapyrusTileSprite.swift in Sources */,
 				99629C4B1B547E3800510036 /* Papyrus.swift in Sources */,
 				99629C091B547DE800510036 /* AppDelegate.swift in Sources */,
@@ -367,7 +368,6 @@
 				99629C4C1B547E3800510036 /* PapyrusDictionary.swift in Sources */,
 				99629C611B547E8200510036 /* GameViewController.swift in Sources */,
 				99DF9E0F1B54ED8200F58DA7 /* Styling.swift in Sources */,
-				99629C4A1B547E3800510036 /* Extensions.swift in Sources */,
 				9990CBD61B57364500632CB8 /* PapyrusOffset.swift in Sources */,
 				99629C651B547E8200510036 /* PapyrusSquareSpriteAnimations.swift in Sources */,
 				99629C641B547E8200510036 /* PapyrusSquareSprite.swift in Sources */,
