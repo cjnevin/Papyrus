@@ -9,48 +9,48 @@
 import SpriteKit
 
 extension GameScene {
-	var heldTile: TileSprite? {
-		return tileSprites.filter({$0.tile.placement == Tile.Placement.Held}).first
-	}
-	
-	var heldOrigin: CGPoint? {
-		return heldTile?.origin
-	}
-	
-	func point(inTouches touches: Set<UITouch>?) -> CGPoint? {
-		guard let point = touches?.first?.locationInNode(self) else { return nil }
-		return point
-	}
-	
-	override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
-		if let point = point(inTouches: touches) {
-			for child in children {
-				if let tileSprite = child as? TileSprite where tileSprite.containsPoint(point) && !tileSprite.hasActions() {
-					tileSprite.origin = tileSprite.position
-					tileSprite.tile.placement = .Held
-					tileSprite.tile.square = nil
-					tileSprite.animatePickupFromRack(point)
-					//tileSprite.resetPosition(point)
-					break
-				} else if let squareSprite = child as? SquareSprite where squareSprite.containsPoint(point) {
-					if let tileSprite = squareSprite.pickupTileSprite() {
-						tileSprite.origin = squareSprite.origin
-						tileSprite.tile.placement = .Held
-						tileSprite.tile.square = nil
-						tileSprite.animateGrow()
-						addChild(tileSprite)
-						break
-					}
-				}
-			}
-		}
-	}
-	
-	override func touchesMoved(touches: Set<UITouch>, withEvent event: UIEvent?) {
-		if let point = point(inTouches: touches), tileSprite = heldTile {
-			tileSprite.resetPosition(point)
-		}
-	}
+    var heldTile: TileSprite? {
+        return tileSprites.filter({$0.tile.placement == Tile.Placement.Held}).first
+    }
+    
+    var heldOrigin: CGPoint? {
+        return heldTile?.origin
+    }
+    
+    func point(inTouches touches: Set<UITouch>?) -> CGPoint? {
+        guard let point = touches?.first?.locationInNode(self) else { return nil }
+        return point
+    }
+    
+    override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
+        if let point = point(inTouches: touches) {
+            for child in children {
+                if let tileSprite = child as? TileSprite where tileSprite.containsPoint(point) && !tileSprite.hasActions() {
+                    tileSprite.origin = tileSprite.position
+                    tileSprite.tile.placement = .Held
+                    tileSprite.tile.square = nil
+                    tileSprite.animatePickupFromRack(point)
+                    //tileSprite.resetPosition(point)
+                    break
+                } else if let squareSprite = child as? SquareSprite where squareSprite.containsPoint(point) {
+                    if let tileSprite = squareSprite.pickupTileSprite() {
+                        tileSprite.origin = squareSprite.origin
+                        tileSprite.tile.placement = .Held
+                        tileSprite.tile.square = nil
+                        tileSprite.animateGrow()
+                        addChild(tileSprite)
+                        break
+                    }
+                }
+            }
+        }
+    }
+    
+    override func touchesMoved(touches: Set<UITouch>, withEvent event: UIEvent?) {
+        if let point = point(inTouches: touches), tileSprite = heldTile {
+            tileSprite.resetPosition(point)
+        }
+    }
     
     override func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?) {
         guard let point = point(inTouches: touches), tileSprite = heldTile, origin = heldOrigin else { return }
@@ -90,22 +90,22 @@ extension GameScene {
         }
     }
     
-	override func touchesCancelled(touches: Set<UITouch>?, withEvent event: UIEvent?) {
-		if let point = point(inTouches: touches), tileSprite = heldTile {
-			// Best not to animate this...
-			if let origin = heldOrigin {
-				tileSprite.resetPosition(origin)
-				tileSprite.tile.placement = .Rack
-				tileSprite.tile.square = nil
-			} else {
-				tileSprite.resetPosition(point)
-				tileSprite.tile.placement = .Rack
-				tileSprite.tile.square = nil
-			}
-		}
-	}
-	
-	override func update(currentTime: CFTimeInterval) {
-		/* Called before each frame is rendered */
-	}
+    override func touchesCancelled(touches: Set<UITouch>?, withEvent event: UIEvent?) {
+        if let point = point(inTouches: touches), tileSprite = heldTile {
+            // Best not to animate this...
+            if let origin = heldOrigin {
+                tileSprite.resetPosition(origin)
+                tileSprite.tile.placement = .Rack
+                tileSprite.tile.square = nil
+            } else {
+                tileSprite.resetPosition(point)
+                tileSprite.tile.placement = .Rack
+                tileSprite.tile.square = nil
+            }
+        }
+    }
+    
+    override func update(currentTime: CFTimeInterval) {
+        /* Called before each frame is rendered */
+    }
 }

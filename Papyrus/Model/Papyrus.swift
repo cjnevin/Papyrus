@@ -15,60 +15,60 @@ let PapyrusMiddle: Int = PapyrusDimensions/2 + 1
 let PapyrusMiddleOffset = Offset(x: PapyrusMiddle, y: PapyrusMiddle)
 
 class Papyrus {
-	enum State {
-		case Preparing
-		case Ready
-		case Completed
-	}
+    enum State {
+        case Preparing
+        case Ready
+        case Completed
+    }
 
-	typealias StateChangedFunction = (State, Papyrus?) -> ()
-	let fState: StateChangedFunction
-	let squares: [[Square]]
-	var tiles: [Tile]
-	var tileIndex: Int = 0
-	let dictionary: Dictionary
-	lazy var words = Set<Word>()
-	lazy var players = [Player]()
-	var player: Player?
-	
-	private init(f: StateChangedFunction) {
-		fState = f
-		squares = Papyrus.createSquares()
-		print(squares.count)
-		
-		tiles = Papyrus.createTiles()
-		print(tiles.count)
-		
-		dictionary = Dictionary(.English)
-		
-		players.append(createPlayer())
-		player = players.first
-		/*players.append(createPlayer())
-		players.append(createPlayer())
-		players.append(createPlayer())
-		players.append(createPlayer())
-		players.append(createPlayer())
-		players.append(createPlayer())
-		players.append(createPlayer())
-		*/
-		changedState(.Ready)
-	}
-	
-	func changedState(state: State) {
-		// Papyrus is created on a background thread, we want to pass these events to the main thread.
-		dispatch_async(dispatch_get_main_queue()) { () -> Void in
-			self.fState(state, self)
-		}
-	}
+    typealias StateChangedFunction = (State, Papyrus?) -> ()
+    let fState: StateChangedFunction
+    let squares: [[Square]]
+    var tiles: [Tile]
+    var tileIndex: Int = 0
+    let dictionary: Dictionary
+    lazy var words = Set<Word>()
+    lazy var players = [Player]()
+    var player: Player?
+    
+    private init(f: StateChangedFunction) {
+        fState = f
+        squares = Papyrus.createSquares()
+        print(squares.count)
+        
+        tiles = Papyrus.createTiles()
+        print(tiles.count)
+        
+        dictionary = Dictionary(.English)
+        
+        players.append(createPlayer())
+        player = players.first
+        /*players.append(createPlayer())
+        players.append(createPlayer())
+        players.append(createPlayer())
+        players.append(createPlayer())
+        players.append(createPlayer())
+        players.append(createPlayer())
+        players.append(createPlayer())
+        */
+        changedState(.Ready)
+    }
+    
+    func changedState(state: State) {
+        // Papyrus is created on a background thread, we want to pass these events to the main thread.
+        dispatch_async(dispatch_get_main_queue()) { () -> Void in
+            self.fState(state, self)
+        }
+    }
 }
 
 extension Papyrus {
-	class func newGame(f: StateChangedFunction) {
-		f(.Preparing, nil)
-		dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
-			autoreleasepool {
-				let _ = Papyrus(f: f)
-			}
-		}
-	}
+    class func newGame(f: StateChangedFunction) {
+        f(.Preparing, nil)
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
+            autoreleasepool {
+                let _ = Papyrus(f: f)
+            }
+        }
+    }
 }
