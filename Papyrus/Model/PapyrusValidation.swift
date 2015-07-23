@@ -198,10 +198,17 @@ extension Papyrus {
                     innerOffsets = viable.sort()
                     return innerOffsets
                 }
-                collectedOffsets.append(run(.Horizontal, count: userTiles.count))
-                collectedOffsets.append(run(.Vertical, count: userTiles.count))
+                for o in Orientation.both {
+                    let ran = run(o, count: userTiles.count)
+                    // Ignore duplicate paths
+                    if collectedOffsets.filter({$0 == ran}).count == 0 {
+                        collectedOffsets.append(ran)
+                    }
+                }
             }
         }
+        
+        // TODO: Remove duplicate arrays
         
         print(collectedOffsets)
         
