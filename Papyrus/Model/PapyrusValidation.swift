@@ -171,26 +171,35 @@ extension Papyrus {
         var collectedOffsets = [[Offset]]()
         for tile in fixedTiles {
             if let tileOffset = tile.square?.offset {
-                func run(orientation: Orientation, count: Int, amount: Int) -> [Offset] {
-                    var i = 0
+                func run(orientation: Orientation, count: Int) -> [Offset] {
                     var innerOffsets = [Offset]()
                     innerOffsets.append(tileOffset) // Append starting position
-                    var offset = tileOffset
-                    while (count < 0 && i > count) || (count > 0 && i < count) {
-                        // While next offset is available
-                        guard let o = count < 0 ? offset.prev(orientation) : offset.next(orientation) else {
-                            break
+                    func runInDirection(orientation: Orientation, count: Int, amount: Int) {
+                        var i = 0
+                        var offset = tileOffset
+                        while (count < 0 && i > count) || (count > 0 && i < count) {
+                            // While next offset is available
+                            guard let o = count < 0 ? offset.prev(orientation) : offset.next(orientation) else {
+                                break
+                            }
+                            offset = o
+                            innerOffsets.append(o)
+                            // Only advance counter if this offset is unfilled.
+                            // Otherwise we want to iterate more times until all tiles have been used.
+                            if fixedTiles.filter({$0.square?.offset == o}).count == 0 {
+                                i += amount
+                            }
                         }
-                        offset = o
-                        innerOffsets.append(o)
-                        i += amount
                     }
+                    runInDirection(orientation, count: count, amount: 1)
+                    runInDirection(orientation, count: -count, amount: -1)
+                    // Filter duplicates and return sorted.
+                    let viable = Set<Offset>(innerOffsets)
+                    innerOffsets = viable.sort()
                     return innerOffsets
                 }
-                collectedOffsets.append(run(.Horizontal, count: -userTiles.count, amount: -1))
-                collectedOffsets.append(run(.Horizontal, count: userTiles.count, amount: 1))
-                collectedOffsets.append(run(.Vertical, count: -userTiles.count, amount: -1))
-                collectedOffsets.append(run(.Vertical, count: userTiles.count, amount: 1))
+                collectedOffsets.append(run(.Horizontal, count: userTiles.count))
+                collectedOffsets.append(run(.Vertical, count: userTiles.count))
             }
         }
         

@@ -20,7 +20,7 @@ func ==(lhs: Offset, rhs: Offset) -> Bool {
     return lhs.x == rhs.x && lhs.y == rhs.y
 }
 
-struct Offset: Comparable {
+struct Offset: Comparable, Hashable, CustomDebugStringConvertible {
     let x: Int
     let y: Int
     init?(x: Int, y: Int) {
@@ -49,5 +49,11 @@ struct Offset: Comparable {
     }
     func prev(o: Orientation) -> Offset? {
         return advance(o, amount: -1)
+    }
+    var hashValue: Int {
+        return debugDescription.hashValue
+    }
+    var debugDescription: String {
+        return "(\(x),\(y))"
     }
 }
