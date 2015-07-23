@@ -52,6 +52,8 @@ class Papyrus {
         players.append(createPlayer())
         */
         changedState(.Ready)
+        
+        currentRuns()
     }
     
     func changedState(state: State) {

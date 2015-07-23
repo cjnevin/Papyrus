@@ -129,7 +129,7 @@ extension Papyrus {
                 print("Sum: \(sum), new total: \(player!.score)")
                 
                 // TODO: Remove
-                findMoves()
+                currentRuns()
                 
                 // If tiles.count == 0 current player won
                 if tiles(withPlacement: .Rack, owner: player).count == 0 {
@@ -150,75 +150,5 @@ extension Papyrus {
             throw err
         }
         return outWords
-    }
-    
-    func findMoves() {
-        // Get filled tiles.
-        let fixedTiles = tiles(withPlacement: .Fixed, owner: nil)
-        
-        // If filled tile count is zero, we have an easy situation, must intersect EMPTY center square.
-        
-        // Get user tiles.
-        let userTiles = tiles(withPlacement: .Rack, owner: player)
-        
-        // Collect areas:
-        // - Check for perpendicular areas intersecting existing words first
-        // - moving 7 (or user tile count) in each direction (excluding tiles
-        // - that aren't ours) record each stop in each direction.
-        //
-        // - Next, check intersections in parallel.
-        
-        var collectedOffsets = [[Offset]]()
-        for tile in fixedTiles {
-            if let tileOffset = tile.square?.offset {
-                func run(orientation: Orientation, count: Int) -> [Offset] {
-                    var innerOffsets = [Offset]()
-                    innerOffsets.append(tileOffset) // Append starting position
-                    func runInDirection(orientation: Orientation, count: Int, amount: Int) {
-                        var i = 0
-                        var offset = tileOffset
-                        while (count < 0 && i > count) || (count > 0 && i < count) {
-                            // While next offset is available
-                            guard let o = count < 0 ? offset.prev(orientation) : offset.next(orientation) else {
-                                break
-                            }
-                            offset = o
-                            innerOffsets.append(o)
-                            // Only advance counter if this offset is unfilled.
-                            // Otherwise we want to iterate more times until all tiles have been used.
-                            if fixedTiles.filter({$0.square?.offset == o}).count == 0 {
-                                i += amount
-                            }
-                        }
-                    }
-                    runInDirection(orientation, count: count, amount: 1)
-                    runInDirection(orientation, count: -count, amount: -1)
-                    // Filter duplicates and return sorted.
-                    let viable = Set<Offset>(innerOffsets)
-                    innerOffsets = viable.sort()
-                    return innerOffsets
-                }
-                for o in Orientation.both {
-                    let ran = run(o, count: userTiles.count)
-                    // Ignore duplicate paths
-                    if collectedOffsets.filter({$0 == ran}).count == 0 {
-                        collectedOffsets.append(ran)
-                    }
-                }
-            }
-        }
-        
-        // TODO: Remove duplicate arrays
-        
-        print(collectedOffsets)
-        
-        
-        // Determine potential words for each defined area on the board.
-        
-        // Finally, sort words using score potential.
-        
-        // AI difficulty can then be determined by average/min/max of score range.
-        
-        // Return sorted moves.
     }
 }
