@@ -127,6 +127,10 @@ extension Papyrus {
                 // Refill their rack.
                 player?.refill(tileIndex, f: drawTiles, countf: countTiles)
                 print("Sum: \(sum), new total: \(player!.score)")
+                
+                // TODO: Remove
+                findMoves()
+                
                 // If tiles.count == 0 current player won
                 if tiles(withPlacement: .Rack, owner: player).count == 0 {
                     // Assumption, player won!
@@ -146,5 +150,59 @@ extension Papyrus {
             throw err
         }
         return outWords
+    }
+    
+    func findMoves() {
+        // Get filled tiles.
+        let fixedTiles = tiles(withPlacement: .Fixed, owner: nil)
+        
+        // If filled tile count is zero, we have an easy situation, must intersect EMPTY center square.
+        
+        // Get user tiles.
+        let userTiles = tiles(withPlacement: .Rack, owner: player)
+        
+        // Collect areas:
+        // - Check for perpendicular areas intersecting existing words first
+        // - moving 7 (or user tile count) in each direction (excluding tiles
+        // - that aren't ours) record each stop in each direction.
+        //
+        // - Next, check intersections in parallel.
+        
+        var collectedOffsets = [[Offset]]()
+        for tile in fixedTiles {
+            if let tileOffset = tile.square?.offset {
+                func run(orientation: Orientation, count: Int, amount: Int) -> [Offset] {
+                    var i = 0
+                    var innerOffsets = [Offset]()
+                    innerOffsets.append(tileOffset) // Append starting position
+                    var offset = tileOffset
+                    while (count < 0 && i > count) || (count > 0 && i < count) {
+                        // While next offset is available
+                        guard let o = count < 0 ? offset.prev(orientation) : offset.next(orientation) else {
+                            break
+                        }
+                        offset = o
+                        innerOffsets.append(o)
+                        i += amount
+                    }
+                    return innerOffsets
+                }
+                collectedOffsets.append(run(.Horizontal, count: -userTiles.count, amount: -1))
+                collectedOffsets.append(run(.Horizontal, count: userTiles.count, amount: 1))
+                collectedOffsets.append(run(.Vertical, count: -userTiles.count, amount: -1))
+                collectedOffsets.append(run(.Vertical, count: userTiles.count, amount: 1))
+            }
+        }
+        
+        print(collectedOffsets)
+        
+        
+        // Determine potential words for each defined area on the board.
+        
+        // Finally, sort words using score potential.
+        
+        // AI difficulty can then be determined by average/min/max of score range.
+        
+        // Return sorted moves.
     }
 }

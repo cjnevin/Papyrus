@@ -34,7 +34,7 @@ class Tile: NSObject {
         self.value = value
     }
     func placed(p: Placement, owner: Player?) -> Tile? {
-        return self.placement == p && self.owner == owner ? self : nil
+        return (self.placement == p && ((owner != nil && self.owner == owner) || (owner == nil))) ? self : nil
     }
 }
 
