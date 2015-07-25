@@ -17,7 +17,7 @@ func |><T,U>(lhs: T, rhs: T -> U) -> U {
 infix operator >>=  { precedence 50 associativity left }
 
 func >>=<A, B>(arr: [A], f: A -> [B]) -> [B] {
-    return arr.map(f).reduce([], combine: +)
+    return arr.flatMap(f)
 }
 
 infix operator <~>  { precedence 50 associativity left }

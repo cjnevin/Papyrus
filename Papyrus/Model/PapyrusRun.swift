@@ -24,6 +24,8 @@ extension Papyrus {
         // If filled tile count is zero, we have an easy situation, must intersect EMPTY center square.
         let fixedOffsets = fixedTiles.count == 0 ? [PapyrusMiddleOffset!] : fixedTiles.filter({$0.square != nil}).map({$0.square!.offset})
         
+        let permutes = permutations(userTiles)
+        
         // Collect runs:
         // - Check for perpendicular runs intersecting existing words first
         // - moving 7 (or user tile count) in each direction (excluding tiles
