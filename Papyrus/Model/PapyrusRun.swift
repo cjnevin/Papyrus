@@ -9,8 +9,6 @@
 import Foundation
 
 extension Papyrus {
-    typealias Possibility = (score: Int, word: String)
-    typealias Possibilities = [Possibility]
     typealias Run = [Offset]
     typealias Runs = [Run]
     
@@ -18,12 +16,13 @@ extension Papyrus {
         return runs(withTiles: tiles(withPlacement: .Rack, owner: player))
     }
     
+    /// Return an array of `runs` surrounding tiles played on the board.
     func runs(withTiles userTiles: [Tile]) -> Runs {
         // Get filled tiles.
         let fixedTiles = tiles(withPlacement: .Fixed, owner: nil)
         
         // If filled tile count is zero, we have an easy situation, must intersect EMPTY center square.
-        var fixedOffsets = fixedTiles.count == 0 ? [PapyrusMiddleOffset!] : fixedTiles.filter({$0.square != nil}).map({$0.square!.offset})
+        let fixedOffsets = fixedTiles.count == 0 ? [PapyrusMiddleOffset!] : fixedTiles.filter({$0.square != nil}).map({$0.square!.offset})
         
         // Collect runs:
         // - Check for perpendicular runs intersecting existing words first
@@ -65,6 +64,9 @@ extension Papyrus {
             }
         }
         print(runs)
+        for run in runs {
+            print(run.map{ tile($0) })
+        }
         return runs
     }
 }

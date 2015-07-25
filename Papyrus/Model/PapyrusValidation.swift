@@ -78,12 +78,8 @@ extension Papyrus {
                 var tileSet = Set([tile])
                 addTiles(&tileSet, o: inverted, range: (offset, nil), f: [Offset.prev, Offset.next])
                 if tileSet.count > 1 {
-                    do {
-                        if let intersectingWord = try Word(Array(tileSet), f: prepareTiles) {
-                            output.append(intersectingWord)
-                        }
-                    } catch let err {
-                        throw err
+                    if let intersectingWord = try Word(Array(tileSet), f: prepareTiles) {
+                        output.append(intersectingWord)
                     }
                 }
             }
@@ -93,61 +89,56 @@ extension Papyrus {
     
     func move(letters: [Tile]) throws -> [Word] {
         var outWords = [Word]()
-        do {
-            if let word = try Word(letters, f: prepareTiles) {
-                print("Main word: \(word.value)")
-                let definition = try dictionary.defined(word.value)
-                print("Definition: \(definition)")
-                let intersectedWords = try intersectingWords(word)
-                for intersectingWord in intersectedWords {
-                    print("-- Intersecting word: \(intersectingWord.value)")
-                    let definition = try dictionary.defined(intersectingWord.value)
-                    print("-- Definition: \(definition)")
-                }
-                if words.count == 0 && !word.intersectsCenter {
-                    throw ValidationError.Center(PapyrusMiddleOffset!, word)
-                } else if words.count > 0 && intersectedWords.count == 0 && words.flatMap({$0.tiles}).filter({(word.tiles.contains($0))}).count == 0 {
-                    throw ValidationError.Intersection(word)
-                }
-                // Prepare words to be returned, modified later
-                outWords.extend(intersectedWords)
-                outWords.append(word)
-                // Calculate score for current move.
-                // Filter out calculation for words with ALL fixed tiles.
-                // If all tiles used add 50 to score.
-                let sum = word.bonus + outWords.map({$0.points}).reduce(0, combine: +)
-                // Make tile fixed, no one will be able to drag them from this point onward.
-                // Assign `mutableWords` to `outWords` so we can return them.
-                outWords = outWords.filter{!$0.immutable}
-                outWords.flatMap{$0.tiles}.map{$0.placement = .Fixed}
-                // Add words to played words.
-                words.unionInPlace(outWords)
-                // Add score to current player.
-                player?.score += sum
-                // Refill their rack.
-                player?.refill(tileIndex, f: drawTiles, countf: countTiles)
-                print("Sum: \(sum), new total: \(player!.score)")
-                
-                // TODO: Remove
-                currentRuns()
-                
-                // If tiles.count == 0 current player won
-                if tiles(withPlacement: .Rack, owner: player).count == 0 {
-                    // Assumption, player won!
-                    changedState(.Completed)
-                    // Calculate all other players tiles to subtract
-                    var index = 1;
-                    for p in players {
-                        let newScore = tiles(withPlacement: .Rack, owner: p).map({$0.value}).reduce(p.score, combine: -)
-                        print("Player \(index)'s new score: \(newScore)")
-                        p.score = newScore
-                        index++
-                    }
+        if let word = try Word(letters, f: prepareTiles) {
+            print("Main word: \(word.value)")
+            let definition = try dictionary.defined(word.value)
+            print("Definition: \(definition)")
+            let intersectedWords = try intersectingWords(word)
+            for intersectingWord in intersectedWords {
+                print("-- Intersecting word: \(intersectingWord.value)")
+                let definition = try dictionary.defined(intersectingWord.value)
+                print("-- Definition: \(definition)")
+            }
+            if words.count == 0 && !word.intersectsCenter {
+                throw ValidationError.Center(PapyrusMiddleOffset!, word)
+            } else if words.count > 0 && intersectedWords.count == 0 && words.flatMap({$0.tiles}).filter({(word.tiles.contains($0))}).count == 0 {
+                throw ValidationError.Intersection(word)
+            }
+            // Prepare words to be returned, modified later
+            outWords.extend(intersectedWords)
+            outWords.append(word)
+            // Calculate score for current move.
+            // Filter out calculation for words with ALL fixed tiles.
+            // If all tiles used add 50 to score.
+            let sum = word.bonus + outWords.map({$0.points}).reduce(0, combine: +)
+            // Make tile fixed, no one will be able to drag them from this point onward.
+            // Assign `mutableWords` to `outWords` so we can return them.
+            outWords = outWords.filter{!$0.immutable}
+            outWords.flatMap{$0.tiles}.map{$0.placement = .Fixed}
+            // Add words to played words.
+            words.unionInPlace(outWords)
+            // Add score to current player.
+            player?.score += sum
+            // Refill their rack.
+            player?.refill(tileIndex, f: drawTiles, countf: countTiles)
+            print("Sum: \(sum), new total: \(player!.score)")
+            
+            // TODO: Remove
+            currentRuns()
+            
+            // If tiles.count == 0 current player won
+            if tiles(withPlacement: .Rack, owner: player).count == 0 {
+                // Assumption, player won!
+                changedState(.Completed)
+                // Calculate all other players tiles to subtract
+                var index = 1;
+                for p in players {
+                    let newScore = tiles(withPlacement: .Rack, owner: p).map({$0.value}).reduce(p.score, combine: -)
+                    print("Player \(index)'s new score: \(newScore)")
+                    p.score = newScore
+                    index++
                 }
             }
-        }
-        catch let err {
-            throw err
         }
         return outWords
     }

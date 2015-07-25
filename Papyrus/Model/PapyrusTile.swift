@@ -8,7 +8,7 @@
 
 import Foundation
 
-class Tile: NSObject {
+class Tile: NSObject, CustomDebugStringConvertible {
     enum Placement {
         case Bag
         case Rack
@@ -33,8 +33,11 @@ class Tile: NSObject {
         self.letter = letter
         self.value = value
     }
-    func placed(p: Placement, owner: Player?) -> Tile? {
-        return (self.placement == p && ((owner != nil && self.owner == owner) || (owner == nil))) ? self : nil
+    func placed(p: Placement, owner o: Player?) -> Tile? {
+        return (placement == p && ((o != nil && owner == o) || (o == nil))) ? self : nil
+    }
+    override var debugDescription: String {
+        return "\(letter)"
     }
 }
 

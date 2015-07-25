@@ -20,6 +20,7 @@ func ==(lhs: Offset, rhs: Offset) -> Bool {
     return lhs.x == rhs.x && lhs.y == rhs.y
 }
 
+/// An x,y offset on the board, only valid if within board boundaries.
 struct Offset: Comparable, Hashable, CustomDebugStringConvertible {
     let x: Int
     let y: Int
@@ -33,20 +34,29 @@ struct Offset: Comparable, Hashable, CustomDebugStringConvertible {
         x = tuple.0
         y = tuple.1
     }
+    /// False if offset falls outside of predefined board size
     private static func valid(x: Int, y: Int) -> Bool {
         guard let _ = (x, y) <~> PapyrusDimensionsRange else { return false }
         return true
     }
+    /// Return offset for given x,y coordinates if valid
+    /// - SeeAlso: valid(x:y:)
     func at(x xx: Int, y yy: Int) -> Offset? {
         guard let n = (xx, yy) <~> PapyrusDimensionsRange else { return nil }
         return Offset(n)
     }
+    /// Return new offset `amount` away from current offset in given direction or nil
+    /// - SeeAlso: valid(x:y:)
     func advance(o: Orientation, amount: Int) -> Offset? {
         return at(x: x + (o == .Horizontal ? amount : 0), y: y + (o == .Vertical ? amount: 0))
     }
+    /// Return next offset in given direction or nil
+    /// - SeeAlso: valid(x:y:)
     func next(o: Orientation) -> Offset? {
         return advance(o, amount: 1)
     }
+    /// Return previous offset in given direction or nil
+    /// - SeeAlso: valid(x:y:)
     func prev(o: Orientation) -> Offset? {
         return advance(o, amount: -1)
     }

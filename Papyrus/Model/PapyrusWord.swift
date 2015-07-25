@@ -47,22 +47,17 @@ struct Word: Hashable, Equatable {
         return output.hashValue
     }
     init?(_ array: [Tile], f: ValidationFunction) throws {
-        do {
-            tiles = array
-            let cfg = try f(tiles: &tiles)
-            orientation = cfg.o
-            range = cfg.range
-            value = String(tiles.map({$0.letter}))
-            length = value.lengthOfBytesUsingEncoding(NSUTF8StringEncoding)
-            squares = tiles.filter({$0 != nil}).map({$0.square!})
-            offsets = squares.map({$0.offset})
-            intersectsCenter = offsets.contains(PapyrusMiddleOffset!)
-            var total: Int = tiles.map({$0.letterValue}).reduce(0, combine: +)
-            total = tiles.map({$0.wordMultiplier}).reduce(total, combine: *)
-            _points = total
-        }
-        catch let err {
-            throw err
-        }
+        tiles = array
+        let cfg = try f(tiles: &tiles)
+        orientation = cfg.o
+        range = cfg.range
+        value = String(tiles.map({$0.letter}))
+        length = value.lengthOfBytesUsingEncoding(NSUTF8StringEncoding)
+        squares = tiles.filter({$0 != nil}).map({$0.square!})
+        offsets = squares.map({$0.offset})
+        intersectsCenter = offsets.contains(PapyrusMiddleOffset!)
+        var total: Int = tiles.map({$0.letterValue}).reduce(0, combine: +)
+        total = tiles.map({$0.wordMultiplier}).reduce(total, combine: *)
+        _points = total
     }
 }

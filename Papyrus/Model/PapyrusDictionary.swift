@@ -26,6 +26,7 @@ struct Dictionary {
         dictionary = NSDictionary(contentsOfFile: path) ?? NSDictionary()
     }
     
+    /// Determine if a word is defined in the dictionary.
     func defined(word: String) throws -> String {
         var current = dictionary
         var index = word.startIndex
