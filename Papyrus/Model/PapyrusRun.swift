@@ -9,7 +9,7 @@
 import Foundation
 
 extension Papyrus {
-    typealias Run = [Offset]
+    typealias Run = [(offset: Offset, tile: Tile?)]
     typealias Runs = [Run]
     
     func currentRuns() -> Runs {
@@ -18,56 +18,47 @@ extension Papyrus {
     
     /// Return an array of `runs` surrounding tiles played on the board.
     func runs(withTiles userTiles: [Tile]) -> Runs {
-        // Get filled tiles.
         let fixedTiles = tiles(withPlacement: .Fixed, owner: nil)
-        
-        // If filled tile count is zero, we have an easy situation, must intersect EMPTY center square.
-        let fixedOffsets = fixedTiles.count == 0 ? [PapyrusMiddleOffset!] : fixedTiles.filter({$0.square != nil}).map({$0.square!.offset})
-        
-        let permutes = permutations(userTiles)
-        
-        // Collect runs:
-        // - Check for perpendicular runs intersecting existing words first
-        // - moving 7 (or user tile count) in each direction (excluding tiles
-        // - that aren't ours) record each stop in each direction.
-        //
-        // - Next, check intersections in parallel.
-        
+        let rackAmount = userTiles.count
+        let checkCentre = fixedTiles.count == 0
         var runs = Runs()
-        for tileOffset in fixedOffsets {
-            func run(orientation: Orientation, count: Int) -> [Offset] {
-                var innerOffsets = Run(arrayLiteral: tileOffset)
-                func runInDirection(orientation: Orientation, count: Int, amount: Int) {
-                    var i = 0
-                    var offset = tileOffset
-                    while (count < 0 && i > count) || (count > 0 && i < count) {
-                        // While next offset is available
-                        guard let o = count < 0 ? offset.prev(orientation) : offset.next(orientation) else {
-                            break
-                        }
-                        offset = o
-                        innerOffsets.append(o)
-                        // Only advance counter if this offset is unfilled.
-                        // Otherwise we want to iterate more times until all tiles have been used.
-                        i += fixedTiles.filter({$0.square?.offset == o}).count == 0 ? amount : 0
-                    }
+        var buffer = Run()
+        func validateRun(run: Run) {
+            if checkCentre {
+                if run.filter({$0.0 == PapyrusMiddleOffset}).count > 0 && run.count > 1 && run.count <= rackAmount {
+                    runs.append(run)
                 }
-                runInDirection(orientation, count: count, amount: 1)
-                runInDirection(orientation, count: -count, amount: -1)
-                // Filter duplicates and return sorted.
-                return Set(innerOffsets).sort()
-            }
-            for o in Orientation.both {
-                let ran = run(o, count: userTiles.count - 1)
-                // Ignore duplicate paths
-                if runs.filter({$0 == ran}).count == 0 {
-                    runs.append(ran)
+            } else {
+                let letters = run.filter({$0.1 != nil}).map({$0.1!}).filter({fixedTiles.contains($0)}).count
+                let diff = run.count - letters
+                if letters > 0 && diff > 0 && diff <= rackAmount {
+                    runs.append(run)
                 }
             }
         }
-        print(runs)
-        for run in runs {
-            print(run.map{ tile($0) })
+        func checkOffset(offset: Offset?) {
+            if let o = offset {
+                if let tile = fixedTiles.filter({$0.square?.offset == o}).first {
+                    buffer.append((o, tile))
+                } else {
+                    buffer.append((o, nil))
+                }
+                validateRun(buffer)
+                for n in 1..<buffer.count {
+                    let shaved = Array(buffer[n..<buffer.count])
+                    validateRun(shaved)
+                }
+            }
+        }
+        
+        let range = 1...PapyrusDimensions
+        for x in range {
+            buffer = Run()
+            range.map({checkOffset(Offset.at(x: x, y: $0))})
+        }
+        for y in range {
+            buffer = Run()
+            range.map({checkOffset(Offset.at(x: $0, y: y))})
         }
         return runs
     }

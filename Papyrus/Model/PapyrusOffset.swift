@@ -41,9 +41,14 @@ struct Offset: Comparable, Hashable, CustomDebugStringConvertible {
     }
     /// Return offset for given x,y coordinates if valid
     /// - SeeAlso: valid(x:y:)
-    func at(x xx: Int, y yy: Int) -> Offset? {
+    static func at(x xx: Int, y yy: Int) -> Offset? {
         guard let n = (xx, yy) <~> PapyrusDimensionsRange else { return nil }
         return Offset(n)
+    }
+    /// Return offset for given x,y coordinates if valid
+    /// - SeeAlso: valid(x:y:)
+    func at(x xx: Int, y yy: Int) -> Offset? {
+        return Offset.at(x: xx, y: yy)
     }
     /// Return new offset `amount` away from current offset in given direction or nil
     /// - SeeAlso: valid(x:y:)

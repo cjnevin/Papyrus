@@ -124,7 +124,7 @@ extension Papyrus {
             print("Sum: \(sum), new total: \(player!.score)")
             
             // TODO: Remove
-            currentRuns()
+            possibilities(withTiles: rackTiles)
             
             // If tiles.count == 0 current player won
             if tiles(withPlacement: .Rack, owner: player).count == 0 {

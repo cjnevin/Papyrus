@@ -8,15 +8,13 @@
 
 import Foundation
 
-extension Array {
-    /// Return first element and all remaining items separately
-    var decompose: (head: Element, tail: [Element])? {
-        return (count > 0) ? (self[0], Array(self[1..<count])) : nil
-    }
+/// Return first element and all remaining items separately
+func decompose<T>(arr: [T]) -> (head: T, tail: [T])? {
+    return (arr.count > 0) ? (arr[0], Array(arr[1..<arr.count])) : nil
 }
 
 func between<T>(x: T, arr: [T]) -> [[T]] {
-    if let (head, tail) = arr.decompose {
+    if let (head, tail) = decompose(arr) {
         return [[x] + arr] + between(x, arr: tail).map { [head] + $0 }
     } else {
         return [[x]]
@@ -25,7 +23,7 @@ func between<T>(x: T, arr: [T]) -> [[T]] {
 
 /// Return all permutations of a given array [1,2] = [[1,2], [2,1]]
 func permutations<T>(arr: [T]) -> [[T]] {
-    if let (head, tail) = arr.decompose {
+    if let (head, tail) = decompose(arr) {
         return permutations(tail) >>= { permTail in
             between(head, arr: permTail)
         }
