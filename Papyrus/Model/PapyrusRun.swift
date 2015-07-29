@@ -38,11 +38,7 @@ extension Papyrus {
         }
         func checkOffset(offset: Offset?) {
             if let o = offset {
-                if let tile = fixedTiles.filter({$0.square?.offset == o}).first {
-                    buffer.append((o, tile))
-                } else {
-                    buffer.append((o, nil))
-                }
+                buffer.append((o, fixedTiles.filter({$0.square?.offset == o}).first))
                 validateRun(buffer)
                 for n in 1..<buffer.count {
                     let shaved = Array(buffer[n..<buffer.count])

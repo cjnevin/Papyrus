@@ -37,6 +37,7 @@ extension Papyrus {
         // AI difficulty can then be determined by average/min/max of score range.
         
         // Return sorted moves.
+        let possibilities = Prospects()
         return possibilities
     }
 }
