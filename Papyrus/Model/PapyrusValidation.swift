@@ -25,8 +25,7 @@ typealias ValidationFunction = (inout tiles: [Tile]) throws -> (o: Orientation, 
 extension Papyrus {
     private func addTiles(inout letters: Set<Tile>, o: Orientation, range: (Offset, Offset?), f:  Offset -> (o: Orientation) -> Offset?) -> Offset {
         var start = range.0
-        while let n = f(start)(o: o) {
-            guard let matched = tile(n) else { break }
+        while let n = f(start)(o: o), matched = tiles.at(n) {
             letters.insert(matched)
             start = n
             if let m = range.1 where m == n { break }
@@ -35,19 +34,19 @@ extension Papyrus {
     }
     
     private func addTiles(inout letters: Set<Tile>, o: Orientation, range: (Offset, Offset?), f:  [Offset -> (o: Orientation) -> Offset?]) -> [Offset] {
-        return f.map({(self.addTiles(&letters, o: o, range: range, f: $0))})
+        return f.map { self.addTiles(&letters, o: o, range: range, f: $0) }
     }
     
     private func prepareTiles(inout letters: [Tile]) throws -> (o: Orientation, range: (start: Offset, end: Offset)) {
-        var sorted = sortTiles(letters)
+        let sorted = letters.sorted()
         guard let first = sorted.first?.square?.offset, last = sorted.last?.square?.offset else {
             throw ValidationError.NoTiles
         }
         // For a single tile, lets make sure we have the right orientation
         // Otherwise, use orientation calculated above
         guard let o: Orientation = first == last ?
-            (nil != tile(first.prev(.Horizontal)) ||
-                nil != tile(first.next(.Horizontal))) ?
+            (nil != tiles.at(first.prev(.Horizontal)) ||
+                nil != tiles.at(first.next(.Horizontal))) ?
                 .Horizontal : .Vertical : (first.x == last.x ?
                     .Vertical : first.y == last.y ?
                         .Horizontal : nil) else {
@@ -62,7 +61,7 @@ extension Papyrus {
         let range = (addTiles(&tileSet, o: o, range: (first, nil), f: Offset.prev),
                      addTiles(&tileSet, o: o, range: (last, nil), f: Offset.next))
         // Resort the tiles
-        letters = sortTiles(Array(tileSet))
+        letters = tileSet.sorted()
         // Ensure all tiles are on same line, cannot be in multiple directions
         if letters.filter({ o == .Horizontal ? $0.square!.offset.y == first.y : $0.square!.offset.x == first.x }).count != letters.count {
             throw ValidationError.Arrangement(letters)
@@ -73,14 +72,13 @@ extension Papyrus {
     private func intersectingWords(word: Word) throws -> [Word] {
         var output = [Word]()
         let inverted = word.orientation.invert
-        for tile in word.tiles {
-            if let offset = tile.square?.offset {
-                var tileSet = Set([tile])
-                addTiles(&tileSet, o: inverted, range: (offset, nil), f: [Offset.prev, Offset.next])
-                if tileSet.count > 1 {
-                    if let intersectingWord = try Word(Array(tileSet), f: prepareTiles) {
-                        output.append(intersectingWord)
-                    }
+        for tile in word.tiles.filter({$0.square?.offset != nil}) {
+            var tileSet = Set([tile])
+            addTiles(&tileSet, o: inverted, range: (tile.square!.offset, nil),
+                f: [Offset.prev, Offset.next])
+            if tileSet.count > 1 {
+                if let intersectingWord = try Word(Array(tileSet), f: prepareTiles) {
+                    output.append(intersectingWord)
                 }
             }
         }
@@ -120,20 +118,20 @@ extension Papyrus {
             // Add score to current player.
             player?.score += sum
             // Refill their rack.
-            player?.refill(tileIndex, f: drawTiles, countf: countTiles)
+            player?.refill(tileIndex, f: drawTiles, countf: tiles.placedCount)
             print("Sum: \(sum), new total: \(player!.score)")
             
             // TODO: Remove
             possibilities(withTiles: rackTiles)
             
             // If tiles.count == 0 current player won
-            if tiles(withPlacement: .Rack, owner: player).count == 0 {
+            if tiles.placedCount(.Rack, owner: player) == 0 {
                 // Assumption, player won!
                 changedState(.Completed)
                 // Calculate all other players tiles to subtract
                 var index = 1;
                 for p in players {
-                    let newScore = tiles(withPlacement: .Rack, owner: p).map({$0.value}).reduce(p.score, combine: -)
+                    let newScore = tiles.placed(.Rack, owner: p).map({ $0.value }).reduce(p.score, combine: -)
                     print("Player \(index)'s new score: \(newScore)")
                     p.score = newScore
                     index++

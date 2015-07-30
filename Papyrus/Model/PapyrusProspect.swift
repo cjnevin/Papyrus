@@ -14,10 +14,14 @@ extension Papyrus {
     
     func possibilities(withTiles userTiles: [Tile]) -> Prospects {
         // Create every possible permutation of user's tiles.
-        let perms = permutations(userTiles) // 5040 for 7 tiles.
+        //let perms = permutations(userTiles) // 5040 for 7 tiles.
         
         // Collect every possible location to place tiles.
+        let t = NSDate().timeIntervalSinceReferenceDate
+        
         let r = runs(withTiles: userTiles)
+        
+        print("Elapsed: \(NSDate().timeIntervalSinceReferenceDate - t)")
         
         // Determine potential words for each defined area on the board.
         //
@@ -27,10 +31,21 @@ extension Papyrus {
         //
         // Perhaps need to check each tile placement to determine if words on the other axis are
         // valid before continuing with that permutation. Then filter permutations with letter at this
-        // index if invalid.
+        // index if invalid. Create a grid of valid letters playable at index.
+        // i.e. iterate letters (ensuring that letter is valid at each playable index of run, marking bad letters)
+        //      filter permutations (or write new algorithm, to ignore these marked letters)
         
-        print("Permutations: \(perms.count)")
-        print("Possible plays: \(r.count)")
+        //print("Permutations: \(perms.count)")
+        
+        
+        
+        for run in r {
+            // Filter permutations that are same length
+            //for perm in perms.filter({$0.count == run.count}) {
+            //
+            //}
+        }
+        
         
         // Finally, sort words using score potential.
         

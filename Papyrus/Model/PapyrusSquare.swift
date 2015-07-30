@@ -59,24 +59,12 @@ struct Square: Equatable, Hashable {
 extension Papyrus {
     class func createSquares() -> [[Square]] {
         let m = PapyrusMiddle
-        func symmetricalOffsets(offsets: [(Int, Int)]) -> [Offset] {
-            func symmetrical(offset: Offset) -> [Offset] {
-                let a = offset.x, b = offset.y
-                return [Offset(x: m-a, y: m-b), Offset(x: m-a, y: m+b),
-                    Offset(x: m+a, y: m+b), Offset(x: m+a, y: m-b),
-                    Offset(x: m-b, y: m-a), Offset(x: m-b, y: m+a),
-                    Offset(x: m+b, y: m+a), Offset(x: m+b, y: m-a)]
-                    .filter({$0 != nil})
-                    .map({$0!})
-            }
-            return offsets.flatMap({symmetrical(Offset(x: $0.0, y: $0.1)!)})
-        }
         let modifiers: [Square.Modifier: [Offset]] = [
-            .Center: symmetricalOffsets([(0,0)]),
-            .Wordx3: symmetricalOffsets([(m-1, m-1), (0, m-1)]),
-            .Letterx2: symmetricalOffsets([(1, 1), (1, 5), (0, 4), (m-1, 4)]),
-            .Letterx3: symmetricalOffsets([(2, 6), (2, 2)]),
-            .Wordx2: symmetricalOffsets([(3, 3), (4, 4), (5, 5), (6, 6)])
+            .Center: [(0,0)].symmetrical(),
+            .Wordx3: [(m-1, m-1), (0, m-1)].symmetrical(),
+            .Letterx2: [(1, 1), (1, 5), (0, 4), (m-1, 4)].symmetrical(),
+            .Letterx3: [(2, 6), (2, 2)].symmetrical(),
+            .Wordx2: [(3, 3), (4, 4), (5, 5), (6, 6)].symmetrical()
         ]
         let range = (1...PapyrusDimensions)
         var output = [[Square]]()

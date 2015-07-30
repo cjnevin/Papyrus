@@ -8,6 +8,22 @@
 
 import Foundation
 
+extension CollectionType where Generator.Element == Tile {
+    func at(offset: Offset?) -> Tile? {
+        guard let offset = offset, matched = filter({ $0.square?.offset == offset }).first else { return nil }
+        return matched
+    }
+    func placedCount(placement: Tile.Placement, owner: Player?) -> Int {
+        return placed(placement, owner: owner).count
+    }
+    func placed(placement: Tile.Placement, owner: Player?) -> [Tile] {
+        return filter{ Tile.placed($0)(placement, owner: owner) != nil }
+    }
+    func sorted() -> [Tile] {
+        return filter{ $0.square != nil }.sort{ $0.square!.offset < $1.square!.offset }
+    }
+}
+
 class Tile: NSObject, CustomDebugStringConvertible {
     enum Placement {
         case Bag
@@ -74,29 +90,11 @@ extension Papyrus {
         return count
     }
     
-    func countTiles(withPlacement p: Tile.Placement, owner: Player?) -> Int {
-        return tiles(withPlacement: p, owner: owner).count
-    }
-    
     var droppedTiles: [Tile] {
-        return tiles(withPlacement: .Board, owner: player)
+        return tiles.placed(.Board, owner: player)
     }
     
     var rackTiles: [Tile] {
-        return tiles(withPlacement: .Rack, owner: player)
-    }
-    
-    func tile(at: Offset?) -> Tile? {
-        if at == nil { return nil }
-        guard let matched = tiles.filter({$0.square?.offset == at}).first else { return nil }
-        return matched
-    }
-    
-    func tiles(withPlacement p: Tile.Placement, owner: Player?) -> [Tile] {
-        return tiles.filter{Tile.placed($0)(p, owner:owner) != nil}
-    }
-    
-    func sortTiles(letters: [Tile]) -> [Tile] {
-        return letters.filter{$0.square != nil}.sort{$0.square!.offset < $1.square!.offset}
+        return tiles.placed(.Rack, owner: player)
     }
 }

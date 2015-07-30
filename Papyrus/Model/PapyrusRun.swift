@@ -12,20 +12,20 @@ extension Papyrus {
     typealias Run = [(offset: Offset, tile: Tile?)]
     typealias Runs = [Run]
     
-    func currentRuns() -> Runs {
-        return runs(withTiles: tiles(withPlacement: .Rack, owner: player))
+    func currentRuns() -> LazySequence<Runs> {
+        return runs(withTiles: tiles.placed(.Rack, owner: player))
     }
     
     /// Return an array of `runs` surrounding tiles played on the board.
-    func runs(withTiles userTiles: [Tile]) -> Runs {
-        let fixedTiles = tiles(withPlacement: .Fixed, owner: nil)
+    func runs(withTiles userTiles: [Tile]) -> LazySequence<Runs> {
+        let fixedTiles = tiles.placed(.Fixed, owner: nil)
         let rackAmount = userTiles.count
         let checkCentre = fixedTiles.count == 0
         var runs = Runs()
         var buffer = Run()
         func validateRun(run: Run) {
             if checkCentre {
-                if run.filter({$0.0 == PapyrusMiddleOffset}).count > 0 && run.count > 1 && run.count <= rackAmount {
+                if run.count > 1 && run.count <= rackAmount && run.filter({$0.0 == PapyrusMiddleOffset}).count > 0 {
                     runs.append(run)
                 }
             } else {
@@ -56,6 +56,6 @@ extension Papyrus {
             buffer = Run()
             range.map({checkOffset(Offset.at(x: $0, y: y))})
         }
-        return runs
+        return lazy(runs)
     }
 }

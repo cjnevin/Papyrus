@@ -72,3 +72,20 @@ struct Offset: Comparable, Hashable, CustomDebugStringConvertible {
         return "(\(x),\(y))"
     }
 }
+
+
+extension CollectionType where Generator.Element == (Int, Int) {
+    func toOffsets() -> [Offset] {
+        return map { Offset(x: $0.0, y: $0.1) } .filter { $0 != nil } .map { $0! }
+    }
+    func symmetrical() -> [Offset] {
+        let m = PapyrusMiddle
+        func s(offset: (Int, Int)?) -> [Offset]? {
+            guard let x = offset?.0, y = offset?.1 else { return nil }
+            return [ (m-x, m-y), (m-x, m+y), (m+x, m+y), (m+x, m-y),
+                (m-y, m-x), (m-y, m+x), (m+y, m+x), (m+x, m-y) ]
+                .toOffsets()
+        }
+        return flatMap { s($0) } .filter { $0 != nil } .flatMap { $0! }
+    }
+}

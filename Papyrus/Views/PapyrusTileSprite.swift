@@ -73,7 +73,7 @@ extension Papyrus {
         var sprites = [TileSprite]()
         let squareSize = CGRectGetWidth(frame) / CGFloat(PapyrusDimensions)
         let tileSize = squareSize * 2.0
-        let rack = game.tiles(withPlacement: .Rack, owner: game.player)
+        let rack = game.rackTiles
         let spacing = (CGRectGetWidth(frame) - tileSize * CGFloat(rack.count)) / 2
         var index: CGFloat = 0
         for tile in rack {

@@ -30,7 +30,7 @@ class Player: NSObject {
 extension Papyrus {
     func createPlayer() -> Player {
         let player = Player(0)
-        tileIndex += player.refill(tileIndex, f: drawTiles, countf: countTiles)
+        tileIndex += player.refill(tileIndex, f: drawTiles, countf: tiles.placedCount)
         return player
     }
 }

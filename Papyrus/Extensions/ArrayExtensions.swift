@@ -7,7 +7,7 @@
 //
 
 import Foundation
-
+/*
 /// Return first element and all remaining items separately
 func decompose<T>(arr: [T]) -> (head: T, tail: [T])? {
     return (arr.count > 0) ? (arr[0], Array(arr[1..<arr.count])) : nil
@@ -31,7 +31,7 @@ func permutations<T>(arr: [T]) -> [[T]] {
         return [[]]
     }
 }
-
+*/
 /// Iterate, with looping if boundary is passed
 func iterate<T>(arr: Array<T>, start: Int, callback: (T) -> ()) {
     let count = arr.count
