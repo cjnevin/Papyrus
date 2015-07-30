@@ -78,10 +78,11 @@ extension Papyrus {
             .Letterx3: symmetricalOffsets([(2, 6), (2, 2)]),
             .Wordx2: symmetricalOffsets([(3, 3), (4, 4), (5, 5), (6, 6)])
         ]
+        let range = (1...PapyrusDimensions)
         var output = [[Square]]()
-        for x in (1...PapyrusDimensions) {
+        for x in range {
             var xSquares = [Square]()
-            for y in (1...PapyrusDimensions) {
+            for y in range {
                 var modifier = Square.Modifier.None
                 if let offset = Offset(x: x, y: y) {
                     for (mod, offsets) in modifiers where offsets.contains(offset) {
