@@ -10,7 +10,7 @@ import SpriteKit
 
 extension GameScene {
     var heldTile: TileSprite? {
-        return tileSprites.filter({$0.tile.placement == Tile.Placement.Held}).first
+        return tileSprites.filter{ $0.tile.placement == Tile.Placement.Held }.first
     }
     
     var heldOrigin: CGPoint? {
@@ -55,15 +55,13 @@ extension GameScene {
         guard let point = point(inTouches: touches), tileSprite = heldTile, origin = heldOrigin else { return }
         var found = false
         var fallback: (square: SquareSprite?, overlap: CGFloat) = (nil, 0) // Closest square to drop tile if hovered square is filled
-        for squareSprite in (children.filter({$0 is SquareSprite}) as! [SquareSprite]).filter({$0.isEmpty() && $0.intersectsNode(tileSprite)}) {
+        for squareSprite in (children.filter({ $0 is SquareSprite }) as! [SquareSprite]).filter({ $0.isEmpty() && $0.intersectsNode(tileSprite) }) {
             if squareSprite.frame.contains(point) {
                 tileSprite.tile.placement = .Board
                 tileSprite.tile.square = squareSprite.square
                 squareSprite.animateDropTileSprite(tileSprite, originalPoint: origin, completion: { () -> () in
                     if tileSprite.tile.letter == "?" {
-                        self.actionDelegate?.pickLetter({ (letter) -> () in
-                            tileSprite.changeLetter(letter)
-                        })
+                        self.actionDelegate?.pickLetter{ tileSprite.changeLetter($0) }
                     }
                 })
                 found = true

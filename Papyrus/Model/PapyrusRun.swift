@@ -25,11 +25,11 @@ extension Papyrus {
         var buffer = Run()
         func validateRun(run: Run) {
             if checkCentre {
-                if run.count > 1 && run.count <= rackAmount && run.filter({$0.0 == PapyrusMiddleOffset}).count > 0 {
+                if run.count > 1 && run.count <= rackAmount && run.filter({ $0.0 == PapyrusMiddleOffset }).count > 0 {
                     runs.append(run)
                 }
             } else {
-                let letters = run.filter({$0.1 != nil}).map({$0.1!}).filter({fixedTiles.contains($0)}).count
+                let letters = run.mapFilter({ $0.1 }).filter({ fixedTiles.contains($0) }).count
                 let diff = run.count - letters
                 if letters > 0 && diff > 0 && diff <= rackAmount {
                     runs.append(run)
@@ -38,23 +38,20 @@ extension Papyrus {
         }
         func checkOffset(offset: Offset?) {
             if let o = offset {
-                buffer.append((o, fixedTiles.filter({$0.square?.offset == o}).first))
+                buffer.append((o, fixedTiles.filter({ $0.square?.offset == o }).first))
                 validateRun(buffer)
-                for n in 1..<buffer.count {
-                    let shaved = Array(buffer[n..<buffer.count])
-                    validateRun(shaved)
-                }
+                (1..<buffer.count).map({ validateRun(Array(buffer[$0..<buffer.count])) })
             }
         }
         
         let range = 1...PapyrusDimensions
         for x in range {
             buffer = Run()
-            range.map({checkOffset(Offset.at(x: x, y: $0))})
+            range.map{ checkOffset(Offset.at(x: x, y: $0)) }
         }
         for y in range {
             buffer = Run()
-            range.map({checkOffset(Offset.at(x: $0, y: y))})
+            range.map{ checkOffset(Offset.at(x: $0, y: y)) }
         }
         return lazy(runs)
     }

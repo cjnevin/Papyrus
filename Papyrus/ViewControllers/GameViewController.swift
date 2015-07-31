@@ -64,7 +64,7 @@ class GameViewController: UIViewController, GameSceneProtocol, UITextFieldDelega
                 sender.enabled = false
                 self.navigationItem.rightBarButtonItem?.enabled = false
             case .Ready:
-                self.title = "Score: 0"
+                self.title = "Papyrus"
                 sender.enabled = true
                 self.navigationItem.rightBarButtonItem?.enabled = true
             default:

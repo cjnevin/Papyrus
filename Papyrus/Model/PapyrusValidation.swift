@@ -72,7 +72,7 @@ extension Papyrus {
     private func intersectingWords(word: Word) throws -> [Word] {
         var output = [Word]()
         let inverted = word.orientation.invert
-        for tile in word.tiles.filter({$0.square?.offset != nil}) {
+        for tile in word.tiles.filter({ $0.square?.offset != nil }) {
             var tileSet = Set([tile])
             addTiles(&tileSet, o: inverted, range: (tile.square!.offset, nil),
                 f: [Offset.prev, Offset.next])
@@ -99,7 +99,7 @@ extension Papyrus {
             }
             if words.count == 0 && !word.intersectsCenter {
                 throw ValidationError.Center(PapyrusMiddleOffset!, word)
-            } else if words.count > 0 && intersectedWords.count == 0 && words.flatMap({$0.tiles}).filter({(word.tiles.contains($0))}).count == 0 {
+            } else if words.count > 0 && intersectedWords.count == 0 && words.flatMap({ $0.tiles }).filter({ word.tiles.contains($0) }).count == 0 {
                 throw ValidationError.Intersection(word)
             }
             // Prepare words to be returned, modified later
@@ -108,11 +108,11 @@ extension Papyrus {
             // Calculate score for current move.
             // Filter out calculation for words with ALL fixed tiles.
             // If all tiles used add 50 to score.
-            let sum = word.bonus + outWords.map({$0.points}).reduce(0, combine: +)
+            let sum = word.bonus + outWords.map{ $0.points }.reduce(0, combine: +)
             // Make tile fixed, no one will be able to drag them from this point onward.
             // Assign `mutableWords` to `outWords` so we can return them.
-            outWords = outWords.filter{!$0.immutable}
-            outWords.flatMap{$0.tiles}.map{$0.placement = .Fixed}
+            outWords = outWords.filter{ !$0.immutable }
+            outWords.flatMap{ $0.tiles }.map{ $0.placement = .Fixed }
             // Add words to played words.
             words.unionInPlace(outWords)
             // Add score to current player.

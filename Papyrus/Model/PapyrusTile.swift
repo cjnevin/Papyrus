@@ -65,13 +65,11 @@ extension Papyrus {
         (2, 4, "Y"), (1, 10, "Z"), (2, 0, "?")]
     
     class func createTiles() -> [Tile] {
-        var output = [Tile]()
-        for (n, value, letter) in Papyrus.TileConfiguration {
-            for _ in 0..<n {
-                output.append(Tile(letter, value: value))
-            }
-        }
-        return output.sort({_, _ in arc4random() % 2 == 0})
+        return Papyrus.TileConfiguration.flatMap { e in
+            (0..<e.0).map({ _ in
+                Tile(e.2, value: e.1)
+            })
+        }.sort({_, _ in arc4random() % 2 == 0})
     }
     
     func drawTiles(start: Int, end: Int, owner: Player?, from: Tile.Placement, to: Tile.Placement) -> Int {

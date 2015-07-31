@@ -16,7 +16,7 @@ enum Orientation {
 }
 
 func ==(lhs: Word, rhs: Word) -> Bool {
-    return lhs.tiles.filter({rhs.tiles.contains($0)}).count == lhs.tiles.count
+    return lhs.tiles.filter({ rhs.tiles.contains($0) }).count == lhs.tiles.count
 }
 
 struct Word: Hashable, Equatable {
@@ -33,14 +33,14 @@ struct Word: Hashable, Equatable {
         return immutable ? 0 : _points
     }
     var bonus: Int {
-        return tiles.filter({$0.placement == Tile.Placement.Board}).count == PapyrusRackAmount ? 50 : 0
+        return tiles.filter({ $0.placement == Tile.Placement.Board }).count == PapyrusRackAmount ? 50 : 0
     }
     var immutable: Bool {
-        return tiles.filter({$0.placement == Tile.Placement.Fixed}).count == tiles.count
+        return tiles.filter({ $0.placement == Tile.Placement.Fixed }).count == tiles.count
     }
     var hashValue: Int {
         var output = String()
-        for square in tiles.filter({$0.square != nil}).map({$0.square!}) {
+        for square in tiles.mapFilter({ $0.square }) {
             if !output.isEmpty { output += "|" }
             output += "\(square.offset.x),\(square.offset.y)"
         }
@@ -51,13 +51,13 @@ struct Word: Hashable, Equatable {
         let cfg = try f(tiles: &tiles)
         orientation = cfg.o
         range = cfg.range
-        value = String(tiles.map({$0.letter}))
+        value = String(tiles.map{ $0.letter })
         length = value.lengthOfBytesUsingEncoding(NSUTF8StringEncoding)
-        squares = tiles.filter({$0 != nil}).map({$0.square!})
-        offsets = squares.map({$0.offset})
+        squares = tiles.mapFilter{ $0.square }
+        offsets = squares.map{ $0.offset }
         intersectsCenter = offsets.contains(PapyrusMiddleOffset!)
-        var total: Int = tiles.map({$0.letterValue}).reduce(0, combine: +)
-        total = tiles.map({$0.wordMultiplier}).reduce(total, combine: *)
+        var total: Int = tiles.map({ $0.letterValue }).reduce(0, combine: +)
+        total = tiles.map({ $0.wordMultiplier }).reduce(total, combine: *)
         _points = total
     }
 }

@@ -77,9 +77,9 @@ extension Papyrus {
     class func createSquares() -> [[Square]] {
         let modifiers = Square.Modifier.all.map({ ($0, $0.symmetricalOffsets) })
         let range = (1...PapyrusDimensions)
-        return range.map { (x) -> [Square] in
-            return range.mapFilter({ Offset(x: x, y: $0) }).map({ (offset) -> Square in
-                return Square(
+        return range.map { x in
+            range.mapFilter({ Offset(x: x, y: $0) }).map({ offset in
+                Square(
                     modifier: modifiers.filter({ $0.1.contains(offset) }).map({ $0.0 }).first ?? Square.Modifier.None,
                     offset: offset)
             })
