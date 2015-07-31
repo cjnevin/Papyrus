@@ -19,12 +19,21 @@ extension CollectionType where Generator.Element == Tile {
     func placed(placement: Tile.Placement, owner: Player? = nil) -> [Tile] {
         return filter{ Tile.placed($0)(placement, owner: owner) != nil }
     }
+    func place(newPlacement: Tile.Placement, owner: Player? = nil) throws {
+        for tile in self {
+            try tile.place(newPlacement, owner: owner)
+        }
+    }
     func sorted() -> [Tile] {
         return filter{ $0.square != nil }.sort{ $0.square!.offset < $1.square!.offset }
     }
 }
 
 class Tile: NSObject, CustomDebugStringConvertible {
+    enum PlacementError: ErrorType {
+        case PlacementWithoutPlayerError
+        case PlaceInBagWithPlayerError
+    }
     enum Placement {
         case Bag
         case Rack
@@ -49,6 +58,19 @@ class Tile: NSObject, CustomDebugStringConvertible {
         self.letter = letter
         self.value = value
     }
+    func place(p: Placement, owner o: Player? = nil) throws {
+        if p != .Bag && o == nil && owner == nil {
+            throw PlacementError.PlacementWithoutPlayerError
+        } else if p == .Bag && (o != nil) {
+            throw PlacementError.PlaceInBagWithPlayerError
+        }
+        if o == nil && owner != nil && p != .Bag {
+            // Don't update owner if nil but already previously set
+        } else {
+            self.owner = o
+        }
+        self.placement = p
+    }
     func placed(p: Placement, owner o: Player?) -> Tile? {
         return (placement == p && ((o != nil && owner == o) || (o == nil))) ? self : nil
     }
@@ -72,16 +94,13 @@ extension Papyrus {
         }.sort({_, _ in arc4random() % 2 == 0})
     }
     
-    func drawTiles(start: Int, end: Int, owner: Player?, from: Tile.Placement, to: Tile.Placement) -> Int {
+    func drawTiles(start: Int, end: Int, owner: Player?, from: Tile.Placement, to: Tile.Placement) throws -> Int {
         var count = 0
         for i in start..<tiles.count {
             if tiles[i].placement == from {
                 if count < end {
-                    tiles[i].placement = to
-                    tiles[i].owner = owner
+                    try tiles[i].place(to, owner: owner)
                     count++
-                } else {
-                    break
                 }
             }
         }

@@ -41,8 +41,14 @@ class Papyrus {
         
         dictionary = Dictionary(.English)
         
-        players.append(createPlayer())
-        player = players.first
+        do {
+            let p = try createPlayer()
+            
+            players.append(p)
+            player = players.first
+        } catch {
+            
+        }
         /*players.append(createPlayer())
         players.append(createPlayer())
         players.append(createPlayer())

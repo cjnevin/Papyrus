@@ -9,7 +9,7 @@
 import Foundation
 
 class Player: NSObject {
-    typealias DrawFunction = (Int, Int, Player?, Tile.Placement, Tile.Placement) -> (Int)
+    typealias DrawFunction = (Int, Int, Player?, Tile.Placement, Tile.Placement) throws -> (Int)
     typealias CountFunction = (Tile.Placement, Player?) -> (Int)
     
     var score: Int = 0
@@ -19,18 +19,18 @@ class Player: NSObject {
     func count(f: CountFunction) -> Int {
         return f(.Rack, self)
     }
-    func draw(start: Int, end: Int, f: DrawFunction) -> Int {
-        return f(start, end, self, .Bag, .Rack)
+    func draw(start: Int, end: Int, f: DrawFunction) throws -> Int {
+        return try f(start, end, self, .Bag, .Rack)
     }
-    func refill(start: Int, f: DrawFunction, countf: CountFunction) -> Int {
-        return draw(start, end: PapyrusRackAmount - count(countf), f: f)
+    func refill(start: Int, f: DrawFunction, countf: CountFunction) throws -> Int {
+        return try draw(start, end: PapyrusRackAmount - count(countf), f: f)
     }
 }
 
 extension Papyrus {
-    func createPlayer() -> Player {
+    func createPlayer() throws -> Player {
         let player = Player(0)
-        tileIndex += player.refill(tileIndex, f: drawTiles, countf: tiles.placedCount)
+        tileIndex += try player.refill(tileIndex, f: drawTiles, countf: tiles.placedCount)
         return player
     }
 }

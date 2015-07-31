@@ -118,7 +118,7 @@ extension Papyrus {
             // Add score to current player.
             player?.score += sum
             // Refill their rack.
-            player?.refill(tileIndex, f: drawTiles, countf: tiles.placedCount)
+            try player?.refill(tileIndex, f: drawTiles, countf: tiles.placedCount)
             print("Sum: \(sum), new total: \(player!.score)")
             
             // TODO: Remove
