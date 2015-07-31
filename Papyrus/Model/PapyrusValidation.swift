@@ -112,7 +112,7 @@ extension Papyrus {
             // Make tile fixed, no one will be able to drag them from this point onward.
             // Assign `mutableWords` to `outWords` so we can return them.
             outWords = outWords.filter{ !$0.immutable }
-            outWords.flatMap{ $0.tiles }.placed(.Fixed)
+            outWords.flatMap{ $0.tiles }.map{ $0.placement = .Fixed } 
             // Add words to played words.
             words.unionInPlace(outWords)
             // Add score to current player.
