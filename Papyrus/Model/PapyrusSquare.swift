@@ -67,13 +67,12 @@ extension Papyrus {
             .Wordx2: [(3, 3), (4, 4), (5, 5), (6, 6)].symmetrical()
         ]
         let range = (1...PapyrusDimensions)
-        let output = range.map { (x) -> [Square] in
+        return range.map { (x) -> [Square] in
             return range.mapFilter({ Offset(x: x, y: $0) }).map({ (offset) -> Square in
                 return Square(
                     modifier: modifiers.filter({ $0.1.contains(offset) }).map({ $0.0 }).first ?? Square.Modifier.None,
                     offset: offset)
             })
         }
-        return output
     }
 }
