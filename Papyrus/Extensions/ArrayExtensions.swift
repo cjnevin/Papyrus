@@ -43,16 +43,13 @@ extension CollectionType {
 
 /// Iterate, with looping if boundary is passed
 func iterate<T>(arr: Array<T>, start: Int, callback: (T) -> ()) {
-    let count = arr.count
-    for index in start..<(start + count) {
-        callback(arr[index % count])
-    }
+    (start..<(start + arr.count)).map{ callback(arr[$0 % arr.count]) }
 }
 
 /// Calculate min and max values of a given Int array
 func minMax(values: [Int]) -> (min: Int, max: Int) {
-    return (min: values.reduce(Int.max){min($0, $1)},
-        max: values.reduce(Int.min){max($0, $1)})
+    return (min: values.reduce(Int.max){ min($0, $1) },
+        max: values.reduce(Int.min){ max($0, $1) })
 }
 
 /// Check if boundaries of minMax result match

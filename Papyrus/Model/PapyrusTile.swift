@@ -13,8 +13,14 @@ extension CollectionType where Generator.Element == Tile {
         guard let offset = offset, matched = filter({ $0.square?.offset == offset }).first else { return nil }
         return matched
     }
+    func placedCount(placement: Tile.Placement) -> Int {
+        return placedCount(placement, owner: nil)
+    }
     func placedCount(placement: Tile.Placement, owner: Player?) -> Int {
         return placed(placement, owner: owner).count
+    }
+    func placed(placement: Tile.Placement) -> [Tile] {
+        return placed(placement, owner: nil)
     }
     func placed(placement: Tile.Placement, owner: Player?) -> [Tile] {
         return filter{ Tile.placed($0)(placement, owner: owner) != nil }

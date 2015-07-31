@@ -18,7 +18,7 @@ extension Papyrus {
     
     /// Return an array of `runs` surrounding tiles played on the board.
     func runs(withTiles userTiles: [Tile]) -> LazySequence<Runs> {
-        let fixedTiles = tiles.placed(.Fixed, owner: nil)
+        let fixedTiles = tiles.placed(.Fixed)
         let rackAmount = userTiles.count
         let checkCentre = fixedTiles.count == 0
         var runs = Runs()
