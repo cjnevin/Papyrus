@@ -76,7 +76,7 @@ struct Offset: Comparable, Hashable, CustomDebugStringConvertible {
 
 extension CollectionType where Generator.Element == (Int, Int) {
     func toOffsets() -> [Offset] {
-        return map { Offset(x: $0.0, y: $0.1) } .filter { $0 != nil } .map { $0! }
+        return mapFilter{ Offset(x: $0.0, y: $0.1) }
     }
     func symmetrical() -> [Offset] {
         let m = PapyrusMiddle
@@ -86,6 +86,6 @@ extension CollectionType where Generator.Element == (Int, Int) {
                 (m-y, m-x), (m-y, m+x), (m+y, m+x), (m+x, m-y) ]
                 .toOffsets()
         }
-        return flatMap { s($0) } .filter { $0 != nil } .flatMap { $0! }
+        return flatMap{ s($0) }.flatMap{ $0 }
     }
 }

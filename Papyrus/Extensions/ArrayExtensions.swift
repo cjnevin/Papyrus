@@ -32,6 +32,15 @@ func permutations<T>(arr: [T]) -> [[T]] {
     }
 }
 */
+
+
+
+extension CollectionType {
+    func mapFilter<T>(@noescape transform: (Self.Generator.Element) -> T?) -> [T] {
+        return map{ transform($0) }.filter{ $0 != nil }.map{ $0! }
+    }
+}
+
 /// Iterate, with looping if boundary is passed
 func iterate<T>(arr: Array<T>, start: Int, callback: (T) -> ()) {
     let count = arr.count
