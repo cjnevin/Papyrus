@@ -34,6 +34,23 @@ struct Square: Equatable, Hashable {
             default: return 1
             }
         }
+        private var offsets: [(Int, Int)] {
+            let m = PapyrusMiddle
+            switch (self) {
+            case .Center: return [(0,0)]
+            case .Wordx2: return [(3, 3), (4, 4), (5, 5), (6, 6)]
+            case .Wordx3: return [(m-1, m-1), (0, m-1)]
+            case .Letterx2: return [(1, 1), (1, 5), (0, 4), (m-1, 4)]
+            case .Letterx3: return [(2, 6), (2, 2)]
+            default: return []
+            }
+        }
+        var symmetricalOffsets: [Offset] {
+            return offsets.symmetrical()
+        }
+        static var all: [Modifier] {
+            return [.None, .Center, .Letterx2, .Letterx3, .Wordx2, .Wordx3]
+        }
     }
     let modifier: Modifier
     let offset: Offset
@@ -58,14 +75,7 @@ struct Square: Equatable, Hashable {
 
 extension Papyrus {
     class func createSquares() -> [[Square]] {
-        let m = PapyrusMiddle
-        let modifiers: [Square.Modifier: [Offset]] = [
-            .Center: [(0,0)].symmetrical(),
-            .Wordx3: [(m-1, m-1), (0, m-1)].symmetrical(),
-            .Letterx2: [(1, 1), (1, 5), (0, 4), (m-1, 4)].symmetrical(),
-            .Letterx3: [(2, 6), (2, 2)].symmetrical(),
-            .Wordx2: [(3, 3), (4, 4), (5, 5), (6, 6)].symmetrical()
-        ]
+        let modifiers = Square.Modifier.all.map({ ($0, $0.symmetricalOffsets) })
         let range = (1...PapyrusDimensions)
         return range.map { (x) -> [Square] in
             return range.mapFilter({ Offset(x: x, y: $0) }).map({ (offset) -> Square in
