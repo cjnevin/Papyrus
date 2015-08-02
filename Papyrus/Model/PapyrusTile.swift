@@ -96,13 +96,9 @@ extension Papyrus {
     
     func drawTiles(start: Int, end: Int, owner: Player?, from: Tile.Placement, to: Tile.Placement) throws -> Int {
         var count = 0
-        for i in start..<tiles.count {
-            if tiles[i].placement == from {
-                if count < end {
-                    try tiles[i].place(to, owner: owner)
-                    count++
-                }
-            }
+        for i in start..<tiles.count where tiles[i].placement == from && count < end {
+            try tiles[i].place(to, owner: owner)
+            count++
         }
         return count
     }

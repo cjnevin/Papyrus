@@ -36,13 +36,13 @@ extension SquareSprite {
     }
     
     func pickupTileSprite() -> TileSprite? {
-        if let t = self.tileSprite where t.movable {
-            t.cancelAnimations()
-            t.removeFromParent()
-            t.position = position
-            tileSprite = nil
-            return t
+        guard let t = self.tileSprite where t.movable else {
+            return nil
         }
-        return nil
+        t.cancelAnimations()
+        t.removeFromParent()
+        t.position = position
+        tileSprite = nil
+        return t
     }
 }
