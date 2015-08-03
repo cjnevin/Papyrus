@@ -33,4 +33,44 @@ class PapyrusTests: XCTestCase {
         }
     }
     
+    func testGame() {
+        let instance = Papyrus.sharedInstance
+        instance.newGame { (state, game) -> () in
+            switch state {
+            case .Cleanup:
+                print("Cleanup")
+            case .Preparing:
+                print("Preparing")
+            case .Ready:
+                print("Ready")
+                
+                XCTAssert(instance.squares.flatMap{$0}.count == PapyrusDimensions * PapyrusDimensions)
+                let totalTiles = Papyrus.TileConfiguration.map({$0.0}).reduce(0, combine: +)
+                XCTAssert(instance.tiles.count == totalTiles)
+                
+                try! instance.createPlayer()
+                XCTAssert(instance.tiles.placedCount(.Bag) == totalTiles - PapyrusRackAmount)
+                XCTAssert(instance.tileIndex == PapyrusRackAmount)
+                XCTAssert(instance.rackTiles.count == PapyrusRackAmount)
+                
+                let first = instance.squares[0][0].offset
+                XCTAssert(first.advance(.Horizontal, amount: PapyrusDimensions - 1)?.x == PapyrusDimensions)
+                XCTAssert(first.advance(.Horizontal, amount: PapyrusDimensions) == nil)
+                XCTAssert(first.advance(.Vertical, amount: PapyrusDimensions - 1)?.y == PapyrusDimensions)
+                XCTAssert(first.advance(.Vertical, amount: PapyrusDimensions) == nil)
+                
+                XCTAssert([(1,1)].toOffsets().count == 1)
+                XCTAssert([(0,-1)].toOffsets().count == 0)
+                XCTAssert([(-1,0)].toOffsets().count == 0)
+                XCTAssert([(0,0)].toOffsets().count == 1)
+                XCTAssert([(PapyrusDimensions + 1,PapyrusDimensions)].toOffsets().count == 0)
+                XCTAssert([(PapyrusDimensions,PapyrusDimensions + 1)].toOffsets().count == 0)
+                
+                
+            case .Completed:
+                print("Completed")
+            }
+        }
+    }
+    
 }
