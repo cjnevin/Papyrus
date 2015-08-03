@@ -9,12 +9,15 @@
 import UIKit
 import SpriteKit
 
-class GameViewController: UIViewController, GameSceneProtocol, UITextFieldDelegate {
+class GameViewController: UIViewController, GameSceneDelegate, UITextFieldDelegate {
     @IBOutlet var skView: SKView?
     var scene: GameScene?
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
+            Lexicon.sharedInstance
+        }
         if let view = skView, gscene = GameScene(fileNamed:"GameScene") {
             gscene.scaleMode = SKSceneScaleMode.ResizeFill
             view.showsFPS = false
@@ -27,7 +30,37 @@ class GameViewController: UIViewController, GameSceneProtocol, UITextFieldDelega
         title = "Papyrus"
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Submit", style: .Done, target: self, action: "submit:")
         navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Refresh, target: self, action: "restart:")
-        self.restart(navigationItem.leftBarButtonItem!)
+    }
+    
+    override func viewWillLayoutSubviews() {
+        super.viewWillLayoutSubviews()
+        if Papyrus.sharedInstance.inProgress == false {
+            newGame()
+        }
+    }
+    
+    func newGame() {
+        Papyrus.sharedInstance.newGame() { [weak self] (state, game) in
+            guard let this = self, scene = this.scene else { return }
+            switch (state) {
+            case .Cleanup:
+                this.title = "Cleanup"
+            case .Preparing:
+                this.title = "Loading..."
+            case .Ready:
+                this.title = "Papyrus"
+                this.enableButtons(true)
+                do {
+                    try game.createPlayer()
+                }
+                catch {
+                    
+                }
+            default:
+                this.title = "Complete"
+            }
+            scene.changedState(state)
+        }
     }
     
     func pickLetter(completion: (Character) -> ()) {
@@ -54,23 +87,14 @@ class GameViewController: UIViewController, GameSceneProtocol, UITextFieldDelega
         return filtered == string && (newLength == 0 || newLength == 1)
     }
     
+    func enableButtons(enabled: Bool) {
+        navigationItem.leftBarButtonItem?.enabled = enabled
+        navigationItem.rightBarButtonItem?.enabled = enabled
+    }
+    
     func restart(sender: UIBarButtonItem) {
-        scene?.resetGame()
-        Papyrus.newGame { (state: Papyrus.State, game: Papyrus?) -> () in
-            self.scene?.changedGameState(state, game: game)
-            switch (state) {
-            case .Preparing:
-                self.title = "Loading..."
-                sender.enabled = false
-                self.navigationItem.rightBarButtonItem?.enabled = false
-            case .Ready:
-                self.title = "Papyrus"
-                sender.enabled = true
-                self.navigationItem.rightBarButtonItem?.enabled = true
-            default:
-                self.title = "Complete"
-            }
-        }
+        enableButtons(false)
+        newGame()
     }
     
     func submit(sender: UIBarButtonItem) {

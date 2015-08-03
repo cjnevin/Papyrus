@@ -9,10 +9,6 @@
 import SpriteKit
 
 extension GameScene {
-    var heldTile: TileSprite? {
-        return tileSprites.filter{ $0.tile.placement == Tile.Placement.Held }.first
-    }
-    
     var heldOrigin: CGPoint? {
         return heldTile?.origin
     }

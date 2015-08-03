@@ -89,12 +89,12 @@ extension Papyrus {
         var outWords = [Word]()
         if let word = try Word(letters, f: prepareTiles) {
             print("Main word: \(word.value)")
-            let definition = try dictionary.defined(word.value)
+            let definition = try Lexicon.sharedInstance.defined(word.value)
             print("Definition: \(definition)")
             let intersectedWords = try intersectingWords(word)
             for intersectingWord in intersectedWords {
                 print("-- Intersecting word: \(intersectingWord.value)")
-                let definition = try dictionary.defined(intersectingWord.value)
+                let definition = try Lexicon.sharedInstance.defined(intersectingWord.value)
                 print("-- Definition: \(definition)")
             }
             if words.count == 0 && !word.intersectsCenter {
@@ -127,7 +127,7 @@ extension Papyrus {
             // If tiles.count == 0 current player won
             if tiles.placedCount(.Rack, owner: player) == 0 {
                 // Assumption, player won!
-                changedState(.Completed)
+                changeFunction?(.Completed, self)
                 // Calculate all other players tiles to subtract
                 var index = 1;
                 for p in players {

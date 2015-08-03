@@ -18,7 +18,7 @@
 		99629C221B547DE800510036 /* PapyrusTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99629C211B547DE800510036 /* PapyrusTests.swift */; };
 		99629C2D1B547DE800510036 /* PapyrusUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99629C2C1B547DE800510036 /* PapyrusUITests.swift */; };
 		99629C4B1B547E3800510036 /* Papyrus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99629C3C1B547E3800510036 /* Papyrus.swift */; };
-		99629C4C1B547E3800510036 /* PapyrusDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99629C3D1B547E3800510036 /* PapyrusDictionary.swift */; };
+		99629C4C1B547E3800510036 /* PapyrusLexicon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99629C3D1B547E3800510036 /* PapyrusLexicon.swift */; };
 		99629C4D1B547E3800510036 /* PapyrusPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99629C3E1B547E3800510036 /* PapyrusPlayer.swift */; };
 		99629C4E1B547E3800510036 /* PapyrusSquare.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99629C3F1B547E3800510036 /* PapyrusSquare.swift */; };
 		99629C4F1B547E3800510036 /* PapyrusTile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99629C401B547E3800510036 /* PapyrusTile.swift */; };
@@ -73,7 +73,7 @@
 		99629C2C1B547DE800510036 /* PapyrusUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PapyrusUITests.swift; sourceTree = "<group>"; };
 		99629C2E1B547DE800510036 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		99629C3C1B547E3800510036 /* Papyrus.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Papyrus.swift; sourceTree = "<group>"; };
-		99629C3D1B547E3800510036 /* PapyrusDictionary.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PapyrusDictionary.swift; sourceTree = "<group>"; };
+		99629C3D1B547E3800510036 /* PapyrusLexicon.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PapyrusLexicon.swift; sourceTree = "<group>"; };
 		99629C3E1B547E3800510036 /* PapyrusPlayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PapyrusPlayer.swift; sourceTree = "<group>"; };
 		99629C3F1B547E3800510036 /* PapyrusSquare.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PapyrusSquare.swift; sourceTree = "<group>"; };
 		99629C401B547E3800510036 /* PapyrusTile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PapyrusTile.swift; sourceTree = "<group>"; };
@@ -178,7 +178,7 @@
 			isa = PBXGroup;
 			children = (
 				99629C3C1B547E3800510036 /* Papyrus.swift */,
-				99629C3D1B547E3800510036 /* PapyrusDictionary.swift */,
+				99629C3D1B547E3800510036 /* PapyrusLexicon.swift */,
 				9990CBD51B57364500632CB8 /* PapyrusOffset.swift */,
 				99629C3E1B547E3800510036 /* PapyrusPlayer.swift */,
 				9933CF5F1B615E1C009466B0 /* PapyrusProspect.swift */,
@@ -379,7 +379,7 @@
 				99629C091B547DE800510036 /* AppDelegate.swift in Sources */,
 				9933CF601B615E1C009466B0 /* PapyrusProspect.swift in Sources */,
 				99629C621B547E8200510036 /* GameScene.swift in Sources */,
-				99629C4C1B547E3800510036 /* PapyrusDictionary.swift in Sources */,
+				99629C4C1B547E3800510036 /* PapyrusLexicon.swift in Sources */,
 				99629C611B547E8200510036 /* GameViewController.swift in Sources */,
 				99DF9E0F1B54ED8200F58DA7 /* UIKitExtensions.swift in Sources */,
 				9990CBD61B57364500632CB8 /* PapyrusOffset.swift in Sources */,

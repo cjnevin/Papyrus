@@ -1,5 +1,5 @@
 //
-//  PapyrusDictionary.swift
+//  PapyrusLexicon.swift
 //  Papyrus
 //
 //  Created by Chris Nevin on 11/07/2015.
@@ -8,33 +8,27 @@
 
 import Foundation
 
-enum DictionaryLanguage: String {
-    case English = "CSW12"
-}
-
-struct Dictionary {
-    private static let DefKey = "Def"
-    private let dictionary: NSDictionary
-    private let language: DictionaryLanguage
+struct Lexicon {
+    static let sharedInstance = Lexicon()
     
-    init(_ language: DictionaryLanguage) {
-        self.language = language
-        guard let path = NSBundle.mainBundle().pathForResource(language.rawValue, ofType: "plist") else {
-            dictionary = NSDictionary()
-            return
+    private typealias LexiconType = [String: AnyObject]
+    private var dictionary: LexiconType?
+    private init() {
+        if let path = NSBundle.mainBundle().pathForResource("CSW12", ofType: "plist"), contents = NSDictionary(contentsOfFile: path) as? LexiconType {
+            self.dictionary = contents
         }
-        dictionary = NSDictionary(contentsOfFile: path) ?? NSDictionary()
     }
     
     /// Determine if a word is defined in the dictionary.
     func defined(word: String) throws -> String {
+        let DefKey = "Def"
         var current = dictionary
         var index = word.startIndex
         for char in word.uppercaseString.characters {
-            if let inner = current[String(char)] as? NSDictionary {
+            if let inner = current?[String(char)] as? LexiconType {
                 index = advance(index, 1)
                 if index == word.endIndex {
-                    guard let def = inner.objectForKey(Dictionary.DefKey) as? String else {
+                    guard let def = inner[DefKey] as? String else {
                         throw ValidationError.Undefined(word)
                     }
                     return def
