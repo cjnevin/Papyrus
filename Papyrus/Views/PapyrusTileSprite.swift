@@ -9,13 +9,19 @@
 import SpriteKit
 
 class TileSprite: SKSpriteNode {
-    var animationPoint: CGPoint?
+    /// - Returns: True if tile has yet to be submitted ('Fixed')
     var movable: Bool {
         return tile.placement != .Fixed
     }
+    /// Point to animate move to.
+    var animationPoint: CGPoint?
+    /// Point where tile began.
     var origin: CGPoint?
+    /// `Tile` associated with this sprite.
     var tile: Tile
-    let letterLabel: SKLabelNode
+    /// Label which displays textual representation of the letter.
+    private let letterLabel: SKLabelNode
+    /// Background sprite of tile inside of 'border' sprite.
     let background: SKSpriteNode
     
     init(tile: Tile, edge: CGFloat, scale: CGFloat) {
@@ -48,6 +54,7 @@ class TileSprite: SKSpriteNode {
         setScale(scale)
     }
     
+    /// Change letter presented on tile, only works for blank tiles.
     func changeLetter(newLetter: Character) {
         if self.tile.letterValue == 0 {
             self.tile.letter = newLetter
@@ -55,10 +62,12 @@ class TileSprite: SKSpriteNode {
         }
     }
     
+    /// Change color of tile to signify recently placed.
     func illuminate() {
         background.color = UIColor.Papyrus_TileIlluminated
     }
     
+    /// Change color of tile to signify not recently placed.
     func deilluminate() {
         background.color = UIColor.Papyrus_Tile
     }

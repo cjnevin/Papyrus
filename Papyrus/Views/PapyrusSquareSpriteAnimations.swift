@@ -9,6 +9,8 @@
 import SpriteKit
 
 extension SquareSprite {
+    
+    /// Glow a different color to signify an error.
     override func warningGlow() {
         background.warningGlow()
     }
@@ -34,6 +36,7 @@ extension SquareSprite {
         t.animateShrink(completion)
     }
     
+    /// Pickup tile, no animation.
     func pickupTileSprite() -> TileSprite? {
         guard let t = self.tileSprite where t.movable else { return nil }
         t.cancelAnimations()

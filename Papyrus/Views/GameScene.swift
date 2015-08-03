@@ -19,31 +19,32 @@ protocol GameSceneProtocol {
 }
 
 class GameScene: SKScene, GameSceneProtocol {
-    var actionDelegate: GameSceneDelegate?
+    /// - Returns: Current game object.
     private var game: Papyrus {
         return Papyrus.sharedInstance
     }
-    lazy var squareSprites = [SquareSprite]()
-    lazy var tileSprites = [TileSprite]()
-    
-    /// Currently dragged tile user is holding.
+    /// - Returns: Currently dragged tile user is holding.
     var heldTile: TileSprite? {
         return tileSprites.filter{ $0.tile.placement == Tile.Placement.Held }.first
     }
+    /// Delegate for tile picking.
+    var actionDelegate: GameSceneDelegate?
+    /// - Returns: All square sprites in play.
+    lazy var squareSprites = [SquareSprite]()
+    /// - Returns: All tile sprites in play.
+    lazy var tileSprites = [TileSprite]()
     
+    /// Move and illuminate sprites for tiles we just placed.
+    /// - SeeAlso: `replaceRackSprites()`, `TileSprite.illuminate()`, `TileSprite.deilluminate()`
     private func completeMove(withTiles moveTiles: [Tile]) {
         // Light up the words we touched...
         tileSprites.map{ $0.deilluminate() }
         tileSprites.filter{ moveTiles.contains($0.tile) }.map{ $0.illuminate() }
         // Remove existing rack sprites.
-        let rackSprites = tileSprites.filter{ game.rackTiles.contains($0.tile) }
-        tileSprites = tileSprites.filter{ !rackSprites.contains($0) }
-        rackSprites.map{ $0.removeFromParent() }
-        // Create new sprites in new positions.
-        createTileSprites()
-        print("Sprites: \(tileSprites.count)")
+        replaceRackSprites()
     }
     
+    /// Attempt to submit a word, will throw an error if validation fails.
     func submitPlay() throws {
         // Reset position of any held tile (edge case).
         if let tile = heldTile, origin = heldOrigin {
@@ -75,7 +76,7 @@ class GameScene: SKScene, GameSceneProtocol {
         }
     }
     
-    
+    /// Handle game state changes.
     func changedState(state: Papyrus.State) {
         switch state {
         case .Cleanup:
@@ -88,7 +89,7 @@ class GameScene: SKScene, GameSceneProtocol {
             
         case .Ready:
             print("Ready")
-            createTileSprites()
+            replaceRackSprites()
             
         case .Completed:
             print("Completed")
@@ -99,6 +100,7 @@ class GameScene: SKScene, GameSceneProtocol {
     
     // MARK:- Helpers
     
+    /// Create sprites representing squares in Papyrus game, only called once.
     private func createSquareSprites() {
         if squareSprites.count == 0 {
             squareSprites.extend(Papyrus.createSquareSprites(forGame: game, frame: self.frame))
@@ -106,23 +108,32 @@ class GameScene: SKScene, GameSceneProtocol {
         }
     }
     
-    private func createTileSprites() {
+    /// Replace rack sprites with newly drawn tiles.
+    private func replaceRackSprites() {
+        // Remove existing rack sprites.
+        let rackSprites = tileSprites.filter{ game.rackTiles.contains($0.tile) }
+        tileSprites = tileSprites.filter{ !rackSprites.contains($0) }
+        rackSprites.map{ $0.removeFromParent() }
+        // Create new rack sprites in new positions.
         let boardSize = CGRectGetWidth(frame) / CGFloat(PapyrusDimensions) * CGFloat(PapyrusDimensions + 1)
         let newFrame = CGRectMake(frame.origin.x, frame.origin.y, frame.size.width, frame.size.height - boardSize)
         tileSprites.extend(Papyrus.createRackSprites(forGame: game, frame: newFrame))
         tileSprites.filter{ $0.parent == nil }.map{ self.addChild($0) }
     }
     
+    /// Remove all tile sprites from game.
     private func cleanupSprites() {
         tileSprites.map{ $0.removeFromParent() }
         tileSprites.removeAll()
         squareSprites.map { $0.tileSprite = nil }
     }
     
+    /// - Returns: All sprites for squares contained in array.
     private func sprites(s: [Square]) -> [SquareSprite] {
         return squareSprites.filter{ s.contains($0.square) }
     }
     
+    /// - Returns: All sprites for tiles contained in array.
     private func sprites(t: [Tile]) -> [TileSprite] {
         return tileSprites.filter{ t.contains($0.tile) }
     }

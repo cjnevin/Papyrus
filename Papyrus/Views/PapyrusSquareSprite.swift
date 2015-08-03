@@ -9,10 +9,18 @@
 import SpriteKit
 
 class SquareSprite: SKSpriteNode {
+    /// `Square` on board this sprite is representing.
     let square: Square
+    /// Background sprite inset by 1pt to account for border.
     let background: SKSpriteNode
+    /// Original point of `TileSprite` we dropped on this `Square`.
     var origin: CGPoint?
+    /// Sprite for `Tile` contained within this `Square`.
     var tileSprite: TileSprite?
+    /// Returns true if `tileSprite` is unset.
+    var isEmpty: Bool {
+        return tileSprite == nil
+    }
     
     init(square: Square, edge: CGFloat) {
         self.square = square
@@ -24,14 +32,10 @@ class SquareSprite: SKSpriteNode {
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
-    func isEmpty() -> Bool {
-        return tileSprite == nil
-    }
 }
 
 extension Papyrus {
-    static let colorMap: [Square.Modifier: UIColor] = [
+    private static let colorMap: [Square.Modifier: UIColor] = [
         .Center: .Papyrus_Center,
         .Letterx2: .Papyrus_Letterx2,
         .Letterx3: .Papyrus_Letterx3,
@@ -40,11 +44,13 @@ extension Papyrus {
         .None: .Papyrus_Tile
     ]
     
+    /// - Returns: UIColor matching square modifier.
     class func colorForSquare(square: Square) -> UIColor {
         guard let color = colorMap[square.modifier] else { return colorMap[.None]! }
         return color
     }
     
+    /// - Returns: Array of `SquareSprite` instances for each `Square`.
     class func createSquareSprites(forGame game: Papyrus, frame: CGRect) -> [SquareSprite] {
         var sprites = [SquareSprite]()
         let squareSize = CGRectGetWidth(frame) / CGFloat(PapyrusDimensions)
