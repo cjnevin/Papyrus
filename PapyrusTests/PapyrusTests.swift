@@ -139,6 +139,19 @@ class PapyrusTests: XCTestCase {
         XCTAssert(Offset(x: 1, y: 1)!.hashValue == "(\(1),\(1))".hashValue)
     }
     
+    func testExtensions() {
+        XCTAssert(minMax([1,2,3]).min == 1)
+        XCTAssert(minMax([1,2,3]).max == 3)
+        XCTAssert(minEqualsMax(minMax([1,1])) == 1)
+        XCTAssert(minEqualsMax(minMax([1,2])) == nil)
+        var count: Int = 0
+        iterate([1,2,3], start: 0, callback: { (value) -> () in
+            count += value
+        })
+        XCTAssert(count == [1,2,3].reduce(0, combine: +))
+        XCTAssert([1,2,3,nil].mapFilter{ $0 }.count == 3)
+    }
+    
     func testGame() {
         let instance = Papyrus.sharedInstance
         instance.newGame { (state, game) -> () in
@@ -155,6 +168,7 @@ class PapyrusTests: XCTestCase {
                 self.runPlayerTests(instance)
                 self.runRunsTests(instance)
                 self.runTileErrorTests(instance)
+                
             case .Completed:
                 print("Completed")
             }
