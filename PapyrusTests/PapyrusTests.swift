@@ -45,13 +45,15 @@ class PapyrusTests: XCTestCase {
                 print("Ready")
                 
                 XCTAssert(instance.squares.flatMap{$0}.count == PapyrusDimensions * PapyrusDimensions)
+                
                 let totalTiles = Papyrus.TileConfiguration.map({$0.0}).reduce(0, combine: +)
                 XCTAssert(instance.tiles.count == totalTiles)
-                
                 try! instance.createPlayer()
                 XCTAssert(instance.tiles.placedCount(.Bag) == totalTiles - PapyrusRackAmount)
                 XCTAssert(instance.tileIndex == PapyrusRackAmount)
                 XCTAssert(instance.rackTiles.count == PapyrusRackAmount)
+                
+                XCTAssert(54 == instance.runs(withTiles: instance.rackTiles).array.count)
                 
                 let first = instance.squares[0][0].offset
                 XCTAssert(first.advance(.Horizontal, amount: PapyrusDimensions - 1)?.x == PapyrusDimensions)
