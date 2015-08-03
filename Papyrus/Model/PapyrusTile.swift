@@ -78,7 +78,7 @@ class Tile: NSObject, CustomDebugStringConvertible {
         self.square = s
         self.placement = p
     }
-    func placed(p: Placement, owner o: Player?) -> Tile? {
+    func placed(p: Placement, owner o: Player? = nil) -> Tile? {
         return (placement == p && ((o != nil && owner == o) || (o == nil))) ? self : nil
     }
     override var debugDescription: String {

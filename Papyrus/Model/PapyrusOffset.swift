@@ -53,7 +53,11 @@ struct Offset: Comparable, Hashable, CustomDebugStringConvertible {
     /// Return new offset `amount` away from current offset in given direction or nil
     /// - SeeAlso: valid(x:y:)
     func advance(o: Orientation, amount: Int) -> Offset? {
-        return at(x: x + (o == .Horizontal ? amount : 0), y: y + (o == .Vertical ? amount: 0))
+        if o == .Horizontal {
+            return at(x: x + amount, y: y)
+        } else {
+            return at(x: x, y: y + amount)
+        }
     }
     /// Return next offset in given direction or nil
     /// - SeeAlso: valid(x:y:)
@@ -75,13 +79,15 @@ struct Offset: Comparable, Hashable, CustomDebugStringConvertible {
 
 
 extension CollectionType where Generator.Element == (Int, Int) {
+    /// Convert tuple array to Offset array.
     func toOffsets() -> [Offset] {
         return mapFilter{ Offset(x: $0.0, y: $0.1) }
     }
+    /// Convert tuple array to Offset array with symmetrical logic around PapyrusMiddle.
     func symmetrical() -> [Offset] {
         let m = PapyrusMiddle
-        func s(offset: (Int, Int)?) -> [Offset]? {
-            guard let x = offset?.0, y = offset?.1 else { return nil }
+        func s(offset: (Int, Int)) -> [Offset]? {
+            let x = offset.0, y = offset.1
             return [ (m-x, m-y), (m-x, m+y), (m+x, m+y), (m+x, m-y),
                 (m-y, m-x), (m-y, m+x), (m+y, m+x), (m+x, m-y) ]
                 .toOffsets()
