@@ -13,8 +13,8 @@ class Player: NSObject {
     typealias CountFunction = (Tile.Placement, Player?) -> (Int)
     
     var score: Int = 0
-    init(_ score: Int) {
-        self.score = score
+    init(score: Int? = 0) {
+        self.score = score ?? 0
     }
     func count(f: CountFunction) -> Int {
         return f(.Rack, self)
@@ -29,8 +29,9 @@ class Player: NSObject {
 
 extension Papyrus {
     func createPlayer() throws -> Player {
-        let player = Player(0)
-        tileIndex += try player.refill(tileIndex, f: drawTiles, countf: tiles.placedCount)
-        return player
+        let newPlayer = Player()
+        tileIndex += try newPlayer.refill(tileIndex, f: drawTiles, countf: tiles.placedCount)
+        player = player ?? newPlayer
+        return newPlayer
     }
 }
