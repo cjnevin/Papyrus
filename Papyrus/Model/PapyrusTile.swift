@@ -33,6 +33,8 @@ class Tile: NSObject, CustomDebugStringConvertible {
     enum PlacementError: ErrorType {
         case PlacementWithoutPlayerError
         case PlaceInBagWithPlayerError
+        case PlacementWithoutSquareError
+        case PlacementWhileHeldError
     }
     enum Placement {
         case Bag
@@ -58,17 +60,22 @@ class Tile: NSObject, CustomDebugStringConvertible {
         self.letter = letter
         self.value = value
     }
-    func place(p: Placement, owner o: Player? = nil) throws {
+    func place(p: Placement, owner o: Player? = nil, square s: Square? = nil) throws {
         if p != .Bag && o == nil && owner == nil {
             throw PlacementError.PlacementWithoutPlayerError
         } else if p == .Bag && (o != nil) {
             throw PlacementError.PlaceInBagWithPlayerError
+        } else if (p == .Board || p == .Fixed) && (square != nil && s != nil) {
+            throw PlacementError.PlacementWithoutSquareError
+        } else if p == .Held && (s != nil) {
+            throw PlacementError.PlacementWhileHeldError
         }
         if o == nil && owner != nil && p != .Bag {
             // Don't update owner if nil but already previously set
         } else {
             self.owner = o
         }
+        self.square = s
         self.placement = p
     }
     func placed(p: Placement, owner o: Player?) -> Tile? {

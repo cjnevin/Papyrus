@@ -23,8 +23,8 @@ class GameScene: SKScene, GameSceneProtocol {
     private var game: Papyrus {
         return Papyrus.sharedInstance
     }
-    private lazy var squareSprites = [SquareSprite]()
-    private lazy var tileSprites = [TileSprite]()
+    lazy var squareSprites = [SquareSprite]()
+    lazy var tileSprites = [TileSprite]()
     
     /// Currently dragged tile user is holding.
     var heldTile: TileSprite? {

@@ -34,7 +34,7 @@ class GameViewController: UIViewController, GameSceneDelegate, UITextFieldDelega
     
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
-        if Papyrus.sharedInstance.inProgress == false {
+        if !Papyrus.sharedInstance.inProgress {
             newGame()
         }
     }

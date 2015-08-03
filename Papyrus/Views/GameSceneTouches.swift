@@ -9,87 +9,88 @@
 import SpriteKit
 
 extension GameScene {
-    var heldOrigin: CGPoint? {
-        return heldTile?.origin
-    }
     
-    func point(inTouches touches: Set<UITouch>?) -> CGPoint? {
-        guard let point = touches?.first?.locationInNode(self) else { return nil }
-        return point
-    }
+    // MARK: - Touches
     
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
-        if let point = point(inTouches: touches) {
-            for child in children {
-                if let tileSprite = child as? TileSprite where tileSprite.containsPoint(point) && !tileSprite.hasActions() {
-                    tileSprite.origin = tileSprite.position
-                    tileSprite.tile.placement = .Held
-                    tileSprite.tile.square = nil
-                    tileSprite.animatePickupFromRack(point) //resetPosition(point)
-                    break
-                } else if let squareSprite = child as? SquareSprite where squareSprite.containsPoint(point) {
-                    if let tileSprite = squareSprite.pickupTileSprite() {
-                        tileSprite.origin = squareSprite.origin
-                        tileSprite.tile.placement = .Held
-                        tileSprite.tile.square = nil
-                        tileSprite.animateGrow()
-                        addChild(tileSprite)
-                        break
-                    }
-                }
-            }
-        }
+        do { try pickup(atPoint: point(inTouches: touches)) }
+        catch { print("Error picking up sprite") }
     }
     
     override func touchesMoved(touches: Set<UITouch>, withEvent event: UIEvent?) {
-        if let point = point(inTouches: touches), tileSprite = heldTile {
-            tileSprite.resetPosition(point)
-        }
+        guard let point = point(inTouches: touches) else { return }
+        heldTile?.resetPosition(point)
     }
     
     override func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?) {
-        guard let point = point(inTouches: touches), tileSprite = heldTile, origin = heldOrigin else { return }
-        var found = false
-        var fallback: (square: SquareSprite?, overlap: CGFloat) = (nil, 0) // Closest square to drop tile if hovered square is filled
-        for squareSprite in (children.filter({ $0 is SquareSprite }) as! [SquareSprite]).filter({ $0.isEmpty() && $0.intersectsNode(tileSprite) }) {
-            if squareSprite.frame.contains(point) {
-                tileSprite.tile.placement = .Board
-                tileSprite.tile.square = squareSprite.square
-                squareSprite.animateDropTileSprite(tileSprite, originalPoint: origin, completion: { () -> () in
-                    if tileSprite.tile.letter == "?" {
-                        self.actionDelegate?.pickLetter{ tileSprite.changeLetter($0) }
-                    }
-                })
-                found = true
-                break
-            }
-            let intersection = CGRectIntersection(squareSprite.frame, tileSprite.frame)
-            let overlap = CGRectGetWidth(intersection) + CGRectGetHeight(intersection)
-            fallback = overlap > fallback.overlap ? (squareSprite, overlap) : fallback
-        }
-        if !found {
-            if let squareSprite = fallback.square {
-                squareSprite.animateDropTileSprite(tileSprite, originalPoint: origin, completion: nil)
-                tileSprite.tile.placement = .Board
-                tileSprite.tile.square = squareSprite.square
-            } else {
-                tileSprite.animateDropToRack(origin) //resetPosition(origin)
-                tileSprite.tile.placement = .Rack
-                tileSprite.tile.square = nil
-            }
-        }
+        do { try drop(atPoint: point(inTouches: touches)) }
+        catch { print("Error dropping sprite") }
     }
     
     override func touchesCancelled(touches: Set<UITouch>?, withEvent event: UIEvent?) {
-        if let point = point(inTouches: touches), tileSprite = heldTile {
-            let origin = heldOrigin ?? point
-            tileSprite.resetPosition(origin)
-            tileSprite.tile.placement = .Rack
-            tileSprite.tile.square = nil
-        }
+        do { try dropInRack(false, atPoint: heldOrigin ?? point(inTouches: touches)) }
+        catch { print("Error dropping in rack") }
     }
     
     override func update(currentTime: CFTimeInterval) {
         /* Called before each frame is rendered */
+    }
+    
+    // MARK: - Helpers
+    
+    var heldOrigin: CGPoint? {
+        return heldTile?.origin
+    }
+    
+    private func point(inTouches touches: Set<UITouch>?) -> CGPoint? {
+        return touches?.first?.locationInNode(self)
+    }
+    
+    private func intersectedSquareSprite(point: CGPoint) -> SquareSprite? {
+        // Check if we are holding a tile, if not return
+        guard let tileSprite = heldTile else { return nil }
+        // Function to calculate intersection
+        func intersection(item: SquareSprite) -> CGFloat {
+            let intersection = CGRectIntersection(item.frame, tileSprite.frame)
+            return CGRectGetHeight(intersection) + CGRectGetWidth(intersection)
+        }
+        // Filter empty squares that intersect our tile
+        let s = squareSprites.filter({ $0.isEmpty() && $0.intersectsNode(tileSprite) })
+        if s.count == 0 { return nil }
+        return s.filter({ $0.frame.contains(point) }).first ??
+            s.maxElement({ return intersection($0) < intersection($1) })
+    }
+    
+    private func dropInRack(animated: Bool? = true, atPoint point: CGPoint?) throws {
+        guard let point = point, tile = heldTile else { return }
+        animated == true ? tile.animateDropToRack(point) : tile.resetPosition(point)
+        try tile.tile.place(.Rack)
+    }
+    
+    private func pickup(atPoint point: CGPoint?) throws {
+        guard let point = point else { return }
+        if let s = squareSprites.filter({ $0.containsPoint(point) && $0.tileSprite != nil }).first, t = s.pickupTileSprite() {
+            // Pickup from board
+            t.origin = s.origin
+            try t.tile.place(.Held)
+            t.animateGrow()
+            addChild(t)
+        } else if let t = tileSprites.filter({ $0.containsPoint(point) && !$0.hasActions() }).first {
+            // Pickup from rack
+            t.origin = t.position
+            try t.tile.place(.Held)
+            t.animatePickupFromRack(point)
+        }
+    }
+    
+    private func drop(atPoint point: CGPoint?) throws {
+        guard let point = point, tile = heldTile, origin = heldOrigin else { return }
+        guard let emptySquare = intersectedSquareSprite(point) else {
+            try dropInRack(atPoint: origin)
+            return
+        }
+        // Drop on board
+        emptySquare.animateDropTileSprite(tile, originalPoint: origin, completion: nil)
+        try tile.tile.place(.Board, owner: nil, square: emptySquare.square)
     }
 }
