@@ -51,9 +51,16 @@ class PapyrusTests: XCTestCase {
             let cat = [getTile(withLetter: "C"),
                 getTile(withLetter: "A"),
                 getTile(withLetter: "T")]
+            let ha = [getTile(withLetter: "H"),
+                getTile(withLetter: "A")]
+            
             let pos = [PapyrusMiddleOffset!.prev(.Vertical)!,
                 PapyrusMiddleOffset!,
                 PapyrusMiddleOffset!.next(.Vertical)!]
+            
+            let haPos = [PapyrusMiddleOffset!.prev(.Horizontal)!,
+                PapyrusMiddleOffset!.prev(.Horizontal)!.next(.Vertical)!]
+            
             for i in 0..<cat.count {
                 try cat[i].place(.Board, owner: instance.player, square: instance.squares[pos[i].x - 1][pos[i].y - 1])
             }
@@ -67,6 +74,13 @@ class PapyrusTests: XCTestCase {
             XCTAssert(words.first?.points == 0) // Immutable can't have points
             XCTAssert(words.first?.bonus == 0)
             XCTAssert(words.first?.immutable == true)
+            
+            for i in 0..<ha.count {
+                try ha[i].place(.Board, owner: instance.player, square: instance.squares[haPos[i].x - 1][haPos[i].y - 1])
+            }
+            
+            let haWords = try instance.move(ha)
+            XCTAssert(haWords.count == 3)
             
         } catch {
             XCTAssert(false)
