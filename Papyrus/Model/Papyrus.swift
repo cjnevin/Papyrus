@@ -26,7 +26,7 @@ class Papyrus {
     
     static let sharedInstance = Papyrus()
     var inProgress: Bool = false
-    let squares: [[Square]]
+    let squares: [Square]
     
     lazy var words = Set<Word>()
     lazy var tiles = [Tile]()

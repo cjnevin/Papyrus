@@ -54,35 +54,28 @@ struct Square: Equatable, Hashable {
     }
     let modifier: Modifier
     let offset: Offset
-    func at(x xx: Int, y yy: Int, inArray arr: [[Square]]) -> Square? {
-        guard let n = offset.at(x: xx, y: yy) else { return nil }
-        return arr[n.x][n.y]
-    }
-    func advance(o: Orientation, amount: Int, inArray arr: [[Square]]) -> Square? {
-        guard let n = offset.advance(o, amount: amount) else { return nil }
-        return arr[n.x][n.y]
-    }
-    func next(o: Orientation, inArray arr: [[Square]]) -> Square? {
-        return advance(o, amount: 1, inArray: arr)
-    }
-    func prev(o: Orientation, inArray arr: [[Square]]) -> Square? {
-        return advance(o, amount: -1, inArray: arr)
-    }
     var hashValue: Int {
         return "\(offset.x),\(offset.y)".hashValue
     }
 }
 
 extension Papyrus {
-    class func createSquares() -> [[Square]] {
+    class func createSquares() -> [Square] {
         let modifiers = Square.Modifier.all.map({ ($0, $0.symmetricalOffsets) })
         let range = (1...PapyrusDimensions)
-        return range.map { x in
+        return range.map({ x in
             range.mapFilter({ Offset(x: x, y: $0) }).map({ offset in
                 Square(
                     modifier: modifiers.filter({ $0.1.contains(offset) }).map({ $0.0 }).first ?? Square.Modifier.None,
                     offset: offset)
             })
-        }
+        }).flatMap({ $0 })
+    }
+}
+
+
+extension CollectionType where Generator.Element == Square {
+    func at(offset: Offset) -> Square? {
+        return filter{ $0.offset == offset }.first
     }
 }

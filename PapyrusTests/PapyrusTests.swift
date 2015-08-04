@@ -43,44 +43,87 @@ class PapyrusTests: XCTestCase {
         XCTAssert(Orientation.Horizontal.invert == Orientation.Vertical)
         XCTAssert(Orientation.Vertical.invert == Orientation.Horizontal)
         
-        func getTile(withLetter letter: Character) -> Tile {
-            return instance.tiles.filter({ $0.letter == letter }).first!
+        do {
+            let def = try Lexicon.sharedInstance.defined("tca")
+            XCTAssert(false)
+        } catch {
+            // Expected an error
         }
         
         do {
-            let cat = [getTile(withLetter: "C"),
-                getTile(withLetter: "A"),
-                getTile(withLetter: "T")]
-            let ha = [getTile(withLetter: "H"),
-                getTile(withLetter: "A")]
-            
-            let pos = [PapyrusMiddleOffset!.prev(.Vertical)!,
-                PapyrusMiddleOffset!,
-                PapyrusMiddleOffset!.next(.Vertical)!]
-            
-            let haPos = [PapyrusMiddleOffset!.prev(.Horizontal)!,
-                PapyrusMiddleOffset!.prev(.Horizontal)!.next(.Vertical)!]
-            
-            for i in 0..<cat.count {
-                try cat[i].place(.Board, owner: instance.player, square: instance.squares[pos[i].x - 1][pos[i].y - 1])
+            let def = try Lexicon.sharedInstance.defined("")
+            XCTAssert(false)
+        } catch {
+            // Expected an error
+        }
+        
+        do {
+            let def = try Lexicon.sharedInstance.defined("a$")
+            XCTAssert(false)
+        } catch {
+            // Expected an error
+        }
+        
+        do {
+            let def = try Lexicon.sharedInstance.defined("cat")
+            XCTAssert(true)
+        } catch {
+            XCTAssert(false)
+        }
+        
+        func getTile(withLetter letter: Character) -> Tile {
+            return instance.tiles.filter({ ($0.letter == letter && ($0.placement == .Bag || $0.placement == .Rack)) }).first!
+        }
+        
+        func dropEm(tiles: [(Tile, Offset)]) {
+            do {
+                for (t, p) in tiles {
+                    guard let square = instance.squares.at(p) else {
+                        XCTAssert(false)
+                        break
+                    }
+                    try t.place(.Board, owner: instance.player, square: square)
+                    XCTAssert(t.placed(.Board) == t)
+                }
+            } catch {
+                XCTAssert(false)
             }
-            for i in 0..<cat.count {
-                XCTAssert(cat[i].placed(.Board) == cat[i])
-            }
+        }
+        
+        do {
+            let o = PapyrusMiddleOffset!
+            
+            // Add 'cat' intersecting middle square
+            let cat = [(getTile(withLetter: "C"), o.prev(.Vertical)!),
+                (getTile(withLetter: "A"), o),
+                (getTile(withLetter: "T"), o.next(.Vertical)!)]
+            dropEm(cat)
+            
             // Need to split out move logic, so we can test it easier...
-            let words = try instance.move(cat)
+            let words = try instance.move(cat.map({$0.0}))
             
+            // Validate word
             XCTAssert(words.first == words.first)
             XCTAssert(words.first?.points == 0) // Immutable can't have points
             XCTAssert(words.first?.bonus == 0)
             XCTAssert(words.first?.immutable == true)
             
-            for i in 0..<ha.count {
-                try ha[i].place(.Board, owner: instance.player, square: instance.squares[haPos[i].x - 1][haPos[i].y - 1])
-            }
+            // Add 'ha' to existing 't' to form 'hat' on the perpendicular
+            let ha = [(getTile(withLetter: "H"), o.next(.Vertical)!.prev(.Horizontal)!.prev(.Horizontal)!),
+                (getTile(withLetter: "A"), o.next(.Vertical)!.prev(.Horizontal)!)]
+            dropEm(ha)
             
-            let haWords = try instance.move(ha)
-            XCTAssert(haWords.count == 3)
+            let haWords = try instance.move(ha.map({$0.0}))
+            XCTAssert(haWords.count == 1)
+            XCTAssert(haWords.first?.length == 3)
+            XCTAssert(haWords.first?.value == "HAT")
+            
+            let z = [(getTile(withLetter: "Z"), o.next(.Vertical)!.prev(.Horizontal)!.prev(.Vertical)!)]
+            dropEm(z)
+            
+            let zWords = try instance.move(z.map({$0.0}))
+            print(zWords.count)
+            print(zWords)
             
         } catch {
             XCTAssert(false)
@@ -90,6 +133,7 @@ class PapyrusTests: XCTestCase {
     func runTileErrorTests(instance: Papyrus) {
         let tile = instance.rackTiles.first!
         let placement = tile.placement
+        
         // Test bag with owner error
         do {
             try tile.place(.Bag, owner: instance.player!)
@@ -112,7 +156,7 @@ class PapyrusTests: XCTestCase {
         }
         // Test held with square error
         do {
-            try tile.place(.Held, owner: nil, square: instance.squares[0][0])
+            try tile.place(.Held, owner: nil, square: instance.squares.at(Offset((0,0))!))
         } catch {
             XCTAssert(tile.placed(placement) == tile)
         }
@@ -123,16 +167,15 @@ class PapyrusTests: XCTestCase {
     }
     
     func runSquareTests(instance: Papyrus) {
-        let sqs = instance.squares
+        XCTAssert(instance.squares.count == PapyrusDimensions * PapyrusDimensions)
         
-        XCTAssert(sqs.flatMap{$0}.count == PapyrusDimensions * PapyrusDimensions)
-        
-        let sq = sqs[0][0]
-        XCTAssert(sq.at(x: 2, y: 2, inArray: sqs) != nil)
+        let sq = instance.squares.at(Offset((1,1))!)
+        XCTAssert(sq?.hashValue == "\(sq!.offset.x),\(sq!.offset.y)".hashValue)
+        /*XCTAssert(sq.at(x: 2, y: 2, inArray: sqs) != nil)
         XCTAssert(sq.at(x: PapyrusDimensions + 1, y: 0, inArray: sqs) == nil)
         XCTAssert(sq.at(x: 0, y: PapyrusDimensions + 1, inArray: sqs) == nil)
         XCTAssert(sq.at(x: -1, y: 0, inArray: sqs) == nil)
-        XCTAssert(sq.at(x: 0, y: -1, inArray: sqs) == nil)
+        XCTAssert(sq.at(x: 0, y: -1, inArray: sqs) == nil)*/
         XCTAssert(sq == sq)
         /*
         TODO: Fix next/prev methods
@@ -149,11 +192,6 @@ class PapyrusTests: XCTestCase {
         XCTAssert(sq.at(x: 0, y: 1, inArray: sqs) == sq.advance(.Horizontal, amount: -1, inArray: sqs))
         XCTAssert(sq.at(x: 1, y: 0, inArray: sqs) == sq.advance(.Vertical, amount: -1, inArray: sqs))
         */
-        let first = sq.offset
-        XCTAssert(first.advance(.Horizontal, amount: PapyrusDimensions - 1)?.x == PapyrusDimensions)
-        XCTAssert(first.advance(.Horizontal, amount: PapyrusDimensions) == nil)
-        XCTAssert(first.advance(.Vertical, amount: PapyrusDimensions - 1)?.y == PapyrusDimensions)
-        XCTAssert(first.advance(.Vertical, amount: PapyrusDimensions) == nil)
     }
     
     func runOffsetTests() {

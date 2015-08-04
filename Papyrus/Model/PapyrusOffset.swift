@@ -53,11 +53,8 @@ struct Offset: Comparable, Hashable, CustomDebugStringConvertible {
     /// Return new offset `amount` away from current offset in given direction or nil
     /// - SeeAlso: valid(x:y:)
     func advance(o: Orientation, amount: Int) -> Offset? {
-        if o == .Horizontal {
-            return at(x: x + amount, y: y)
-        } else {
-            return at(x: x, y: y + amount)
-        }
+        return o == .Horizontal ? at(x: x + amount, y: y) :
+            at(x: x, y: y + amount)
     }
     /// Return next offset in given direction or nil
     /// - SeeAlso: valid(x:y:)
