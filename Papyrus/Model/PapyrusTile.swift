@@ -65,7 +65,7 @@ class Tile: NSObject, CustomDebugStringConvertible {
             throw PlacementError.PlacementWithoutPlayerError
         } else if p == .Bag && (o != nil) {
             throw PlacementError.PlaceInBagWithPlayerError
-        } else if (p == .Board || p == .Fixed) && (square != nil && s != nil) {
+        } else if (p == .Board || p == .Fixed) && (square == nil && s == nil) {
             throw PlacementError.PlacementWithoutSquareError
         } else if p == .Held && (s != nil) {
             throw PlacementError.PlacementWhileHeldError
@@ -75,7 +75,9 @@ class Tile: NSObject, CustomDebugStringConvertible {
         } else {
             self.owner = o
         }
-        self.square = s
+        if !(square != nil && s == nil && (p == .Fixed || p == .Board)) {
+            self.square = s
+        }
         self.placement = p
     }
     func placed(p: Placement, owner o: Player? = nil) -> Tile? {
