@@ -21,18 +21,6 @@ class PapyrusTests: XCTestCase {
         super.tearDown()
     }
     
-    func testExample() {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
-    }
-    
-    func testPerformanceExample() {
-        // This is an example of a performance test case.
-        self.measureBlock {
-            // Put the code you want to measure the time of here.
-        }
-    }
-    
     func runPlayerTests(instance: Papyrus) {
         XCTAssert(Player(score: 10).score == 10)
         XCTAssert(Player().score == 0)
@@ -48,6 +36,41 @@ class PapyrusTests: XCTestCase {
         XCTAssert(instance.droppedTiles.count == 0)
         let tile = instance.rackTiles.first!
         XCTAssert(String(tile.letter) == tile.debugDescription)
+    }
+    
+    func runTilePlacementTests(instance: Papyrus) {
+        XCTAssert(Orientation.both == [Orientation.Horizontal, Orientation.Vertical])
+        XCTAssert(Orientation.Horizontal.invert == Orientation.Vertical)
+        XCTAssert(Orientation.Vertical.invert == Orientation.Horizontal)
+        
+        func getTile(withLetter letter: Character) -> Tile {
+            return instance.tiles.filter({ $0.letter == letter }).first!
+        }
+        
+        do {
+            let cat = [getTile(withLetter: "C"),
+                getTile(withLetter: "A"),
+                getTile(withLetter: "T")]
+            let pos = [PapyrusMiddleOffset!.prev(.Vertical)!,
+                PapyrusMiddleOffset!,
+                PapyrusMiddleOffset!.next(.Vertical)!]
+            for i in 0..<cat.count {
+                try cat[i].place(.Board, owner: instance.player, square: instance.squares[pos[i].x - 1][pos[i].y - 1])
+            }
+            for i in 0..<cat.count {
+                XCTAssert(cat[i].placed(.Board) == cat[i])
+            }
+            // Need to split out move logic, so we can test it easier...
+            let words = try instance.move(cat)
+            
+            XCTAssert(words.first == words.first)
+            XCTAssert(words.first?.points == 0) // Immutable can't have points
+            XCTAssert(words.first?.bonus == 0)
+            XCTAssert(words.first?.immutable == true)
+            
+        } catch {
+            XCTAssert(false)
+        }
     }
     
     func runTileErrorTests(instance: Papyrus) {
@@ -168,6 +191,7 @@ class PapyrusTests: XCTestCase {
                 self.runPlayerTests(instance)
                 self.runRunsTests(instance)
                 self.runTileErrorTests(instance)
+                self.runTilePlacementTests(instance)
                 
             case .Completed:
                 print("Completed")
