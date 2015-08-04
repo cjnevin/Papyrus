@@ -17,11 +17,11 @@ extension Papyrus {
         //let perms = permutations(userTiles) // 5040 for 7 tiles.
         
         // Collect every possible location to place tiles.
-        let t = NSDate().timeIntervalSinceReferenceDate
+        //let t = NSDate().timeIntervalSinceReferenceDate
         
-        let r = runs(withTiles: userTiles)
+        //let r = runs(withTiles: userTiles)
         
-        print("Elapsed: \(NSDate().timeIntervalSinceReferenceDate - t)")
+        //print("Elapsed: \(NSDate().timeIntervalSinceReferenceDate - t)")
         
         // Determine potential words for each defined area on the board.
         //
@@ -39,12 +39,12 @@ extension Papyrus {
         
         
         
-        for run in r {
+        //for run in r {
             // Filter permutations that are same length
             //for perm in perms.filter({$0.count == run.count}) {
             //
             //}
-        }
+        //}
         
         
         // Finally, sort words using score potential.

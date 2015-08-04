@@ -125,6 +125,12 @@ class PapyrusTests: XCTestCase {
             print(zWords.count)
             print(zWords)
             
+            XCTAssert(instance.tiles.placed(.Fixed).count == (ha.count + cat.count + z.count))
+            let totalTiles = Papyrus.TileConfiguration.map({$0.0}).reduce(0, combine: +)
+            XCTAssert(totalTiles - (instance.tiles.placed(.Bag).count + instance.tiles.placed(.Rack).count) == (ha.count + cat.count + z.count))
+            
+            
+            
         } catch {
             XCTAssert(false)
         }
