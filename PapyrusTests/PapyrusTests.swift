@@ -92,11 +92,16 @@ class PapyrusTests: XCTestCase {
         
         do {
             let o = PapyrusMiddleOffset!
-            
-            // Add 'cat' intersecting middle square
-            let cat = [(getTile(withLetter: "C"), o.prev(.Vertical)!),
+            // NOTE: Cant use same tile twice without playing, limitation of 'getTile' method.
+            // Add 'batcher' intersecting middle square
+            let cat = [
+                (getTile(withLetter: "B"), o.prev(.Vertical)!),
                 (getTile(withLetter: "A"), o),
-                (getTile(withLetter: "T"), o.next(.Vertical)!)]
+                (getTile(withLetter: "T"), o.next(.Vertical)!),
+                (getTile(withLetter: "C"), o.advance(.Vertical, amount: 2)!),
+                (getTile(withLetter: "H"), o.advance(.Vertical, amount: 3)!),
+                (getTile(withLetter: "E"), o.advance(.Vertical, amount: 4)!),
+                (getTile(withLetter: "R"), o.advance(.Vertical, amount: 5)!)]
             dropEm(cat)
             
             // Need to split out move logic, so we can test it easier...
@@ -218,19 +223,35 @@ class PapyrusTests: XCTestCase {
         XCTAssert(Offset((-1, -1)) == nil)
         XCTAssert(Offset((1, 1)) != nil)
         XCTAssert(Offset(x: 1, y: 1)!.hashValue == "(\(1),\(1))".hashValue)
+        XCTAssert(Offset((1,1))!.at(x: 3, y: 3) != nil)
+        XCTAssert(Offset((1,1))!.at(x: -1, y: -1) == nil)
+        XCTAssert(Offset((1,1))!.at(x: PapyrusDimensions + 1, y: PapyrusDimensions) == nil)
     }
     
     func testExtensions() {
-        XCTAssert(minMax([1,2,3]).min == 1)
-        XCTAssert(minMax([1,2,3]).max == 3)
-        XCTAssert(minEqualsMax(minMax([1,1])) == 1)
-        XCTAssert(minEqualsMax(minMax([1,2])) == nil)
+        XCTAssert(minMax([1,2,3]).min == 1, "Min should return 1")
+        XCTAssert(minMax([1,2,3]).max == 3, "Max should return 3")
+        XCTAssert(minEqualsMax(minMax([1,1])) == 1, "Minmax should return 1")
+        XCTAssert(minEqualsMax(minMax([1,2])) == nil, "Minmax should fail, both don't match")
         var count: Int = 0
         iterate([1,2,3], start: 0, callback: { (value) -> () in
             count += value
         })
-        XCTAssert(count == [1,2,3].reduce(0, combine: +))
-        XCTAssert([1,2,3,nil].mapFilter{ $0 }.count == 3)
+        XCTAssert(count == [1,2,3].reduce(0, combine: +), "Count should equal reduce function's test")
+        XCTAssert([1,2,3,nil].mapFilter{ $0 }.count == 3, "Nil should be filtered")
+        
+        // <~> operator
+        let r = (0, 5)
+        XCTAssert(1 == (1 <~> r), "1 should be inside of r range")
+        XCTAssert(((1,6) <~> r) == nil, "End of range should be outside of r range")
+        XCTAssert(((-1, 4) <~> r) == nil, "Start of range should be outside of r range")
+        let a = (1,2) <~> r
+        XCTAssert(a?.0 == 1 && a?.1 == 2, "1,2 should be within r range")
+        XCTAssert(((0,6) <~> r) == nil, "0,6 should return nil")
+        XCTAssert(((-1,4) <~> r) == nil, "-1,4 should return nil")
+        let b = [(1,2),(3,4)] <~> r
+        XCTAssert(b?.first?.0 == 1 && b?.first?.1 == 2 && b?.last?.0 == 3 && b?.last?.1 == 4, "1,2,3,4 should be within r range")
+        XCTAssert(([(0,6),(-1,3)] <~> r) == nil, "0,6, -1,3 should return nil")
     }
     
     func testGame() {
