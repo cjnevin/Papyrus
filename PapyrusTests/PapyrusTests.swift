@@ -249,9 +249,6 @@ class PapyrusTests: XCTestCase {
         XCTAssert(a?.0 == 1 && a?.1 == 2, "1,2 should be within r range")
         XCTAssert(((0,6) <~> r) == nil, "0,6 should return nil")
         XCTAssert(((-1,4) <~> r) == nil, "-1,4 should return nil")
-        let b = [(1,2),(3,4)] <~> r
-        XCTAssert(b?.first?.0 == 1 && b?.first?.1 == 2 && b?.last?.0 == 3 && b?.last?.1 == 4, "1,2,3,4 should be within r range")
-        XCTAssert(([(0,6),(-1,3)] <~> r) == nil, "0,6, -1,3 should return nil")
     }
     
     func testGame() {

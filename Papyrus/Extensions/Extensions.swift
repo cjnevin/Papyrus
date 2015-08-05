@@ -26,8 +26,3 @@ func <~> <T: IntegerType>(lhs: (T, T), rhs: (T, T)) -> (T, T)? {
     guard let a = lhs.0 <~> rhs, b = lhs.1 <~> rhs else { return nil }
     return (a, b)
 }
-
-func <~> <T: IntegerType>(lhs: [(T, T)], rhs: (T, T)) -> [(T, T)]? {
-    guard let a = lhs.map({ ($0 <~> rhs) }) as? [(T, T)] where a.count == lhs.count else { return nil }
-    return a
-}
