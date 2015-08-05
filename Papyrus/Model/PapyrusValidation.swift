@@ -85,6 +85,22 @@ extension Papyrus {
         return output
     }
     
+    func completeGameIfNoTilesInRack() {
+        // If tiles.count == 0 current player won
+        if tiles.placedCount(.Rack, owner: player) == 0 {
+            // Assumption, player won!
+            changeFunction?(.Completed, self)
+            // Calculate all other players tiles to subtract
+            var index = 1;
+            for p in players {
+                let newScore = tiles.placed(.Rack, owner: p).map({ $0.value }).reduce(p.score, combine: -)
+                print("Player \(index)'s new score: \(newScore)")
+                p.score = newScore
+                index++
+            }
+        }
+    }
+    
     func move(letters: [Tile]) throws -> [Word] {
         var outWords = [Word]()
         if let word = try Word(letters, f: prepareTiles) {
@@ -124,19 +140,7 @@ extension Papyrus {
             // TODO: Remove
             possibilities(withTiles: rackTiles)
             
-            // If tiles.count == 0 current player won
-            if tiles.placedCount(.Rack, owner: player) == 0 {
-                // Assumption, player won!
-                changeFunction?(.Completed, self)
-                // Calculate all other players tiles to subtract
-                var index = 1;
-                for p in players {
-                    let newScore = tiles.placed(.Rack, owner: p).map({ $0.value }).reduce(p.score, combine: -)
-                    print("Player \(index)'s new score: \(newScore)")
-                    p.score = newScore
-                    index++
-                }
-            }
+            completeGameIfNoTilesInRack()
         }
         return outWords
     }

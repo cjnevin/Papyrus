@@ -14,7 +14,7 @@ class Player: NSObject {
     
     var score: Int = 0
     init(score: Int? = 0) {
-        self.score = score ?? 0
+        self.score = score!
     }
     func count(f: CountFunction) -> Int {
         return f(.Rack, self)

@@ -75,6 +75,71 @@ class PapyrusTests: XCTestCase {
             return instance.tiles.filter({ ($0.letter == letter && ($0.placement == .Bag || $0.placement == .Rack)) }).first!
         }
         
+        func assertEmptyWordFailure(instance: Papyrus) {
+            do {
+                let tiles = [Tile]()
+                try instance.move(tiles)
+                XCTAssert(false)
+            }
+            catch {
+                XCTAssert(true)
+            }
+        }
+        
+        func assertTilePlacementFailure(instance: Papyrus) {
+            // Fail for not intersecting center
+            let a = Offset(x: 1, y: 1)!
+            let fail = [
+                (getTile(withLetter: "F"), a),
+                (getTile(withLetter: "A"), a.advance(.Vertical, amount: 1)!),
+                (getTile(withLetter: "I"), a.advance(.Vertical, amount: 2)!),
+                (getTile(withLetter: "L"), a.advance(.Vertical, amount: 3)!)
+            ]
+            dropEm(fail)
+            do {
+                // Must fail
+                let _ = try instance.move(fail.map({$0.0}))
+                XCTAssert(false)
+            } catch {
+                XCTAssert(true)
+                do {
+                    for f in fail {
+                        try f.0.place(.Bag, owner: nil, square: nil)
+                    }
+                }
+                catch {
+                    XCTAssert(false)
+                }
+            }
+        }
+        
+        func assertTilePlacementLineFailure(instance: Papyrus) {
+            // Fail for not intersecting center
+            let a = Offset(x: 1, y: 1)!
+            let fail = [
+                (getTile(withLetter: "F"), a),
+                (getTile(withLetter: "A"), a.advance(.Vertical, amount: 1)!),
+                (getTile(withLetter: "I"), a.advance(.Horizontal, amount: 2)!),
+                (getTile(withLetter: "L"), a.advance(.Vertical, amount: 3)!)
+            ]
+            dropEm(fail)
+            do {
+                // Must fail
+                let _ = try instance.move(fail.map({$0.0}))
+                XCTAssert(false)
+            } catch {
+                XCTAssert(true)
+                do {
+                    for f in fail {
+                        try f.0.place(.Bag, owner: nil, square: nil)
+                    }
+                }
+                catch {
+                    XCTAssert(false)
+                }
+            }
+        }
+        
         func dropEm(tiles: [(Tile, Offset)]) {
             do {
                 for (t, p) in tiles {
@@ -90,8 +155,13 @@ class PapyrusTests: XCTestCase {
             }
         }
         
+        assertEmptyWordFailure(instance)
+        assertTilePlacementFailure(instance)
+        assertTilePlacementLineFailure(instance)
+        
         do {
             let o = PapyrusMiddleOffset!
+            
             // NOTE: Cant use same tile twice without playing, limitation of 'getTile' method.
             // Add 'batcher' intersecting middle square
             let cat = [
@@ -106,6 +176,8 @@ class PapyrusTests: XCTestCase {
             
             // Need to split out move logic, so we can test it easier...
             let words = try instance.move(cat.map({$0.0}))
+            
+            assertTilePlacementFailure(instance)
             
             // Validate word
             XCTAssert(words.first == words.first)
@@ -134,8 +206,20 @@ class PapyrusTests: XCTestCase {
             let totalTiles = Papyrus.TileConfiguration.map({$0.0}).reduce(0, combine: +)
             XCTAssert(totalTiles - (instance.tiles.placed(.Bag).count + instance.tiles.placed(.Rack).count) == (ha.count + cat.count + z.count))
             
-            
-            
+        } catch {
+            XCTAssert(false)
+        }
+        
+        // Fake rack being empty
+        do {
+            for t in instance.rackTiles {
+                try t.place(.Bag)
+            }
+            XCTAssert(true)
+            // Create opponent, take some tiles
+            let player = try instance.createPlayer()
+            instance.players.append(player)
+            instance.completeGameIfNoTilesInRack()
         } catch {
             XCTAssert(false)
         }
@@ -144,6 +228,8 @@ class PapyrusTests: XCTestCase {
     func runTileErrorTests(instance: Papyrus) {
         let tile = instance.rackTiles.first!
         let placement = tile.placement
+        XCTAssert(tile.letterValue == 0)
+        XCTAssert(tile.wordMultiplier == 1)
         
         // Test bag with owner error
         do {
@@ -162,6 +248,13 @@ class PapyrusTests: XCTestCase {
         do {
             tile.owner = nil
             try tile.place(.Board, owner: nil, square: nil)
+        } catch {
+            XCTAssert(tile.placed(placement) == tile)
+        }
+        // Test fixed with no square error
+        do {
+            tile.owner = nil
+            try tile.place(.Fixed, owner: nil, square: nil)
         } catch {
             XCTAssert(tile.placed(placement) == tile)
         }
