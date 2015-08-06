@@ -107,6 +107,7 @@ class Tile: NSObject, CustomDebugStringConvertible {
 }
 
 extension Tile {
+    /// Compare complete placement with placement ignoring player and square..
     class func match(p: Tile.Placement, unassociatedPlacement: Tile.UnassociatedPlacement) -> Bool {
         switch (p, unassociatedPlacement) {
         case (.Bag, .Bag): return true
@@ -118,6 +119,7 @@ extension Tile {
         }
     }
     
+    /// Compare complete placement with placement ignoring square requirement.
     class func match(p: Tile.Placement, playerPlacement: Tile.PlayerPlacement) -> Bool {
         switch (p, playerPlacement) {
         case (.Rack(let a), .Rack(let b)): return a == b
@@ -128,6 +130,7 @@ extension Tile {
         }
     }
     
+    /// Compare complete placement with another placement.
     class func match(p: Tile.Placement, placement: Tile.Placement) -> Bool {
         switch (p, placement) {
         case (.Bag, .Bag): return true
