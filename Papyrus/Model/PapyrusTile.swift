@@ -16,93 +16,161 @@ extension CollectionType where Generator.Element == Tile {
         guard let offset = offset, matched = filter({ $0.square?.offset == offset }).first else { return nil }
         return matched
     }
-    /// - Parameters:
-    ///     - placement: Placement of tiles to return.
-    ///     - owner: Optional owner of tiles, if nil it will return all.
-    /// - SeeAlso: `placed`
-    /// - Returns: `placed.count`
-    func placedCount(placement: Tile.Placement, owner: Player? = nil) -> Int {
-        return placed(placement, owner: owner).count
-    }
-    /// - Parameters:
-    ///     - placement: Placement of tiles to return.
-    ///     - owner: Optional owner of tiles, if nil it will return all.
-    /// - Returns: Tiles with given placement, and optionally owner.
-    func placed(placement: Tile.Placement, owner: Player? = nil) -> [Tile] {
-        return filter{ Tile.placed($0)(placement, owner: owner) != nil }
-    }
-    /// Move tiles to another placement in the game (i.e. Bag to Rack).
-    /// - Parameters:
-    ///     - newPlacement: Place to move to.
-    ///     - owner: Optionally assign a player. Will throw error if player cannot be assigned for specified newPlacement (and square).
-    ///     - square: Optionally assign a square. Will throw error if square cannot be assigned for specified newPlacement (and owner).
-    func place(newPlacement: Tile.Placement, owner: Player? = nil, square: Square? = nil) throws {
-        for tile in self {
-            try tile.place(newPlacement, owner: owner)
-        }
-    }
     /// Returns tiles sorted by offset.
     func sorted() -> [Tile] {
         return filter{ $0.square != nil }.sort{ $0.square!.offset < $1.square!.offset }
     }
+    /// - Returns: Array of tiles in the bag.
+    func inBag() -> [Tile] {
+        return filter({ $0.placement == Tile.Placement.Bag })
+    }
+    /// - Returns: Array of tiles on the board optionally owned by a specific players.
+    func onBoard(player: Player? = nil) -> [Tile] {
+        guard let player = player else {
+            return filter({ Tile.match($0.placement, unassociatedPlacement: .Board) })
+        }
+        return filter({ Tile.match($0.placement, playerPlacement: .Board(player)) })
+    }
+    /// - Returns: Array of tiles on the board (and fixed) optionally owned by a specific players.
+    func onBoardFixed(player: Player? = nil) -> [Tile] {
+        guard let player = player else {
+            return filter({ Tile.match($0.placement, unassociatedPlacement: .Fixed) })
+        }
+        return filter({ Tile.match($0.placement, playerPlacement: .Fixed(player)) })
+    }
+    /// - Returns: Array of tiles optionally in a specific players rack.
+    func inRack(player: Player? = nil) -> [Tile] {
+        guard let player = player else {
+            return filter({ Tile.match($0.placement, unassociatedPlacement: .Rack) })
+        }
+        return filter({ Tile.match($0.placement, placement: .Rack(player)) })
+    }
 }
 
+/// Check if identical.
+func == (lhs: Tile.Placement, rhs: Tile.Placement) -> Bool {
+    return Tile.match(lhs, placement: rhs)
+}
+
+/// Tile is represented as a letter and a value. Other information can be
+/// derived by assigning different placements.
 class Tile: NSObject, CustomDebugStringConvertible {
+    
+    /// Each of the potential errors that could occur during placement.
     enum PlacementError: ErrorType {
         case PlacementWithoutPlayerError
         case PlaceInBagWithPlayerError
         case PlacementWithoutSquareError
         case PlacementWhileHeldError
     }
-    enum Placement {
+    /// Valid placements.
+    enum UnassociatedPlacement {
         case Bag
         case Rack
         case Held
         case Board
         case Fixed
     }
-    var owner: Player?
-    var square: Square?
+    enum PlayerPlacement {
+        case Rack(Player)
+        case Held(Player)
+        case Board(Player)
+        case Fixed(Player)
+    }
+    enum Placement: Equatable {
+        case Bag
+        case Rack(Player)
+        case Held(Player)
+        case Board(Player, Square)
+        case Fixed(Player, Square)
+    }
+    /// - Returns: Owner if available.
+    var owner: Player? {
+        switch placement {
+        case .Rack(let player):
+            return player
+        case .Held(let player):
+            return player
+        case .Board(let player, _):
+            return player
+        case .Fixed(let player, _):
+            return player
+        default:
+            return nil
+        }
+    }
+    /// - Returns: Current square or nil.
+    var square: Square? {
+        switch placement {
+        case .Board(_, let square):
+            return square
+        case .Fixed(_, let square):
+            return square
+        default:
+            return nil
+        }
+    }
+    /// - Returns: True if placement == .Fixed
+    var isFixed: Bool {
+        switch placement {
+        case .Fixed(_, _):
+            return true
+        default:
+            return false
+        }
+    }
+    /// Placement defines where the Tile exists in the game.
     var placement = Placement.Bag
     var letter: Character
     let value: Int
     var letterValue: Int {
         guard let sq = square else { return 0 }
-        return (placement == .Fixed ? 1 : sq.modifier.letterMultiplier) * value
+        return (isFixed ? 1 : sq.modifier.letterMultiplier) * value
     }
     var wordMultiplier: Int {
         guard let sq = square else { return 1 }
-        return (placement == .Fixed ? 1 : sq.modifier.wordMultiplier)
+        return (isFixed ? 1 : sq.modifier.wordMultiplier)
     }
     init(_ letter: Character, value: Int) {
         self.letter = letter
         self.value = value
     }
-    func place(p: Placement, owner o: Player? = nil, square s: Square? = nil) throws {
-        if p != .Bag && o == nil && owner == nil {
-            throw PlacementError.PlacementWithoutPlayerError
-        } else if p == .Bag && (o != nil) {
-            throw PlacementError.PlaceInBagWithPlayerError
-        } else if (p == .Board || p == .Fixed) && (square == nil && s == nil) {
-            throw PlacementError.PlacementWithoutSquareError
-        } else if p == .Held && (s != nil) {
-            throw PlacementError.PlacementWhileHeldError
-        }
-        if o == nil && owner != nil && p != .Bag {
-            // Don't update owner if nil but already previously set
-        } else {
-            self.owner = o
-        }
-        if !(square != nil && s == nil && (p == .Fixed || p == .Board)) {
-            self.square = s
-        }
-        self.placement = p
-    }
-    func placed(p: Placement, owner o: Player? = nil) -> Tile? {
-        return (placement == p && ((o != nil && owner == o) || (o == nil))) ? self : nil
-    }
     override var debugDescription: String {
         return "\(letter)"
+    }
+}
+
+extension Tile {
+    class func match(p: Tile.Placement, unassociatedPlacement: Tile.UnassociatedPlacement) -> Bool {
+        switch (p, unassociatedPlacement) {
+        case (.Bag, .Bag): return true
+        case (.Rack(_), .Rack): return true
+        case (.Held(_), .Held): return true
+        case (.Board(_,_), .Board): return true
+        case (.Fixed(_,_), .Fixed): return true
+        default: return false
+        }
+    }
+    
+    class func match(p: Tile.Placement, playerPlacement: Tile.PlayerPlacement) -> Bool {
+        switch (p, playerPlacement) {
+        case (.Rack(let a), .Rack(let b)): return a == b
+        case (.Held(let a), .Held(let b)): return a == b
+        case (.Board(let apl, _), .Board(let bpl)): return apl == bpl
+        case (.Fixed(let apl, _), .Fixed(let bpl)): return apl == bpl
+        default: return false
+        }
+    }
+    
+    class func match(p: Tile.Placement, placement: Tile.Placement) -> Bool {
+        switch (p, placement) {
+        case (.Bag, .Bag): return true
+        case (.Rack(let a), .Rack(let b)): return a == b
+        case (.Held(let a), .Held(let b)): return a == b
+        case (.Board(let apl, let asp), .Board(let bpl, let bsp)): return apl == bpl && asp == bsp
+        case (.Fixed(let apl, let asp), .Fixed(let bpl, let bsp)): return apl == bpl && asp == bsp
+        default: return false
+        }
     }
 }
 
@@ -113,28 +181,12 @@ extension Papyrus {
         (6, 1, "R"), (4, 1, "S"), (6, 1, "T"), (4, 1, "U"), (2, 4, "V"), (2, 4, "W"),
         (2, 4, "Y"), (1, 10, "Z"), (2, 0, "?")]
     
+    /// - Returns: Array of tiles created by iterating TileConfiguration.
     class func createTiles() -> [Tile] {
         return Papyrus.TileConfiguration.flatMap { e in
             (0..<e.0).map({ _ in
                 Tile(e.2, value: e.1)
             })
         }.sort({_, _ in arc4random() % 2 == 0})
-    }
-    
-    func drawTiles(start: Int, end: Int, owner: Player?, from: Tile.Placement, to: Tile.Placement) throws -> Int {
-        var count = 0
-        for i in start..<tiles.count where tiles[i].placement == from && count < end {
-            try tiles[i].place(to, owner: owner)
-            count++
-        }
-        return count
-    }
-    
-    var droppedTiles: [Tile] {
-        return tiles.placed(.Board, owner: player)
-    }
-    
-    var rackTiles: [Tile] {
-        return tiles.placed(.Rack, owner: player)
     }
 }

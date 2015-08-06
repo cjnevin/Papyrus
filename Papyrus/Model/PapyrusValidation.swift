@@ -87,13 +87,13 @@ extension Papyrus {
     
     func completeGameIfNoTilesInRack() {
         // If tiles.count == 0 current player won
-        if tiles.placedCount(.Rack, owner: player) == 0 {
+        if tiles.inRack(player).count == 0 {
             // Assumption, player won!
             changeFunction?(.Completed, self)
             // Calculate all other players tiles to subtract
             var index = 1;
             for p in players {
-                let newScore = tiles.placed(.Rack, owner: p).map({ $0.value }).reduce(p.score, combine: -)
+                let newScore = tiles.inRack(p).map({ $0.value }).reduce(p.score, combine: -)
                 print("Player \(index)'s new score: \(newScore)")
                 p.score = newScore
                 index++
@@ -103,7 +103,7 @@ extension Papyrus {
     
     func move(letters: [Tile]) throws -> [Word] {
         var outWords = [Word]()
-        if let word = try Word(letters, f: prepareTiles) {
+        if let word = try Word(letters, f: prepareTiles), player = player {
             print("Main word: \(word.value)")
             let definition = try Lexicon.sharedInstance.defined(word.value)
             print("Definition: \(definition)")
@@ -128,18 +128,16 @@ extension Papyrus {
             // Make tile fixed, no one will be able to drag them from this point onward.
             // Assign `mutableWords` to `outWords` so we can return them.
             outWords = outWords.filter{ !$0.immutable }
-            try outWords.flatMap{ $0.tiles }.place(.Fixed, owner: nil)
+            outWords.flatMap({ $0.tiles }).map({ $0.placement = .Fixed(player, $0.square!) })
             // Add words to played words.
             words.unionInPlace(outWords)
             // Add score to current player.
-            player?.score += sum
+            player.score += sum
+            print("Sum: \(sum), new total: \(player.score)")
             // Refill their rack.
-            try player?.refill(tileIndex, f: drawTiles, countf: tiles.placedCount)
-            print("Sum: \(sum), new total: \(player!.score)")
-            
+            replenishRack(player: player)
             // TODO: Remove
-            possibilities(withTiles: rackTiles)
-            
+            //possibilities(withTiles: rackTiles)
             completeGameIfNoTilesInRack()
         }
         return outWords

@@ -25,7 +25,7 @@ class GameScene: SKScene, GameSceneProtocol {
     }
     /// - Returns: Currently dragged tile user is holding.
     var heldTile: TileSprite? {
-        return tileSprites.filter{ $0.tile.placement == Tile.Placement.Held }.first
+        return tileSprites.filter({ Tile.match($0.tile.placement, unassociatedPlacement: .Held) }).first
     }
     /// Delegate for tile picking.
     var actionDelegate: GameSceneDelegate?
@@ -51,12 +51,13 @@ class GameScene: SKScene, GameSceneProtocol {
             tile.resetPosition(origin)
         }
         do {
-            let moveTiles = try game.move(game.droppedTiles).flatMap{ $0.tiles }
+            let moveTiles = try game.move(game.tiles.onBoard(game.player)).flatMap{ $0.tiles }
             completeMove(withTiles: moveTiles)
         } catch let err as ValidationError {
             switch err {
             case .Center(let o, let w):
-                squareSprites.filter{ $0.square.offset == o }.map{ $0.warningGlow() }
+                squareSprites.filter{ $0.square.offset == o }
+                    .map{ $0.warningGlow() }
                 sprites(w.tiles).map{ $0.warningGlow() }
             case .Arrangement(let tiles):
                 sprites(tiles).map{ $0.warningGlow() }
@@ -64,7 +65,8 @@ class GameScene: SKScene, GameSceneProtocol {
                 sprites(w.tiles).map{ $0.warningGlow() }
             case .Intersection(let w):
                 sprites(w.tiles).map{ $0.warningGlow() }
-                tileSprites.filter{ $0.tile.placement == Tile.Placement.Fixed }.map{ $0.warningGlow() }
+                tileSprites.filter{ Tile.match($0.tile.placement, unassociatedPlacement: .Fixed) }
+                    .map{ $0.warningGlow() }
             case .Message(let s):
                 throw ValidationError.Message(s)
             case .Undefined(let s):
@@ -111,7 +113,7 @@ class GameScene: SKScene, GameSceneProtocol {
     /// Replace rack sprites with newly drawn tiles.
     private func replaceRackSprites() {
         // Remove existing rack sprites.
-        let rackSprites = tileSprites.filter{ game.rackTiles.contains($0.tile) }
+        let rackSprites = tileSprites.filter{ game.tiles.inRack().contains($0.tile) }
         tileSprites = tileSprites.filter{ !rackSprites.contains($0) }
         rackSprites.map{ $0.removeFromParent() }
         // Create new rack sprites in new positions.

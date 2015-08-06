@@ -68,22 +68,26 @@ extension GameScene {
     /// Drop a tile on the board, or if no squares are intersected back to the tile rack.
     /// Throws an error if either 'place' fails.
     private func drop(atPoint point: CGPoint?) throws {
-        guard let point = point, tile = heldTile, origin = heldOrigin else { return }
+        guard let point = point, sprite = heldTile, origin = heldOrigin else { return }
         guard let emptySquare = intersectedSquareSprite(point) else {
             try dropInRack(atPoint: origin)
             return
         }
         // Drop on board
-        emptySquare.animateDropTileSprite(tile, originalPoint: origin, completion: nil)
-        try tile.tile.place(.Board, owner: nil, square: emptySquare.square)
+        emptySquare.animateDropTileSprite(sprite, originalPoint: origin, completion: nil)
+        let tile = sprite.tile
+        guard let player = tile.owner else { throw Tile.PlacementError.PlacementWithoutPlayerError }
+        tile.placement = .Board(player, emptySquare.square)
     }
     
     /// Drop currently held tile into the rack.
     /// Throws an error if 'place' method fails.
     private func dropInRack(animated: Bool? = true, atPoint point: CGPoint?) throws {
-        guard let point = point, tile = heldTile else { return }
-        animated == true ? tile.animateDropToRack(point) : tile.resetPosition(point)
-        try tile.tile.place(.Rack)
+        guard let point = point, sprite = heldTile else { return }
+        animated == true ? sprite.animateDropToRack(point) : sprite.resetPosition(point)
+        let tile = sprite.tile
+        guard let player = tile.owner else { throw Tile.PlacementError.PlacementWithoutPlayerError }
+        tile.placement = .Rack(player)
     }
     
     /// Pickup a tile from the rack or board.
@@ -93,13 +97,15 @@ extension GameScene {
         if let s = squareSprites.filter({ $0.containsPoint(point) && $0.tileSprite != nil }).first, t = s.pickupTileSprite() {
             // Pickup from board
             t.origin = s.origin
-            try t.tile.place(.Held)
+            guard let player = t.tile.owner else { throw Tile.PlacementError.PlacementWithoutPlayerError }
+            t.tile.placement = .Held(player)
             t.animateGrow()
             addChild(t)
         } else if let t = tileSprites.filter({ $0.containsPoint(point) && !$0.hasActions() }).first {
             // Pickup from rack
             t.origin = t.position
-            try t.tile.place(.Held)
+            guard let player = t.tile.owner else { throw Tile.PlacementError.PlacementWithoutPlayerError }
+            t.tile.placement = .Held(player)
             t.animatePickupFromRack(point)
         }
     }

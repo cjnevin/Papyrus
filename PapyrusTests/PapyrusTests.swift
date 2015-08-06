@@ -29,12 +29,12 @@ class PapyrusTests: XCTestCase {
     func runTileTests(instance: Papyrus) {
         let totalTiles = Papyrus.TileConfiguration.map({$0.0}).reduce(0, combine: +)
         XCTAssert(instance.tiles.count == totalTiles)
-        try! instance.createPlayer()
-        XCTAssert(instance.tiles.placedCount(.Bag) == totalTiles - PapyrusRackAmount)
+        instance.createPlayer()
+        XCTAssert(instance.tiles.inBag().count == totalTiles - PapyrusRackAmount)
         XCTAssert(instance.tileIndex == PapyrusRackAmount)
-        XCTAssert(instance.rackTiles.count == PapyrusRackAmount)
-        XCTAssert(instance.droppedTiles.count == 0)
-        let tile = instance.rackTiles.first!
+        XCTAssert(instance.tiles.inRack(instance.player).count == PapyrusRackAmount)
+        XCTAssert(instance.tiles.onBoard(instance.player).count == 0)
+        let tile = instance.tiles.inRack(instance.player).first!
         XCTAssert(String(tile.letter) == tile.debugDescription)
     }
     
@@ -72,7 +72,9 @@ class PapyrusTests: XCTestCase {
         }
         
         func getTile(withLetter letter: Character) -> Tile {
-            return instance.tiles.filter({ ($0.letter == letter && ($0.placement == .Bag || $0.placement == .Rack)) }).first!
+            let placement = Tile.Placement.Rack(instance.player!)
+            return instance.tiles.filter({$0.letter == letter})
+                .filter({$0.placement == .Bag || $0.placement == placement}).first!
         }
         
         func assertEmptyWordFailure(instance: Papyrus) {
@@ -102,13 +104,8 @@ class PapyrusTests: XCTestCase {
                 XCTAssert(false)
             } catch {
                 XCTAssert(true)
-                do {
-                    for f in fail {
-                        try f.0.place(.Bag, owner: nil, square: nil)
-                    }
-                }
-                catch {
-                    XCTAssert(false)
+                for f in fail {
+                    f.0.placement = .Bag
                 }
             }
         }
@@ -129,29 +126,19 @@ class PapyrusTests: XCTestCase {
                 XCTAssert(false)
             } catch {
                 XCTAssert(true)
-                do {
-                    for f in fail {
-                        try f.0.place(.Bag, owner: nil, square: nil)
-                    }
-                }
-                catch {
-                    XCTAssert(false)
+                for f in fail {
+                    f.0.placement = .Bag
                 }
             }
         }
         
         func dropEm(tiles: [(Tile, Offset)]) {
-            do {
-                for (t, p) in tiles {
-                    guard let square = instance.squares.at(p) else {
-                        XCTAssert(false)
-                        break
-                    }
-                    try t.place(.Board, owner: instance.player, square: square)
-                    XCTAssert(t.placed(.Board) == t)
+            for (t, p) in tiles {
+                guard let square = instance.squares.at(p) else {
+                    XCTAssert(false)
+                    break
                 }
-            } catch {
-                XCTAssert(false)
+                t.placement = Tile.Placement.Board(instance.player!, square)
             }
         }
         
@@ -202,72 +189,33 @@ class PapyrusTests: XCTestCase {
             print(zWords.count)
             print(zWords)
             
-            XCTAssert(instance.tiles.placed(.Fixed).count == (ha.count + cat.count + z.count))
+            XCTAssert(instance.tiles.onBoardFixed().count == (ha.count + cat.count + z.count))
             let totalTiles = Papyrus.TileConfiguration.map({$0.0}).reduce(0, combine: +)
-            XCTAssert(totalTiles - (instance.tiles.placed(.Bag).count + instance.tiles.placed(.Rack).count) == (ha.count + cat.count + z.count))
+            XCTAssert(totalTiles - (instance.tiles.inBag().count + instance.tiles.inRack(instance.player).count) == (ha.count + cat.count + z.count))
             
         } catch {
             XCTAssert(false)
         }
         
         // Fake rack being empty
-        do {
-            for t in instance.rackTiles {
-                try t.place(.Bag)
-            }
-            XCTAssert(true)
-            // Create opponent, take some tiles
-            let player = try instance.createPlayer()
-            instance.players.append(player)
-            instance.completeGameIfNoTilesInRack()
-        } catch {
-            XCTAssert(false)
+        for t in instance.tiles.inRack(instance.player) {
+            t.placement = .Bag
         }
+        XCTAssert(true)
+        // Create opponent, take some tiles
+        let player = instance.createPlayer()
+        instance.players.append(player)
+        instance.completeGameIfNoTilesInRack()
     }
     
     func runTileErrorTests(instance: Papyrus) {
-        let tile = instance.rackTiles.first!
-        let placement = tile.placement
+        let tile = instance.tiles.inRack(instance.player).first!
         XCTAssert(tile.letterValue == 0)
         XCTAssert(tile.wordMultiplier == 1)
-        
-        // Test bag with owner error
-        do {
-            try tile.place(.Bag, owner: instance.player!)
-        } catch {
-            XCTAssert(tile.placed(placement) == tile)
-        }
-        // Test rack with no owner error
-        do {
-            tile.owner = nil
-            try tile.place(.Rack, owner: nil)
-        } catch {
-            XCTAssert(tile.placed(placement) == tile)
-        }
-        // Test board with no square error
-        do {
-            tile.owner = nil
-            try tile.place(.Board, owner: nil, square: nil)
-        } catch {
-            XCTAssert(tile.placed(placement) == tile)
-        }
-        // Test fixed with no square error
-        do {
-            tile.owner = nil
-            try tile.place(.Fixed, owner: nil, square: nil)
-        } catch {
-            XCTAssert(tile.placed(placement) == tile)
-        }
-        // Test held with square error
-        do {
-            try tile.place(.Held, owner: nil, square: instance.squares.at(Offset((0,0))!))
-        } catch {
-            XCTAssert(tile.placed(placement) == tile)
-        }
     }
     
     func runRunsTests(instance: Papyrus) {
-        XCTAssert(54 == instance.currentRuns().array.count)
+        XCTAssert(54 == instance.currentRuns()?.array.count)
     }
     
     func runSquareTests(instance: Papyrus) {
@@ -275,27 +223,7 @@ class PapyrusTests: XCTestCase {
         
         let sq = instance.squares.at(Offset((1,1))!)
         XCTAssert(sq?.hashValue == "\(sq!.offset.x),\(sq!.offset.y)".hashValue)
-        /*XCTAssert(sq.at(x: 2, y: 2, inArray: sqs) != nil)
-        XCTAssert(sq.at(x: PapyrusDimensions + 1, y: 0, inArray: sqs) == nil)
-        XCTAssert(sq.at(x: 0, y: PapyrusDimensions + 1, inArray: sqs) == nil)
-        XCTAssert(sq.at(x: -1, y: 0, inArray: sqs) == nil)
-        XCTAssert(sq.at(x: 0, y: -1, inArray: sqs) == nil)*/
         XCTAssert(sq == sq)
-        /*
-        TODO: Fix next/prev methods
-        XCTAssert(sqs[2][1] == sq.next(.Horizontal, inArray: sqs))
-        XCTAssert(sqs[1][2] == sq.next(.Vertical, inArray: sqs))
-        XCTAssert(sqs[2][1] == sq.advance(.Horizontal, amount: 1, inArray: sqs))
-        XCTAssert(sqs[1][2] == sq.advance(.Vertical, amount: 1, inArray: sqs))
-        
-        let sq2 = sqs[1][1]
-        XCTAssert(sqs[1][0] == sq2.prev(.Horizontal, inArray: sqs))
-        
-        XCTAssert(sq.at(x: 0, y: 1, inArray: sqs) == sq.prev(.Horizontal, inArray: sqs))
-        XCTAssert(sq.at(x: 1, y: 0, inArray: sqs) == sq.prev(.Vertical, inArray: sqs))
-        XCTAssert(sq.at(x: 0, y: 1, inArray: sqs) == sq.advance(.Horizontal, amount: -1, inArray: sqs))
-        XCTAssert(sq.at(x: 1, y: 0, inArray: sqs) == sq.advance(.Vertical, amount: -1, inArray: sqs))
-        */
     }
     
     func runOffsetTests() {

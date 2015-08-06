@@ -33,10 +33,10 @@ struct Word: Hashable, Equatable {
         return immutable ? 0 : _points
     }
     var bonus: Int {
-        return tiles.placedCount(.Board) == PapyrusRackAmount ? 50 : 0
+        return tiles.onBoard().count == PapyrusRackAmount ? 50 : 0
     }
     var immutable: Bool {
-        return tiles.placedCount(.Fixed) == tiles.count
+        return tiles.onBoardFixed().count == tiles.count
     }
     var hashValue: Int {
         var output = String()

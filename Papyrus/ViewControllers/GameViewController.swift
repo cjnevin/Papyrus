@@ -50,12 +50,7 @@ class GameViewController: UIViewController, GameSceneDelegate, UITextFieldDelega
             case .Ready:
                 this.title = "Papyrus"
                 this.enableButtons(true)
-                do {
-                    try game.createPlayer()
-                }
-                catch {
-                    
-                }
+                game.createPlayer()
             default:
                 this.title = "Complete"
             }

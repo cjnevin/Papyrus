@@ -11,7 +11,7 @@ import SpriteKit
 class TileSprite: SKSpriteNode {
     /// - Returns: True if tile has yet to be submitted ('Fixed')
     var movable: Bool {
-        return tile.placement != .Fixed
+        return !Tile.match(tile.placement, unassociatedPlacement: .Fixed)
     }
     /// Point to animate move to.
     var animationPoint: CGPoint?
@@ -82,7 +82,7 @@ extension Papyrus {
         var sprites = [TileSprite]()
         let squareSize = CGRectGetWidth(frame) / CGFloat(PapyrusDimensions)
         let tileSize = squareSize * 2.0
-        let rack = game.rackTiles
+        let rack = game.tiles.inRack(game.player)
         let spacing = (CGRectGetWidth(frame) - tileSize * CGFloat(rack.count)) / 2
         var index: CGFloat = 0
         for tile in rack {
