@@ -8,13 +8,6 @@
 
 import Foundation
 
-enum Orientation {
-    case Horizontal
-    case Vertical
-    static var both: [Orientation] { return [.Horizontal, .Vertical] }
-    var invert: Orientation { return self == .Horizontal ? .Vertical : .Horizontal }
-}
-
 func ==(lhs: Word, rhs: Word) -> Bool {
     return lhs.tiles.filter({ rhs.tiles.contains($0) }).count == lhs.tiles.count
 }
@@ -60,4 +53,11 @@ struct Word: Hashable, Equatable {
         total = tiles.map({ $0.wordMultiplier }).reduce(total, combine: *)
         _points = total
     }
+}
+
+enum Orientation {
+    case Horizontal
+    case Vertical
+    static var both: [Orientation] { return [.Horizontal, .Vertical] }
+    var invert: Orientation { return self == .Horizontal ? .Vertical : .Horizontal }
 }

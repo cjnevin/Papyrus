@@ -78,6 +78,11 @@ extension GameScene {
         let tile = sprite.tile
         guard let player = tile.owner else { throw Tile.PlacementError.PlacementWithoutPlayerError }
         tile.placement = .Board(player, emptySquare.square)
+        if tile.value == 0 && tile.letter == "?" {
+            actionDelegate?.pickLetter({ (c) -> () in
+                sprite.changeLetter(c)
+            })
+        }
     }
     
     /// Drop currently held tile into the rack.
@@ -88,6 +93,9 @@ extension GameScene {
         let tile = sprite.tile
         guard let player = tile.owner else { throw Tile.PlacementError.PlacementWithoutPlayerError }
         tile.placement = .Rack(player)
+        if tile.value == 0 {
+            sprite.changeLetter("?")
+        }
     }
     
     /// Pickup a tile from the rack or board.

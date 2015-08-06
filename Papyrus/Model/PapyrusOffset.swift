@@ -74,7 +74,6 @@ struct Offset: Comparable, Hashable, CustomDebugStringConvertible {
     }
 }
 
-
 extension CollectionType where Generator.Element == (Int, Int) {
     /// Convert tuple array to Offset array.
     func toOffsets() -> [Offset] {

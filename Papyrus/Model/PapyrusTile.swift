@@ -8,45 +8,6 @@
 
 import Foundation
 
-extension CollectionType where Generator.Element == Tile {
-    /// - Parameter offset: Accepts optional offset but will return nil. 
-    ///    Otherwise it will find the tile with a square at the given offset if one exists.
-    /// - Returns: Tile at a given offset in this array.
-    func at(offset: Offset?) -> Tile? {
-        guard let offset = offset, matched = filter({ $0.square?.offset == offset }).first else { return nil }
-        return matched
-    }
-    /// Returns tiles sorted by offset.
-    func sorted() -> [Tile] {
-        return filter{ $0.square != nil }.sort{ $0.square!.offset < $1.square!.offset }
-    }
-    /// - Returns: Array of tiles in the bag.
-    func inBag() -> [Tile] {
-        return filter({ $0.placement == Tile.Placement.Bag })
-    }
-    /// - Returns: Array of tiles optionally in a specific players rack.
-    func inRack(player: Player? = nil) -> [Tile] {
-        guard let player = player else {
-            return filter({ Tile.match($0.placement, unassociatedPlacement: .Rack) })
-        }
-        return filter({ Tile.match($0.placement, placement: .Rack(player)) })
-    }
-    /// - Returns: Array of tiles on the board optionally owned by a specific players.
-    func onBoard(player: Player? = nil) -> [Tile] {
-        guard let player = player else {
-            return filter({ Tile.match($0.placement, unassociatedPlacement: .Board) })
-        }
-        return filter({ Tile.match($0.placement, playerPlacement: .Board(player)) })
-    }
-    /// - Returns: Array of tiles on the board (and fixed) optionally owned by a specific players.
-    func onBoardFixed(player: Player? = nil) -> [Tile] {
-        guard let player = player else {
-            return filter({ Tile.match($0.placement, unassociatedPlacement: .Fixed) })
-        }
-        return filter({ Tile.match($0.placement, playerPlacement: .Fixed(player)) })
-    }
-}
-
 /// Check if identical.
 func == (lhs: Tile.Placement, rhs: Tile.Placement) -> Bool {
     return Tile.match(lhs, placement: rhs)
@@ -59,9 +20,6 @@ class Tile: NSObject, CustomDebugStringConvertible {
     /// Each of the potential errors that could occur during placement.
     enum PlacementError: ErrorType {
         case PlacementWithoutPlayerError
-        case PlaceInBagWithPlayerError
-        case PlacementWithoutSquareError
-        case PlacementWhileHeldError
     }
     /// Valid placements.
     enum UnassociatedPlacement {
@@ -188,5 +146,44 @@ extension Papyrus {
                 Tile(e.2, value: e.1)
             })
         }.sort({_, _ in arc4random() % 2 == 0})
+    }
+}
+
+extension CollectionType where Generator.Element == Tile {
+    /// - Parameter offset: Accepts optional offset but will return nil.
+    ///    Otherwise it will find the tile with a square at the given offset if one exists.
+    /// - Returns: Tile at a given offset in this array.
+    func at(offset: Offset?) -> Tile? {
+        guard let offset = offset, matched = filter({ $0.square?.offset == offset }).first else { return nil }
+        return matched
+    }
+    /// Returns tiles sorted by offset.
+    func sorted() -> [Tile] {
+        return filter{ $0.square != nil }.sort{ $0.square!.offset < $1.square!.offset }
+    }
+    /// - Returns: Array of tiles in the bag.
+    func inBag() -> [Tile] {
+        return filter({ $0.placement == Tile.Placement.Bag })
+    }
+    /// - Returns: Array of tiles optionally in a specific players rack.
+    func inRack(player: Player? = nil) -> [Tile] {
+        guard let player = player else {
+            return filter({ Tile.match($0.placement, unassociatedPlacement: .Rack) })
+        }
+        return filter({ Tile.match($0.placement, placement: .Rack(player)) })
+    }
+    /// - Returns: Array of tiles on the board optionally owned by a specific players.
+    func onBoard(player: Player? = nil) -> [Tile] {
+        guard let player = player else {
+            return filter({ Tile.match($0.placement, unassociatedPlacement: .Board) })
+        }
+        return filter({ Tile.match($0.placement, playerPlacement: .Board(player)) })
+    }
+    /// - Returns: Array of tiles on the board (and fixed) optionally owned by a specific players.
+    func onBoardFixed(player: Player? = nil) -> [Tile] {
+        guard let player = player else {
+            return filter({ Tile.match($0.placement, unassociatedPlacement: .Fixed) })
+        }
+        return filter({ Tile.match($0.placement, playerPlacement: .Fixed(player)) })
     }
 }

@@ -73,7 +73,6 @@ extension Papyrus {
     }
 }
 
-
 extension CollectionType where Generator.Element == Square {
     func at(offset: Offset) -> Square? {
         return filter{ $0.offset == offset }.first
