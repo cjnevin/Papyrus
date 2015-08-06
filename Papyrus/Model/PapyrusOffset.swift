@@ -8,15 +8,15 @@
 
 import Foundation
 
-func >(lhs: Offset, rhs: Offset) -> Bool {
+func > (lhs: Offset, rhs: Offset) -> Bool {
     return lhs.x + lhs.y > rhs.x + rhs.y
 }
 
-func <(lhs: Offset, rhs: Offset) -> Bool {
+func < (lhs: Offset, rhs: Offset) -> Bool {
     return lhs.x + lhs.y < rhs.x + rhs.y
 }
 
-func ==(lhs: Offset, rhs: Offset) -> Bool {
+func == (lhs: Offset, rhs: Offset) -> Bool {
     return lhs.x == rhs.x && lhs.y == rhs.y
 }
 

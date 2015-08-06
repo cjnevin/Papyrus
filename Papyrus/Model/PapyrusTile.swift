@@ -9,21 +9,39 @@
 import Foundation
 
 extension CollectionType where Generator.Element == Tile {
+    /// - Parameter offset: Accepts optional offset but will return nil. 
+    ///    Otherwise it will find the tile with a square at the given offset if one exists.
+    /// - Returns: Tile at a given offset in this array.
     func at(offset: Offset?) -> Tile? {
         guard let offset = offset, matched = filter({ $0.square?.offset == offset }).first else { return nil }
         return matched
     }
+    /// - Parameters:
+    ///     - placement: Placement of tiles to return.
+    ///     - owner: Optional owner of tiles, if nil it will return all.
+    /// - SeeAlso: `placed`
+    /// - Returns: `placed.count`
     func placedCount(placement: Tile.Placement, owner: Player? = nil) -> Int {
         return placed(placement, owner: owner).count
     }
+    /// - Parameters:
+    ///     - placement: Placement of tiles to return.
+    ///     - owner: Optional owner of tiles, if nil it will return all.
+    /// - Returns: Tiles with given placement, and optionally owner.
     func placed(placement: Tile.Placement, owner: Player? = nil) -> [Tile] {
         return filter{ Tile.placed($0)(placement, owner: owner) != nil }
     }
-    func place(newPlacement: Tile.Placement, owner: Player? = nil) throws {
+    /// Move tiles to another placement in the game (i.e. Bag to Rack).
+    /// - Parameters:
+    ///     - newPlacement: Place to move to.
+    ///     - owner: Optionally assign a player. Will throw error if player cannot be assigned for specified newPlacement (and square).
+    ///     - square: Optionally assign a square. Will throw error if square cannot be assigned for specified newPlacement (and owner).
+    func place(newPlacement: Tile.Placement, owner: Player? = nil, square: Square? = nil) throws {
         for tile in self {
             try tile.place(newPlacement, owner: owner)
         }
     }
+    /// Returns tiles sorted by offset.
     func sorted() -> [Tile] {
         return filter{ $0.square != nil }.sort{ $0.square!.offset < $1.square!.offset }
     }
