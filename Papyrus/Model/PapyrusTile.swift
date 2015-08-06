@@ -24,6 +24,13 @@ extension CollectionType where Generator.Element == Tile {
     func inBag() -> [Tile] {
         return filter({ $0.placement == Tile.Placement.Bag })
     }
+    /// - Returns: Array of tiles optionally in a specific players rack.
+    func inRack(player: Player? = nil) -> [Tile] {
+        guard let player = player else {
+            return filter({ Tile.match($0.placement, unassociatedPlacement: .Rack) })
+        }
+        return filter({ Tile.match($0.placement, placement: .Rack(player)) })
+    }
     /// - Returns: Array of tiles on the board optionally owned by a specific players.
     func onBoard(player: Player? = nil) -> [Tile] {
         guard let player = player else {
@@ -37,13 +44,6 @@ extension CollectionType where Generator.Element == Tile {
             return filter({ Tile.match($0.placement, unassociatedPlacement: .Fixed) })
         }
         return filter({ Tile.match($0.placement, playerPlacement: .Fixed(player)) })
-    }
-    /// - Returns: Array of tiles optionally in a specific players rack.
-    func inRack(player: Player? = nil) -> [Tile] {
-        guard let player = player else {
-            return filter({ Tile.match($0.placement, unassociatedPlacement: .Rack) })
-        }
-        return filter({ Tile.match($0.placement, placement: .Rack(player)) })
     }
 }
 
