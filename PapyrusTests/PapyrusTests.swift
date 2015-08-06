@@ -244,9 +244,6 @@ class PapyrusTests: XCTestCase {
         XCTAssert(Offset((-1, -1)) == nil)
         XCTAssert(Offset((1, 1)) != nil)
         XCTAssert(Offset(x: 1, y: 1)!.hashValue == "(\(1),\(1))".hashValue)
-        XCTAssert(Offset((1,1))!.at(x: 3, y: 3) != nil)
-        XCTAssert(Offset((1,1))!.at(x: -1, y: -1) == nil)
-        XCTAssert(Offset((1,1))!.at(x: PapyrusDimensions + 1, y: PapyrusDimensions) == nil)
     }
     
     func testExtensions() {

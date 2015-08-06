@@ -107,7 +107,7 @@ extension Papyrus {
     }
     
     /// Completes the game if the current player has no tiles in their rack.
-    private func completeGameIfNoTilesInRack() {
+    func completeGameIfNoTilesInRack() {
         // If tiles.count == 0 current player won
         if tiles.inRack(player).count == 0 {
             // Assumption, player won!
