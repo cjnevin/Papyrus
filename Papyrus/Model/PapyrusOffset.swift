@@ -20,15 +20,28 @@ func == (lhs: Offset, rhs: Offset) -> Bool {
     return lhs.x == rhs.x && lhs.y == rhs.y
 }
 
+/// An array of Offsets.
+typealias Offsets = [Offset]
+/// Offset range between start and end.
+typealias OffsetRange = (start: Offset, end: Offset)
+/// Offset range without a required end.
+typealias OffsetRangeOptional = (start: Offset, end: Offset?)
+/// Prev and Next adhere to this function.
+typealias OffsetOrientationFunction = (Offset -> (o: Orientation) -> Offset?)
+
 /// An x,y offset on the board, only valid if within board boundaries.
 struct Offset: Comparable, Hashable, CustomDebugStringConvertible {
     let x: Int
     let y: Int
+    /// Return offset for given x,y coordinates if valid
+    /// - SeeAlso: valid(x:y:)
     init?(x: Int, y: Int) {
         if !Offset.valid(x, y: y) { return nil }
         self.x = x
         self.y = y
     }
+    /// Return offset for given x,y coordinates if valid
+    /// - SeeAlso: valid(x:y:)
     init?(_ tuple: (Int, Int)) {
         if !Offset.valid(tuple.0, y: tuple.1) { return nil }
         x = tuple.0
@@ -39,29 +52,20 @@ struct Offset: Comparable, Hashable, CustomDebugStringConvertible {
         guard let _ = (x, y) <~> PapyrusDimensionsRange else { return false }
         return true
     }
-    /// Return offset for given x,y coordinates if valid
-    /// - SeeAlso: valid(x:y:)
-    static func at(x xx: Int, y yy: Int) -> Offset? {
-        guard let n = (xx, yy) <~> PapyrusDimensionsRange else { return nil }
-        return Offset(n)
-    }
-    /// Return offset for given x,y coordinates if valid
-    /// - SeeAlso: valid(x:y:)
-    func at(x xx: Int, y yy: Int) -> Offset? {
-        return Offset.at(x: xx, y: yy)
-    }
     /// Return new offset `amount` away from current offset in given direction or nil
     /// - SeeAlso: valid(x:y:)
     func advance(o: Orientation, amount: Int) -> Offset? {
-        return o == .Horizontal ? at(x: x + amount, y: y) :
-            at(x: x, y: y + amount)
+        return o == .Horizontal ? Offset(x: x + amount, y: y) :
+            Offset(x: x, y: y + amount)
     }
-    /// Return next offset in given direction or nil
+    /// Return next offset in given direction or nil.
+    /// Adheres to OffsetOrientationFunction.
     /// - SeeAlso: valid(x:y:)
     func next(o: Orientation) -> Offset? {
         return advance(o, amount: 1)
     }
     /// Return previous offset in given direction or nil
+    /// Adheres to OffsetOrientationFunction.
     /// - SeeAlso: valid(x:y:)
     func prev(o: Orientation) -> Offset? {
         return advance(o, amount: -1)
@@ -76,13 +80,13 @@ struct Offset: Comparable, Hashable, CustomDebugStringConvertible {
 
 extension CollectionType where Generator.Element == (Int, Int) {
     /// Convert tuple array to Offset array.
-    func toOffsets() -> [Offset] {
+    func toOffsets() -> Offsets {
         return mapFilter{ Offset(x: $0.0, y: $0.1) }
     }
     /// Convert tuple array to Offset array with symmetrical logic around PapyrusMiddle.
-    func symmetrical() -> [Offset] {
+    func symmetrical() -> Offsets {
         let m = PapyrusMiddle
-        func s(offset: (Int, Int)) -> [Offset]? {
+        func s(offset: (Int, Int)) -> Offsets? {
             let x = offset.0, y = offset.1
             return [ (m-x, m-y), (m-x, m+y), (m+x, m+y), (m+x, m-y),
                 (m-y, m-x), (m-y, m+x), (m+y, m+x), (m+x, m-y) ]

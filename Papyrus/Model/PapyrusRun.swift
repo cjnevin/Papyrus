@@ -9,7 +9,9 @@
 import Foundation
 
 extension Papyrus {
+    /// An array of tuples containing offset and tile.
     typealias Run = [(offset: Offset, tile: Tile?)]
+    /// An array containing Run.
     typealias Runs = [Run]
     
     /// - Returns: An array of runs for the current player or nil.
@@ -51,11 +53,11 @@ extension Papyrus {
         let range = 1...PapyrusDimensions
         for x in range {
             buffer = Run()
-            range.map{ y in checkOffset(Offset.at(x: x, y: y)) }
+            range.map{ y in checkOffset(Offset(x: x, y: y)) }
         }
         for y in range {
             buffer = Run()
-            range.map{ x in checkOffset(Offset.at(x: x, y: y)) }
+            range.map{ x in checkOffset(Offset(x: x, y: y)) }
         }
         return lazy(runs)
     }

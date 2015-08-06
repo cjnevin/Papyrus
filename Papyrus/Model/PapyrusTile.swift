@@ -13,6 +13,8 @@ func == (lhs: Tile.Placement, rhs: Tile.Placement) -> Bool {
     return Tile.match(lhs, placement: rhs)
 }
 
+typealias Tiles = [Tile]
+
 /// Tile is represented as a letter and a value. Other information can be
 /// derived by assigning different placements.
 class Tile: NSObject, CustomDebugStringConvertible {
@@ -21,7 +23,6 @@ class Tile: NSObject, CustomDebugStringConvertible {
     enum PlacementError: ErrorType {
         case PlacementWithoutPlayerError
     }
-    /// Valid placements.
     enum UnassociatedPlacement {
         case Bag
         case Rack
@@ -81,14 +82,21 @@ class Tile: NSObject, CustomDebugStringConvertible {
     var placement = Placement.Bag
     var letter: Character
     let value: Int
+    /// - Returns: Letter multiplier for this tile, if it has a square defined
+    /// and is not fixed.
     var letterValue: Int {
         guard let sq = square else { return 0 }
         return (isFixed ? 1 : sq.modifier.letterMultiplier) * value
     }
+    /// - Returns: Word multiplier for this tile, if it has a square defined
+    /// and is not fixed.
     var wordMultiplier: Int {
         guard let sq = square else { return 1 }
         return (isFixed ? 1 : sq.modifier.wordMultiplier)
     }
+    /// - Parameters:
+    ///     - letter: Character to draw.
+    ///     - value: Value to use in calculations.
     init(_ letter: Character, value: Int) {
         self.letter = letter
         self.value = value

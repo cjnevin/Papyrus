@@ -12,22 +12,36 @@ func ==(lhs: Word, rhs: Word) -> Bool {
     return lhs.tiles.filter({ rhs.tiles.contains($0) }).count == lhs.tiles.count
 }
 
+typealias Words = [Word]
+
+/// A collection of tiles with some helpful methods for tile collections.
 struct Word: Hashable, Equatable {
-    let length: Int
+    /// Orientation that this word was played. Can only be one.
     let orientation: Orientation
+    /// Offsets releveant to the squares for this word.
     let offsets: [Offset]
+    /// Squares relevant to the tiles for this word.
     let squares: [Square]
-    let range: (start: Offset, end: Offset)
+    /// Offset range of word.
+    let range: OffsetRange
+    /// Word represented as tiles.
     let tiles: [Tile]
+    /// Actual word represented as a string.
     let value: String
+    /// Length of value.
+    let length: Int
+    /// Whether this word intersects the center square.
     let intersectsCenter: Bool
     private var _points: Int
+    /// - Returns: Point value for the entire word.
     var points: Int {
         return immutable ? 0 : _points
     }
+    /// - Returns: Bonus value if all tiles were played.
     var bonus: Int {
         return tiles.onBoard().count == PapyrusRackAmount ? 50 : 0
     }
+    /// - Returns: Whether these tiles are fixed to the board.
     var immutable: Bool {
         return tiles.onBoardFixed().count == tiles.count
     }
@@ -39,6 +53,7 @@ struct Word: Hashable, Equatable {
         }
         return output.hashValue
     }
+    /// Optionally creates a word with a tile array if it passes validation.
     init?(_ array: [Tile], f: ValidationFunction) throws {
         tiles = array
         let cfg = try f(tiles: &tiles)
@@ -55,9 +70,14 @@ struct Word: Hashable, Equatable {
     }
 }
 
+/// Orientation that tiles may appear.
 enum Orientation {
+    /// Offsets have same y value, but differing x values.
     case Horizontal
+    /// Offsets have same x value, but differing y values.
     case Vertical
+    /// - Returns: Array containing both orientations.
     static var both: [Orientation] { return [.Horizontal, .Vertical] }
+    /// - Returns: Opposite of current orientation.
     var invert: Orientation { return self == .Horizontal ? .Vertical : .Horizontal }
 }
