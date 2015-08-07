@@ -13,6 +13,7 @@ func == (lhs: Tile.Placement, rhs: Tile.Placement) -> Bool {
     return Tile.match(lhs, placement: rhs)
 }
 
+/// An array of Tile objects.
 typealias Tiles = [Tile]
 
 /// Tile is represented as a letter and a value. Other information can be

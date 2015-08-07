@@ -51,6 +51,24 @@ extension Papyrus {
         return f.map { self.addTiles(&letters, o: o, range: range, f: $0) }
     }
     
+    func orientation(ofOffsets sorted: Offsets) -> Orientation? {
+        //let sorted = offsets.sort()
+        guard let first = sorted.first, last = sorted.last else {
+            return nil
+        }
+        // For a single tile, lets make sure we have the right orientation
+        // Otherwise, use orientation calculated above
+        guard let orientation: Orientation = first == last ?
+            (nil != tiles.at(first.prev(.Horizontal)) ||
+                nil != tiles.at(first.next(.Horizontal))) ?
+                    .Horizontal : .Vertical : (first.x == last.x ?
+                        .Vertical : first.y == last.y ?
+                            .Horizontal : nil) else {
+                                return nil
+        }
+        return orientation
+    }
+    
     /// Conforms to ValidationFunction
     /// - Parameter letters: In-out array of sorted letters.
     /// - Returns: Tuple containing Orientation and an Offset Range for the given tiles.
@@ -162,7 +180,7 @@ extension Papyrus {
             // Refill their rack.
             replenishRack(player: player)
             // TODO: Remove
-            //possibilities(withTiles: rackTiles)
+            possibilities(withTiles: tiles.inRack(player))
             completeGameIfNoTilesInRack()
         }
         return outWords
