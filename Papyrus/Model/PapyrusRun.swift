@@ -15,13 +15,13 @@ extension Papyrus {
     typealias Runs = [Run]
     
     /// - Returns: An array of runs for the current player or nil.
-    func currentRuns() -> LazySequence<Runs>? {
+    func currentRuns() -> Runs? {
         guard let player = player else { return nil }
         return runs(withTiles: tiles.inRack(player))
     }
     
     /// - Returns: An array of `runs` surrounding tiles played on the board.
-    func runs(withTiles userTiles: [Tile]) -> LazySequence<Runs> {
+    func runs(withTiles userTiles: [Tile]) -> Runs {
         let fixed = tiles.onBoardFixed(player)
         let checkCentre = fixed.count == 0
         let rackAmount = userTiles.count
@@ -59,6 +59,6 @@ extension Papyrus {
             buffer = Run()
             range.map{ x in checkOffset(Offset(x: x, y: y)) }
         }
-        return lazy(runs)
+        return runs
     }
 }

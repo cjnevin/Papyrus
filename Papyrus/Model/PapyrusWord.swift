@@ -22,8 +22,6 @@ struct Word: Hashable, Equatable {
     let offsets: [Offset]
     /// Squares relevant to the tiles for this word.
     let squares: [Square]
-    /// Offset range of word.
-    let range: OffsetRange
     /// Word represented as tiles.
     let tiles: [Tile]
     /// Actual word represented as a string.
@@ -53,12 +51,30 @@ struct Word: Hashable, Equatable {
         }
         return output.hashValue
     }
+    
+    init(_ array: [(tile: Tile, square: Square)]) {
+        tiles = array.map{ $0.tile }
+        orientation = .Horizontal
+        value = String(tiles.map{ $0.letter })
+        length = value.lengthOfBytesUsingEncoding(NSUTF8StringEncoding)
+        squares = array.mapFilter{ $0.square }
+        offsets = squares.map{ $0.offset }
+        intersectsCenter = offsets.contains(PapyrusMiddleOffset!)
+        var total = 0
+        for (tile, square) in array {
+            total += tile.letterValue(square)
+        }
+        for (tile, square) in array {
+            total *= tile.wordMultiplier(square)
+        }
+        _points = total
+    }
+    
     /// Optionally creates a word with a tile array if it passes validation.
-    init?(_ array: [Tile], f: ValidationFunction) throws {
+    init?(_ array: [Tile], validator: ValidationFunction) throws {
         tiles = array
-        let cfg = try f(tiles: &tiles)
-        orientation = cfg.o
-        range = cfg.range
+        let cfg = try validator(tiles: &tiles)
+        orientation = cfg.o ?? .Horizontal
         value = String(tiles.map{ $0.letter })
         length = value.lengthOfBytesUsingEncoding(NSUTF8StringEncoding)
         squares = tiles.mapFilter{ $0.square }

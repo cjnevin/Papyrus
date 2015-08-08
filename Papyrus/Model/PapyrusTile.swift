@@ -83,17 +83,25 @@ class Tile: NSObject, CustomDebugStringConvertible {
     var placement = Placement.Bag
     var letter: Character
     let value: Int
+    /// - Returns: Letter multiplier for this tile, if placed on a specific square.
+    func letterValue(square: Square) -> Int {
+        return (isFixed ? 1 : square.modifier.letterMultiplier) * value
+    }
+    /// - Returns: Word multiplier for this tile, if placed on a specific square.
+    func wordMultiplier(square: Square) -> Int {
+        return (isFixed ? 1 : square.modifier.wordMultiplier)
+    }
     /// - Returns: Letter multiplier for this tile, if it has a square defined
     /// and is not fixed.
     var letterValue: Int {
         guard let sq = square else { return 0 }
-        return (isFixed ? 1 : sq.modifier.letterMultiplier) * value
+        return letterValue(sq)
     }
     /// - Returns: Word multiplier for this tile, if it has a square defined
     /// and is not fixed.
     var wordMultiplier: Int {
         guard let sq = square else { return 1 }
-        return (isFixed ? 1 : sq.modifier.wordMultiplier)
+        return wordMultiplier(sq)
     }
     /// - Parameters:
     ///     - letter: Character to draw.
