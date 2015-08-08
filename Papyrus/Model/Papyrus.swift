@@ -33,7 +33,11 @@ class Papyrus {
     var tileIndex: Int = 0
     
     lazy var players = [Player]()
-    var player: Player?
+    var playerIndex: Int = 0
+    var player: Player? {
+        if players.count <= playerIndex { return nil }
+        return players[playerIndex]
+    }
     
     var changeFunction: PapyrusStateFunction?
     
@@ -51,7 +55,7 @@ class Papyrus {
         words.removeAll()
         players.removeAll()
         tileIndex = 0
-        player = nil
+        playerIndex = 0
         tiles.extend(Papyrus.createTiles())
         changeFunction?(.Ready, self)
     }

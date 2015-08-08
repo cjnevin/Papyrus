@@ -23,8 +23,15 @@ extension Papyrus {
     func createPlayer() -> Player {
         let newPlayer = Player()
         tileIndex += replenishRack(player: newPlayer)
-        player = player ?? newPlayer
+        players.append(newPlayer)
         return newPlayer
+    }
+    
+    func nextPlayer() {
+        playerIndex++
+        if playerIndex >= players.count {
+            playerIndex = 0
+        }
     }
     
     /// Add tiles to a players rack from the bag.
