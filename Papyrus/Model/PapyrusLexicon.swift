@@ -46,16 +46,17 @@ struct Lexicon {
         guard let source = source as? LexiconType else {
             return
         }
+        
         let prefixLength = prefix.lengthOfBytesUsingEncoding(NSUTF8StringEncoding)
         if let c = fixedLetters.filter({$0.0 == prefixLength}).map({$0.1}).first, newSource = source[String(c)] {
+            let newPrefix = prefix + String(c)
             let reverseFiltered = fixedLetters.filter({$0.0 != prefixLength})
-            anagramsOf(letters, prefix: prefix + String(c), fixedLetters: reverseFiltered, source: newSource, results: &results)
+            anagramsOf(letters, length: length, prefix: newPrefix, fixedLetters: reverseFiltered, source: newSource, results: &results)
             return
         }
         
         // See if word exists
-        if let _ = source.indexForKey(DefKey) {
-            // Add word to results
+        if let _ = source.indexForKey(DefKey) where fixedLetters.count == 0 {
             if let length = length where length != Int.min && prefixLength == length {
                 results.insert(prefix)
             } else if length! == Int.min {
@@ -69,7 +70,7 @@ struct Lexicon {
                 // Strip key/?
                 let newLetters = letters.stringByReplacingCharactersInRange(range, withString: "")
                 // Create anagrams with remaining letters
-                anagramsOf(newLetters, prefix: prefix + key, fixedLetters: fixedLetters, source: value, results: &results)
+                anagramsOf(newLetters, length: length, prefix: prefix + key, fixedLetters: fixedLetters, source: value, results: &results)
             }
         }
     }

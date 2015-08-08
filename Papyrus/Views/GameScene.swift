@@ -51,8 +51,41 @@ class GameScene: SKScene, GameSceneProtocol {
             tile.resetPosition(origin)
         }
         do {
-            let moveTiles = try game.move(game.tiles.onBoard(game.player)).flatMap{ $0.tiles }
-            completeMove(withTiles: moveTiles)
+            if let tiles = try game.move(game.tiles.onBoard(game.player)), centerPoint = self.view?.center {
+                completeMove(withTiles: tiles)
+                game.nextPlayer()
+                game.automateMove({ [weak self] (automatedTiles) -> Void in
+                    if let automatedTiles = automatedTiles {
+                        // TODO: Drop tiles on the board...
+                        var tilesToDrop: Tiles
+                        if let existingTiles = self?.tileSprites.filter({ automatedTiles.contains($0.tile) }).map({$0.tile}) {
+                            // Ignore these tiles
+                            tilesToDrop = automatedTiles.filter({ existingTiles.contains($0) })
+                        } else {
+                            // Drop all tiles
+                            tilesToDrop = automatedTiles
+                        }
+                        
+                        var index = 0
+                        for tile in automatedTiles {
+                            if let square = tile.square, emptySquare = self?.sprites([square]).first {
+                                //dispatch_after(dispatch_time_t(1.0 * Double(index)), dispatch_get_main_queue(), { () -> Void in
+                                    let sprite = TileSprite.sprite(withTile: tile)
+                                    sprite.position = centerPoint
+                                    self?.addChild(sprite)
+                                    emptySquare.animateDropTileSprite(sprite, originalPoint: centerPoint, completion: nil)
+                                //})
+                                index++
+                            }
+                        }
+                        
+                        self?.completeMove(withTiles: automatedTiles)
+                        self?.game.nextPlayer()
+                    } else {
+                        assert(false)
+                    }
+                })
+            }
         } catch let err as ValidationError {
             switch err {
             case .Center(let o, let w):
@@ -113,7 +146,7 @@ class GameScene: SKScene, GameSceneProtocol {
     /// Replace rack sprites with newly drawn tiles.
     private func replaceRackSprites() {
         // Remove existing rack sprites.
-        let rackSprites = tileSprites.filter{ game.tiles.inRack().contains($0.tile) }
+        let rackSprites = tileSprites.filter{ game.tiles.inRack(game.player).contains($0.tile) }
         tileSprites = tileSprites.filter{ !rackSprites.contains($0) }
         rackSprites.map{ $0.removeFromParent() }
         // Create new rack sprites in new positions.

@@ -27,6 +27,8 @@ class Papyrus {
     static let sharedInstance = Papyrus()
     var inProgress: Bool = false
     let squares: [Square]
+    let innerOperations = NSOperationQueue()
+    let wordOperations = NSOperationQueue()
     
     lazy var words = Set<Word>()
     lazy var tiles = [Tile]()

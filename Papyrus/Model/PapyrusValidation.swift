@@ -73,7 +73,7 @@ extension Papyrus {
     /// - Parameter letters: In-out array of sorted letters.
     /// - Returns: Tuple containing Orientation and an Offset Range for the given tiles.
     /// - Throws: ValidationError regarding tile configuration.
-    private func validateTiles(inout letters: Tiles) throws -> (o: Orientation, range: OffsetRange) {
+    func validateTiles(inout letters: Tiles) throws -> (o: Orientation, range: OffsetRange) {
         let sorted = letters.sorted()
         guard let first = sorted.first?.square?.offset, last = sorted.last?.square?.offset else {
             throw ValidationError.NoTiles
@@ -108,7 +108,7 @@ extension Papyrus {
     /// - Parameter word: Word to check intersections against.
     /// - Returns: An array of Words that intersect the word given.
     /// - Throws: Fails if a Word cannot be validated.
-    private func intersectingWords(word: Word) throws -> Words {
+    func intersectingWords(word: Word) throws -> Words {
         var output = Words()
         let inverted = word.orientation.invert
         for tile in word.tiles.filter({ $0.square?.offset != nil }) {
@@ -116,7 +116,7 @@ extension Papyrus {
             addTiles(&tileSet, o: inverted, range: (tile.square!.offset, nil),
                 f: [Offset.prev, Offset.next])
             if tileSet.count > 1 {
-                if let intersectingWord = try Word(Array(tileSet), f: validateTiles) {
+                if let intersectingWord = try Word(Array(tileSet), validator: validateTiles) {
                     output.append(intersectingWord)
                 }
             }
@@ -141,12 +141,60 @@ extension Papyrus {
         }
     }
     
+    /// Calculate score for a played word.
+    private func calculateScore(playedWord: Word, intersecting array: Words) {
+        guard let player = player else { return }
+        // Calculate score for current move.
+        // Filter out calculation for words with ALL fixed tiles.
+        // If all tiles used add 50 to score.
+        let sum = playedWord.bonus + playedWord.points + array.map{ $0.points }.reduce(0, combine: +)
+        // Make tile fixed, no one will be able to drag them from this point onward.
+        // Assign `mutableWords` to `outWords` so we can return them.
+        var outWords = array
+        outWords.append(playedWord)
+        outWords.filter({ !$0.immutable })
+        outWords.map({
+            for i in 0..<$0.tiles.count {
+                assert($0.squares.count > i)
+                assert($0.tiles.count > i)
+                let square = $0.squares[i], tile = $0.tiles[i]
+                tile.placement = .Fixed(player, square)
+            }
+        })
+        // Add words to played words.
+        words.unionInPlace(outWords)
+        // Add score to current player.
+        player.score += sum
+        print("Sum: \(sum), new total: \(player.score)")
+        // Refill their rack.
+        replenishRack(player: player)
+        // Check if the game is complete
+        completeGameIfNoTilesInRack()
+    }
+    
+    /// - Returns: An array of Tiles that were played.
+    func automateMove(f: (Tiles?) -> Void) {
+        findProspect(withTiles: tiles.inRack(player), prospect: { (prospect) -> Void in
+            guard let prospect = prospect else {
+                f(nil)
+                return
+            }
+            var tiles = prospect.intersected.flatMap({ $0.tiles })
+            tiles.extend(prospect.word.tiles)
+            assert(tiles.filter({ Tile.match($0.placement, unassociatedPlacement: Tile.UnassociatedPlacement.Fixed) }).count > 0)
+            print("Found prospect \(prospect)")
+            self.calculateScore(prospect.word, intersecting: prospect.intersected)
+            NSOperationQueue.mainQueue().addOperationWithBlock() {
+                f(tiles)
+            }
+        })
+    }
+    
     /// - Parameter letters: Tiles to attempt to play.
-    /// - Returns: An array of Words that are included in this play.
+    /// - Returns: An array of Tiles that are included in this play.
     /// - Throws: Fails if a Word cannot be validated.
-    func move(letters: Tiles) throws -> Words {
-        var outWords = Words()
-        if let word = try Word(letters, f: validateTiles), player = player {
+    func move(letters: Tiles) throws -> Tiles? {
+        if let word = try Word(letters, validator: validateTiles) {
             print("Main word: \(word.value)")
             let definition = try Lexicon.sharedInstance.defined(word.value)
             print("Definition: \(definition)")
@@ -158,31 +206,16 @@ extension Papyrus {
             }
             if words.count == 0 && !word.intersectsCenter {
                 throw ValidationError.Center(PapyrusMiddleOffset!, word)
-            } else if words.count > 0 && intersectedWords.count == 0 && words.flatMap({ $0.tiles }).filter({ word.tiles.contains($0) }).count == 0 {
+            } else if words.count > 0 && intersectedWords.count == 0 &&
+                words.flatMap({ $0.tiles }).filter({ word.tiles.contains($0) }).count == 0 {
                 throw ValidationError.Intersection(word)
             }
             // Prepare words to be returned, modified later
-            outWords.extend(intersectedWords)
-            outWords.append(word)
-            // Calculate score for current move.
-            // Filter out calculation for words with ALL fixed tiles.
-            // If all tiles used add 50 to score.
-            let sum = word.bonus + outWords.map{ $0.points }.reduce(0, combine: +)
-            // Make tile fixed, no one will be able to drag them from this point onward.
-            // Assign `mutableWords` to `outWords` so we can return them.
-            outWords = outWords.filter{ !$0.immutable }
-            outWords.flatMap({ $0.tiles }).map({ $0.placement = .Fixed(player, $0.square!) })
-            // Add words to played words.
-            words.unionInPlace(outWords)
-            // Add score to current player.
-            player.score += sum
-            print("Sum: \(sum), new total: \(player.score)")
-            // Refill their rack.
-            replenishRack(player: player)
-            // TODO: Remove
-            possibilities(withTiles: tiles.inRack(player))
-            completeGameIfNoTilesInRack()
+            var tiles = intersectedWords.flatMap({ $0.tiles })
+            tiles.extend(word.tiles)
+            calculateScore(word, intersecting: intersectedWords)
+            return tiles
         }
-        return outWords
+        return nil
     }
 }
