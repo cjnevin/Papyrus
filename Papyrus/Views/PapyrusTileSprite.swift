@@ -9,6 +9,8 @@
 import SpriteKit
 
 class TileSprite: SKSpriteNode {
+    static var defaultTileSize: CGFloat = 0.0
+    
     /// - Returns: True if tile has yet to be submitted ('Fixed')
     var movable: Bool {
         return !Tile.match(tile.placement, unassociatedPlacement: .Fixed)
@@ -24,7 +26,12 @@ class TileSprite: SKSpriteNode {
     /// Background sprite of tile inside of 'border' sprite.
     let background: SKSpriteNode
     
+    class func sprite(withTile tile: Tile) -> TileSprite {
+        return TileSprite(tile: tile, edge: defaultTileSize, scale: 1.0)
+    }
+    
     init(tile: Tile, edge: CGFloat, scale: CGFloat) {
+        TileSprite.defaultTileSize = edge
         self.tile = tile;
         let letter = String(tile.letter)
         let label = SKLabelNode(text: letter)
