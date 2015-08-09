@@ -59,14 +59,29 @@ class GameScene: SKScene, GameSceneProtocol {
                 
                 squareSprites.map({$0.background.color = Papyrus.colorForSquare($0.square)})
                 
-                let r = game.axisRuns(game.tiles.inRack(game.player).count)
-                for key in r.keys {
-                    for (axis, offsets) in r[key]! {
+                // Highlight our available moves.
+                let rackCount = game.tiles.inRack(game.player).count
+                let azr = game.axisZRanges(rackCount)
+                for item in azr {
+                    let horiz = item.0 == .Horizontal
+                    for (z, range) in item.1 {
+                        var offsets = Offsets()
+                        for i in range {
+                            if let offset = Offset(
+                                x: horiz ? i : z,
+                                y: horiz ? z : i) {
+                                    offsets.append(offset)
+                            }
+                        }
                         let squares = game.squares.filter({ offsets.contains($0.offset) })
                         let spriteArr = sprites(squares)
-                        spriteArr.map{ $0.background.color = UIColor.redColor() }
+                        spriteArr.map{ $0.background.color = horiz ? UIColor.redColor() : UIColor.orangeColor() }
                     }
                 }
+                
+                game.findProspect(withTiles: game.tiles.inRack(game.player), prospect: { (prospect) -> Void in
+                    print(prospect)
+                })
                 /*
                 let r = game.runs(withTiles: game.tiles.inRack(game.player))
                 

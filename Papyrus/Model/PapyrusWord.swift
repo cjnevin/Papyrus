@@ -68,6 +68,7 @@ struct Word: Hashable, Equatable {
             total *= tile.wordMultiplier(square)
         }
         _points = total
+        tiles.map{ $0.words.insert(self) }
     }
     
     /// Optionally creates a word with a tile array if it passes validation.
@@ -83,6 +84,7 @@ struct Word: Hashable, Equatable {
         var total: Int = tiles.map({ $0.letterValue }).reduce(0, combine: +)
         total = tiles.map({ $0.wordMultiplier }).reduce(total, combine: *)
         _points = total
+        tiles.map{ $0.words.insert(self) }
     }
 }
 

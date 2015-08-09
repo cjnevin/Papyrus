@@ -36,8 +36,87 @@ extension Papyrus {
         print("Calculating possibilities...")
         wordOperations.addOperationWithBlock() {
             let anagramFunc = Lexicon.sharedInstance.anagramsOf
-            let letters = String(userTiles.mapFilter({ $0.letter }))
+            
             var prospects = Prospects()
+            
+            let fixed = self.tiles.onBoardFixed()
+            let rackTiles = self.tiles.inRack(self.player)
+            let rackLetters = rackTiles.map({ $0.letter })
+            let distance = rackTiles.count
+            let azr = self.axisZRanges(distance)
+            
+            for item in azr {
+                let horiz = item.0 == .Horizontal
+                for (z, range) in item.1 {
+                    // Step through range 1 item at a time
+                    // Iterate from 1-distance
+                    // Range must contain at least one tile
+                    // Range must contain all touching tiles
+                    
+                    for i in range {
+                        for n in i..<(i + distance) {
+                            // Check if tiles exist in this range
+                            let innerRange = i...n
+                            // Check if all touching tiles exist in this range
+                            //
+                            // If not:
+                            // - Iterate forward to see if we can have all touching tiles become part of this range
+                            // - Ensure iterating backward includes all tiles also
+                            // - Filter out existing ranges that had to do the same thing
+                            // - go to next item?
+                            //
+                            // If so, add this range as a potential playable area.
+                            let tiles = fixed.inRange(innerRange, z: z, axis: item.0).sorted()
+                            
+                            
+                            
+                            if tiles.count == 0 {
+                                // Cannot play this move
+                            } else {
+                                // Find words that contain this tile
+                                for tile in tiles {
+                                    // Actually, offsets may be better...
+                                    
+                                    
+                                    for word in tile.words where word.axis == item.0 {
+                                        
+                                    }
+                                }
+                                
+                            }
+                            
+                            print("\(innerRange), \(tiles.map{$0.letter})")
+                        }
+                    }
+                    
+                    // We should actually check words here, instead of tiles.
+                    // Then we can ensure that the full word is included in our tests.
+                    // If the word is short it will be more likely to be possible to append to it.
+                    /*
+                    let fixedLetters = fixed.filter({ $0.square?.offset != nil })
+                        .filter({ offsets.contains($0.square!.offset) })
+                        .map({ tile in (offsets.indexOf(tile.square!.offset), tile.letter) })
+                    */
+                    /*
+                    for x in range {
+                        buffer = Run()
+                        range.map{ y in checkOffset(Offset(x: x, y: y)) }
+                    }
+                    for y in range {
+                        buffer = Run()
+                        range.map{ x in checkOffset(Offset(x: x, y: y)) }
+                    }
+                    */
+                    
+                }
+            }
+        }
+    }
+}
+
+            
+            
+            
             /*for run in self.runs(withTiles: userTiles) {
                 self.innerOperations.addOperationWithBlock() {
                     var anagramLetters = [(Int, Character)]()
@@ -94,7 +173,7 @@ extension Papyrus {
             prospects.sortInPlace({ $0.0 > $1.0 })
             prospect(prospects.first)
         }*/
-        }
+        //}
         
         // Create every possible permutation of user's tiles.
         //let perms = permutations(userTiles) // 5040 for 7 tiles.
@@ -135,5 +214,5 @@ extension Papyrus {
         // AI difficulty can then be determined by average/min/max of score range.
         
         // Return sorted moves.
-    }
-}
+    //}
+//}

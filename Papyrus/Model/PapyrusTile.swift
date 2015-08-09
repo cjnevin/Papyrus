@@ -82,6 +82,7 @@ class Tile: NSObject, CustomDebugStringConvertible {
     /// Placement defines where the Tile exists in the game.
     var placement = Placement.Bag
     var letter: Character
+    var words = Set<Word>()
     let value: Int
     /// - Returns: Letter multiplier for this tile, if placed on a specific square.
     func letterValue(square: Square) -> Int {
@@ -188,6 +189,19 @@ extension CollectionType where Generator.Element == Tile {
     /// - Returns: Array of tiles in the bag.
     func inBag() -> [Tile] {
         return filter({ $0.placement == Tile.Placement.Bag })
+    }
+    /// - Returns: Array of tiles in a given range.
+    func inRange(range: Range<Int>, z: Int, axis: Axis) -> [Tile] {
+        let horiz = axis == .Horizontal
+        return mapFilter({ tile -> Tile? in
+            if let offset = tile.square?.offset where (horiz ? offset.y == z : offset.x == z) {
+                return
+                    (horiz ? range.startIndex <= offset.x && range.endIndex >= offset.x
+                        : range.startIndex <= offset.y && range.endIndex >= offset.y)
+                    ? tile : nil
+            }
+            return nil
+        })
     }
     /// - Returns: Array of tiles optionally in a specific players rack.
     func inRack(player: Player? = nil) -> [Tile] {
