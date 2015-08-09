@@ -52,13 +52,13 @@ struct Word: Hashable, Equatable {
         return output.hashValue
     }
     
-    init(_ array: [(tile: Tile, square: Square)]) {
+    init(_ array: [(tile: Tile, square: Square)], orientation: Orientation) {
         tiles = array.map{ $0.tile }
-        orientation = .Horizontal
         value = String(tiles.map{ $0.letter })
         length = value.lengthOfBytesUsingEncoding(NSUTF8StringEncoding)
         squares = array.mapFilter{ $0.square }
         offsets = squares.map{ $0.offset }
+        self.orientation = orientation
         intersectsCenter = offsets.contains(PapyrusMiddleOffset!)
         var total = 0
         for (tile, square) in array {

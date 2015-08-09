@@ -29,6 +29,9 @@ extension Papyrus {
         // This approach has a side effect of shuffling the letters played on the board as well
         // which could be cleaned up with a 'fixed letters' parameter providing indexes.
         //
+        // There's an issue with orientation here sometimes. 
+        // Tiles are played vertically instead of horizontally.
+        // Might be the 'runs' being returned.
         print("---")
         print("Calculating possibilities...")
         wordOperations.addOperationWithBlock() {
@@ -53,24 +56,26 @@ extension Papyrus {
                         var tileSquares = [(tile: Tile, square: Square)]()
                         var index = 0
                         for letter in result.characters {
-                            if let square = self.squares.filter({ $0.offset == run[index].offset }).first {
+                            let os = run[index].offset//Offset(x:run[index].offset.y, y:run[index].offset.x)
+                            if let square = self.squares.filter({ $0.offset == os }).first {
                                 if let tile = run[index].tile {
                                     // Insert this run item
                                     tileSquares.append((tile: tile, square: square))
                                     assert(tile.letter == letter)
-                                } else if let tile = remainingTiles.filter({ $0.letter == letter }).first ??
-                                    remainingTiles.filter({ $0.letter == "?" }).first {
-                                        // Insert one of the persons tiles
-                                        remainingTiles = remainingTiles.filter{ $0 != tile }
-                                        tileSquares.append((tile: tile, square: square))
-                                        assert(tile.letter == letter || tile.letter == "?")
+                                } else if let tile = remainingTiles.filter({ $0.letter == letter }).first ?? remainingTiles.filter({ $0.letter == "?" }).first {
+                                    // Insert one of the persons tiles
+                                    remainingTiles = remainingTiles.filter{ $0 != tile }
+                                    tileSquares.append((tile: tile, square: square))
+                                    assert(tile.letter == letter || tile.letter == "?")
                                 }
                             }
                             index++
                         }
                         assert(tileSquares.count == run.count)
-                        let word = Word(tileSquares)
+                        
                         do {
+                            let (orientation, _, _) = try self.tileOrientation(tileSquares.mapFilter({$0.tile}))
+                            let word = Word(tileSquares, orientation: orientation)
                             let intersectedWords = try self.intersectingWords(word)
                             var allWords = intersectedWords
                             allWords.append(word)

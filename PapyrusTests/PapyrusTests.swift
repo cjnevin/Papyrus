@@ -160,27 +160,65 @@ class PapyrusTests: XCTestCase {
                 (getTile(withLetter: "E"), o.advance(.Vertical, amount: 4)!),
                 (getTile(withLetter: "R"), o.advance(.Vertical, amount: 5)!)]
             dropEm(cat)
+            let x1 = try instance.tileOrientation(cat.map({$0.0})).0 == .Vertical
+            XCTAssert(x1)
+            if let tiles = try instance.move(cat.mapFilter({$0.0})) {
+                XCTAssert(tiles.count == 7)
+            }
+            
+            let hat = [
+                (getTile(withLetter: "B"), o.prev(.Horizontal)!),
+                //(cat[1].0, o),
+                (getTile(withLetter: "T"), o.next(.Horizontal)!),
+                (getTile(withLetter: "C"), o.advance(.Horizontal, amount: 2)!),
+                (getTile(withLetter: "H"), o.advance(.Horizontal, amount: 3)!),
+                (getTile(withLetter: "E"), o.advance(.Horizontal, amount: 4)!),
+                (getTile(withLetter: "R"), o.advance(.Horizontal, amount: 5)!)]
+            dropEm(hat)
+            let x2 = try instance.tileOrientation(hat.map({$0.0})).0 == .Horizontal
+            XCTAssert(x2)
+            if let tiles = try instance.move(hat.mapFilter({$0.0})) {
+                XCTAssert(tiles.count == 14)
+            }
+            
+            // Add 'za' to existing 't' to form 'zat' on the perpendicular
+            let za = [(getTile(withLetter: "Z"), o.next(.Vertical)!.prev(.Horizontal)!.prev(.Horizontal)!),
+                (getTile(withLetter: "I"), o.next(.Vertical)!.prev(.Horizontal)!)]
+            dropEm(za)
+            let x3 = try instance.tileOrientation(za.mapFilter({$0.0})).0 == .Horizontal
+            XCTAssert(x3)
+            if let tiles = try instance.move(za.mapFilter({$0.0})) {
+                XCTAssert(tiles.count == 12)
+            }
+            
+            
+            
+            //dropEm(cat)
+            
             
             // Need to split out move logic, so we can test it easier...
-            let words = try instance.move(cat.map({$0.0}))
-            
-            assertTilePlacementFailure(instance)
-            
-            // Validate word
-            XCTAssert(words.first == words.first)
-            XCTAssert(words.first?.points == 0) // Immutable can't have points
-            XCTAssert(words.first?.bonus == 0)
-            XCTAssert(words.first?.immutable == true)
+            /*if let words = try instance.move(cat.map({$0.0})), firstWord = words.first {
+                
+                assertTilePlacementFailure(instance)
+                
+                // Validate word
+                XCTAssert(firstWord == firstWord)
+                XCTAssert(firstWord.points == 0) // Immutable can't have points
+                XCTAssert(firstWord.bonus == 0)
+                XCTAssert(firstWord.immutable == true)
+            }
             
             // Add 'ha' to existing 't' to form 'hat' on the perpendicular
             let ha = [(getTile(withLetter: "H"), o.next(.Vertical)!.prev(.Horizontal)!.prev(.Horizontal)!),
                 (getTile(withLetter: "A"), o.next(.Vertical)!.prev(.Horizontal)!)]
             dropEm(ha)
+
+            XCTAssert(Papyrus.sharedInstance.tileOrientation(ha.map({$0.0})).0 == .Horizontal)
             
             let haWords = try instance.move(ha.map({$0.0}))
-            XCTAssert(haWords.count == 1)
-            XCTAssert(haWords.first?.length == 3)
-            XCTAssert(haWords.first?.value == "HAT")
+            XCTAssert(haWords!.count == 1)
+            XCTAssert(haWords!.first?.length == 3)
+            XCTAssert(haWords!.first?.value == "HAT")
             
             let z = [(getTile(withLetter: "Z"), o.next(.Vertical)!.prev(.Horizontal)!.prev(.Vertical)!)]
             dropEm(z)
@@ -191,8 +229,20 @@ class PapyrusTests: XCTestCase {
             
             XCTAssert(instance.tiles.onBoardFixed().count == (ha.count + cat.count + z.count))
             let totalTiles = Papyrus.TileConfiguration.map({$0.0}).reduce(0, combine: +)
-            XCTAssert(totalTiles - (instance.tiles.inBag().count + instance.tiles.inRack(instance.player).count) == (ha.count + cat.count + z.count))
+            XCTAssert(totalTiles - (instance.tiles.inBag().count + instance.tiles.inRack(instance.player).count) == (ha.count + cat.count + z.count))*/
             
+        } catch let err as ValidationError {
+            switch err {
+            case .Arrangement(let tiles): print("Arrangement err: \(tiles)")
+            case .Intersection(let word): print("Intersection err: \(word)")
+            case .Invalid(let word): print("Invalid err: \(word)")
+            case .Message(let str): print(str)
+            case .Undefined(let str): print("Undefined \(str)")
+            case .NoTiles: print("No tiles")
+            case .Center(_, let word): print("Center missing: \(word)")
+            }
+            
+            XCTAssert(false)
         } catch {
             XCTAssert(false)
         }
@@ -215,7 +265,7 @@ class PapyrusTests: XCTestCase {
     }
     
     func runRunsTests(instance: Papyrus) {
-        XCTAssert(54 == instance.currentRuns()?.array.count)
+        //XCTAssert(54 == instance.currentRuns()?.array.count)
     }
     
     func runSquareTests(instance: Papyrus) {

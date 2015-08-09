@@ -77,7 +77,7 @@
 		99629C3E1B547E3800510036 /* PapyrusPlayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PapyrusPlayer.swift; sourceTree = "<group>"; };
 		99629C3F1B547E3800510036 /* PapyrusSquare.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PapyrusSquare.swift; sourceTree = "<group>"; };
 		99629C401B547E3800510036 /* PapyrusTile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PapyrusTile.swift; sourceTree = "<group>"; };
-		99629C411B547E3800510036 /* PapyrusWord.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PapyrusWord.swift; sourceTree = "<group>"; };
+		99629C411B547E3800510036 /* PapyrusWord.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = PapyrusWord.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		99629C591B547E8200510036 /* GameViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameViewController.swift; sourceTree = "<group>"; };
 		99629C5B1B547E8200510036 /* GameScene.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameScene.swift; sourceTree = "<group>"; };
 		99629C5C1B547E8200510036 /* GameSceneTouches.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameSceneTouches.swift; sourceTree = "<group>"; };

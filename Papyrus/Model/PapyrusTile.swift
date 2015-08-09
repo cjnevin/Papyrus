@@ -177,6 +177,10 @@ extension CollectionType where Generator.Element == Tile {
         guard let offset = offset, matched = filter({ $0.square?.offset == offset }).first else { return nil }
         return matched
     }
+    /// - Returns: True if tile exists at offset.
+    func has(offset:Offset?) -> Bool {
+        return at(offset) != nil
+    }
     /// Returns tiles sorted by offset.
     func sorted() -> [Tile] {
         return filter{ $0.square != nil }.sort{ $0.square!.offset < $1.square!.offset }

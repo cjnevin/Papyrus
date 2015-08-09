@@ -41,7 +41,9 @@ class GameScene: SKScene, GameSceneProtocol {
         tileSprites.map{ $0.deilluminate() }
         tileSprites.filter{ moveTiles.contains($0.tile) }.map{ $0.illuminate() }
         // Remove existing rack sprites.
-        replaceRackSprites()
+        if game.playerIndex == 0 {
+            replaceRackSprites()
+        }
     }
     
     /// Attempt to submit a word, will throw an error if validation fails.
@@ -51,29 +53,47 @@ class GameScene: SKScene, GameSceneProtocol {
             tile.resetPosition(origin)
         }
         do {
-            if let tiles = try game.move(game.tiles.onBoard(game.player)), centerPoint = self.view?.center {
+            if let tiles = try game.move(game.tiles.onBoard(game.player)) {
                 completeMove(withTiles: tiles)
                 game.nextPlayer()
-                game.automateMove({ [weak self] (automatedTiles) -> Void in
-                    if let automatedTiles = automatedTiles {
-                        // TODO: Drop tiles on the board...
-                        var tilesToDrop: Tiles
-                        if let existingTiles = self?.tileSprites.filter({ automatedTiles.contains($0.tile) }).map({$0.tile}) {
-                            // Ignore these tiles
-                            tilesToDrop = automatedTiles.filter({ existingTiles.contains($0) })
-                        } else {
-                            // Drop all tiles
-                            tilesToDrop = automatedTiles
+                
+                squareSprites.map({$0.background.color = Papyrus.colorForSquare($0.square)})
+                
+                let r = game.fasterRuns(withTiles: game.tiles.inRack(game.player))
+                for key in r.keys {
+                    for (axis, offsets) in r[key]! {
+                        let squares = game.squares.filter({ offsets.contains($0.offset) })
+                        let spriteArr = sprites(squares)
+                        spriteArr.map{ $0.background.color = UIColor.redColor() }
+                    }
+                }
+                /*
+                let r = game.runs(withTiles: game.tiles.inRack(game.player))
+                
+                for run in r {
+                    for (offset, _) in run {
+                        if let square = game.squares.filter({$0.offset == offset}).first,
+                            squareSprite = sprites([square]).first {
+                            squareSprite.background.color = UIColor.redColor()
                         }
                         
+                    }
+                }*/
+                
+                /*game.automateMove({ [weak self] (automatedTiles) -> Void in
+                    if let automatedTiles = automatedTiles {
+                        // TODO: Drop tiles on the board...
                         var index = 0
                         for tile in automatedTiles {
                             if let square = tile.square, emptySquare = self?.sprites([square]).first {
                                 //dispatch_after(dispatch_time_t(1.0 * Double(index)), dispatch_get_main_queue(), { () -> Void in
                                     let sprite = TileSprite.sprite(withTile: tile)
-                                    sprite.position = centerPoint
-                                    self?.addChild(sprite)
-                                    emptySquare.animateDropTileSprite(sprite, originalPoint: centerPoint, completion: nil)
+                                    sprite.yScale = 0.5
+                                    sprite.xScale = 0.5
+                                    emptySquare.origin = emptySquare.position
+                                    emptySquare.tileSprite = sprite
+                                    emptySquare.addChild(sprite)
+                                    emptySquare.animateDropTileSprite(sprite, originalPoint: emptySquare.position, completion: nil)
                                 //})
                                 index++
                             }
@@ -84,7 +104,7 @@ class GameScene: SKScene, GameSceneProtocol {
                     } else {
                         assert(false)
                     }
-                })
+                })*/
             }
         } catch let err as ValidationError {
             switch err {
