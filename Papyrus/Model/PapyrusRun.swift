@@ -28,6 +28,14 @@ extension Papyrus {
     }
     
     private func zRanges(axis: Axis, distance: Int) -> ZRanges {
+        //
+        // TODO: Attaching to the sides of tiles
+        //
+        // i.e. IT below:
+        //
+        //     I S L E
+        // L E T
+        //
         let count = distance
         let horiz = axis == .Horizontal
         var zRanges = ZRanges()
