@@ -55,11 +55,11 @@ class GameScene: SKScene, GameSceneProtocol {
         do {
             if let tiles = try game.move(game.tiles.onBoard(game.player)) {
                 completeMove(withTiles: tiles)
-                game.nextPlayer()
+                //game.nextPlayer()
                 
                 squareSprites.map({$0.background.color = Papyrus.colorForSquare($0.square)})
                 
-                let r = game.fasterRuns(withTiles: game.tiles.inRack(game.player))
+                let r = game.axisRuns(game.tiles.inRack(game.player).count)
                 for key in r.keys {
                     for (axis, offsets) in r[key]! {
                         let squares = game.squares.filter({ offsets.contains($0.offset) })

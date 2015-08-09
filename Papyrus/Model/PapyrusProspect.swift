@@ -38,7 +38,7 @@ extension Papyrus {
             let anagramFunc = Lexicon.sharedInstance.anagramsOf
             let letters = String(userTiles.mapFilter({ $0.letter }))
             var prospects = Prospects()
-            for run in self.runs(withTiles: userTiles) {
+            /*for run in self.runs(withTiles: userTiles) {
                 self.innerOperations.addOperationWithBlock() {
                     var anagramLetters = [(Int, Character)]()
                     var offsetIndex = 0
@@ -74,8 +74,8 @@ extension Papyrus {
                         assert(tileSquares.count == run.count)
                         
                         do {
-                            let (orientation, _, _) = try self.tileOrientation(tileSquares.mapFilter({$0.tile}))
-                            let word = Word(tileSquares, orientation: orientation)
+                            let (axis, _, _) = try self.tileAxis(tileSquares.mapFilter({$0.tile}))
+                            let word = Word(tileSquares, axis: axis)
                             let intersectedWords = try self.intersectingWords(word)
                             var allWords = intersectedWords
                             allWords.append(word)
@@ -93,6 +93,7 @@ extension Papyrus {
             }
             prospects.sortInPlace({ $0.0 > $1.0 })
             prospect(prospects.first)
+        }*/
         }
         
         // Create every possible permutation of user's tiles.

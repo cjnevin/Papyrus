@@ -27,7 +27,7 @@ typealias OffsetRange = (start: Offset, end: Offset)
 /// Offset range without a required end.
 typealias OffsetRangeOptional = (start: Offset, end: Offset?)
 /// Prev and Next adhere to this function.
-typealias OffsetOrientationFunction = (Offset -> (o: Orientation) -> Offset?)
+typealias OffsetAxisFunction = (Offset -> (axis: Axis) -> Offset?)
 
 /// An x,y offset on the board, only valid if within board boundaries.
 struct Offset: Comparable, Hashable, CustomDebugStringConvertible {
@@ -54,21 +54,22 @@ struct Offset: Comparable, Hashable, CustomDebugStringConvertible {
     }
     /// Return new offset `amount` away from current offset in given direction or nil
     /// - SeeAlso: valid(x:y:)
-    func advance(o: Orientation, amount: Int) -> Offset? {
-        return o == .Horizontal ? Offset(x: x + amount, y: y) :
+    func advance(axis: Axis, amount: Int) -> Offset? {
+        return axis == .Horizontal ?
+            Offset(x: x + amount, y: y) :
             Offset(x: x, y: y + amount)
     }
     /// Return next offset in given direction or nil.
-    /// Adheres to OffsetOrientationFunction.
+    /// Adheres to OffsetAxisFunction.
     /// - SeeAlso: valid(x:y:)
-    func next(o: Orientation) -> Offset? {
-        return advance(o, amount: 1)
+    func next(axis: Axis) -> Offset? {
+        return advance(axis, amount: 1)
     }
     /// Return previous offset in given direction or nil
-    /// Adheres to OffsetOrientationFunction.
+    /// Adheres to OffsetAxisFunction.
     /// - SeeAlso: valid(x:y:)
-    func prev(o: Orientation) -> Offset? {
-        return advance(o, amount: -1)
+    func prev(axis: Axis) -> Offset? {
+        return advance(axis, amount: -1)
     }
     var hashValue: Int {
         return debugDescription.hashValue

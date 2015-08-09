@@ -17,7 +17,7 @@ typealias Words = [Word]
 /// A collection of tiles with some helpful methods for tile collections.
 struct Word: Hashable, Equatable {
     /// Orientation that this word was played. Can only be one.
-    let orientation: Orientation
+    let axis: Axis
     /// Offsets releveant to the squares for this word.
     let offsets: [Offset]
     /// Squares relevant to the tiles for this word.
@@ -52,13 +52,13 @@ struct Word: Hashable, Equatable {
         return output.hashValue
     }
     
-    init(_ array: [(tile: Tile, square: Square)], orientation: Orientation) {
+    init(_ array: [(tile: Tile, square: Square)], axis: Axis) {
         tiles = array.map{ $0.tile }
         value = String(tiles.map{ $0.letter })
         length = value.lengthOfBytesUsingEncoding(NSUTF8StringEncoding)
         squares = array.mapFilter{ $0.square }
         offsets = squares.map{ $0.offset }
-        self.orientation = orientation
+        self.axis = axis
         intersectsCenter = offsets.contains(PapyrusMiddleOffset!)
         var total = 0
         for (tile, square) in array {
@@ -74,7 +74,7 @@ struct Word: Hashable, Equatable {
     init?(_ array: [Tile], validator: ValidationFunction) throws {
         tiles = array
         let cfg = try validator(tiles: &tiles)
-        orientation = cfg.o ?? .Horizontal
+        axis = cfg.axis
         value = String(tiles.map{ $0.letter })
         length = value.lengthOfBytesUsingEncoding(NSUTF8StringEncoding)
         squares = tiles.mapFilter{ $0.square }
@@ -86,14 +86,14 @@ struct Word: Hashable, Equatable {
     }
 }
 
-/// Orientation that tiles may appear.
-enum Orientation {
+/// Orientation of offsets (x or y axis).
+enum Axis {
     /// Offsets have same y value, but differing x values.
     case Horizontal
     /// Offsets have same x value, but differing y values.
     case Vertical
     /// - Returns: Array containing both orientations.
-    static var both: [Orientation] { return [.Horizontal, .Vertical] }
+    static var both: [Axis] { return [.Horizontal, .Vertical] }
     /// - Returns: Opposite of current orientation.
-    var invert: Orientation { return self == .Horizontal ? .Vertical : .Horizontal }
+    var invert: Axis { return self == .Horizontal ? .Vertical : .Horizontal }
 }

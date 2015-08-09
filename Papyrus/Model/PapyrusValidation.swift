@@ -8,8 +8,6 @@
 
 import Foundation
 
-// TODO: Create orientation/offset tuple (Orientation, Offset) to cleanup func logic...
-
 enum ValidationError: ErrorType {
     case Arrangement([Tile])
     case Center(Offset, Word)
@@ -20,38 +18,38 @@ enum ValidationError: ErrorType {
     case NoTiles
 }
 
-typealias ValidationFunction = (inout tiles: Tiles) throws -> (o: Orientation, range: OffsetRange)
+typealias ValidationFunction = (inout tiles: Tiles) throws -> (axis: Axis, range: OffsetRange)
 
 extension Papyrus {
-    func tileOrientation(letters: Tiles, alreadySorted: Bool? = false) throws -> (Orientation, Offset, Offset) {
+    func tileAxis(letters: Tiles, alreadySorted: Bool? = false) throws -> (Axis, Offset, Offset) {
         let sorted = alreadySorted! == true ? letters : letters.sorted()
         guard let first = sorted.first?.square?.offset, last = sorted.last?.square?.offset else {
             throw ValidationError.NoTiles
         }
-        let o: Orientation
+        let axis: Axis
         if letters.count == 1 {
-            o = tiles.has(first.prev(.Vertical)) || tiles.has(first.next(.Vertical)) ?
-                Orientation.Vertical : Orientation.Horizontal
+            axis = tiles.has(first.prev(.Vertical)) || tiles.has(first.next(.Vertical)) ?
+                Axis.Vertical : Axis.Horizontal
         } else if first.x == last.x {
-            o = Orientation.Vertical
+            axis = Axis.Vertical
         } else if first.y == last.y {
-            o = Orientation.Horizontal
+            axis = Axis.Horizontal
         } else {
             throw ValidationError.Arrangement(letters)
         }
-        return (o, first, last)
+        return (axis, first, last)
     }
     
     /// Add tiles found when walking in a direction within a given range.
     /// - Parameters:
     ///     - letters: In-out set of letters.
-    ///     - o: Direction to search for letters.
+    ///     - axis: Direction to search for letters.
     ///     - range: Offset range to search (optional end).
     ///     - f: Function to use for validation.
     /// - Returns: End Offset of a range.
-    private func addTiles(inout letters: Set<Tile>, o: Orientation, range: OffsetRangeOptional, f:  OffsetOrientationFunction) -> Offset {
+    private func addTiles(inout letters: Set<Tile>, axis: Axis, range: OffsetRangeOptional, f:  OffsetAxisFunction) -> Offset {
         var start = range.0
-        while let n = f(start)(o: o), matched = tiles.at(n) {
+        while let n = f(start)(axis: axis), matched = tiles.at(n) {
             letters.insert(matched)
             start = n
             if let m = range.1 where m == n { break }
@@ -62,36 +60,36 @@ extension Papyrus {
     /// Add tiles found when walking in a direction within a given range.
     /// - Parameters:
     ///     - letters: In-out set of letters.
-    ///     - o: Direction to search for letters.
+    ///     - axis: Direction to search for letters.
     ///     - range: Offset range to search (optional end).
     ///     - f: Function to use for validation.
     /// - Returns: Offset array
-    private func addTiles(inout letters: Set<Tile>, o: Orientation, range: OffsetRangeOptional, f:  [OffsetOrientationFunction]) -> Offsets {
-        return f.map { self.addTiles(&letters, o: o, range: range, f: $0) }
+    private func addTiles(inout letters: Set<Tile>, axis: Axis, range: OffsetRangeOptional, f:  [OffsetAxisFunction]) -> Offsets {
+        return f.map { self.addTiles(&letters, axis: axis, range: range, f: $0) }
     }
     
     /// Conforms to ValidationFunction
     /// - Parameter letters: In-out array of sorted letters.
-    /// - Returns: Tuple containing Orientation and an Offset Range for the given tiles.
+    /// - Returns: Tuple containing Axis and an Offset Range for the given tiles.
     /// - Throws: ValidationError regarding tile configuration.
-    func validateTiles(inout letters: Tiles) throws -> (o: Orientation, range: OffsetRange) {
+    func validateTiles(inout letters: Tiles) throws -> (axis: Axis, range: OffsetRange) {
         let sorted = letters.sorted()
-        let (orientation, first, last) = try tileOrientation(sorted, alreadySorted: true)
+        let (axis, first, last) = try tileAxis(sorted, alreadySorted: true)
         // Go through tiles to see if there are any gaps
         var tileSet = Set(sorted)
-        let offset = addTiles(&tileSet, o: orientation, range: (first, last), f: Offset.next)
+        let offset = addTiles(&tileSet, axis: axis, range: (first, last), f: Offset.next)
         if offset < last { throw ValidationError.Arrangement(Array(tileSet)) }
         // Go in direction tiles were played to determine where word ends
         // Pad range with tiles played arround these `tiles`
-        let range = (addTiles(&tileSet, o: orientation, range: (first, nil), f: Offset.prev),
-                     addTiles(&tileSet, o: orientation, range: (last, nil), f: Offset.next))
+        let range = (addTiles(&tileSet, axis: axis, range: (first, nil), f: Offset.prev),
+                     addTiles(&tileSet, axis: axis, range: (last, nil), f: Offset.next))
         // Resort the tiles
         letters = tileSet.sorted()
         // Ensure all tiles are on same line, cannot be in multiple directions
-        if letters.filter({ orientation == .Horizontal ? $0.square!.offset.y == first.y : $0.square!.offset.x == first.x }).count != letters.count {
+        if letters.filter({ axis == .Horizontal ? $0.square!.offset.y == first.y : $0.square!.offset.x == first.x }).count != letters.count {
             throw ValidationError.Arrangement(letters)
         }
-        return (orientation, range)
+        return (axis, range)
     }
     
     /// - Parameter word: Word to check intersections against.
@@ -99,10 +97,10 @@ extension Papyrus {
     /// - Throws: Fails if a Word cannot be validated.
     func intersectingWords(word: Word) throws -> Words {
         var output = Words()
-        let inverted = word.orientation.invert
+        let inverted = word.axis.invert
         for tile in word.tiles.filter({ $0.square?.offset != nil }) {
             var tileSet = Set([tile])
-            addTiles(&tileSet, o: inverted, range: (tile.square!.offset, nil),
+            addTiles(&tileSet, axis: inverted, range: (tile.square!.offset, nil),
                 f: [Offset.prev, Offset.next])
             if tileSet.count > 1 {
                 if let intersectingWord = try Word(Array(tileSet), validator: validateTiles) {
@@ -178,9 +176,9 @@ extension Papyrus {
             tiles.extend(prospect.word.tiles)
             assert(tiles.filter({ Tile.match($0.placement, unassociatedPlacement: Tile.UnassociatedPlacement.Fixed) }).count > 0)
             for intersect in prospect.intersected {
-                print("\(intersect.value), \(intersect.orientation)")
+                print("\(intersect.value), \(intersect.axis)")
             }
-            print("\(prospect.word.value), \(prospect.word.orientation)")
+            print("\(prospect.word.value), \(prospect.word.axis)")
             let dropped = self.calculateScore(prospect.word, intersecting: prospect.intersected)
             NSOperationQueue.mainQueue().addOperationWithBlock() {
                 f(dropped)
@@ -193,7 +191,7 @@ extension Papyrus {
     /// - Throws: Fails if a Word cannot be validated.
     func move(letters: Tiles) throws -> Tiles? {
         if let word = try Word(letters, validator: validateTiles) {
-            print("Main word: \(word.value), \(word.orientation)")
+            print("Main word: \(word.value), \(word.axis)")
             let definition = try Lexicon.sharedInstance.defined(word.value)
             print("Definition: \(definition)")
             let intersectedWords = try intersectingWords(word)
