@@ -41,27 +41,25 @@ struct Lexicon {
         throw ValidationError.Undefined(word)
     }
     
-    func anagramsOf(letters: String, length: Int? = Int.min, prefix: String, fixedLetters: [(Int, Character)], source: AnyObject, inout results: Set<String>) {
-        // Cast as [String: AnyObject]
-        guard let source = source as? LexiconType else {
-            return
-        }
-        
+    func anagramsOf(letters: String, length: Int, prefix: String,
+        fixedLetters: [(Int, Character)], fixedCount: Int, source: AnyObject,
+        inout results: [String])
+    {
+        guard let source = source as? LexiconType else { return }
         let prefixLength = prefix.lengthOfBytesUsingEncoding(NSUTF8StringEncoding)
         if let c = fixedLetters.filter({$0.0 == prefixLength}).map({$0.1}).first, newSource = source[String(c)] {
             let newPrefix = prefix + String(c)
             let reverseFiltered = fixedLetters.filter({$0.0 != prefixLength})
-            anagramsOf(letters, length: length, prefix: newPrefix, fixedLetters: reverseFiltered, source: newSource, results: &results)
+            anagramsOf(letters, length: length, prefix: newPrefix,
+                fixedLetters: reverseFiltered, fixedCount: fixedCount,
+                source: newSource, results: &results)
             return
         }
         
         // See if word exists
-        if let _ = source.indexForKey(DefKey) where fixedLetters.count == 0 {
-            if let length = length where length != Int.min && prefixLength == length {
-                results.insert(prefix)
-            } else if length! == Int.min {
-                results.insert(prefix)
-            }
+        if let _ = source.indexForKey(DefKey) where fixedLetters.count == 0 &&
+            prefixLength == length && prefixLength > fixedCount {
+            results.append(prefix)
         }
         // Before continuing...
         for (key, value) in source {
@@ -70,7 +68,9 @@ struct Lexicon {
                 // Strip key/?
                 let newLetters = letters.stringByReplacingCharactersInRange(range, withString: "")
                 // Create anagrams with remaining letters
-                anagramsOf(newLetters, length: length, prefix: prefix + key, fixedLetters: fixedLetters, source: value, results: &results)
+                anagramsOf(newLetters, length: length, prefix: prefix + key,
+                    fixedLetters: fixedLetters, fixedCount: fixedCount,
+                    source: value, results: &results)
             }
         }
     }

@@ -51,6 +51,7 @@ class GameViewController: UIViewController, GameSceneDelegate, UITextFieldDelega
                 this.title = "Papyrus"
                 this.enableButtons(true)
                 game.createPlayer()
+                game.createPlayer()
             default:
                 this.title = "Complete"
             }

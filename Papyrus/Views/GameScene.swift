@@ -55,71 +55,32 @@ class GameScene: SKScene, GameSceneProtocol {
         do {
             if let tiles = try game.move(game.tiles.onBoard(game.player)) {
                 completeMove(withTiles: tiles)
-                //game.nextPlayer()
+                game.nextPlayer()
                 
-                squareSprites.map({$0.background.color = Papyrus.colorForSquare($0.square)})
-                
-                // Highlight our available moves.
-                let rackCount = game.tiles.inRack(game.player).count
-                let azr = game.axisZRanges(rackCount)
-                for item in azr {
-                    let horiz = item.0 == .Horizontal
-                    for (z, range) in item.1 {
-                        var offsets = Offsets()
-                        for i in range {
-                            if let offset = Offset(
-                                x: horiz ? i : z,
-                                y: horiz ? z : i) {
-                                    offsets.append(offset)
-                            }
-                        }
-                        let squares = game.squares.filter({ offsets.contains($0.offset) })
-                        let spriteArr = sprites(squares)
-                        spriteArr.map{ $0.background.color = horiz ? UIColor.redColor() : UIColor.orangeColor() }
-                    }
-                }
-                
-                game.findProspect(withTiles: game.tiles.inRack(game.player), prospect: { (prospect) -> Void in
-                    print(prospect)
-                })
-                /*
-                let r = game.runs(withTiles: game.tiles.inRack(game.player))
-                
-                for run in r {
-                    for (offset, _) in run {
-                        if let square = game.squares.filter({$0.offset == offset}).first,
-                            squareSprite = sprites([square]).first {
-                            squareSprite.background.color = UIColor.redColor()
-                        }
-                        
-                    }
-                }*/
-                
-                /*game.automateMove({ [weak self] (automatedTiles) -> Void in
+                game.automateMove({ [weak self] (automatedTiles) -> Void in
                     if let automatedTiles = automatedTiles {
                         // TODO: Drop tiles on the board...
                         var index = 0
-                        for tile in automatedTiles {
+                        for tile in automatedTiles where self?.tileSprites.filter({$0.tile == tile}).count == 0 {
                             if let square = tile.square, emptySquare = self?.sprites([square]).first {
                                 //dispatch_after(dispatch_time_t(1.0 * Double(index)), dispatch_get_main_queue(), { () -> Void in
-                                    let sprite = TileSprite.sprite(withTile: tile)
-                                    sprite.yScale = 0.5
-                                    sprite.xScale = 0.5
-                                    emptySquare.origin = emptySquare.position
-                                    emptySquare.tileSprite = sprite
-                                    emptySquare.addChild(sprite)
-                                    emptySquare.animateDropTileSprite(sprite, originalPoint: emptySquare.position, completion: nil)
+                                let sprite = TileSprite.sprite(withTile: tile)
+                                sprite.yScale = 0.5
+                                sprite.xScale = 0.5
+                                emptySquare.origin = emptySquare.position
+                                emptySquare.tileSprite = sprite
+                                emptySquare.addChild(sprite)
+                                emptySquare.animateDropTileSprite(sprite, originalPoint: emptySquare.position, completion: nil)
                                 //})
                                 index++
                             }
                         }
-                        
                         self?.completeMove(withTiles: automatedTiles)
                         self?.game.nextPlayer()
                     } else {
                         assert(false)
                     }
-                })*/
+                })
             }
         } catch let err as ValidationError {
             switch err {

@@ -163,13 +163,9 @@ extension Papyrus {
     
     /// - Returns: An array of Tiles that were played.
     func automateMove(f: (Tiles?) -> Void) {
-        
-        
         findProspect(withTiles: tiles.inRack(player), prospect: { (prospect) -> Void in
             guard let prospect = prospect else {
-                NSOperationQueue.mainQueue().addOperationWithBlock() {
-                    f(nil)
-                }
+                f(nil)
                 return
             }
             var tiles = prospect.intersected.flatMap({ $0.tiles })
@@ -180,9 +176,7 @@ extension Papyrus {
             }
             print("\(prospect.word.value), \(prospect.word.axis)")
             let dropped = self.calculateScore(prospect.word, intersecting: prospect.intersected)
-            NSOperationQueue.mainQueue().addOperationWithBlock() {
-                f(dropped)
-            }
+            f(dropped)
         })
     }
     

@@ -17,7 +17,7 @@ extension Papyrus {
     //typealias AxisRun = [Axis: Run]
     //typealias AxisRanges = [Axis: [Int: Range<Int>]]
     
-    typealias ZRanges = [Int: Range<Int>]
+    typealias ZRanges = [Int: (Int, Int)]
     typealias AxisZRanges = [Axis: ZRanges]
     
     private func iterate(f: OffsetAxisFunction, axis: Axis, offset: Offset, count: Int, inout output: Offsets) {
@@ -52,13 +52,15 @@ extension Papyrus {
                 var maxZ = horiz ? maxOffset.x : maxOffset.y
                 // Adjust if range already exists
                 if let zRange = zRanges[z] {
-                    minZ = min(zRange.startIndex, minZ)
-                    maxZ = max(zRange.endIndex, maxZ)
+                    minZ = min(zRange.0, minZ)
+                    maxZ = max(zRange.1, maxZ)
                 }
                 // Store min/max range for current z (x or y)
-                zRanges[z] = minZ...maxZ
+                assert(maxZ <= PapyrusDimensions)
+                zRanges[z] = (minZ, maxZ)
             }
         }
+        print(zRanges)
         return zRanges
     }
     
