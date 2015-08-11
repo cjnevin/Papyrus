@@ -50,13 +50,13 @@ extension Papyrus {
         let distance = rackTiles.count
         wordOperations.addOperationWithBlock() { [weak self] in
             guard let azr = self?.axisZRanges(distance) else { return }
-            for item in azr {
+            for (axis, zRange) in azr {
                 self?.innerOperations.addOperationWithBlock() {
-                    let horiz = item.0 == .Horizontal
+                    let horiz = axis == .Horizontal
                     var previousRanges = [Range<Int>]()
-                    for (z, range) in item.1 {
+                    for (z, range) in zRange {
                         let iterativeRange = range.0...range.1
-                        let rangeTiles = fixed.inRange(iterativeRange, z: z, axis: item.0)
+                        let rangeTiles = fixed.inRange(iterativeRange, z: z, axis: axis)
                         for i in iterativeRange {
                             let end = i + distance > PapyrusDimensions ?
                                 PapyrusDimensions : i + distance
@@ -72,36 +72,21 @@ extension Papyrus {
                                 // - go to next item?
                                 //
                                 // If so, add this range as a potential playable area.
-                                var foundTiles = rangeTiles.inRange(innerRange, z: z, axis: item.0).sorted()
-                                if foundTiles.count > 0 {
-                                    // Check if tile is first offset in array.
-                                    if let firstOffset = foundTiles.first?.square?.offset {
-                                        // Do nothing, if tiles seem to all fall within the range we chose
-                                        if (horiz ? firstOffset.x : firstOffset.y) <= i {
-                                            // Loop upward (outside of range) until we find the first touching tile.
-                                            func loopUpward(offset:Offset?) {
-                                                if let offset = offset, upwardTile = rangeTiles.filter({ $0.square?.offset == offset }).first {
-                                                    foundTiles.append(upwardTile)
-                                                    innerRange.startIndex = horiz ? offset.x : offset.y
-                                                    loopUpward(offset.prev(item.0))
-                                                }
-                                            }
-                                            loopUpward(firstOffset.prev(item.0))
-                                        }
+                                var foundTiles = rangeTiles.inRange(innerRange, z: z, axis: axis).sorted()
+                                func loop(f: OffsetAxisFunction, offset lastOffset: Offset?, up: Bool) {
+                                    if let lastOffset = lastOffset, offset = f(lastOffset)(axis: axis), tile = rangeTiles.filter({ $0.square?.offset == offset }).first {
+                                        foundTiles.append(tile)
+                                        let newIndex = horiz ? offset.x : offset.y
+                                        if up { innerRange.startIndex = newIndex } else { innerRange.endIndex = newIndex }
+                                        loop(f, offset: offset, up: up)
                                     }
-                                    if let lastOffset = foundTiles.last?.square?.offset {
-                                        // Do nothing, if tiles seem to all fall within the range we chose
-                                        if (horiz ? lastOffset.x : lastOffset.y) >= n {
-                                            // Loop downward (outside of range) until we find the last touching tile.
-                                            func loopDownward(offset:Offset?) {
-                                                if let offset = offset, upwardTile = rangeTiles.filter({ $0.square?.offset == offset }).first {
-                                                    foundTiles.append(upwardTile)
-                                                    innerRange.endIndex = horiz ? offset.x : offset.y
-                                                    loopDownward(offset.next(item.0))
-                                                }
-                                            }
-                                            loopDownward(lastOffset.next(item.0))
-                                        }
+                                }
+                                if foundTiles.count > 0 {
+                                    if let firstOffset = foundTiles.first?.square?.offset where (horiz ? firstOffset.x : firstOffset.y) <= i {
+                                        loop(Offset.prev, offset: firstOffset, up: true)
+                                    }
+                                    if let lastOffset = foundTiles.last?.square?.offset where (horiz ? lastOffset.x : lastOffset.y) >= n {
+                                        loop(Offset.next, offset: lastOffset, up: false)
                                     }
                                 }
                                 // Check if we already tried this range previously
@@ -143,7 +128,7 @@ extension Papyrus {
                                                 }
                                                 // TODO: Improve this.
                                                 if resultTiles.filter({rackTiles.contains($0.tile)}).count > 0 {
-                                                    let word = Word(resultTiles, axis: item.0)
+                                                    let word = Word(resultTiles, axis: axis)
                                                     if word.value.rangeOfString("?") == nil {
                                                         assert(word.value == result)
                                                     }
