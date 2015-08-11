@@ -181,7 +181,7 @@ extension Papyrus {
             prospects.sortInPlace({ (lhs, rhs) -> Bool in
                 lhs.0 > rhs.0
             })
-            print("Best Prospect: \(prospects.first?.1.value)")
+            print("Best Prospect: \(prospects.first?.1.value), \(prospects.first?.2.map{$0.value})")
             
             // Return prospect on main thread.
             NSOperationQueue.mainQueue().addOperationWithBlock() {
