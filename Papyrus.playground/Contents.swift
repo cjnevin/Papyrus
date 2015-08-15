@@ -128,14 +128,6 @@ for row in 1...Dimensions {
     squares.append(line)
 }
 
-/*squares[3][3].tile = Tile("Z", 10)
-squares[4][3].tile = Tile("E", 10)
-squares[5][3].tile = Tile("E", 10)
-
-squares[7][3].tile = Tile("Y", 10)
-squares[7][4].tile = Tile("E", 10)
-squares[7][5].tile = Tile("A", 10)*/
-
 squares[2][9].tile = Tile("R", 1)
 squares[3][9].tile = Tile("E", 1)
 squares[4][9].tile = Tile("S", 1)
@@ -161,7 +153,6 @@ squares[10][4].tile = Tile("D", 2)
 squares[10][8].tile = Tile("E", 1)
 squares[10][9].tile = Tile("R", 1)
 
-
 squares[8][5].tile = Tile("R", 1)
 squares[9][5].tile = Tile("I", 1)
 
@@ -177,6 +168,19 @@ struct Boundary: CustomDebugStringConvertible {
     }
 }
 
+func letterAt(row: Int, _ col: Int) -> Character? {
+    return squares[row][col].tile?.letter
+}
+
+/// Get string value of letters in a given boundary.
+/// Does not currently check for gaps - use another method for gap checking and validation.
+func readable(boundary: Boundary) -> String? {
+    let start = boundary.start, end = boundary.end
+    if start.iterable >= end.iterable { return nil }
+    return String((start.iterable...end.iterable).map({ letterAt(
+        start.isHorizontal ? start.fixed : $0,
+        start.isHorizontal ? $0 : start.fixed)}))
+}
 
 //typealias Boundary = (start: Position, end: Position)
 typealias Boundaries = [Boundary]
@@ -185,13 +189,6 @@ typealias PositionBoundaries = [Position: Boundary]
 /// - Returns: False if outside of board boundaries.
 private func outOfBounds(z: Int) -> Bool {
     return z < 0 || z >= Dimensions
-}
-
-/// Enforce board boundaries for a given number.
-private func enforceBoundaries(z: Int) -> Int {
-    if z >= Dimensions { return Dimensions - 1 }
-    if z < 0 { return 0 }
-    return z
 }
 
 var playedBoundaries = Boundaries()
@@ -215,31 +212,19 @@ playedBoundaries.append(Boundary(start:
 playedBoundaries.append(Boundary(start:
     Position(axis: .Vertical(.Prev), iterable: 2, fixed: 9), end:
     Position(axis: .Vertical(.Next), iterable: 8, fixed: 9)))
-/*
 
-playedBoundaries.append(Boundary(
-    start: Position(axis: .Vertical(.Prev), iterable: 3, fixed: 3),
-    end: Position(axis: .Vertical(.Next), iterable: 5, fixed: 3)))
 
-playedBoundaries.append(Boundary(
-    start: Position(axis: .Horizontal(.Prev), iterable: 3, fixed: 7),
-    end: Position(axis: .Horizontal(.Next), iterable: 5, fixed: 7)))*/
-/*
-playedBoundaries.append(Boundary(start:
-    Position(axis: .Row(.Prev), row: 3, col: 3), end:
-    Position(axis: .Row(.Next), row: 5, col: 3)))
-*/
 /// Returns square at given boundary
 func squareAt(position: Position?) -> Square? {
     guard let position = position else { return nil }
     if position.isHorizontal {
-        return squareAtRow(position.fixed, position.iterable)
+        return squareAt(position.fixed, position.iterable)
     } else {
-        return squareAtRow(position.iterable, position.fixed)
+        return squareAt(position.iterable, position.fixed)
     }
 }
 
-func squareAtRow(row: Int, _ col: Int) -> Square {
+func squareAt(row: Int, _ col: Int) -> Square {
     return squares[row][col]
 }
 
@@ -276,7 +261,7 @@ func loop(position: Position, validator: (position: Position) -> Bool, fun: ((po
 }
 
 /// Loop while we are fulfilling the empty value
-/*func loop(position: Position, empty: Bool? = false, fun: ((position: Position) -> ())? = nil) -> Position? {
+func loop(position: Position, empty: Bool? = false, fun: ((position: Position) -> ())? = nil) -> Position? {
     // Return nil if square is outside of range (should only occur first time)
     // Return nil if this square is empty (should only occur first time)
     if position.isInvalid || emptyAt(position) != empty! { return nil }
@@ -289,10 +274,10 @@ func loop(position: Position, validator: (position: Position) -> Bool, fun: ((po
         fun?(position: newPosition)
         return loop(newPosition, empty: empty, fun: fun)
     }
-}*/
+}
 
-/// Method used to determine intersecting words.
-/*func positionBoundaries(horizontal: Bool, row: Int, col: Int) -> PositionBoundaries {
+/*/// Method used to determine intersecting words.
+func positionBoundaries(horizontal: Bool, row: Int, col: Int) -> PositionBoundaries {
     // Collect valid places to play
     var collected = PositionBoundaries()
     func collector(position: Position) {
@@ -318,23 +303,9 @@ func loop(position: Position, validator: (position: Position) -> Bool, fun: ((po
         print(collected)
     }
     return collected
-}*/
+}
+*/
 
-/// Get string value of letters in a given boundary.
-/// Does not currently check for gaps - use another method for gap checking and validation.
-/*func readable(boundary: Boundary) -> String? {
-    func letter(row: Int, _ col: Int) -> Character? {
-        return squares[row][col].tile?.letter
-    }
-    let start = boundary.start, end = boundary.end
-    if start.isHorizontal {
-        if start.row >= end.row { return nil }
-        return String((start.row...end.row).map({letter($0, start.col)}).filter({$0 != nil}).map({$0!}))
-    } else {
-        if start.col >= end.col { return nil }
-        return String((start.col...end.col).map({letter(start.row, $0)}).filter({$0 != nil}).map({$0!}))
-    }
-}*/
 
 /// Returns all 'readable' values for a given array of position boundaries.
 /// Essentially, all words.
@@ -371,9 +342,9 @@ func validate(words: [String]) -> Bool {
     return true
 }
 */
-
-// Determine boundaries of words on the board (hard coded positions)
 /*
+// Determine boundaries of words on the board (hard coded positions)
+
 positionBoundaries(true, row: 8, col: 6)
 
 let arcWords = readable(positionBoundaries(true, row: 7, col: 7))
@@ -387,89 +358,7 @@ validate(deadWords)
 validate(arieWords)
 */
 
-/*func findBoundaries(boundaries: Boundaries, inout found: Boundaries, recursive: Bool = true) {
-    for boundary in boundaries {
-        let h = boundary.start.isHorizontal
-        func positionFor(axis: Axis, iterable: Int, fixed: Int) -> Position? {
-            let position = Position(axis: axis, row: h ? iterable : fixed, col: h ? fixed : iterable)
-            return position.isInvalid ? nil : position
-        }
-        
-        //
-        // This code deals with the direction the word was played
-        // TODO: Opposite direction and adjacent/parallel tiles
-        //
-        // Return row/col
-        
-        let start = boundary.start.loopValues(h)
-        let end = boundary.end.loopValues(h)
-        
-        // Calculate the optimal boundary to iterate, before iterating (or should it be on the fly?).
-        
-        // For each boundary, we can move 7 characters either way minus the length of the word
-        
-        var startIndex = start.iterable, endIndex = end.iterable
-        if startIndex > 0 {
-            var i = startIndex
-            var r = rackCount
-            while i > -1 && r > 0 {
-                i--
-                guard let position = positionFor(boundary.start.axis, iterable: i, fixed: start.fixed) else { break }
-                if squareAt(position)?.tile == nil { r-- }
-            }
-            startIndex = enforceBoundaries(i)
-            //if !emptyAt(positionFor(boundary.end.axis, iterable: startIndex - 1, fixed: start.fixed)) { startIndex++ }
-        }
-        if endIndex < Dimensions {
-            var i = endIndex
-            var r = rackCount
-            while i < Dimensions - 1 && r > 0 {
-                i++
-                guard let position = positionFor(boundary.end.axis, iterable: i, fixed: end.fixed) else { break }
-                if emptyAt(position) { r-- }
-            }
-            endIndex = enforceBoundaries(i)
-            //if !emptyAt(positionFor(boundary.end.axis, iterable: endIndex + 1, fixed: end.fixed)) { endIndex-- }
-        }
-        var currentBoundaries = Boundaries()
-        for i in startIndex...endIndex {
-            assert(!outOfBounds(i))
-            let s = i > start.iterable ? start.iterable : i
-            let e = i < end.iterable ? end.iterable : i
-            if e - s < 11 {
-                guard let startPosition = positionFor(boundary.start.axis, iterable: s, fixed: start.fixed),
-                    endPosition = positionFor(boundary.end.axis, iterable: e, fixed: end.fixed) else {
-                        continue
-                }
-                let boundary = Boundary(start: startPosition, end: endPosition)
-                if currentBoundaries.filter({$0.start == startPosition && $0.end == endPosition}).count == 0 {
-                    currentBoundaries.append(boundary)
-                }
-            }
-        }
-        if recursive {
-            var invertedBoundaries = Boundaries()
-            let invertedStartAxis = boundary.start.axis.inverse(.Prev)
-            let invertedEndAxis = boundary.end.axis.inverse(.Next)
-            for i in start.iterable...end.iterable {
-                if let a = positionFor(invertedStartAxis, iterable: i, fixed: start.fixed),
-                b = positionFor(invertedEndAxis, iterable: i, fixed: end.fixed) {
-                    let boundary = Boundary(start:a, end:b)
-                    invertedBoundaries.append(boundary)
-                }
-            }
-            print(invertedBoundaries)
-            
-            findBoundaries(invertedBoundaries, found: &found, recursive: false)
-            
-        
-        }
-        found.extend(currentBoundaries)
-    }
-}*/
-
 var playableBoundaries = Boundaries()
-
 
 func getPositionLoop(initial: Position) -> Position {
     var counter = rackCount
@@ -481,7 +370,9 @@ func getPositionLoop(initial: Position) -> Position {
     return position
 }
 
-func findBoundaries(boundaries: Boundaries) -> Boundaries {
+/// - Parameter boundaries: Boundaries to use for intersection.
+/// - Returns: Areas where play may be possible intersecting the given boundaries.
+func findPlayableBoundaries(boundaries: Boundaries) -> Boundaries {
     var allBoundaries = Boundaries()
     for boundary in boundaries {
         var currentBoundaries = Boundaries()
@@ -527,46 +418,31 @@ func findBoundaries(boundaries: Boundaries) -> Boundaries {
     return allBoundaries
 }
 
+func within(boundary: Boundary, row: Int, column: Int) -> Bool {
+    let start = boundary.start, end = boundary.end
+    if boundary.start.isHorizontal {
+        let sameRow = row == start.fixed && row == end.fixed
+        let validColumn = column >= start.iterable && column <= end.iterable
+        return sameRow && validColumn
+    } else {
+        let sameColumn = column == start.fixed && column == end.fixed
+        let validRow = row >= start.iterable && row <= end.iterable
+        return sameColumn && validRow
+    }
+}
 
 // Now determine playable boundaries
-
-let rackCount = 7
-
-playableBoundaries = findBoundaries(playedBoundaries)
-
-//findBoundaries(playedBoundaries, found: &playableBoundaries, recursive: false)
-
-
-// This is actually a little bit confusing, because we iterate the column if it's horizontal and the row if it's vertical.
+let rackCount = 2
+playableBoundaries = findPlayableBoundaries(playedBoundaries)
 
 for row in 0...Dimensions-1 {
     var line = [Character]()
     for col in 0...Dimensions-1 {
-        var found = false
-        for boundary in playableBoundaries {
-            let start = boundary.start, end = boundary.end
-            if start.isHorizontal {
-                // This logic could be used elsewhere, should make a function
-                let sameRow = row == start.fixed && row == end.fixed
-                let validColumn = col >= start.iterable && col <= end.iterable
-                if sameRow && validColumn {
-                    line.append(squareAtRow(row, col).tile?.letter ?? "#")
-                    found = true
-                    break
-                }
-            } else {
-                let sameColumn = col == start.fixed && col == end.fixed
-                let validRow = row >= start.iterable && row <= end.iterable
-                if sameColumn && validRow {
-                    line.append(squareAtRow(row, col).tile?.letter ?? "#")
-                    found = true
-                    break
-                }
-            }
+        var letter: Character = "_"
+        if let _ = playableBoundaries.filter({within($0, row: row, column: col)}).first {
+            letter = letterAt(row, col) ?? "#"
         }
-        if !found {
-            line.append("_")
-        }
+        line.append(letter)
     }
     print(line)
 }
