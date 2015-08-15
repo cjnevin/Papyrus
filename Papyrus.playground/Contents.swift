@@ -166,6 +166,18 @@ struct Boundary: CustomDebugStringConvertible {
     var debugDescription: String {
         return "\(start.iterable),\(start.fixed) - \(end.iterable), \(end.fixed)"
     }
+    
+    func encompasses(row: Int, column: Int) -> Bool {
+        if start.isHorizontal {
+            let sameRow = row == start.fixed && row == end.fixed
+            let validColumn = column >= start.iterable && column <= end.iterable
+            return sameRow && validColumn
+        } else {
+            let sameColumn = column == start.fixed && column == end.fixed
+            let validRow = row >= start.iterable && row <= end.iterable
+            return sameColumn && validRow
+        }
+    }
 }
 
 func letterAt(row: Int, _ col: Int) -> Character? {
@@ -228,23 +240,12 @@ func squareAt(row: Int, _ col: Int) -> Square {
     return squares[row][col]
 }
 
-/// Returns all squares in a given boundary.
-/*func squaresIn(boundary: Boundary) -> [Square] {
-    let start = boundary.start, end = boundary.end
-    if start.isHorizontal {
-        if start.row >= end.row { return [] }
-        return (start.row...end.row).map({squareAtRow($0, start.col)})
-    } else {
-        if start.col >= end.col { return [] }
-        return (start.col...end.col).map({squareAtRow(start.row, $0)})
-    }
-}*/
-
 func emptyAt(position: Position?) -> Bool {
     return squareAt(position)?.tile == nil
 }
 
-/// Loop while we are fulfilling the validator. Caveat: first position must pass validation prior to being sent to this method.
+/// Loop while we are fulfilling the validator. 
+/// Caveat: first position must pass validation prior to being sent to this method.
 func loop(position: Position, validator: (position: Position) -> Bool, fun: ((position: Position) -> ())? = nil) -> Position? {
     // Return nil if square is outside of range (should only occur first time)
     if position.isInvalid { return nil }
@@ -332,15 +333,6 @@ func positionBoundaries(horizontal: Bool, row: Int, col: Int) -> PositionBoundar
     }
     return output
 }
-/// Ensure that the word we are trying to use passes validation.
-func validate(words: [String]) -> Bool {
-    for word in words {
-        if word.lengthOfBytesUsingEncoding(NSUTF8StringEncoding) < 4 {
-            return false
-        }
-    }
-    return true
-}
 */
 /*
 // Determine boundaries of words on the board (hard coded positions)
@@ -360,6 +352,8 @@ validate(arieWords)
 
 var playableBoundaries = Boundaries()
 
+/// - Parameter: Initial position to begin this loop, will call position's axis->direction to determine next position.
+/// - Returns: Furthest possible position from initial position usign rackCount.
 func getPositionLoop(initial: Position) -> Position {
     var counter = rackCount
     func decrementer(position: Position) -> Bool {
@@ -408,27 +402,10 @@ func findPlayableBoundaries(boundaries: Boundaries) -> Boundaries {
                 currentBoundaries.append(boundary)
             }
         }
-        
-        print(boundary.start)
-        print(startPosition)
-        print(boundary.end)
-        print(endPosition)
+
         allBoundaries.extend(currentBoundaries)
     }
     return allBoundaries
-}
-
-func within(boundary: Boundary, row: Int, column: Int) -> Bool {
-    let start = boundary.start, end = boundary.end
-    if boundary.start.isHorizontal {
-        let sameRow = row == start.fixed && row == end.fixed
-        let validColumn = column >= start.iterable && column <= end.iterable
-        return sameRow && validColumn
-    } else {
-        let sameColumn = column == start.fixed && column == end.fixed
-        let validRow = row >= start.iterable && row <= end.iterable
-        return sameColumn && validRow
-    }
 }
 
 // Now determine playable boundaries
@@ -439,8 +416,11 @@ for row in 0...Dimensions-1 {
     var line = [Character]()
     for col in 0...Dimensions-1 {
         var letter: Character = "_"
-        if let _ = playableBoundaries.filter({within($0, row: row, column: col)}).first {
-            letter = letterAt(row, col) ?? "#"
+        for boundary in playableBoundaries {
+            if boundary.encompasses(row, column: col) {
+                letter = letterAt(row, col) ?? "#"
+                break
+            }
         }
         line.append(letter)
     }
