@@ -46,7 +46,7 @@ extension Papyrus {
     
     /// - Returns: UIColor matching square modifier.
     class func colorForSquare(square: Square) -> UIColor {
-        guard let color = colorMap[square.modifier] else { return colorMap[.None]! }
+        guard let color = colorMap[square.type] else { return colorMap[.None]! }
         return color
     }
     
@@ -54,12 +54,13 @@ extension Papyrus {
     class func createSquareSprites(forGame game: Papyrus, frame: CGRect) -> [SquareSprite] {
         var sprites = [SquareSprite]()
         let squareSize = CGRectGetWidth(frame) / CGFloat(PapyrusDimensions)
-        for square in game.squares.flatMap({ $0 }) {
-            let sprite = SquareSprite(square: square, edge: squareSize)
-            let o = square.offset
-            sprite.position = CGPointMake(squareSize * CGFloat(o.x - 1) + squareSize / 2,
-                CGRectGetHeight(frame) - squareSize * CGFloat(o.y) + squareSize / 2)
-            sprites.append(sprite)
+        for row in 0..<PapyrusDimensions {
+            for col in 0..<PapyrusDimensions {
+                let sprite = SquareSprite(square: game.squares[row][col], edge: squareSize)
+                sprite.position = CGPointMake(squareSize * CGFloat(col - 1) + squareSize / 2,
+                    CGRectGetHeight(frame) - squareSize * CGFloat(row) + squareSize / 2)
+                sprites.append(sprite)
+            }
         }
         return sprites
     }

@@ -112,9 +112,6 @@ class Square: CustomDebugStringConvertible, Equatable {
 
 let Dimensions = 15
 
-typealias Lines = [Int: [Int: Square]]
-typealias Line = [Int: Square]
-
 var squares = [[Square]]()
 
 // column <-> is horizontal
@@ -364,6 +361,7 @@ func getPositionLoop(initial: Position) -> Position {
     return position
 }
 
+/// This method will be used by AI to determine location where play is allowed.
 /// - Parameter boundaries: Boundaries to use for intersection.
 /// - Returns: Areas where play may be possible intersecting the given boundaries.
 func findPlayableBoundaries(boundaries: Boundaries) -> Boundaries {
@@ -426,5 +424,4 @@ for row in 0...Dimensions-1 {
     }
     print(line)
 }
-
 print(playableBoundaries.count)

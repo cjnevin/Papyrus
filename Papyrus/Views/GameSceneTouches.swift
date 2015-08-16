@@ -76,8 +76,7 @@ extension GameScene {
         // Drop on board
         emptySquare.animateDropTileSprite(sprite, originalPoint: origin, completion: nil)
         let tile = sprite.tile
-        guard let player = tile.owner else { throw Tile.PlacementError.PlacementWithoutPlayerError }
-        tile.placement = .Board(player, emptySquare.square)
+        tile.placement = .Board
         if tile.value == 0 && tile.letter == "?" {
             actionDelegate?.pickLetter({ (c) -> () in
                 sprite.changeLetter(c)
@@ -91,8 +90,7 @@ extension GameScene {
         guard let point = point, sprite = heldTile else { return }
         animated == true ? sprite.animateDropToRack(point) : sprite.resetPosition(point)
         let tile = sprite.tile
-        guard let player = tile.owner else { throw Tile.PlacementError.PlacementWithoutPlayerError }
-        tile.placement = .Rack(player)
+        tile.placement = .Rack
         if tile.value == 0 {
             sprite.changeLetter("?")
         }
@@ -105,15 +103,13 @@ extension GameScene {
         if let s = squareSprites.filter({ $0.containsPoint(point) && $0.tileSprite != nil }).first, t = s.pickupTileSprite() {
             // Pickup from board
             t.origin = s.origin
-            guard let player = t.tile.owner else { throw Tile.PlacementError.PlacementWithoutPlayerError }
-            t.tile.placement = .Held(player)
+            t.tile.placement = .Held
             t.animateGrow()
             addChild(t)
         } else if let t = tileSprites.filter({ $0.containsPoint(point) && !$0.hasActions() }).first {
             // Pickup from rack
             t.origin = t.position
-            guard let player = t.tile.owner else { throw Tile.PlacementError.PlacementWithoutPlayerError }
-            t.tile.placement = .Held(player)
+            t.tile.placement = .Held
             t.animatePickupFromRack(point)
         }
     }

@@ -13,7 +13,7 @@ class TileSprite: SKSpriteNode {
     
     /// - Returns: True if tile has yet to be submitted ('Fixed')
     var movable: Bool {
-        return !Tile.match(tile.placement, unassociatedPlacement: .Fixed)
+        return tile.placement == .Fixed
     }
     /// Point to animate move to.
     var animationPoint: CGPoint?
@@ -63,7 +63,7 @@ class TileSprite: SKSpriteNode {
     
     /// Change letter presented on tile, only works for blank tiles.
     func changeLetter(newLetter: Character) {
-        if self.tile.letterValue == 0 {
+        if self.tile.value == 0 {
             self.tile.letter = newLetter
             self.letterLabel.text = String(newLetter)
         }
@@ -87,9 +87,11 @@ class TileSprite: SKSpriteNode {
 extension Papyrus {
     class func createRackSprites(forGame game: Papyrus, frame: CGRect) -> [TileSprite] {
         var sprites = [TileSprite]()
+        guard let rack = game.player?.rackTiles where rack.count > 0 else {
+            return sprites
+        }
         let squareSize = CGRectGetWidth(frame) / CGFloat(PapyrusDimensions)
         let tileSize = squareSize * 2.0
-        let rack = game.tiles.inRack(game.player)
         let spacing = (CGRectGetWidth(frame) - tileSize * CGFloat(rack.count)) / 2
         var index: CGFloat = 0
         for tile in rack {

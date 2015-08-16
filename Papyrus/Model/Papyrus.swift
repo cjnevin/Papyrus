@@ -10,9 +10,7 @@ import Foundation
 
 let PapyrusRackAmount: Int = 7
 let PapyrusDimensions: Int = 15
-let PapyrusDimensionsRange = (-1, PapyrusDimensions + 1)
 let PapyrusMiddle: Int = PapyrusDimensions/2 + 1
-let PapyrusMiddleOffset = Offset(x: PapyrusMiddle, y: PapyrusMiddle)
 
 typealias PapyrusStateFunction = (Papyrus.State, Papyrus) -> ()
 
@@ -26,11 +24,11 @@ class Papyrus {
     
     static let sharedInstance = Papyrus()
     var inProgress: Bool = false
-    let squares: [Square]
+    let squares: [[Square]]
     let innerOperations = NSOperationQueue()
     let wordOperations = NSOperationQueue()
     
-    lazy var words = Set<Word>()
+    lazy var playedBoundaries = Boundaries()
     lazy var tiles = [Tile]()
     var tileIndex: Int = 0
     
@@ -44,8 +42,7 @@ class Papyrus {
     var changeFunction: PapyrusStateFunction?
     
     private init() {
-        squares = Papyrus.createSquares()
-        tiles = [Tile]()
+        squares = Square.createSquares()
     }
     
     func newGame(f: PapyrusStateFunction) {
@@ -53,12 +50,12 @@ class Papyrus {
         changeFunction?(.Cleanup, self)
         changeFunction = f
         changeFunction?(.Preparing, self)
+        playedBoundaries.removeAll()
         tiles.removeAll()
-        words.removeAll()
         players.removeAll()
         tileIndex = 0
         playerIndex = 0
-        tiles.extend(Papyrus.createTiles())
+        tiles.extend(createTiles())
         changeFunction?(.Ready, self)
     }
 }

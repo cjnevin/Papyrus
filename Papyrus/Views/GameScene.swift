@@ -25,7 +25,7 @@ class GameScene: SKScene, GameSceneProtocol {
     }
     /// - Returns: Currently dragged tile user is holding.
     var heldTile: TileSprite? {
-        return tileSprites.filter({ Tile.match($0.tile.placement, unassociatedPlacement: .Held) }).first
+        return tileSprites.filter({ $0.tile.placement == Placement.Held }).first
     }
     /// Delegate for tile picking.
     var actionDelegate: GameSceneDelegate?
@@ -142,7 +142,7 @@ class GameScene: SKScene, GameSceneProtocol {
     /// Replace rack sprites with newly drawn tiles.
     private func replaceRackSprites() {
         // Remove existing rack sprites.
-        let rackSprites = tileSprites.filter{ game.tiles.inRack(game.player).contains($0.tile) }
+        let rackSprites = tileSprites.filter({ (game.player?.rackTiles.contains($0.tile)) == true })
         tileSprites = tileSprites.filter{ !rackSprites.contains($0) }
         rackSprites.map{ $0.removeFromParent() }
         // Create new rack sprites in new positions.
