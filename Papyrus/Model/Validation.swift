@@ -27,9 +27,9 @@ extension Papyrus {
     }
     
     /// - Parameter boundary: Boundary to check.
-    /// - Parameter final: Whether this move is final or just used for validation.
+    /// - Parameter submit: Whether this move is final or just used for validation.
     /// - Returns: True if boundary appears to be playable and words are all valid.
-    func playBoundary(boundary: Boundary, final: Bool) throws {
+    func playBoundary(boundary: Boundary, submit: Bool) throws {
         // If boundary validation fails, fail.
         if !boundary.isValid { throw ValidationError.InvalidArrangement }
         
@@ -72,7 +72,7 @@ extension Papyrus {
         }
         
         // If final, add boundaries to played boundaries.
-        if final {
+        if submit {
             var finalBoundaries = [boundary]
             finalBoundaries.extend(intersections.map({$0.1}))
             for finalBoundary in finalBoundaries {
@@ -81,6 +81,17 @@ extension Papyrus {
                 }
             }
         }
+        
+        // Should happen after this method...
+        // TODO: Change tiles to 'fixed'
+        // Increment score
+        // Draw new tiles. If count == 0 && rackCount == 0 complete game
+        // Change player
+        // Attempt AI play
+        // Increment score
+        // Draw tiles. If count == 0 && rackCount == 0 complete game
+        // Change player
+        // Wait
     }
     
     /// - Parameter letters: Tiles to attempt to play.
