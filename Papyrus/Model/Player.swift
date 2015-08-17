@@ -29,6 +29,10 @@ class Player: NSObject {
         assert(held.count < 2)
         return held.first
     }
+    /// Method to return first rack tile with a given letter.
+    func firstRackTile(withLetter letter: Character) -> Tile? {
+        return rackTiles.filter({$0.letter == letter}).first
+    }
     init(score: Int? = 0) {
         self.score = score!
     }

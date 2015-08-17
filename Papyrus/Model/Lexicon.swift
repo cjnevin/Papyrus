@@ -1,10 +1,12 @@
 //
-//  PapyrusLexicon.swift
+//  Lexicon.swift
 //  Papyrus
 //
 //  Created by Chris Nevin on 11/07/2015.
 //  Copyright © 2015 CJNevin. All rights reserved.
 //
+
+// TODO: Refactor using GADDAG/DAWG or similar approach.
 
 import Foundation
 
@@ -29,16 +31,16 @@ struct Lexicon {
                 index = advance(index, 1)
                 if index == word.endIndex {
                     guard let def = inner[DefKey] as? String else {
-                        throw ValidationError.Undefined(word)
+                        throw ValidationError.UndefinedWord(word)
                     }
                     return def
                 }
                 current = inner
             } else {
-                throw ValidationError.Undefined(word)
+                throw ValidationError.UndefinedWord(word)
             }
         }
-        throw ValidationError.Undefined(word)
+        throw ValidationError.UndefinedWord(word)
     }
     
     func anagramsOf(letters: String, length: Int, prefix: String,

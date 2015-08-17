@@ -58,11 +58,5 @@ enum ValidationError: ErrorType {
     case NoCenterIntersection
     case NoIntersection
     case UndefinedWord(String)
-
-    case Center
-    case Intersection(String)
-    case Invalid(String)
-    case Undefined(String)
     case Message(String)
-    case NoTiles
 }

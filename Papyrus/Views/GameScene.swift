@@ -53,6 +53,12 @@ class GameScene: SKScene, GameSceneProtocol {
             tile.resetPosition(origin)
         }
         do {
+            /*
+            game.boundary(forPositions: <#T##[Position]#>)
+            
+            game.play(<#T##boundary: Boundary##Boundary#>, submit: <#T##Bool#>)
+            
+            
             if let tiles = try game.move(game.tiles.onBoard(game.player)) {
                 completeMove(withTiles: tiles)
                 game.nextPlayer()
@@ -81,29 +87,9 @@ class GameScene: SKScene, GameSceneProtocol {
                         assert(false)
                     }
                 })
-            }
+            }*/
         } catch let err as ValidationError {
-            switch err {
-            case .Center(let o, let w):
-                squareSprites.filter{ $0.square.offset == o }
-                    .map{ $0.warningGlow() }
-                sprites(w.tiles).map{ $0.warningGlow() }
-            case .Arrangement(let tiles):
-                sprites(tiles).map{ $0.warningGlow() }
-            case .Invalid(let w):
-                sprites(w.tiles).map{ $0.warningGlow() }
-            case .Intersection(let w):
-                sprites(w.tiles).map{ $0.warningGlow() }
-                tileSprites.filter{ Tile.match($0.tile.placement, unassociatedPlacement: .Fixed) }
-                    .map{ $0.warningGlow() }
-            case .Message(let s):
-                throw ValidationError.Message(s)
-            case .Undefined(let s):
-                throw ValidationError.Message("Undefined word:\n\(s)")
-            case .NoTiles:
-                print("Silent failure")
-            }
-            throw err
+            print(err)
         }
     }
     
@@ -124,6 +110,10 @@ class GameScene: SKScene, GameSceneProtocol {
             
         case .Completed:
             print("Completed")
+        
+        case .ChangedPlayer:
+            // Lock tiles...
+            print("Changed player")
             
         }
         

@@ -33,6 +33,14 @@ extension Papyrus {
         return output
     }
     
+    /// - Returns: Score for all boundaries.
+    /// - Parameter positionBoundaries: Boundaries keyed by position.
+    func score(positionBoundaries: PositionBoundaries) -> Int {
+        return positionBoundaries.map({score($0.1)}).reduce(0, combine: +)
+    }
+    
+    /// - Parameter position: Position to use.
+    /// - Returns: Returns boundaries that intersect this position.
     func intersectingBoundaries(position: Position) -> PositionBoundaries {
         if position.isHorizontal {
             return intersectingBoundaries(true, row: position.fixed, col: position.iterable)
@@ -42,6 +50,11 @@ extension Papyrus {
     }
     
     /// Method used to determine intersecting words.
+    /// - Parameters:
+    ///     - horizontal: Whether to walk horizontally.
+    ///     - row: Current row to walk.
+    ///     - col: Current column to walk.
+    /// - Returns: Boundaries keyed by position.
     func intersectingBoundaries(horizontal: Bool, row: Int, col: Int) -> PositionBoundaries {
         // Collect valid places to play
         var collected = PositionBoundaries()

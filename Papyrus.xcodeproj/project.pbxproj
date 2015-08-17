@@ -32,10 +32,11 @@
 		99629C671B547E8200510036 /* PapyrusTileSpriteAnimations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99629C601B547E8200510036 /* PapyrusTileSpriteAnimations.swift */; };
 		99629C6A1B54901900510036 /* CSW12.plist in Resources */ = {isa = PBXBuildFile; fileRef = 99629C691B54901900510036 /* CSW12.plist */; };
 		9986F60C1B58EB7400166721 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9986F60B1B58EB7400166721 /* Extensions.swift */; };
-		9990CBD41B5714F200632CB8 /* Validation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9990CBD31B5714F200632CB8 /* Validation.swift */; };
+		9990CBD41B5714F200632CB8 /* Play.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9990CBD31B5714F200632CB8 /* Play.swift */; };
 		999D5A041B637D5F006B769B /* ArrayExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 999D5A031B637D5F006B769B /* ArrayExtensions.swift */; };
 		99DF9E0F1B54ED8200F58DA7 /* UIKitExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99DF9E0E1B54ED8200F58DA7 /* UIKitExtensions.swift */; };
 		99E13CF81B808C4000EB47F5 /* PositionBoundaries.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99E13CF71B808C4000EB47F5 /* PositionBoundaries.swift */; };
+		99E13CFB1B8255B300EB47F5 /* Intelligence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99E13CFA1B8255B300EB47F5 /* Intelligence.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -87,10 +88,11 @@
 		99629C601B547E8200510036 /* PapyrusTileSpriteAnimations.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PapyrusTileSpriteAnimations.swift; sourceTree = "<group>"; };
 		99629C691B54901900510036 /* CSW12.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = CSW12.plist; sourceTree = "<group>"; };
 		9986F60B1B58EB7400166721 /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
-		9990CBD31B5714F200632CB8 /* Validation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Validation.swift; sourceTree = "<group>"; };
+		9990CBD31B5714F200632CB8 /* Play.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Play.swift; sourceTree = "<group>"; };
 		999D5A031B637D5F006B769B /* ArrayExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArrayExtensions.swift; sourceTree = "<group>"; };
 		99DF9E0E1B54ED8200F58DA7 /* UIKitExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIKitExtensions.swift; sourceTree = "<group>"; };
 		99E13CF71B808C4000EB47F5 /* PositionBoundaries.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PositionBoundaries.swift; sourceTree = "<group>"; };
+		99E13CFA1B8255B300EB47F5 /* Intelligence.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Intelligence.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -180,11 +182,12 @@
 				99629C3C1B547E3800510036 /* Papyrus.swift */,
 				99E13CF91B808C6B00EB47F5 /* Position */,
 				995F044B1B7DCE4500CC19A6 /* Enums.swift */,
+				99E13CFA1B8255B300EB47F5 /* Intelligence.swift */,
 				99629C3D1B547E3800510036 /* Lexicon.swift */,
+				9990CBD31B5714F200632CB8 /* Play.swift */,
 				99629C3E1B547E3800510036 /* Player.swift */,
 				995F044D1B7DCE6500CC19A6 /* Square.swift */,
 				995F04511B7E548100CC19A6 /* Tile.swift */,
-				9990CBD31B5714F200632CB8 /* Validation.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -373,8 +376,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				99E13CFB1B8255B300EB47F5 /* Intelligence.swift in Sources */,
 				99E13CF81B808C4000EB47F5 /* PositionBoundaries.swift in Sources */,
-				9990CBD41B5714F200632CB8 /* Validation.swift in Sources */,
+				9990CBD41B5714F200632CB8 /* Play.swift in Sources */,
 				99629C4D1B547E3800510036 /* Player.swift in Sources */,
 				995F04521B7E548100CC19A6 /* Tile.swift in Sources */,
 				99629C671B547E8200510036 /* PapyrusTileSpriteAnimations.swift in Sources */,

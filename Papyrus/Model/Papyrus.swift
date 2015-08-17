@@ -19,6 +19,7 @@ class Papyrus {
         case Cleanup
         case Preparing
         case Ready
+        case ChangedPlayer
         case Completed
     }
     
@@ -27,6 +28,9 @@ class Papyrus {
     let squares: [[Square]]
     let innerOperations = NSOperationQueue()
     let wordOperations = NSOperationQueue()
+    
+    /// Array of positions of tiles we have dropped on the board.
+    lazy var pendingPositions = [Position]()
     
     lazy var playedBoundaries = Boundaries()
     lazy var tiles = [Tile]()

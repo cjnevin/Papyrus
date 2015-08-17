@@ -22,6 +22,7 @@ class Square: CustomDebugStringConvertible, Equatable {
     }
     enum Modifier {
         case None, Letterx2, Letterx3, Center, Wordx2, Wordx3
+        /// Returns all possible modifiers and offsets.
         func offsets() -> [(Int, Int)] {
             let m = 7   // Middle
             func symmetrical(arr: [(Int, Int)]) -> [(Int, Int)] {
@@ -42,6 +43,22 @@ class Square: CustomDebugStringConvertible, Equatable {
             default: break
             }
             return symmetrical(buffer)
+        }
+        /// - Returns: Word multiplier for this square.
+        var wordMultiplier: Int {
+            switch (self) {
+            case .Center, .Wordx2: return 2
+            case .Wordx3: return 3
+            default: return 1
+            }
+        }
+        /// - Returns: Letter multiplier for this square.
+        var letterMultiplier: Int {
+            switch (self) {
+            case .Letterx2: return 2
+            case .Letterx3: return 3
+            default: return 1
+            }
         }
     }
     let type: Modifier
@@ -73,26 +90,16 @@ class Square: CustomDebugStringConvertible, Equatable {
         }
         return squares
     }
-    /*/// - Returns: Letter multiplier for this tile, if placed on a specific square.
-    func letterValue(square: Square) -> Int {
-        return (isFixed ? 1 : square.modifier.letterMultiplier) * value
-    }
-    /// - Returns: Word multiplier for this tile, if placed on a specific square.
-    func wordMultiplier(square: Square) -> Int {
-        return (isFixed ? 1 : square.modifier.wordMultiplier)
-    }
-    /// - Returns: Letter multiplier for this tile, if it has a square defined
-    /// and is not fixed.
+    /// - Returns: Letter multiplier for this tile.
     var letterValue: Int {
-        guard let sq = square else { return 0 }
-        return letterValue(sq)
+        guard let tile = tile else { return 0 }
+        return (tile.placement == .Fixed ? 1 : type.letterMultiplier) * tile.value
     }
-    /// - Returns: Word multiplier for this tile, if it has a square defined
-    /// and is not fixed.
+    /// - Returns: Word multiplier for this tile.
     var wordMultiplier: Int {
-        guard let sq = square else { return 1 }
-        return wordMultiplier(sq)
-    }*/
+        guard let tile = tile else { return 0 }
+        return (tile.placement == .Fixed ? 1 : type.wordMultiplier)
+    }
 }
 
 extension Papyrus {

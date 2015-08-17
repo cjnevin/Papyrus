@@ -17,7 +17,7 @@ struct Boundary: CustomDebugStringConvertible {
         return (end.iterable + 1) - start.iterable
     }
     var debugDescription: String {
-        return "\(start.iterable),\(start.fixed) - \(end.iterable), \(end.fixed)"
+        return "\(start.axis): \(start.iterable),\(start.fixed) - \(end.iterable), \(end.fixed)"
     }
     /// - Returns: Whether this boundary appears to contain valid positions.
     var isValid: Bool {
@@ -82,14 +82,39 @@ struct Boundary: CustomDebugStringConvertible {
 }
 
 extension Papyrus {
+    /// Calculate score for a given boundary.
+    /// - Parameter boundary: The boundary you want the score of.
+    func score(boundary: Boundary) -> Int {
+        let affectedSquares = squaresIn(boundary)
+        var value = affectedSquares.mapFilter({$0?.letterValue}).reduce(0, combine: +)
+        value = affectedSquares.mapFilter({$0?.wordMultiplier}).reduce(value, combine: *)
+        return value
+    }
+    
     /// Get string value of letters in a given boundary.
     /// Does not currently check for gaps - use another method for gap checking and validation.
+    /// - Parameter boundary: The boundary to get the letters for.
     func readable(boundary: Boundary) -> String? {
         let start = boundary.start, end = boundary.end
         if start.iterable >= end.iterable { return nil }
         return String((start.iterable...end.iterable).map({
             letterAt(start.isHorizontal, iterable: $0, fixed: start.fixed)}))
     }
+    
+    /// Create a boundary if positions are valid. Does not validate iterable values all exist.
+    /// - Parameter positions: Array of positions to put a boundary around or nil.
+    func boundary(forPositions positions: [Position]) -> Boundary? {
+        if positions.count == 0 { return nil }
+        let fixed = positions.sort({$0.fixed > $1.fixed})
+        if fixed.first?.fixed == fixed.last?.fixed {
+            let iterable = positions.sort({$0.iterable > $1.iterable})
+            if let first = iterable.first, last = iterable.last {
+                return Boundary(start: first, end: last)
+            }
+        }
+        return nil
+    }
+    
     /// This method will be used by AI to determine location where play is allowed.
     /// - Parameter boundaries: Boundaries to use for intersection.
     /// - Returns: Areas where play may be possible intersecting the given boundaries.
