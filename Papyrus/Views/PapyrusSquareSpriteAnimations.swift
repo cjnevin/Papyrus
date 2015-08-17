@@ -19,6 +19,7 @@ extension SquareSprite {
     private func placeTileSprite(t: TileSprite) {
         if tileSprite != nil { return }
         origin = CGPointZero
+        square.tile = t.tile
         t.removeFromParent()
         t.setScale(0.5)
         addChild(t)
@@ -33,6 +34,7 @@ extension SquareSprite {
         t.removeFromParent()
         addChild(t)
         tileSprite = t
+        square.tile = t.tile
         t.animateShrink(completion)
     }
     
@@ -42,6 +44,7 @@ extension SquareSprite {
         t.cancelAnimations()
         t.removeFromParent()
         t.position = position
+        square.tile = nil
         tileSprite = nil
         return t
     }

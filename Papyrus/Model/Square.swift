@@ -13,6 +13,25 @@ func == (lhs: Square, rhs: Square) -> Bool {
 }
 
 class Square: CustomDebugStringConvertible, Equatable {
+    /// - Returns: Square array.
+    class func createSquares() -> [[Square]] {
+        var squares = [[Square]]()
+        let modified = Square.modifierOffsets()
+        for row in 1...PapyrusDimensions {
+            var line = [Square]()
+            for col in 1...PapyrusDimensions {
+                let mod: Square.Modifier = modified.mapFilter({ (modifier, offsets) -> Square.Modifier? in
+                    if offsets.filter({$0.0 == row && $0.1 == col}).count > 0 {
+                        return modifier
+                    }
+                    return nil
+                }).first ?? .None
+                line.append(Square(mod, row: row - 1, column: col - 1))
+            }
+            squares.append(line)
+        }
+        return squares
+    }
     class func modifierOffsets() -> [Square.Modifier: [(Int, Int)]] {
         return [Square.Modifier.Letterx2: Square.Modifier.Letterx2.offsets(),
             Square.Modifier.Letterx3: Square.Modifier.Letterx3.offsets(),
@@ -64,33 +83,17 @@ class Square: CustomDebugStringConvertible, Equatable {
             }
         }
     }
+    let row: Int
+    let column: Int
     let type: Modifier
     var tile: Tile?
-    init(_ type: Modifier) {
+    init(_ type: Modifier, row: Int, column: Int) {
         self.type = type
+        self.row = row
+        self.column = column
     }
     var debugDescription: String {
         return String(tile?.letter ?? "_")
-    }
-    /// - Returns: Square array.
-    class func createSquares() -> [[Square]] {
-        var squares = [[Square]]()
-        let modified = Square.modifierOffsets()
-        for row in 1...PapyrusDimensions {
-            var line = [Square]()
-            for col in 1...PapyrusDimensions {
-                let mod: Square.Modifier = modified.mapFilter({ (modifier, offsets) -> Square.Modifier? in
-                    if offsets.filter({$0.0 == row && $0.1 == col}).count > 0 {
-                        return modifier
-                    }
-                    return nil
-                }).first ?? .None
-                print(row, col, mod)
-                line.append(Square(mod))
-            }
-            squares.append(line)
-        }
-        return squares
     }
     /// - Returns: Letter multiplier for this tile.
     var letterValue: Int {

@@ -50,10 +50,9 @@ enum Placement {
     case Fixed
 }
 
-// TODO: Remove?
 enum ValidationError: ErrorType {
-    case InvalidArrangement
     case UnfilledSquare
+    case InvalidArrangement
     case InsufficientTiles
     case NoCenterIntersection
     case NoIntersection

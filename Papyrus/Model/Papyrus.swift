@@ -10,7 +10,7 @@ import Foundation
 
 let PapyrusRackAmount: Int = 7
 let PapyrusDimensions: Int = 15
-let PapyrusMiddle: Int = PapyrusDimensions/2 + 1
+let PapyrusMiddle: Int = PapyrusDimensions/2
 
 typealias PapyrusStateFunction = (Papyrus.State, Papyrus) -> ()
 

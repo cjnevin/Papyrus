@@ -35,8 +35,9 @@ extension Papyrus {
         if !boundary.isValid { throw ValidationError.InvalidArrangement }
         
         // If no words have been played, this boundary must intersect middle.
-        if playedBoundaries.count == 0 && (boundary.start.fixed != PapyrusMiddle ||
-            boundary.start.iterable > PapyrusMiddle || boundary.end.iterable < PapyrusMiddle) { throw ValidationError.NoCenterIntersection }
+        let m = PapyrusMiddle - 1
+        if playedBoundaries.count == 0 && (boundary.start.fixed != m ||
+            boundary.start.iterable > m || boundary.end.iterable < m) { throw ValidationError.NoCenterIntersection }
         
         // If boundary contains squares that are empty, fail.
         let tiles = tilesIn(boundary)

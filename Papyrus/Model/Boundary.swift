@@ -21,9 +21,10 @@ struct Boundary: CustomDebugStringConvertible {
     }
     /// - Returns: Whether this boundary appears to contain valid positions.
     var isValid: Bool {
-        return start.fixed == end.fixed &&
+        let valid = start.fixed == end.fixed &&
             start.iterable <= end.iterable &&
             start.isHorizontal == end.isHorizontal
+        return valid
     }
     
     // TODO: Unit test this.
@@ -105,11 +106,16 @@ extension Papyrus {
     /// - Parameter positions: Array of positions to put a boundary around or nil.
     func boundary(forPositions positions: [Position]) -> Boundary? {
         if positions.count == 0 { return nil }
-        let fixed = positions.sort({$0.fixed > $1.fixed})
+        let fixed = positions.sort({$0.fixed < $1.fixed})
         if fixed.first?.fixed == fixed.last?.fixed {
-            let iterable = positions.sort({$0.iterable > $1.iterable})
+            let iterable = positions.sort({$0.iterable < $1.iterable})
             if let first = iterable.first, last = iterable.last {
-                return Boundary(start: first, end: last)
+                return Boundary(
+                    start: first,
+                    end: Position(
+                        axis: last.isHorizontal ? Axis.Horizontal(.Next) : Axis.Vertical(.Next),
+                        iterable: last.iterable,
+                        fixed: last.fixed))
             }
         }
         return nil

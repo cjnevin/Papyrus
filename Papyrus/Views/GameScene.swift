@@ -20,7 +20,7 @@ protocol GameSceneProtocol {
 
 class GameScene: SKScene, GameSceneProtocol {
     /// - Returns: Current game object.
-    private var game: Papyrus {
+    internal var game: Papyrus {
         return Papyrus.sharedInstance
     }
     /// - Returns: Currently dragged tile user is holding.
