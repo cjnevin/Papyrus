@@ -24,9 +24,12 @@ class Square: CustomDebugStringConvertible, Equatable {
         case None, Letterx2, Letterx3, Center, Wordx2, Wordx3
         /// Returns all possible modifiers and offsets.
         func offsets() -> [(Int, Int)] {
-            let m = 7   // Middle
+            let m = PapyrusMiddle   // Middle
             func symmetrical(arr: [(Int, Int)]) -> [(Int, Int)] {
                 if arr.count == 0 { return arr }
+                if arr.count == 0 && arr.first?.0 == arr.last?.0 && arr.first?.1 == arr.last?.1 {
+                    return [(arr.first!.0 + m, arr.first!.1 + m)]
+                }
                 let symm = arr.map({ (x, y) in
                     [ (m-x, m-y), (m-x, m+y), (m+x, m+y), (m+x, m-y),
                         (m-y, m-x), (m-y, m+x), (m+y, m+x), (m+x, m-y) ]
@@ -35,7 +38,7 @@ class Square: CustomDebugStringConvertible, Equatable {
             }
             var buffer = [(Int, Int)]()
             switch self {
-            case .Center: return [(0,0)]
+            case .Center: return [(m,m)]
             case .Wordx2: buffer = [(3, 3), (4, 4), (5, 5), (6, 6)]
             case .Wordx3: buffer = [(m-1, m-1), (0, m-1)]
             case .Letterx2: buffer = [(1, 1), (1, 5), (0, 4), (m-1, 4)]
@@ -76,14 +79,13 @@ class Square: CustomDebugStringConvertible, Equatable {
         for row in 1...PapyrusDimensions {
             var line = [Square]()
             for col in 1...PapyrusDimensions {
-                var mod: Square.Modifier
-                for (modifier, offsets) in modified {
-                    if offsets.filter({$0.0 == row && $0.1 == col}).count == 0 {
-                        mod = modifier
-                        break
+                let mod: Square.Modifier = modified.mapFilter({ (modifier, offsets) -> Square.Modifier? in
+                    if offsets.filter({$0.0 == row && $0.1 == col}).count > 0 {
+                        return modifier
                     }
-                }
-                mod = .None
+                    return nil
+                }).first ?? .None
+                print(row, col, mod)
                 line.append(Square(mod))
             }
             squares.append(line)

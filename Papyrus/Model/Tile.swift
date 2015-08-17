@@ -45,6 +45,11 @@ extension Papyrus {
             }.sort({_, _ in arc4random() % 2 == 0})
     }
     
+    /// Returns all tiles in the bag.
+    var bagTiles: [Tile] {
+        return tiles.filter({$0.placement == Placement.Bag})
+    }
+    
     /// Returns all tiles in a given boundary.
     func tilesIn(boundary: Boundary) -> [Tile] {
         return squaresIn(boundary).mapFilter({$0?.tile})

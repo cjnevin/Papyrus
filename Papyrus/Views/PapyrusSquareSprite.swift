@@ -57,8 +57,9 @@ extension Papyrus {
         for row in 0..<PapyrusDimensions {
             for col in 0..<PapyrusDimensions {
                 let sprite = SquareSprite(square: game.squares[row][col], edge: squareSize)
-                sprite.position = CGPointMake(squareSize * CGFloat(col - 1) + squareSize / 2,
-                    CGRectGetHeight(frame) - squareSize * CGFloat(row) + squareSize / 2)
+                sprite.position = CGPointMake(
+                    squareSize * CGFloat(col) + squareSize / 2,
+                    CGRectGetHeight(frame) - squareSize * CGFloat(row + 1) + squareSize / 2)
                 sprites.append(sprite)
             }
         }
