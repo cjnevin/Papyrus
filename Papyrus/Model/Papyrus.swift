@@ -10,20 +10,21 @@ import Foundation
 
 let PapyrusRackAmount: Int = 7
 let PapyrusDimensions: Int = 15
-let PapyrusMiddle: Int = PapyrusDimensions/2
+let PapyrusMiddle: Int = 8//PapyrusDimensions/2
 
-typealias PapyrusStateFunction = (Papyrus.State, Papyrus) -> ()
+typealias LifecycleCallback = (Lifecycle, Papyrus) -> ()
+
+enum Lifecycle {
+    case Cleanup
+    case Preparing
+    case Ready
+    case ChangedPlayer
+    case Completed
+}
 
 class Papyrus {
-    enum State {
-        case Cleanup
-        case Preparing
-        case Ready
-        case ChangedPlayer
-        case Completed
-    }
-    
     static let sharedInstance = Papyrus()
+    var lifecycleCallback: LifecycleCallback?
     var inProgress: Bool = false
     let squares: [[Square]]
     let innerOperations = NSOperationQueue()
@@ -43,23 +44,23 @@ class Papyrus {
         return players[playerIndex]
     }
     
-    var changeFunction: PapyrusStateFunction?
-    
     private init() {
         squares = Square.createSquares()
     }
     
-    func newGame(f: PapyrusStateFunction) {
+    ///  Create a new game.
+    ///  - parameter callback: Callback which will be called throughout all stages of game lifecycle.
+    func newGame(callback: LifecycleCallback) {
         inProgress = true
-        changeFunction?(.Cleanup, self)
-        changeFunction = f
-        changeFunction?(.Preparing, self)
+        lifecycleCallback?(.Cleanup, self)
+        lifecycleCallback = callback
+        lifecycleCallback?(.Preparing, self)
         playedBoundaries.removeAll()
         tiles.removeAll()
         players.removeAll()
         tileIndex = 0
         playerIndex = 0
         tiles.extend(createTiles())
-        changeFunction?(.Ready, self)
+        lifecycleCallback?(.Ready, self)
     }
 }

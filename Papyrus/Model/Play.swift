@@ -98,11 +98,11 @@ extension Papyrus {
                         player.score = player.rackTiles.mapFilter({$0.value}).reduce(player.score, combine: -)
                     }
                     // Complete the game
-                    changeFunction?(.Completed, self)
+                    lifecycleCallback?(.Completed, self)
                 } else {
                     // Change player
                     nextPlayer()
-                    changeFunction?(.ChangedPlayer, self)
+                    lifecycleCallback?(.ChangedPlayer, self)
                     // Get playable boundaries
                     // Collect prospects for boundaries (anagramsOf + firstRackTile)
                     // Attempt AI play

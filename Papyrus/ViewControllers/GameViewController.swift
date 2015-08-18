@@ -40,9 +40,9 @@ class GameViewController: UIViewController, GameSceneDelegate, UITextFieldDelega
     }
     
     func newGame() {
-        Papyrus.sharedInstance.newGame() { [weak self] (state, game) in
+        Papyrus.sharedInstance.newGame() { [weak self] (lifecycle, game) in
             guard let this = self, scene = this.scene else { return }
-            switch (state) {
+            switch (lifecycle) {
             case .Cleanup:
                 this.title = "Cleanup"
             case .Preparing:
@@ -55,7 +55,7 @@ class GameViewController: UIViewController, GameSceneDelegate, UITextFieldDelega
             default:
                 this.title = "Complete"
             }
-            scene.changedState(state)
+            scene.changed(lifecycle)
         }
     }
     

@@ -50,6 +50,27 @@ extension Papyrus {
         return tiles.filter({$0.placement == Placement.Bag})
     }
     
+    /// - Parameter position: Position to check.
+    /// - Returns: Whether there is a tile at a given position.
+    func emptyAt(position: Position?) -> Bool {
+        return squareAt(position)?.tile == nil
+    }
+    
+    /// - Returns: Letter for a given position.
+    func letterAt(position: Position) -> Character? {
+        return squareAt(position)?.tile?.letter
+    }
+    
+    /// - Returns: Letter for a given position.
+    func letterAt(row: Int, _ col: Int) -> Character? {
+        return squareAt(row, col)?.tile?.letter
+    }
+    
+    /// - Returns: Letter at given iterable/fixed value for axis.
+    func letterAt(horizontal: Bool, iterable: Int, fixed: Int) -> Character? {
+        return squareAt(horizontal, iterable: iterable, fixed: fixed)?.tile?.letter
+    }
+    
     /// Returns all tiles in a given boundary.
     func tilesIn(boundary: Boundary) -> [Tile] {
         return squaresIn(boundary).mapFilter({$0?.tile})

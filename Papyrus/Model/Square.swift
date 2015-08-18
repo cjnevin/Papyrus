@@ -16,56 +16,52 @@ class Square: CustomDebugStringConvertible, Equatable {
     /// - Returns: Square array.
     class func createSquares() -> [[Square]] {
         var squares = [[Square]]()
-        let modified = Square.modifierOffsets()
+        let m = PapyrusMiddle
         for row in 1...PapyrusDimensions {
             var line = [Square]()
             for col in 1...PapyrusDimensions {
-                let mod: Square.Modifier = modified.mapFilter({ (modifier, offsets) -> Square.Modifier? in
-                    if offsets.filter({$0.0 == row && $0.1 == col}).count > 0 {
-                        return modifier
+                var mod: Square.Modifier = .None
+                func plusMinus(offset: Int, _ n: Int) -> Bool {
+                    return offset == m - n || offset == m + n
+                }
+                func tuples(arr: [(Int, Int)]) -> Bool {
+                    for (x, y) in arr {
+                        if (plusMinus(row, x) && plusMinus(col, y)) ||
+                            (plusMinus(col, x) && plusMinus(row, y)) {
+                            return true
+                        }
                     }
-                    return nil
-                }).first ?? .None
+                    return false
+                }
+                func numbers(arr: [Int]) -> Bool {
+                    for n in arr {
+                        if plusMinus(row, n) && plusMinus(col, n) {
+                            return true
+                        }
+                    }
+                    return false
+                }
+                
+                if row == PapyrusMiddle && col == PapyrusMiddle {
+                    mod = .Center
+                } else if numbers([3,4,5,6]) {
+                    mod = .Wordx2
+                } else if numbers([2]) || tuples([(2,6)]) {
+                    mod = .Letterx3
+                } else if numbers([1]) || tuples([(1,5), (0,4), (m-1, 4)]) {
+                    mod = .Letterx2
+                } else if numbers([m-1]) || tuples([(0, m-1)]) {
+                    mod = .Wordx3
+                }
+                
                 line.append(Square(mod, row: row - 1, column: col - 1))
             }
             squares.append(line)
         }
         return squares
     }
-    class func modifierOffsets() -> [Square.Modifier: [(Int, Int)]] {
-        return [Square.Modifier.Letterx2: Square.Modifier.Letterx2.offsets(),
-            Square.Modifier.Letterx3: Square.Modifier.Letterx3.offsets(),
-            Square.Modifier.Center: Square.Modifier.Center.offsets(),
-            Square.Modifier.Wordx2: Square.Modifier.Wordx2.offsets(),
-            Square.Modifier.Wordx3: Square.Modifier.Wordx3.offsets()]
-    }
     enum Modifier {
         case None, Letterx2, Letterx3, Center, Wordx2, Wordx3
-        /// Returns all possible modifiers and offsets.
-        func offsets() -> [(Int, Int)] {
-            let m = PapyrusMiddle   // Middle
-            func symmetrical(arr: [(Int, Int)]) -> [(Int, Int)] {
-                if arr.count == 0 { return arr }
-                if arr.count == 0 && arr.first?.0 == arr.last?.0 && arr.first?.1 == arr.last?.1 {
-                    return [(arr.first!.0 + m, arr.first!.1 + m)]
-                }
-                let symm = arr.map({ (x, y) in
-                    [ (m-x, m-y), (m-x, m+y), (m+x, m+y), (m+x, m-y),
-                        (m-y, m-x), (m-y, m+x), (m+y, m+x), (m+x, m-y) ]
-                })
-                return symm.flatMap({$0})
-            }
-            var buffer = [(Int, Int)]()
-            switch self {
-            case .Center: return [(m,m)]
-            case .Wordx2: buffer = [(3, 3), (4, 4), (5, 5), (6, 6)]
-            case .Wordx3: buffer = [(m-1, m-1), (0, m-1)]
-            case .Letterx2: buffer = [(1, 1), (1, 5), (0, 4), (m-1, 4)]
-            case .Letterx3: buffer = [(2, 6), (2, 2)]
-            default: break
-            }
-            return symmetrical(buffer)
-        }
         /// - Returns: Word multiplier for this square.
         var wordMultiplier: Int {
             switch (self) {
@@ -110,22 +106,6 @@ class Square: CustomDebugStringConvertible, Equatable {
 extension Papyrus {
     
     /// - Parameter position: Position to check.
-    /// - Returns: Whether there is a tile at a given position.
-    func emptyAt(position: Position?) -> Bool {
-        return squareAt(position)?.tile == nil
-    }
-    
-    /// - Returns: Letter for a given position.
-    func letterAt(position: Position) -> Character? {
-        return squareAt(position)?.tile?.letter
-    }
-    
-    /// - Returns: Letter at given iterable/fixed value for axis.
-    func letterAt(horizontal: Bool, iterable: Int, fixed: Int) -> Character? {
-        return squareAt(horizontal, iterable: iterable, fixed: fixed)?.tile?.letter
-    }
-    
-    /// - Parameter position: Position to check.
     /// - Returns: Square at given position.
     func squareAt(position: Position?) -> Square? {
         guard let position = position else { return nil }
@@ -139,7 +119,7 @@ extension Papyrus {
     /// - Parameter row: Row to check.
     /// - Parameter col: Column to check.
     /// - Returns: Square at given row and column.
-    private func squareAt(row: Int, _ col: Int) -> Square? {
+    func squareAt(row: Int, _ col: Int) -> Square? {
         return squares[row][col]
     }
     

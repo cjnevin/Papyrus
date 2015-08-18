@@ -30,13 +30,86 @@ class PapyrusTests: XCTestCase {
         let totalTiles = Papyrus.TileConfiguration.map({$0.0}).reduce(0, combine: +)
         XCTAssert(instance.tiles.count == totalTiles)
         instance.createPlayer()
-        XCTAssert(instance.tiles.inBag().count == totalTiles - PapyrusRackAmount)
+        XCTAssert(instance.bagTiles.count == totalTiles - PapyrusRackAmount)
         XCTAssert(instance.tileIndex == PapyrusRackAmount)
-        XCTAssert(instance.tiles.inRack(instance.player).count == PapyrusRackAmount)
-        XCTAssert(instance.tiles.onBoard(instance.player).count == 0)
-        let tile = instance.tiles.inRack(instance.player).first!
-        XCTAssert(String(tile.letter) == tile.debugDescription)
+        XCTAssert(instance.player?.rackTiles.count == PapyrusRackAmount)
     }
+    
+    func runPlacementTests(instance: Papyrus) {
+        instance.squares[2][9].tile = Tile("R", 1)
+        instance.squares[3][9].tile = Tile("E", 1)
+        instance.squares[4][9].tile = Tile("S", 1)
+        instance.squares[5][9].tile = Tile("U", 1)
+        instance.squares[6][9].tile = Tile("M", 3)
+        instance.squares[8][9].tile = Tile("S", 1)
+        
+        instance.squares[7][5].tile = Tile("A", 1)
+        instance.squares[7][6].tile = Tile("R", 1)
+        instance.squares[7][7].tile = Tile("C", 3)
+        instance.squares[7][8].tile = Tile("H", 4)
+        instance.squares[7][9].tile = Tile("E", 1)
+        instance.squares[7][10].tile = Tile("R", 1)
+        instance.squares[7][11].tile = Tile("S", 1)
+        
+        instance.squares[8][7].tile = Tile("A", 1)
+        instance.squares[9][7].tile = Tile("R", 1)
+        instance.squares[10][7].tile = Tile("D", 2)
+        
+        instance.squares[10][6].tile = Tile("A", 1)
+        instance.squares[10][5].tile = Tile("E", 1)
+        instance.squares[10][4].tile = Tile("D", 2)
+        instance.squares[10][8].tile = Tile("E", 1)
+        instance.squares[10][9].tile = Tile("R", 1)
+        
+        instance.squares[8][5].tile = Tile("R", 1)
+        instance.squares[9][5].tile = Tile("I", 1)
+        
+        var playedBoundaries = Boundaries()
+        // ARCHERS
+        playedBoundaries.append(Boundary(
+            start: Position(axis: .Horizontal(.Prev), iterable: 5, fixed: 7),
+            end: Position(axis: .Horizontal(.Next), iterable: 11, fixed: 7)))
+        // DEAD
+        playedBoundaries.append(Boundary(
+            start: Position(axis: .Horizontal(.Prev), iterable: 4, fixed: 10),
+            end: Position(axis: .Horizontal(.Next), iterable: 9, fixed: 10)))
+        // CARD
+        playedBoundaries.append(Boundary(start:
+            Position(axis: .Vertical(.Prev), iterable: 7, fixed: 7), end:
+            Position(axis: .Vertical(.Next), iterable: 10, fixed: 7)))
+        // ARIE
+        playedBoundaries.append(Boundary(start:
+            Position(axis: .Vertical(.Prev), iterable: 7, fixed: 5), end:
+            Position(axis: .Vertical(.Next), iterable: 10, fixed: 5)))
+        // RESUME
+        playedBoundaries.append(Boundary(start:
+            Position(axis: .Vertical(.Prev), iterable: 2, fixed: 9), end:
+            Position(axis: .Vertical(.Next), iterable: 8, fixed: 9)))
+        
+        let playableBoundaries = instance.findPlayableBoundaries(playedBoundaries)
+        
+        // Now determine playable boundaries
+        let rackCount = 2
+        for row in 0..<PapyrusDimensions {
+            var line = [Character]()
+            for col in 0..<PapyrusDimensions {
+                var letter: Character = "_"
+                for boundary in playableBoundaries {
+                    if boundary.encompasses(row, column: col) {
+                        letter = instance.letterAt(row, col) ?? "#"
+                        break
+                    }
+                }
+                line.append(letter)
+            }
+            print(line)
+        }
+        print(playableBoundaries.count)
+    }
+    
+    
+    /*
+    
     
     func runTilePlacementTests(instance: Papyrus) {
         XCTAssert(Orientation.both == [Orientation.Horizontal, Orientation.Vertical])
@@ -295,28 +368,9 @@ class PapyrusTests: XCTestCase {
         XCTAssert(Offset((1, 1)) != nil)
         XCTAssert(Offset(x: 1, y: 1)!.hashValue == "(\(1),\(1))".hashValue)
     }
-    
+    */
     func testExtensions() {
-        XCTAssert(minMax([1,2,3]).min == 1, "Min should return 1")
-        XCTAssert(minMax([1,2,3]).max == 3, "Max should return 3")
-        XCTAssert(minEqualsMax(minMax([1,1])) == 1, "Minmax should return 1")
-        XCTAssert(minEqualsMax(minMax([1,2])) == nil, "Minmax should fail, both don't match")
-        var count: Int = 0
-        iterate([1,2,3], start: 0, callback: { (value) -> () in
-            count += value
-        })
-        XCTAssert(count == [1,2,3].reduce(0, combine: +), "Count should equal reduce function's test")
         XCTAssert([1,2,3,nil].mapFilter{ $0 }.count == 3, "Nil should be filtered")
-        
-        // <~> operator
-        let r = (0, 5)
-        XCTAssert(1 == (1 <~> r), "1 should be inside of r range")
-        XCTAssert(((1,6) <~> r) == nil, "End of range should be outside of r range")
-        XCTAssert(((-1, 4) <~> r) == nil, "Start of range should be outside of r range")
-        let a = (1,2) <~> r
-        XCTAssert(a?.0 == 1 && a?.1 == 2, "1,2 should be within r range")
-        XCTAssert(((0,6) <~> r) == nil, "0,6 should return nil")
-        XCTAssert(((-1,4) <~> r) == nil, "-1,4 should return nil")
     }
     
     func testGame() {
@@ -329,13 +383,17 @@ class PapyrusTests: XCTestCase {
                 print("Preparing")
             case .Ready:
                 print("Ready")
-                self.runSquareTests(instance)
-                self.runOffsetTests()
+                //self.runSquareTests(instance)
+                //self.runOffsetTests()
+                self.runPlacementTests(instance)
                 self.runTileTests(instance)
-                self.runPlayerTests(instance)
+                self.runPlayerTests(instance)/*
                 self.runRunsTests(instance)
                 self.runTileErrorTests(instance)
                 self.runTilePlacementTests(instance)
+            */
+            case .ChangedPlayer:
+                print("Player changed")
                 
             case .Completed:
                 print("Completed")

@@ -14,7 +14,7 @@ protocol GameSceneDelegate {
 }
 
 protocol GameSceneProtocol {
-    func changedState(state: Papyrus.State)
+    func changed(lifecycle: Lifecycle)
     func submitPlay() throws
 }
 
@@ -93,9 +93,10 @@ class GameScene: SKScene, GameSceneProtocol {
         }
     }
     
-    /// Handle game state changes.
-    func changedState(state: Papyrus.State) {
-        switch state {
+    ///  Handle changes in state of game.
+    ///  - parameter lifecycle: Current state.
+    func changed(lifecycle: Lifecycle) {
+        switch lifecycle {
         case .Cleanup:
             print("Cleanup")
             cleanupSprites()
