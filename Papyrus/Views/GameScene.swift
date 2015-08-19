@@ -117,17 +117,6 @@ class GameScene: SKScene, GameSceneProtocol {
     
     // MARK:- Checks
     
-    /// Attempt to submit a word, will throw an error if validation fails.
-    func submitPlay() throws {
-        if let tile = heldTile, origin = heldOrigin {
-            tile.resetPosition(origin)
-        }
-        if let boundary = getBoundary() {
-            let score = try game.play(boundary, submit: true)
-            replaceRackSprites()
-        }
-    }
-    
     ///  Get position array for sprites with axis.
     ///  - parameter horizontal: Axis to check.
     ///  - returns: Array of positions.
@@ -154,41 +143,47 @@ class GameScene: SKScene, GameSceneProtocol {
         return positions
     }
     
-    ///  Get boundary of sprites we have played.
-    ///  - returns: Boundary or nil.
-    func getBoundary() -> Boundary? {
-        if let boundary = game.boundary(forPositions: getPositions(true)) {
-            let newStart = game.loop(boundary.start) ?? boundary.start
-            let newEnd = game.loop(boundary.end.changeDirection(.Next)) ?? boundary.end
-            return Boundary(start: newStart, end: newEnd)
-        }
-        return nil
-    }
-    
     /// Check to see if play is valid.
     func checkBoundary() {
-        if let boundary = getBoundary() {
-            do {
-                let score = try game.play(boundary, submit: false)
-                actionDelegate?.boundariesChanged(boundary, error: nil, score: score)
-            } catch let err as ValidationError {
-                switch err {
-                case .InsufficientTiles: print("not enough tiles")
-                case .InvalidArrangement: print("invalid arrangement")
-                case .NoCenterIntersection: print("no center")
-                case .NoIntersection: print("no intersection")
-                case .UnfilledSquare: print("skipped square")
-                case .UndefinedWord(let word): print("undefined \(word)")
-                case .Message(let message): print(message)
-                default: break
+        let positions = getPositions(false)
+        if positions.count < 1 { print("insufficient tiles"); return }
+        if positions.count == 1 { print("special logic"); return }
+        if positions.count > 1 {
+            if let boundary = game.getBoundary(positions) {
+                do {
+                    let score = try game.play(boundary, submit: false)
+                    actionDelegate?.boundariesChanged(boundary, error: nil, score: score)
+                } catch let err as ValidationError {
+                    switch err {
+                    case .InsufficientTiles: print("not enough tiles")
+                    case .InvalidArrangement: print("invalid arrangement")
+                    case .NoCenterIntersection: print("no center")
+                    case .NoIntersection: print("no intersection")
+                    case .UnfilledSquare: print("skipped square")
+                    case .UndefinedWord(let word): print("undefined \(word)")
+                    case .Message(let message): print(message)
+                    default: break
+                    }
+                    actionDelegate?.boundariesChanged(boundary, error: err, score: 0)
+                } catch _ {
+                    actionDelegate?.boundariesChanged(boundary, error: nil, score: 0)
                 }
-                actionDelegate?.boundariesChanged(boundary, error: err, score: 0)
-            } catch _ {
-                actionDelegate?.boundariesChanged(boundary, error: nil, score: 0)
+            } else {
+                print("No boundary")
+                actionDelegate?.boundariesChanged(nil, error: ValidationError.NoBoundary, score: 0)
             }
-        } else {
-            print("No boundary")
-            actionDelegate?.boundariesChanged(nil, error: ValidationError.NoBoundary, score: 0)
+        }
+    }
+    
+    /// Attempt to submit a word, will throw an error if validation fails.
+    func submitPlay() throws {
+        if let tile = heldTile, origin = heldOrigin {
+            tile.resetPosition(origin)
+        }
+        let positions = getPositions(false)
+        if let boundary = game.getBoundary(positions) {
+            let score = try game.play(boundary, submit: true)
+            replaceRackSprites()
         }
     }
     

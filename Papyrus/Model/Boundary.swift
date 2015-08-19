@@ -10,14 +10,18 @@ import Foundation
 
 typealias Boundaries = [Boundary]
 
-struct Boundary: CustomDebugStringConvertible {
+func == (lhs: Boundary, rhs: Boundary) -> Bool {
+    return lhs.debugDescription == rhs.debugDescription
+}
+
+struct Boundary: CustomDebugStringConvertible, Equatable {
     let start: Position
     let end: Position
     var length: Int {
-        return (end.iterable + 1) - start.iterable
+        return end.iterable - start.iterable
     }
     var debugDescription: String {
-        return "\(start.axis): \(start.iterable),\(start.fixed) - \(end.iterable), \(end.fixed)"
+        return "\(start.axis): \(start.iterable),\(start.fixed) - \(end.iterable),\(end.fixed)"
     }
     /// - Returns: Whether this boundary appears to contain valid positions.
     var isValid: Bool {
@@ -62,7 +66,17 @@ struct Boundary: CustomDebugStringConvertible {
     /// - Returns: True if the axis is different but the fixed or iterable values intersect.
     func oppositeIntersection(boundary: Boundary) -> Bool {
         if boundary.start.isHorizontal != start.isHorizontal {
-            // TODO: Implement this.
+            // Check if fixed values match
+            if boundary.start.fixed == start.fixed {
+                return true
+            }
+            // Check if fixed value matches value in iteration.
+            //if (boundary.start.iterable...boundary.end.iterable)
+            //    .filter({ $0 == start.fixed }).count > 0 { return true }
+            
+            // Check if iteration value matches fixed value.
+            //if (start.iterable...end.iterable)
+            //    .filter({ $0 == boundary.start.fixed }).count > 0 { return true }
         }
         return false
     }
@@ -83,12 +97,72 @@ struct Boundary: CustomDebugStringConvertible {
 }
 
 extension Papyrus {
+    
+    ///  Get boundary of sprites we have played.
+    ///  - returns: Boundary or nil.
+    func getBoundary(positions: [Position]) -> Boundary? {
+        print(positions)
+        //if positions.count < 1 { throw ValidationError.InvalidArrangement }
+        if positions.count == 1 {
+            
+        } else {
+            if let first = positions.first, last = positions.last {
+                var newFirst = first.switchDirection(.Prev)
+                newFirst = next(newFirst, last: newFirst)
+                var newLast = last.switchDirection(.Next)
+                newLast = next(newLast, last: newLast)
+                return Boundary(start: newFirst, end: newLast)
+            }
+        }
+        return nil
+    }
+    
+    ///  Helper method for walking the board.
+    ///  - parameter current: Current position to check.
+    ///  - parameter last:    Previous position to restore to if current fails.
+    ///  - returns: Last position with a valid tile.
+    func next(current: Position, last: Position) -> Position {
+        if emptyAt(current) || current.isInvalid {
+            return last
+        } else {
+            let new = current.newPosition()
+            if current == new { return current }
+            return next(new, last: current)
+        }
+    }
+    
+    /// - Parameter boundary: Boundary of tiles that have been dropped on the board.
+    /// - Returns: Array of boundaries that intersect the supplied boundary.
+    func walkBoundary(boundary: Boundary) -> [Boundary] {
+        var boundaries = [Boundary]()
+        let prevAxis = boundary.start.isHorizontal ? Axis.Vertical(.Prev) : Axis.Horizontal(.Prev)
+        let nextAxis = boundary.start.isHorizontal ? Axis.Vertical(.Next) : Axis.Horizontal(.Next)
+        for index in boundary.start.iterable...boundary.end.iterable {
+            var first = Position(axis: prevAxis, iterable: boundary.start.fixed, fixed: index)
+            var last = Position(axis: nextAxis, iterable: boundary.start.fixed, fixed: index)
+            first = next(first, last: first)
+            last = next(last, last: last)
+            if first.iterable != last.iterable {
+                boundaries.append(Boundary(start: first, end: last))
+            }
+        }
+        print(boundaries)
+        return boundaries
+    }
+    
+    
+    
     /// Calculate score for a given boundary.
     /// - Parameter boundary: The boundary you want the score of.
     func score(boundary: Boundary) -> Int {
+        guard let player = player else { return 0 }
         let affectedSquares = squaresIn(boundary)
         var value = affectedSquares.mapFilter({$0?.letterValue}).reduce(0, combine: +)
         value = affectedSquares.mapFilter({$0?.wordMultiplier}).reduce(value, combine: *)
+        if affectedSquares.mapFilter({ $0?.tile }).filter({player.tiles.contains($0)}).count == 7 {
+            // Add bonus
+            value += 50
+        }
         return value
     }
     

@@ -10,28 +10,6 @@ import Foundation
 
 extension Papyrus {
     
-    /// - Parameter givenBoundary: Boundary of tiles that have been dropped on the board.
-    /// - Returns: Array of boundaries that intersect the supplied boundary.
-    func intersectingPlays(givenBoundary: Boundary) -> Boundaries {
-        // Perhaps these should be persisted and created on submission?
-        var output = Boundaries()
-        for boundary in playedBoundaries {
-            // Check if given boundary is intersecting this boundary...
-            if boundary.iterableInsection(givenBoundary) ||
-                boundary.adjacentIntersection(givenBoundary) ||
-                boundary.oppositeIntersection(givenBoundary) {
-                output.append(boundary)
-            }
-        }
-        return output
-    }
-    
-    func extend(boundary: Boundary) -> Boundary {
-        let newStart = loop(boundary.start) ?? boundary.start
-        let newEnd = loop(boundary.end) ?? boundary.end
-        return Boundary(start: newStart, end: newEnd)
-    }
-    
     /// - Parameter boundary: Boundary to check.
     /// - Parameter submit: Whether this move is final or just used for validation.
     /// - Throws: If boundary cannot be played you will receive a ValidationError.
@@ -39,48 +17,59 @@ extension Papyrus {
     func play(boundary: Boundary, submit: Bool) throws -> Int {
         
         // If boundary validation fails, fail.
-        //if !boundary.isValid { throw ValidationError.InvalidArrangement }
+        if !boundary.isValid { throw ValidationError.InvalidArrangement }
         
         // If no words have been played, this boundary must intersect middle.
         let m = PapyrusMiddle - 1
         if playedBoundaries.count == 0 && (boundary.start.fixed != m ||
-            boundary.start.iterable > m || boundary.end.iterable < m) { throw ValidationError.NoCenterIntersection }
+            boundary.start.iterable > m || boundary.end.iterable < m) {
+                throw ValidationError.NoCenterIntersection
+        }
         
         // If boundary contains squares that are empty, fail.
         let tiles = tilesIn(boundary)
-        if tiles.count != boundary.length { throw ValidationError.UnfilledSquare }
+        if tiles.count - 1 != boundary.length {
+            throw ValidationError.UnfilledSquare
+        }
         
         // If no words have been played ensure that tile count is valid.
-        //if playedBoundaries.count == 0 && tiles.count < 2 { throw ValidationError.InsufficientTiles }
+        if playedBoundaries.count == 0 && tiles.count < 2 {
+            throw ValidationError.InsufficientTiles
+        }
         
         // If all of these tiles are not owned by the current player, fail.
-        if player?.tiles.filter({tiles.contains($0)}).count == 0 { throw ValidationError.InsufficientTiles }
-        
-        // TODO: Switch to intersectingPositionBoundaries...
-        
-        print("INTERSECT: \(readable(intersectingBoundaries(true, row: boundary.start.fixed, col: boundary.start.iterable)))")
+        if player?.tiles.filter({tiles.contains($0)}).count == 0 {
+            throw ValidationError.InsufficientTiles
+        }
         
         // If words have been played, it must intersect one of these played words.
         // Assumption: Previous boundaries have passed validation.
-        if playedBoundaries.count > 0 && intersectingPlays(boundary).count == 0 { throw ValidationError.NoIntersection }
+        let intersections = walkBoundary(boundary)
+        if playedBoundaries.count > 0 && intersections.count == 0 {
+            throw ValidationError.NoIntersection
+        }
         
         // Validate words, will throw if any are invalid...
         
         // Check if main word is valid.
         let mainWord = String(tiles.mapFilter({$0.letter}))
-        let _ = try Lexicon.sharedInstance.defined(mainWord)
         print(mainWord)
+        let _ = try Lexicon.sharedInstance.defined(mainWord)
         
         // Calculate score for main word.
         var value = score(boundary)
         print(value)
         
+        // TODO: Filter unmodified words.
         // Get new intersections created by this play, we may have modified other words.
-        let intersections = intersectingBoundaries(boundary.start)
-        value += score(intersections)
+        //let intersections = intersectingBoundaries(boundary.start)
+        
+        let unmodified = intersections.filter({ !playedBoundaries.contains($0) })
+        value += unmodified.map({ score($0) }).reduce(0, combine: +)
         
         // Check if intersecting words are valid.
-        let words = readable(intersections)
+        
+        let words = intersections.mapFilter({ readable($0) })
         for word in words {
             let _ = try Lexicon.sharedInstance.defined(word)
             print(word)
@@ -91,7 +80,8 @@ extension Papyrus {
         if submit {
             // Add boundaries to played boundaries
             var finalBoundaries = [boundary]
-            finalBoundaries.extend(intersections.map({$0.1}))
+            finalBoundaries.extend(intersections)
+            //finalBoundaries.extend(intersections.map({$0.1}))
             for finalBoundary in finalBoundaries {
                 if playedBoundaries.filter({$0.start == finalBoundary.start && $0.end == finalBoundary.end}).count == 0 {
                    playedBoundaries.append(finalBoundary)

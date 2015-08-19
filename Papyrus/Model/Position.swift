@@ -47,6 +47,13 @@ struct Position: Equatable, Hashable {
             iterable: self.isHorizontal ? fixed : iterable,
             fixed: self.isHorizontal ? iterable : fixed)
     }
+    /// - Returns: Position with opposite direction, does not flip iterable/fixed.
+    func switchDirection(direction: Direction) -> Position {
+        return Position(axis: self.isHorizontal ? Axis.Horizontal(direction) : Axis.Vertical(direction),
+            iterable:iterable,
+            fixed:fixed)
+    }
+    
     /// - Returns: Whether axis is 'Horizontal'.
     var isHorizontal: Bool {
         switch axis {
