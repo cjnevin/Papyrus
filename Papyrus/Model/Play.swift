@@ -60,28 +60,25 @@ extension Papyrus {
         var value = score(boundary)
         print(value)
         
-        // TODO: Filter unmodified words.
+        // Filter unmodified words.
         // Get new intersections created by this play, we may have modified other words.
-        //let intersections = intersectingBoundaries(boundary.start)
-        
         let unmodified = intersections.filter({ !playedBoundaries.contains($0) })
         value += unmodified.map({ score($0) }).reduce(0, combine: +)
         
         // Check if intersecting words are valid.
-        
-        let words = intersections.mapFilter({ readable($0) })
+        let words = unmodified.mapFilter({ readable($0) })
         for word in words {
             let _ = try Lexicon.sharedInstance.defined(word)
             print(word)
         }
-        print(value)
+        
+        print("Score: \(value)")
         
         // If final, add boundaries to played boundaries.
         if submit {
             // Add boundaries to played boundaries
             var finalBoundaries = [boundary]
             finalBoundaries.extend(intersections)
-            //finalBoundaries.extend(intersections.map({$0.1}))
             for finalBoundary in finalBoundaries {
                 if playedBoundaries.filter({$0.start == finalBoundary.start && $0.end == finalBoundary.end}).count == 0 {
                    playedBoundaries.append(finalBoundary)
@@ -102,11 +99,14 @@ extension Papyrus {
                     lifecycleCallback?(.Completed, self)
                 } else {
                     // Change player
-                    //nextPlayer()
-                    //lifecycleCallback?(.ChangedPlayer, self)
+                    nextPlayer()
                     // Get playable boundaries
                     // Collect prospects for boundaries (anagramsOf + firstRackTile)
                     // Attempt AI play
+                    print(possibilities())
+                    
+                    nextPlayer()
+                    
                 }
             }
         }

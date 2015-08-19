@@ -18,6 +18,8 @@ extension Papyrus {
         let rackTiles = player?.rackTiles
         let letters = String(rackTiles?.mapFilter({$0.letter}))
         let boundaries = findPlayableBoundaries(playedBoundaries)
+        print(boundaries)
+        print(letters)
         for boundary in boundaries {
             let squares = squaresIn(boundary)
             var index = 0
@@ -27,6 +29,11 @@ extension Papyrus {
             }).filter({$0.1 != nil}).map({($0.0, $0.1!)})
             
             var results = [String]()
+            
+            // TODO: Fix this, it occassionally returns anomalies.
+            // Optional(["C", "W", "T", "G", "E", "L", "T"])
+            // Word played = AR
+            // Word suggested to play: AROW - no O.
             Lexicon.sharedInstance.anagramsOf(letters, length: boundary.length, prefix: "",
                 fixedLetters: indexedCharacters, fixedCount: indexedCharacters.count,
                 source: source, results: &results)

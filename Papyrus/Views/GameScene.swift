@@ -120,7 +120,7 @@ class GameScene: SKScene, GameSceneProtocol {
     ///  Get position array for sprites with axis.
     ///  - parameter horizontal: Axis to check.
     ///  - returns: Array of positions.
-    func getPositions(horizontal: Bool) -> [Position] {
+    func getPositions() -> [Position] {
         var offsets = [(row: Int, col: Int)]()
         for sprite in squareSprites where sprite.tileSprite != nil && sprite.tileSprite?.tile.placement != Placement.Fixed {
             offsets.append((sprite.square.row, sprite.square.column))
@@ -145,7 +145,7 @@ class GameScene: SKScene, GameSceneProtocol {
     
     /// Check to see if play is valid.
     func checkBoundary() {
-        let positions = getPositions(false)
+        let positions = getPositions()
         if positions.count < 1 { print("insufficient tiles"); return }
         if positions.count == 1 { print("special logic"); return }
         if positions.count > 1 {
@@ -180,7 +180,7 @@ class GameScene: SKScene, GameSceneProtocol {
         if let tile = heldTile, origin = heldOrigin {
             tile.resetPosition(origin)
         }
-        let positions = getPositions(false)
+        let positions = getPositions()
         if let boundary = game.getBoundary(positions) {
             let score = try game.play(boundary, submit: true)
             replaceRackSprites()

@@ -52,6 +52,7 @@ extension Papyrus {
         if playerIndex >= players.count {
             playerIndex = 0
         }
+        lifecycleCallback?(.ChangedPlayer, self)
     }
     /// Add tiles to a players rack from the bag.
     /// - Returns: Number of tiles able to be drawn for a player.
