@@ -58,4 +58,5 @@ enum ValidationError: ErrorType {
     case NoIntersection
     case UndefinedWord(String)
     case Message(String)
+    case NoBoundary
 }

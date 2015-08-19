@@ -98,7 +98,7 @@ extension Papyrus {
     func readable(boundary: Boundary) -> String? {
         let start = boundary.start, end = boundary.end
         if start.iterable >= end.iterable { return nil }
-        return String((start.iterable...end.iterable).map({
+        return String((start.iterable...end.iterable).mapFilter({
             letterAt(start.isHorizontal, iterable: $0, fixed: start.fixed)}))
     }
     

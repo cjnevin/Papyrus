@@ -9,6 +9,8 @@
 import SpriteKit
 
 class SquareSprite: SKSpriteNode {
+    let row: Int
+    let col: Int
     /// `Square` on board this sprite is representing.
     let square: Square
     /// Background sprite inset by 1pt to account for border.
@@ -22,7 +24,9 @@ class SquareSprite: SKSpriteNode {
         return tileSprite == nil
     }
     
-    init(square: Square, edge: CGFloat) {
+    init(row: Int, col: Int, square: Square, edge: CGFloat) {
+        self.row = row
+        self.col = col
         self.square = square
         self.background = SKSpriteNode(texture: nil, color: Papyrus.colorForSquare(square), size: CGSizeMake(edge-1, edge-1))
         super.init(texture: nil, color: UIColor.Papyrus_SquareBorder, size: CGSizeMake(edge, edge))
@@ -56,7 +60,7 @@ extension Papyrus {
         let squareSize = CGRectGetWidth(frame) / CGFloat(PapyrusDimensions)
         for row in 0..<PapyrusDimensions {
             for col in 0..<PapyrusDimensions {
-                let sprite = SquareSprite(square: game.squares[row][col], edge: squareSize)
+                let sprite = SquareSprite(row: row, col: col, square: game.squares[row][col], edge: squareSize)
                 sprite.position = CGPointMake(
                     squareSize * CGFloat(col) + squareSize / 2,
                     CGRectGetHeight(frame) - squareSize * CGFloat(row + 1) + squareSize / 2)

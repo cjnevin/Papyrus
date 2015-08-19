@@ -13,7 +13,7 @@ class TileSprite: SKSpriteNode {
     
     /// - Returns: True if tile has yet to be submitted ('Fixed')
     var movable: Bool {
-        return tile.placement == .Fixed
+        return tile.placement != .Fixed
     }
     /// Point to animate move to.
     var animationPoint: CGPoint?

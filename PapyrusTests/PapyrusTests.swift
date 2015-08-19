@@ -89,7 +89,6 @@ class PapyrusTests: XCTestCase {
         let playableBoundaries = instance.findPlayableBoundaries(playedBoundaries)
         
         // Now determine playable boundaries
-        let rackCount = 2
         for row in 0..<PapyrusDimensions {
             var line = [Character]()
             for col in 0..<PapyrusDimensions {
@@ -104,7 +103,7 @@ class PapyrusTests: XCTestCase {
             }
             print(line)
         }
-        print(playableBoundaries.count)
+        XCTAssert(playableBoundaries.count == 100)
     }
     
     

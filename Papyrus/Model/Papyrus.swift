@@ -31,8 +31,6 @@ class Papyrus {
     let wordOperations = NSOperationQueue()
     
     /// Array of positions of tiles we have dropped on the board.
-    lazy var pendingPositions = [Position]()
-    
     lazy var playedBoundaries = Boundaries()
     lazy var tiles = [Tile]()
     var tileIndex: Int = 0

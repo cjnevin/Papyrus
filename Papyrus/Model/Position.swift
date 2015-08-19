@@ -41,6 +41,12 @@ struct Position: Equatable, Hashable {
     func otherAxis(direction: Direction) -> Position {
         return Position(axis: axis.inverse(direction), iterable: iterable, fixed: fixed)
     }
+    /// - Returns: Position with opposite direction.
+    func changeDirection(direction: Direction) -> Position {
+        return Position(axis: self.isHorizontal ? Axis.Horizontal(direction) : Axis.Vertical(direction),
+            iterable: self.isHorizontal ? fixed : iterable,
+            fixed: self.isHorizontal ? iterable : fixed)
+    }
     /// - Returns: Whether axis is 'Horizontal'.
     var isHorizontal: Bool {
         switch axis {
@@ -97,18 +103,19 @@ extension Papyrus {
     }
     
     /// Loop while we are fulfilling the empty value
-    func loop(position: Position, empty: Bool? = false, fun: ((position: Position) -> ())? = nil) -> Position? {
+    func loop(position: Position, fun: ((position: Position) -> ())? = nil) -> Position? {
         // Return nil if square is outside of range (should only occur first time)
         // Return nil if this square is empty (should only occur first time)
-        if position.isInvalid || emptyAt(position) != empty! { return nil }
+        if position.isInvalid || emptyAt(position) == false { return nil }
         // Check new position.
         let newPosition = position.newPosition()
-        if newPosition.isInvalid || emptyAt(newPosition) != empty! {
+        if newPosition == position { return position }
+        if newPosition.isInvalid || emptyAt(newPosition) == false {
             fun?(position: position)
             return position
         } else {
             fun?(position: newPosition)
-            return loop(newPosition, empty: empty, fun: fun)
+            return loop(newPosition, fun: fun)
         }
     }
 }

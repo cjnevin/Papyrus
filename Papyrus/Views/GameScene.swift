@@ -10,6 +10,7 @@ import SpriteKit
 import SceneKit
 
 protocol GameSceneDelegate {
+    func boundariesChanged(boundary: Boundary?, error: ValidationError?, score: Int)
     func pickLetter(completion: (Character) -> ())
 }
 
@@ -45,54 +46,7 @@ class GameScene: SKScene, GameSceneProtocol {
             replaceRackSprites()
         }
     }
-    
-    /// Attempt to submit a word, will throw an error if validation fails.
-    func submitPlay() throws {
-        // Reset position of any held tile (edge case).
-        if let tile = heldTile, origin = heldOrigin {
-            tile.resetPosition(origin)
-        }
-        do {
-            /*
-            game.boundary(forPositions: <#T##[Position]#>)
-            
-            game.play(<#T##boundary: Boundary##Boundary#>, submit: <#T##Bool#>)
-            
-            
-            if let tiles = try game.move(game.tiles.onBoard(game.player)) {
-                completeMove(withTiles: tiles)
-                game.nextPlayer()
-                
-                game.automateMove({ [weak self] (automatedTiles) -> Void in
-                    if let automatedTiles = automatedTiles {
-                        // TODO: Drop tiles on the board...
-                        var index = 0
-                        for tile in automatedTiles where self?.tileSprites.filter({$0.tile == tile}).count == 0 {
-                            if let square = tile.square, emptySquare = self?.sprites([square]).first {
-                                //dispatch_after(dispatch_time_t(1.0 * Double(index)), dispatch_get_main_queue(), { () -> Void in
-                                let sprite = TileSprite.sprite(withTile: tile)
-                                sprite.yScale = 0.5
-                                sprite.xScale = 0.5
-                                emptySquare.origin = emptySquare.position
-                                emptySquare.tileSprite = sprite
-                                emptySquare.addChild(sprite)
-                                emptySquare.animateDropTileSprite(sprite, originalPoint: emptySquare.position, completion: nil)
-                                //})
-                                index++
-                            }
-                        }
-                        self?.completeMove(withTiles: automatedTiles)
-                        self?.game.nextPlayer()
-                    } else {
-                        assert(false)
-                    }
-                })
-            }*/
-        } catch let err as ValidationError {
-            print(err)
-        }
-    }
-    
+        
     ///  Handle changes in state of game.
     ///  - parameter lifecycle: Current state.
     func changed(lifecycle: Lifecycle) {
@@ -159,4 +113,83 @@ class GameScene: SKScene, GameSceneProtocol {
     private func sprites(t: [Tile]) -> [TileSprite] {
         return tileSprites.filter{ t.contains($0.tile) }
     }
+    
+    
+    // MARK:- Checks
+    
+    /// Attempt to submit a word, will throw an error if validation fails.
+    func submitPlay() throws {
+        if let tile = heldTile, origin = heldOrigin {
+            tile.resetPosition(origin)
+        }
+        if let boundary = getBoundary() {
+            let score = try game.play(boundary, submit: true)
+            replaceRackSprites()
+        }
+    }
+    
+    ///  Get position array for sprites with axis.
+    ///  - parameter horizontal: Axis to check.
+    ///  - returns: Array of positions.
+    func getPositions(horizontal: Bool) -> [Position] {
+        var offsets = [(row: Int, col: Int)]()
+        for sprite in squareSprites where sprite.tileSprite != nil && sprite.tileSprite?.tile.placement != Placement.Fixed {
+            offsets.append((sprite.square.row, sprite.square.column))
+        }
+        let rows = offsets.sort({$0.row < $1.row})
+        let cols = offsets.sort({$0.col < $1.col})
+        
+        var positions = [Position]()
+        if let firstRow = rows.first?.row, lastRow = rows.last?.row where firstRow == lastRow {
+            // Horizontal
+            for col in cols {
+                positions.append(Position(axis: Axis.Horizontal(.Prev), iterable: col.col, fixed: col.row))
+            }
+        } else if let firstCol = cols.first?.col, lastCol = cols.last?.col where firstCol == lastCol {
+            // Horizontal
+            for row in rows {
+                positions.append(Position(axis: Axis.Vertical(.Prev), iterable: row.row, fixed: row.col))
+            }
+        }
+        return positions
+    }
+    
+    ///  Get boundary of sprites we have played.
+    ///  - returns: Boundary or nil.
+    func getBoundary() -> Boundary? {
+        if let boundary = game.boundary(forPositions: getPositions(true)) {
+            let newStart = game.loop(boundary.start) ?? boundary.start
+            let newEnd = game.loop(boundary.end.changeDirection(.Next)) ?? boundary.end
+            return Boundary(start: newStart, end: newEnd)
+        }
+        return nil
+    }
+    
+    /// Check to see if play is valid.
+    func checkBoundary() {
+        if let boundary = getBoundary() {
+            do {
+                let score = try game.play(boundary, submit: false)
+                actionDelegate?.boundariesChanged(boundary, error: nil, score: score)
+            } catch let err as ValidationError {
+                switch err {
+                case .InsufficientTiles: print("not enough tiles")
+                case .InvalidArrangement: print("invalid arrangement")
+                case .NoCenterIntersection: print("no center")
+                case .NoIntersection: print("no intersection")
+                case .UnfilledSquare: print("skipped square")
+                case .UndefinedWord(let word): print("undefined \(word)")
+                case .Message(let message): print(message)
+                default: break
+                }
+                actionDelegate?.boundariesChanged(boundary, error: err, score: 0)
+            } catch _ {
+                actionDelegate?.boundariesChanged(boundary, error: nil, score: 0)
+            }
+        } else {
+            print("No boundary")
+            actionDelegate?.boundariesChanged(nil, error: ValidationError.NoBoundary, score: 0)
+        }
+    }
+    
 }

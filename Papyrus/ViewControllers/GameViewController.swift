@@ -59,6 +59,11 @@ class GameViewController: UIViewController, GameSceneDelegate, UITextFieldDelega
         }
     }
     
+    func boundariesChanged(boundary: Boundary?, error: ValidationError?, score: Int) {
+        navigationItem.rightBarButtonItem?.enabled = boundary != nil && error == nil && score > 0
+        print("Score: \(score)")
+    }
+    
     func pickLetter(completion: (Character) -> ()) {
         let alertController = UIAlertController(title: "Enter Replacement Letter", message: nil, preferredStyle: .Alert)
         let OKAction = UIAlertAction(title: "OK", style: .Default) { (action) in

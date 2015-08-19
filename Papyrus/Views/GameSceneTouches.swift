@@ -65,34 +65,6 @@ extension GameScene {
             s.maxElement({ return intersection($0) < intersection($1) })
     }
     
-    func calc() {
-        let axis = Axis.Horizontal(.Prev)
-        var positions = [Position]()
-        for sprite in squareSprites where sprite.tileSprite != nil {
-            positions.append(Position(axis: axis, iterable: sprite.square.column, fixed: sprite.square.row))
-        }
-        if let boundary = game.boundary(forPositions: positions) {
-            do {
-                print(try game.play(boundary, submit: false))
-            } catch let err as ValidationError {
-                switch err {
-                case .InsufficientTiles: print("not enough tiles")
-                case .InvalidArrangement: print("invalid arrangement")
-                case .NoCenterIntersection: print("no center")
-                case .NoIntersection: print("no intersection")
-                case .UnfilledSquare: print("skipped square")
-                case .UndefinedWord(let word): print("undefined \(word)")
-                case .Message(let message): print(message)
-                }
-            } catch _ {
-                
-            }
-        } else {
-            print("No boundary")
-        }
-        
-    }
-    
     /// Drop a tile on the board, or if no squares are intersected back to the tile rack.
     /// Throws an error if either 'place' fails.
     private func drop(atPoint point: CGPoint?) throws {
@@ -105,10 +77,11 @@ extension GameScene {
         emptySquare.animateDropTileSprite(sprite, originalPoint: origin, completion: nil)
         let tile = sprite.tile
         tile.placement = .Board
-        calc()
+        checkBoundary()
         if tile.value == 0 && tile.letter == "?" {
-            actionDelegate?.pickLetter({ (c) -> () in
+            actionDelegate?.pickLetter({ [weak self] (c) -> () in
                 sprite.changeLetter(c)
+                self?.checkBoundary()
             })
         }
     }
@@ -120,8 +93,10 @@ extension GameScene {
         animated == true ? sprite.animateDropToRack(point) : sprite.resetPosition(point)
         let tile = sprite.tile
         tile.placement = .Rack
+        checkBoundary()
         if tile.value == 0 {
             sprite.changeLetter("?")
+            checkBoundary()
         }
     }
     

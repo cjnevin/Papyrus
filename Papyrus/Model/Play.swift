@@ -26,13 +26,20 @@ extension Papyrus {
         return output
     }
     
+    func extend(boundary: Boundary) -> Boundary {
+        let newStart = loop(boundary.start) ?? boundary.start
+        let newEnd = loop(boundary.end) ?? boundary.end
+        return Boundary(start: newStart, end: newEnd)
+    }
+    
     /// - Parameter boundary: Boundary to check.
     /// - Parameter submit: Whether this move is final or just used for validation.
     /// - Throws: If boundary cannot be played you will receive a ValidationError.
     /// - Returns: Score of word including intersecting words.
     func play(boundary: Boundary, submit: Bool) throws -> Int {
+        
         // If boundary validation fails, fail.
-        if !boundary.isValid { throw ValidationError.InvalidArrangement }
+        //if !boundary.isValid { throw ValidationError.InvalidArrangement }
         
         // If no words have been played, this boundary must intersect middle.
         let m = PapyrusMiddle - 1
@@ -44,10 +51,14 @@ extension Papyrus {
         if tiles.count != boundary.length { throw ValidationError.UnfilledSquare }
         
         // If no words have been played ensure that tile count is valid.
-        if playedBoundaries.count == 0 && tiles.count < 2 { throw ValidationError.InsufficientTiles }
+        //if playedBoundaries.count == 0 && tiles.count < 2 { throw ValidationError.InsufficientTiles }
         
         // If all of these tiles are not owned by the current player, fail.
         if player?.tiles.filter({tiles.contains($0)}).count == 0 { throw ValidationError.InsufficientTiles }
+        
+        // TODO: Switch to intersectingPositionBoundaries...
+        
+        print("INTERSECT: \(readable(intersectingBoundaries(true, row: boundary.start.fixed, col: boundary.start.iterable)))")
         
         // If words have been played, it must intersect one of these played words.
         // Assumption: Previous boundaries have passed validation.
@@ -101,8 +112,8 @@ extension Papyrus {
                     lifecycleCallback?(.Completed, self)
                 } else {
                     // Change player
-                    nextPlayer()
-                    lifecycleCallback?(.ChangedPlayer, self)
+                    //nextPlayer()
+                    //lifecycleCallback?(.ChangedPlayer, self)
                     // Get playable boundaries
                     // Collect prospects for boundaries (anagramsOf + firstRackTile)
                     // Attempt AI play
