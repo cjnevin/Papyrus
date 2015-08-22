@@ -50,8 +50,8 @@ class GameViewController: UIViewController, GameSceneDelegate, UITextFieldDelega
             case .Ready:
                 this.title = "Papyrus"
                 this.enableButtons(true)
-                game.createPlayer()
-                game.createPlayer()
+                game.createPlayer() // Me
+                game.createPlayer() // AI
             default:
                 this.title = "Complete"
             }
@@ -112,9 +112,18 @@ class GameViewController: UIViewController, GameSceneDelegate, UITextFieldDelega
             default:
                 print(err)
             }
-        } catch _ {
+        } catch {
             
         }
+        
+        if scene?.game.playerIndex != 0 {
+            do {
+                try scene?.attemptAIPlay()
+            } catch {
+                print("Failure!")
+            }
+        }
+        
     }
     
     override func shouldAutorotate() -> Bool {

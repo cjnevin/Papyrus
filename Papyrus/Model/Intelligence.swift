@@ -12,11 +12,11 @@ typealias BoundaryTiles = (Boundary, [Tile])
 
 extension Papyrus {
     
-    func possibilities() -> [BoundaryTiles]? {
+    func possibilities(player: Player) -> [BoundaryTiles]? {
         guard let source = Lexicon.sharedInstance.dictionary else { return nil }
         var boundaryTiles = [BoundaryTiles]()
-        let rackTiles = player?.rackTiles
-        let letters = String(rackTiles?.mapFilter({$0.letter}))
+        let rackTiles = player.rackTiles
+        let letters = String(rackTiles.mapFilter({$0.letter}))
         let boundaries = findPlayableBoundaries(playedBoundaries)
         print(boundaries)
         print(letters)
@@ -34,23 +34,35 @@ extension Papyrus {
             // Optional(["C", "W", "T", "G", "E", "L", "T"])
             // Word played = AR
             // Word suggested to play: AROW - no O.
-            Lexicon.sharedInstance.anagramsOf(letters, length: boundary.length, prefix: "",
+            Lexicon.sharedInstance.anagramsOf(letters, length: boundary.length + 1, prefix: "",
                 fixedLetters: indexedCharacters, fixedCount: indexedCharacters.count,
                 source: source, results: &results)
+            
+            print(indexedCharacters)
+            print(results)
             if results.count > 0 {
+                var invalid = false
                 for result in results {
                     var tiles = [Tile]()
                     var index = 0
                     for char in result.characters {
                         // Check if we already have a tile at a given index
                         let tile = squares[index]?.tile ??
-                            player?.firstRackTile(withLetter: char) ??
-                            player?.firstRackTile(withLetter: "?")
+                            player.firstRackTile(withLetter: char) ??
+                            player.firstRackTile(withLetter: "?")
+                        // HACK:
+                        if tile == nil {
+                            invalid = true
+                            print("Skipped invalid")
+                            break
+                        }
                         assert(tile != nil)
                         tiles.append(tile!)
                         index++
                     }
-                    boundaryTiles.append((boundary, tiles))
+                    if !invalid {
+                        boundaryTiles.append((boundary, tiles))
+                    }
                 }
             }
         }

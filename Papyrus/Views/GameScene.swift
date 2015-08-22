@@ -68,7 +68,7 @@ class GameScene: SKScene, GameSceneProtocol {
         
         case .ChangedPlayer:
             // Lock tiles...
-            print("Changed player")
+            print("Changed player \(game.playerIndex)")
             
         }
         
@@ -86,6 +86,9 @@ class GameScene: SKScene, GameSceneProtocol {
     
     /// Replace rack sprites with newly drawn tiles.
     private func replaceRackSprites() {
+        
+        
+        
         // Remove existing rack sprites.
         let rackSprites = tileSprites.filter({ (game.player?.rackTiles.contains($0.tile)) == true })
         tileSprites = tileSprites.filter{ !rackSprites.contains($0) }
@@ -147,8 +150,8 @@ class GameScene: SKScene, GameSceneProtocol {
     func checkBoundary() {
         let positions = getPositions()
         if positions.count < 1 { print("insufficient tiles"); return }
-        if positions.count == 1 { print("special logic"); return }
-        if positions.count > 1 {
+        //if positions.count == 1 { print("special logic"); return }
+        if positions.count >= 1 {
             if let boundary = game.getBoundary(positions) {
                 do {
                     let score = try game.play(boundary, submit: false)
@@ -182,9 +185,40 @@ class GameScene: SKScene, GameSceneProtocol {
         }
         let positions = getPositions()
         if let boundary = game.getBoundary(positions) {
-            let score = try game.play(boundary, submit: true)
+            let _ = try game.play(boundary, submit: true)
             replaceRackSprites()
+            // Change player
+            game.nextPlayer()
         }
     }
     
+    /// Attempt AI move.
+    func attemptAIPlay() throws {
+        
+        let boundaries = game.findPlayableBoundaries(game.playedBoundaries)
+        for boundary in boundaries {
+            for index in boundary.start.iterable...boundary.end.iterable {
+                if boundary.start.isHorizontal {
+                    squareSprites.filter({$0.row == boundary.start.fixed && $0.col == index}).first?.background.color = UIColor.redColor()
+                } else {
+                    squareSprites.filter({$0.col == boundary.start.fixed && $0.row == index}).first?.background.color = UIColor.blueColor()
+                }
+            }
+        }
+        
+        
+        /*var neededTilePositions = [(Square, Tile)]()
+        try game.playAI(&neededTilePositions)
+        
+        // TODO: Fix playable boundaries, not going to end of line.
+        // Played: UNPIN (actually appended to UN-PINIONS)
+        for (square, tile) in neededTilePositions {
+            let tileSprite = TileSprite.sprite(withTile: tile)
+            tileSprites.append(tileSprite)
+            let squareSprite = squareSprites.filter({$0.square == square}).first
+            squareSprite?.placeTileSprite(tileSprite)
+        }*/
+        // Change player
+        game.nextPlayer()
+    }
 }

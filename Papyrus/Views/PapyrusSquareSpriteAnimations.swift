@@ -16,14 +16,14 @@ extension SquareSprite {
     }
     
     /// Initial placement, no shrink animation
-    private func placeTileSprite(t: TileSprite) {
+    internal func placeTileSprite(t: TileSprite) {
         if tileSprite != nil { return }
         origin = CGPointZero
-        square.tile = t.tile
         t.removeFromParent()
         t.setScale(0.5)
         addChild(t)
         tileSprite = t
+        square.tile = t.tile
     }
     
     /// Drop tile with a shrinking animation

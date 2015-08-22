@@ -108,11 +108,11 @@ extension Papyrus {
     /// - Parameter position: Position to check.
     /// - Returns: Square at given position.
     func squareAt(position: Position?) -> Square? {
-        guard let position = position where !position.isInvalid else { return nil }
-        if position.isHorizontal {
-            return squareAt(position.fixed, position.iterable)
+        guard let pos = position where !pos.isInvalid else { return nil }
+        if pos.isHorizontal {
+            return squareAt(pos.fixed, pos.iterable)
         } else {
-            return squareAt(position.iterable, position.fixed)
+            return squareAt(pos.iterable, pos.fixed)
         }
     }
     

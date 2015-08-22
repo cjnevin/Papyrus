@@ -28,6 +28,10 @@ struct Position: Equatable, Hashable {
     private func outOfBounds(z: Int) -> Bool {
         return z < 0 || z >= PapyrusDimensions
     }
+    /// - Returns: True if z is on the boundary.
+    func atEdgeOfBoard(z: Int) -> Bool {
+        return z == 0 || z == PapyrusDimensions - 1
+    }
     /// - Returns: Value of next item in a given direction.
     private func adjust(z: Int, dir: Direction) -> Int {
         let n = dir == .Next ? z + 1 : z - 1
@@ -83,10 +87,10 @@ extension Papyrus {
     /// - Parameter: Initial position to begin this loop, will call position's axis->direction to determine next position.
     /// - Returns: Furthest possible position from initial position using PapyrusRackAmount.
     func getPositionLoop(initial: Position) -> Position {
-        var counter = PapyrusRackAmount
+        var counter = player?.rackTiles.count ?? 0
         func decrementer(position: Position) -> Bool {
             if emptyAt(position) { counter-- }
-            return counter > -1
+            return counter > -1 && !position.isInvalid
         }
         let position = loop(initial, validator: decrementer) ?? initial
         return position
@@ -99,13 +103,14 @@ extension Papyrus {
         if position.isInvalid { return nil }
         // Check new position.
         let newPosition = position.newPosition()
+        if newPosition == position { return position }
         let continued = validator(position: newPosition)
         if newPosition.isInvalid || !continued {
             fun?(position: position)
             return position
         } else {
             fun?(position: newPosition)
-            return loop(newPosition, validator: validator, fun: fun) ?? newPosition
+            return loop(newPosition, validator: validator, fun: fun) ?? nil//r ?? newPosition
         }
     }
     

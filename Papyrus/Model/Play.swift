@@ -10,11 +10,60 @@ import Foundation
 
 extension Papyrus {
     
+    ///  Attempt to play an AI move.
+    ///  - parameter neededTilePositions: Tiles to add to the board if successful.
+    func playAI(inout neededTilePositions: [(Square,Tile)]) throws {
+        assert(playerIndex != 0)
+        
+        guard let player = player else { throw ValidationError.NoPlayer }
+        
+        // Get playable boundaries
+        // Collect prospects for boundaries (anagramsOf + firstRackTile)
+        // Attempt AI play
+        // TODO: Fix, currently incorrect, gets stuck in 'loop(position: Position, validator: (position: Position)' loop.
+        guard let possibles = possibilities(player) else { throw ValidationError.NoOptions }
+        for (boundary, tiles) in possibles {
+            print("Playable: \(String(tiles.mapFilter({$0.letter}))) -- \(boundary)")
+        }
+        return
+        if let (aiBoundary, aiTiles) = possibles.last {
+            var aiTileIndex = 0
+            for iterable in aiBoundary.start.iterable...aiBoundary.end.iterable {
+                let position = Position(axis: aiBoundary.start.axis, iterable: iterable, fixed: aiBoundary.start.fixed)
+                let square = squareAt(position)
+                let tile = aiTiles[aiTileIndex]
+                if tile.placement != .Fixed {
+                    tile.placement = .Fixed
+                    square?.tile = tile
+                    neededTilePositions.append((square!, tile))
+                }
+                aiTileIndex++
+            }
+            print("Player tiles: \(player.rackTiles.mapFilter({$0.letter}))")
+            print("Played: \(String(aiTiles.mapFilter({$0.letter})))")
+            print("Boundary: \(aiBoundary)")
+            do {
+                try play(aiBoundary, submit: true)
+            } catch {
+                // Reverse changes...
+                for (square, tile) in neededTilePositions {
+                    square.tile = nil
+                    tile.placement = .Rack
+                }
+                neededTilePositions.removeAll()
+                print("Failed! \(error)")
+            }
+        }
+    }
+    
     /// - Parameter boundary: Boundary to check.
     /// - Parameter submit: Whether this move is final or just used for validation.
     /// - Throws: If boundary cannot be played you will receive a ValidationError.
     /// - Returns: Score of word including intersecting words.
     func play(boundary: Boundary, submit: Bool) throws -> Int {
+        
+        // Throw error if no player...
+        guard let player = player else { throw ValidationError.NoPlayer }
         
         // If boundary validation fails, fail.
         if !boundary.isValid { throw ValidationError.InvalidArrangement }
@@ -38,7 +87,7 @@ extension Papyrus {
         }
         
         // If all of these tiles are not owned by the current player, fail.
-        if player?.tiles.filter({tiles.contains($0)}).count == 0 {
+        if player.tiles.filter({tiles.contains($0)}).count == 0 {
             throw ValidationError.InsufficientTiles
         }
         
@@ -87,27 +136,16 @@ extension Papyrus {
             // Change tiles to 'fixed'
             tiles.map({$0.placement = Placement.Fixed})
             // Increment score
-            player?.score += value
-            if let player = player {
-                // Draw new tiles. If count == 0 && rackCount == 0 complete game
-                if replenishRack(player) == 0 && player.rackTiles.count == 0 {
-                    // Subtract remaining tiles in racks
-                    for player in players {
-                        player.score = player.rackTiles.mapFilter({$0.value}).reduce(player.score, combine: -)
-                    }
-                    // Complete the game
-                    lifecycleCallback?(.Completed, self)
-                } else {
-                    // Change player
-                    nextPlayer()
-                    // Get playable boundaries
-                    // Collect prospects for boundaries (anagramsOf + firstRackTile)
-                    // Attempt AI play
-                    print(possibilities())
-                    
-                    nextPlayer()
-                    
+            player.score += value
+            
+            // Draw new tiles. If count == 0 && rackCount == 0 complete game
+            if replenishRack(player) == 0 && player.rackTiles.count == 0 {
+                // Subtract remaining tiles in racks
+                for player in players {
+                    player.score = player.rackTiles.mapFilter({$0.value}).reduce(player.score, combine: -)
                 }
+                // Complete the game
+                lifecycleCallback?(.Completed, self)
             }
         }
         return value

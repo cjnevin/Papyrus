@@ -59,4 +59,6 @@ enum ValidationError: ErrorType {
     case UndefinedWord(String)
     case Message(String)
     case NoBoundary
+    case NoPlayer
+    case NoOptions
 }

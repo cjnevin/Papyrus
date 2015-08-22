@@ -104,7 +104,30 @@ extension Papyrus {
         print(positions)
         //if positions.count < 1 { throw ValidationError.InvalidArrangement }
         if positions.count == 1 {
+            var newFirst = positions.first!.switchDirection(.Prev)
+            newFirst = next(newFirst, last: newFirst)
             
+            var newLast = positions.first!.switchDirection(.Next)
+            newLast = next(newLast, last: newLast)
+            
+            let possibleBoundary = Boundary(start: newFirst, end: newLast)
+            
+            if newFirst.iterable != newLast.iterable {
+                return possibleBoundary
+            } else {
+                // Try other axis...
+                var otherAxisFirst = positions.first!.otherAxis(.Prev)
+                otherAxisFirst = next(otherAxisFirst, last: otherAxisFirst)
+                
+                var otherAxisLast = positions.first!.otherAxis(.Next)
+                otherAxisLast = next(otherAxisLast, last: otherAxisLast)
+                
+                if otherAxisLast.iterable != otherAxisLast.iterable {
+                    return Boundary(start: otherAxisFirst, end: otherAxisLast)
+                } else {
+                    return possibleBoundary
+                }
+            }
         } else {
             if let first = positions.first, last = positions.last {
                 var newFirst = first.switchDirection(.Prev)
@@ -210,13 +233,15 @@ extension Papyrus {
             for i in startPosition.iterable...endPosition.iterable {
                 let s = i > start.iterable ? start.iterable : i
                 let e = i < end.iterable ? end.iterable : i
-                if e - s < 11 {
-                    guard let iterationStart = Position.newPosition(boundary.start.axis, iterable: s, fixed: start.fixed),
-                        iterationEnd = Position.newPosition(boundary.end.axis, iterable: e, fixed: end.fixed) else { continue }
-                    let boundary = Boundary(start: iterationStart, end: iterationEnd)
-                    if currentBoundaries.filter({$0.start == iterationStart && $0.end == iterationStart}).count == 0 {
-                        currentBoundaries.append(boundary)
-                    }
+                guard let
+                    iterationStart = Position.newPosition(boundary.start.axis, iterable: s, fixed: start.fixed),
+                    iterationEnd = Position.newPosition(boundary.end.axis, iterable: e, fixed: end.fixed) else {
+                        print("A: Skipped \(i)")
+                        continue
+                }
+                let boundary = Boundary(start: iterationStart, end: iterationEnd)
+                if currentBoundaries.filter({$0.start == iterationStart && $0.end == iterationStart}).count == 0 {
+                    currentBoundaries.append(boundary)
                 }
             }
             
@@ -225,7 +250,10 @@ extension Papyrus {
             
             for i in boundary.start.iterable...boundary.end.iterable {
                 guard let startPosition = Position.newPosition(inverseAxisStart, iterable: start.fixed, fixed: i),
-                    endPosition = Position.newPosition(inverseAxisEnd, iterable: end.fixed, fixed: i) else { continue }
+                    endPosition = Position.newPosition(inverseAxisEnd, iterable: end.fixed, fixed: i) else {
+                        print("B: Skipped \(i)")
+                        continue
+                }
                 
                 let iterationStart = getPositionLoop(startPosition)
                 let iterationEnd = getPositionLoop(endPosition)
