@@ -11,14 +11,17 @@ import Foundation
 typealias Boundaries = [Boundary]
 
 func == (lhs: Boundary, rhs: Boundary) -> Bool {
-    return lhs.debugDescription == rhs.debugDescription
+    return lhs.hashValue == rhs.hashValue
 }
 
-struct Boundary: CustomDebugStringConvertible, Equatable {
+struct Boundary: CustomDebugStringConvertible, Equatable, Hashable {
     let start: Position
     let end: Position
     var length: Int {
         return end.iterable - start.iterable
+    }
+    var hashValue: Int {
+        return debugDescription.hashValue
     }
     var debugDescription: String {
         return "\(start.axis): \(start.iterable),\(start.fixed) - \(end.iterable),\(end.fixed)"
@@ -222,49 +225,57 @@ extension Papyrus {
     /// - Parameter boundaries: Boundaries to use for intersection.
     /// - Returns: Areas where play may be possible intersecting the given boundaries.
     func findPlayableBoundaries(boundaries: Boundaries) -> Boundaries {
-        var allBoundaries = Boundaries()
+        var allBoundaries = Set<Boundary>()
         for boundary in boundaries {
             assert(boundary.isValid)
-            var currentBoundaries = Boundaries()
+            var currentBoundaries = Set<Boundary>()
             let startPosition = getPositionLoop(boundary.start)
             let endPosition = getPositionLoop(boundary.end)
             let start = boundary.start
             let end = boundary.end
             for i in startPosition.iterable...endPosition.iterable {
+                // Restrict start index to include the entire word.
                 let s = i > start.iterable ? start.iterable : i
+                // Restrict end index to include the entire word.
                 let e = i < end.iterable ? end.iterable : i
+                // Skip same boundary as existing word.
+                if s == start.iterable && e == end.iterable {
+                    continue
+                }
+                // Create positions, if possible
                 guard let
                     iterationStart = Position.newPosition(boundary.start.axis, iterable: s, fixed: start.fixed),
                     iterationEnd = Position.newPosition(boundary.end.axis, iterable: e, fixed: end.fixed) else {
                         print("A: Skipped \(i)")
                         continue
                 }
+                // Compare boundary before adding to array
                 let boundary = Boundary(start: iterationStart, end: iterationEnd)
-                if currentBoundaries.filter({$0.start == iterationStart && $0.end == iterationStart}).count == 0 {
-                    currentBoundaries.append(boundary)
-                }
+                currentBoundaries.insert(boundary)
+                //print("Added same axis boundary: \(boundary)")
             }
             
             let inverseAxisStart = boundary.start.axis.inverse(.Prev)
             let inverseAxisEnd = boundary.end.axis.inverse(.Next)
             
             for i in boundary.start.iterable...boundary.end.iterable {
+                // Attempt to create inverse positions.
                 guard let startPosition = Position.newPosition(inverseAxisStart, iterable: start.fixed, fixed: i),
                     endPosition = Position.newPosition(inverseAxisEnd, iterable: end.fixed, fixed: i) else {
                         print("B: Skipped \(i)")
                         continue
                 }
-                
+                // Iterate until we use all tiles or find an invalid position.
                 let iterationStart = getPositionLoop(startPosition)
                 let iterationEnd = getPositionLoop(endPosition)
+                // Insert boundary
                 let boundary = Boundary(start: iterationStart, end: iterationEnd)
-                if currentBoundaries.filter({$0.start == iterationStart && $0.end == iterationEnd}).count == 0 {
-                    currentBoundaries.append(boundary)
-                }
+                currentBoundaries.insert(boundary)
+                //print("Added inverse axis boundary: \(boundary)")
             }
-            
-            allBoundaries.extend(currentBoundaries)
+            allBoundaries.unionInPlace(currentBoundaries)
         }
-        return allBoundaries
+        print("Boundaries: \(allBoundaries)")
+        return Array(allBoundaries)
     }
 }
