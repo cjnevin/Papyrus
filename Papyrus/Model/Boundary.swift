@@ -221,59 +221,64 @@ extension Papyrus {
         return nil
     }
     
+    /// Find all possible boundaries for a words boundary.
+    private func findSameAxisPlaysForBoundary(boundary: Boundary) -> Set<Boundary> {
+        var currentBoundaries = Set<Boundary>()
+        let start = boundary.start, end = boundary.end
+        // Find first and last possible position using rack tiles, skipping filled squares.
+        let startPosition = getPositionLoop(boundary.start)
+        let endPosition = getPositionLoop(boundary.end)
+        for i in startPosition.iterable...endPosition.iterable {
+            // Restrict start index to include the entire word.
+            let s = i > start.iterable ? start.iterable : i
+            // Restrict end index to include the entire word.
+            let e = i < end.iterable ? end.iterable : i
+            // Skip same boundary as existing word.
+            if s == start.iterable && e == end.iterable {
+                continue
+            }
+            // Create positions, if possible
+            guard let
+                iterationStart = Position.newPosition(boundary.start.axis, iterable: s, fixed: start.fixed),
+                iterationEnd = Position.newPosition(boundary.end.axis, iterable: e, fixed: end.fixed) else {
+                    print("A: Skipped \(i)")
+                    continue
+            }
+            // Compare boundary before adding to array
+            let newBoundary = Boundary(start: iterationStart, end: iterationEnd)
+            currentBoundaries.insert(newBoundary)
+        }
+        return currentBoundaries
+    }
+    
     /// This method will be used by AI to determine location where play is allowed.
     /// - Parameter boundaries: Boundaries to use for intersection.
     /// - Returns: Areas where play may be possible intersecting the given boundaries.
     func findPlayableBoundaries(boundaries: Boundaries) -> Boundaries {
         var allBoundaries = Set<Boundary>()
         for boundary in boundaries {
-            assert(boundary.isValid)
-            var currentBoundaries = Set<Boundary>()
-            let startPosition = getPositionLoop(boundary.start)
-            let endPosition = getPositionLoop(boundary.end)
-            let start = boundary.start
-            let end = boundary.end
-            for i in startPosition.iterable...endPosition.iterable {
-                // Restrict start index to include the entire word.
-                let s = i > start.iterable ? start.iterable : i
-                // Restrict end index to include the entire word.
-                let e = i < end.iterable ? end.iterable : i
-                // Skip same boundary as existing word.
-                if s == start.iterable && e == end.iterable {
-                    continue
-                }
-                // Create positions, if possible
-                guard let
-                    iterationStart = Position.newPosition(boundary.start.axis, iterable: s, fixed: start.fixed),
-                    iterationEnd = Position.newPosition(boundary.end.axis, iterable: e, fixed: end.fixed) else {
-                        print("A: Skipped \(i)")
-                        continue
-                }
-                // Compare boundary before adding to array
-                let boundary = Boundary(start: iterationStart, end: iterationEnd)
-                currentBoundaries.insert(boundary)
-                //print("Added same axis boundary: \(boundary)")
-            }
             
+            allBoundaries.unionInPlace(findSameAxisPlaysForBoundary(boundary))
+            
+            // Iterate length of word on other axis, collecting perpendicular tiles
             let inverseAxisStart = boundary.start.axis.inverse(.Prev)
             let inverseAxisEnd = boundary.end.axis.inverse(.Next)
             
+            // Iterate all positions on same axis, then flip to other axis and iterate until we find maximum play size.
             for i in boundary.start.iterable...boundary.end.iterable {
-                // Attempt to create inverse positions.
-                guard let startPosition = Position.newPosition(inverseAxisStart, iterable: start.fixed, fixed: i),
-                    endPosition = Position.newPosition(inverseAxisEnd, iterable: end.fixed, fixed: i) else {
-                        print("B: Skipped \(i)")
-                        continue
+                // Get positions for current square so we can iterate left/right.
+                // Loop until we hit an empty square.
+                guard let
+                    axisStartPosition = Position.newPosition(inverseAxisStart, iterable: boundary.start.fixed, fixed: i),
+                    axisEndPosition = Position.newPosition(inverseAxisEnd, iterable: boundary.end.fixed, fixed: i) else {
+                    print("Skipped!")
+                    continue
                 }
-                // Iterate until we use all tiles or find an invalid position.
-                let iterationStart = getPositionLoop(startPosition)
-                let iterationEnd = getPositionLoop(endPosition)
-                // Insert boundary
-                let boundary = Boundary(start: iterationStart, end: iterationEnd)
-                currentBoundaries.insert(boundary)
-                //print("Added inverse axis boundary: \(boundary)")
+                let wordStart = loop(axisStartPosition) ?? axisStartPosition
+                let wordEnd = loop(axisEndPosition) ?? axisEndPosition
+                let newBoundary = Boundary(start: wordStart, end: wordEnd)
+                allBoundaries.unionInPlace(findSameAxisPlaysForBoundary(newBoundary))
             }
-            allBoundaries.unionInPlace(currentBoundaries)
         }
         print("Boundaries: \(allBoundaries)")
         return Array(allBoundaries)
