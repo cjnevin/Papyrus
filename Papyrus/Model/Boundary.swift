@@ -103,7 +103,7 @@ extension Papyrus {
     
     ///  Get boundary of sprites we have played.
     ///  - returns: Boundary or nil.
-    func getBoundary(positions: [Position]) -> Boundary? {
+    func boundary(forPositions positions: [Position]) -> Boundary? {
         print(positions)
         //if positions.count < 1 { throw ValidationError.InvalidArrangement }
         if positions.count == 1 {
@@ -147,7 +147,7 @@ extension Papyrus {
     ///  - parameter current: Current position to check.
     ///  - parameter last:    Previous position to restore to if current fails.
     ///  - returns: Last position with a valid tile.
-    func next(current: Position, last: Position) -> Position {
+    private func next(current: Position, last: Position) -> Position {
         if emptyAt(current) || current.isInvalid {
             return last
         } else {
@@ -157,13 +157,17 @@ extension Papyrus {
         }
     }
     
-    /// - Parameter boundary: Boundary of tiles that have been dropped on the board.
+    /// - Parameter boundary: Boundary containing tiles that have been dropped on the board.
     /// - Returns: Array of boundaries that intersect the supplied boundary.
     func walkBoundary(boundary: Boundary) -> [Boundary] {
         var boundaries = [Boundary]()
-        let prevAxis = boundary.start.isHorizontal ? Axis.Vertical(.Prev) : Axis.Horizontal(.Prev)
-        let nextAxis = boundary.start.isHorizontal ? Axis.Vertical(.Next) : Axis.Horizontal(.Next)
+        let horizontal = boundary.start.isHorizontal
+        // Flip axis
+        let prevAxis = horizontal ? Axis.Vertical(.Prev) : Axis.Horizontal(.Prev)
+        let nextAxis = horizontal ? Axis.Vertical(.Next) : Axis.Horizontal(.Next)
+        // Iterate each position in boundary
         for index in boundary.start.iterable...boundary.end.iterable {
+            // Flip fixed/iterable values, use index as fixed value.
             var first = Position(axis: prevAxis, iterable: boundary.start.fixed, fixed: index)
             var last = Position(axis: nextAxis, iterable: boundary.start.fixed, fixed: index)
             first = next(first, last: first)
@@ -175,8 +179,6 @@ extension Papyrus {
         print(boundaries)
         return boundaries
     }
-    
-    
     
     /// Calculate score for a given boundary.
     /// - Parameter boundary: The boundary you want the score of.
@@ -200,25 +202,6 @@ extension Papyrus {
         if start.iterable >= end.iterable { return nil }
         return String((start.iterable...end.iterable).mapFilter({
             letterAt(start.isHorizontal, iterable: $0, fixed: start.fixed)}))
-    }
-    
-    /// Create a boundary if positions are valid. Does not validate iterable values all exist.
-    /// - Parameter positions: Array of positions to put a boundary around or nil.
-    func boundary(forPositions positions: [Position]) -> Boundary? {
-        if positions.count == 0 { return nil }
-        let fixed = positions.sort({$0.fixed < $1.fixed})
-        if fixed.first?.fixed == fixed.last?.fixed {
-            let iterable = positions.sort({$0.iterable < $1.iterable})
-            if let first = iterable.first, last = iterable.last {
-                return Boundary(
-                    start: first,
-                    end: Position(
-                        axis: last.isHorizontal ? Axis.Horizontal(.Next) : Axis.Vertical(.Next),
-                        iterable: last.iterable,
-                        fixed: last.fixed))
-            }
-        }
-        return nil
     }
     
     /// Find all possible boundaries for a words boundary.
@@ -251,6 +234,8 @@ extension Papyrus {
         return currentBoundaries
     }
     
+    // TODO: Fix this method, some of these boundaries don't include complete words.
+    // Not sure which axis is incorrect.
     /// This method will be used by AI to determine location where play is allowed.
     /// - Parameter boundaries: Boundaries to use for intersection.
     /// - Returns: Areas where play may be possible intersecting the given boundaries.

@@ -32,28 +32,34 @@ struct Position: Equatable, Hashable {
     func atEdgeOfBoard(z: Int) -> Bool {
         return z == 0 || z == PapyrusDimensions - 1
     }
-    /// - Returns: Value of next item in a given direction.
+    /// - Returns: Value of next item in a given direction. Enforces boundaries.
     private func adjust(z: Int, dir: Direction) -> Int {
         let n = dir == .Next ? z + 1 : z - 1
         return outOfBounds(n) ? z : n
     }
-    /// - Returns: New position in direction defined by Axis.
+    /// - Returns: New position in direction defined by Axis. Boundaries are enforced.
     func newPosition() -> Position {
-        return Position(axis: axis, iterable: adjust(iterable, dir: axis.direction), fixed: fixed)
+        return Position(axis: axis,
+            iterable: adjust(iterable, dir: axis.direction),
+            fixed: fixed)
     }
     /// - Returns: Position on alternate axis.
     func otherAxis(direction: Direction) -> Position {
-        return Position(axis: axis.inverse(direction), iterable: iterable, fixed: fixed)
+        return Position(axis: axis.inverse(direction),
+            iterable: iterable,
+            fixed: fixed)
     }
     /// - Returns: Position with opposite direction.
     func changeDirection(direction: Direction) -> Position {
-        return Position(axis: self.isHorizontal ? Axis.Horizontal(direction) : Axis.Vertical(direction),
-            iterable: self.isHorizontal ? fixed : iterable,
-            fixed: self.isHorizontal ? iterable : fixed)
+        let horizontal = isHorizontal
+        return Position(axis: horizontal ? Axis.Horizontal(direction) : Axis.Vertical(direction),
+            iterable: horizontal ? fixed : iterable,
+            fixed: horizontal ? iterable : fixed)
     }
-    /// - Returns: Position with opposite direction, does not flip iterable/fixed.
+    /// - Returns: Position with new direction (or self if unnecessary), does not flip iterable/fixed.
     func switchDirection(direction: Direction) -> Position {
-        return Position(axis: self.isHorizontal ? Axis.Horizontal(direction) : Axis.Vertical(direction),
+        if axis.direction == direction { return self }
+        return Position(axis: isHorizontal ? Axis.Horizontal(direction) : Axis.Vertical(direction),
             iterable:iterable,
             fixed:fixed)
     }

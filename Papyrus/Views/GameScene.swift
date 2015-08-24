@@ -152,7 +152,7 @@ class GameScene: SKScene, GameSceneProtocol {
         if positions.count < 1 { print("insufficient tiles"); return }
         //if positions.count == 1 { print("special logic"); return }
         if positions.count >= 1 {
-            if let boundary = game.getBoundary(positions) {
+            if let boundary = game.boundary(forPositions: positions) {
                 do {
                     let score = try game.play(boundary, submit: false)
                     actionDelegate?.boundariesChanged(boundary, error: nil, score: score)
@@ -184,7 +184,7 @@ class GameScene: SKScene, GameSceneProtocol {
             tile.resetPosition(origin)
         }
         let positions = getPositions()
-        if let boundary = game.getBoundary(positions) {
+        if let boundary = game.boundary(forPositions: positions) {
             let _ = try game.play(boundary, submit: true)
             replaceRackSprites()
             // Change player
@@ -206,9 +206,11 @@ class GameScene: SKScene, GameSceneProtocol {
             }
         }
         
-        
-        /*var neededTilePositions = [(Square, Tile)]()
+        var neededTilePositions = [(Square, Tile)]()
         try game.playAI(&neededTilePositions)
+        
+        // TODO: INVERSE AXIS IS WRONG NEED TO ITERATE BOUNDARY FOR EACH STEP WITH GIVEN START/END POINT AROUND CURRENT TILE
+        // ASSUME CONTINUE UNTIL WE HIT AN EMPTY SQUARE.
         
         // TODO: Fix playable boundaries, not going to end of line.
         // Played: UNPIN (actually appended to UN-PINIONS)
@@ -217,7 +219,7 @@ class GameScene: SKScene, GameSceneProtocol {
             tileSprites.append(tileSprite)
             let squareSprite = squareSprites.filter({$0.square == square}).first
             squareSprite?.placeTileSprite(tileSprite)
-        }*/
+        }
         // Change player
         game.nextPlayer()
     }
