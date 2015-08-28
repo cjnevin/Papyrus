@@ -52,8 +52,9 @@ extension Papyrus {
     
     /// - Parameter position: Position to check.
     /// - Returns: Whether there is a tile at a given position.
-    func emptyAt(position: Position?) -> Bool {
-        return squareAt(position)?.tile == nil
+    func emptyAt(position: Position) -> Bool? {
+        guard let square = squareAt(position) else { return nil }
+        return square.tile == nil
     }
     
     /// - Returns: Letter for a given position.

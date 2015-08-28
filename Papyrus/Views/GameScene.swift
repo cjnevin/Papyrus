@@ -162,7 +162,7 @@ class GameScene: SKScene, GameSceneProtocol {
                     case .InvalidArrangement: print("invalid arrangement")
                     case .NoCenterIntersection: print("no center")
                     case .NoIntersection: print("no intersection")
-                    case .UnfilledSquare: print("skipped square")
+                    case .UnfilledSquare(_): print("skipped square")
                     case .UndefinedWord(let word): print("undefined \(word)")
                     case .Message(let message): print(message)
                     default: break
@@ -194,7 +194,7 @@ class GameScene: SKScene, GameSceneProtocol {
     
     /// Attempt AI move.
     func attemptAIPlay() throws {
-        
+        /*
         let boundaries = game.findPlayableBoundaries(game.playedBoundaries)
         for boundary in boundaries {
             for index in boundary.start.iterable...boundary.end.iterable {
@@ -205,9 +205,13 @@ class GameScene: SKScene, GameSceneProtocol {
                 }
             }
         }
-        
+        */
         var neededTilePositions = [(Square, Tile)]()
         try game.playAI(&neededTilePositions)
+        
+        let spriteArray = sprites(neededTilePositions.map({$0.0}))
+        spriteArray.map({$0.background.color = UIColor.purpleColor()})
+        
         
         // TODO: INVERSE AXIS IS WRONG NEED TO ITERATE BOUNDARY FOR EACH STEP WITH GIVEN START/END POINT AROUND CURRENT TILE
         // ASSUME CONTINUE UNTIL WE HIT AN EMPTY SQUARE.

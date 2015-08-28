@@ -148,7 +148,7 @@ extension Papyrus {
     ///  - parameter last:    Previous position to restore to if current fails.
     ///  - returns: Last position with a valid tile.
     private func next(current: Position, last: Position) -> Position {
-        if emptyAt(current) || current.isInvalid {
+        if emptyAt(current) == true || current.isInvalid {
             return last
         } else {
             let new = current.newPosition()
@@ -209,27 +209,37 @@ extension Papyrus {
         var currentBoundaries = Set<Boundary>()
         let start = boundary.start, end = boundary.end
         // Find first and last possible position using rack tiles, skipping filled squares.
+        // This should be refactored, so that if we hit two empty squares we know we can play a move, if we just hit one and
+        // the following square is filled we need to backout.
         let startPosition = getPositionLoop(boundary.start)
         let endPosition = getPositionLoop(boundary.end)
         for i in startPosition.iterable...endPosition.iterable {
             // Restrict start index to include the entire word.
-            let s = i > start.iterable ? start.iterable : i
+            let s = i >= start.iterable ? start.iterable : i
             // Restrict end index to include the entire word.
-            let e = i < end.iterable ? end.iterable : i
+            let e = i <= end.iterable ? end.iterable : i
+            // Ensure previous index is empty
+            if let startMinusOne = Position.newPosition(start.axis, iterable: s - 1, fixed: start.fixed)
+                where emptyAt(startMinusOne) == false { continue }
+            
+            // Ensure next index is empty
+            if let endPlusOne = Position.newPosition(end.axis, iterable: e + 1, fixed: end.fixed)
+                where emptyAt(endPlusOne) == false { continue }
+            
             // Skip same boundary as existing word.
             if s == start.iterable && e == end.iterable {
                 continue
             }
             // Create positions, if possible
-            guard let
-                iterationStart = Position.newPosition(boundary.start.axis, iterable: s, fixed: start.fixed),
-                iterationEnd = Position.newPosition(boundary.end.axis, iterable: e, fixed: end.fixed) else {
-                    print("A: Skipped \(i)")
-                    continue
-            }
+            let iStart = Position(axis: start.axis, iterable: s, fixed: start.fixed)
+            let iEnd = Position(axis: end.axis, iterable: e, fixed: end.fixed)
             // Compare boundary before adding to array
-            let newBoundary = Boundary(start: iterationStart, end: iterationEnd)
-            currentBoundaries.insert(newBoundary)
+            let iBoundary = Boundary(start: iStart, end: iEnd)
+            assert(iStart.iterable <= start.iterable, "Start is invalid")
+            assert(iEnd.iterable >= end.iterable, "End is invalid")
+            if iBoundary.isValid {
+                currentBoundaries.insert(iBoundary)
+            }
         }
         return currentBoundaries
     }

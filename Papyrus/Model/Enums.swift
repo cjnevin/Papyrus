@@ -51,7 +51,7 @@ enum Placement {
 }
 
 enum ValidationError: ErrorType {
-    case UnfilledSquare
+    case UnfilledSquare([Square?])
     case InvalidArrangement
     case InsufficientTiles
     case NoCenterIntersection

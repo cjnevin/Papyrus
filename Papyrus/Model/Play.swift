@@ -25,7 +25,6 @@ extension Papyrus {
         for (boundary, tiles) in possibles {
             print("Playable: \(String(tiles.mapFilter({$0.letter}))) -- \(boundary)")
         }
-        return
         if let (aiBoundary, aiTiles) = possibles.last {
             var aiTileIndex = 0
             for iterable in aiBoundary.start.iterable...aiBoundary.end.iterable {
@@ -78,7 +77,7 @@ extension Papyrus {
         // If boundary contains squares that are empty, fail.
         let tiles = tilesIn(boundary)
         if tiles.count - 1 != boundary.length {
-            throw ValidationError.UnfilledSquare
+            throw ValidationError.UnfilledSquare(squaresIn(boundary))
         }
         
         // If no words have been played ensure that tile count is valid.

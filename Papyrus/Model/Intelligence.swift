@@ -11,7 +11,7 @@ import Foundation
 typealias BoundaryTiles = (Boundary, [Tile])
 
 extension Papyrus {
-    
+
     func possibilities(player: Player) -> [BoundaryTiles]? {
         guard let source = Lexicon.sharedInstance.dictionary else { return nil }
         var boundaryTiles = [BoundaryTiles]()
@@ -34,9 +34,11 @@ extension Papyrus {
             // Optional(["C", "W", "T", "G", "E", "L", "T"])
             // Word played = AR
             // Word suggested to play: AROW - no O.
+            // This is highly unreliable.
             Lexicon.sharedInstance.anagramsOf(letters, length: boundary.length + 1, prefix: "",
                 fixedLetters: indexedCharacters, fixedCount: indexedCharacters.count,
                 source: source, results: &results)
+            print("Anagrams using: \(letters) with length: \(boundary.length)")
             
             print(indexedCharacters)
             print(results)

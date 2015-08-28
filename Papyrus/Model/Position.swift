@@ -95,7 +95,7 @@ extension Papyrus {
     func getPositionLoop(initial: Position) -> Position {
         var counter = player?.rackTiles.count ?? 0
         func decrementer(position: Position) -> Bool {
-            if emptyAt(position) { counter-- }
+            if emptyAt(position) != false { counter-- }
             return counter > -1 && !position.isInvalid
         }
         let position = loop(initial, validator: decrementer) ?? initial
