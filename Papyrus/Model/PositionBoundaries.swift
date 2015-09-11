@@ -22,7 +22,7 @@ extension Papyrus {
                 }
             }
         }
-        var sorted = positionBoundaries.keys.sort { (lhs, rhs) -> Bool in
+        let sorted = positionBoundaries.keys.sort { (lhs, rhs) -> Bool in
             return lhs.iterable < rhs.iterable
         }
         if let first = sorted.first, last = sorted.last where first != last {

@@ -8,11 +8,14 @@
 
 import Foundation
 
+typealias PlayAISquareTiles = [(Square, Tile)]
+typealias PlayAIOutput = (score: Int, squareTiles: PlayAISquareTiles)
+
 extension Papyrus {
     
     ///  Attempt to play an AI move.
     ///  - parameter neededTilePositions: Tiles to add to the board if successful.
-    func playAI(inout neededTilePositions: [(Square,Tile)]) throws {
+    func playAI() throws -> PlayAIOutput {
         assert(playerIndex != 0)
         
         guard let player = player else { throw ValidationError.NoPlayer }
@@ -25,7 +28,12 @@ extension Papyrus {
         for (boundary, tiles) in possibles {
             print("Playable: \(String(tiles.mapFilter({$0.letter}))) -- \(boundary)")
         }
-        if let (aiBoundary, aiTiles) = possibles.last {
+        
+        var best: (score: Int, output: PlayAISquareTiles, configuration: BoundaryTiles)?
+        for boundaryTiles in possibles {
+            var output = PlayAISquareTiles()
+            let aiBoundary = boundaryTiles.0
+            let aiTiles = boundaryTiles.1
             var aiTileIndex = 0
             for iterable in aiBoundary.start.iterable...aiBoundary.end.iterable {
                 let position = Position(axis: aiBoundary.start.axis, iterable: iterable, fixed: aiBoundary.start.fixed)
@@ -34,7 +42,7 @@ extension Papyrus {
                 if tile.placement != .Fixed {
                     tile.placement = .Fixed
                     square?.tile = tile
-                    neededTilePositions.append((square!, tile))
+                    output.append((square!, tile))
                 }
                 aiTileIndex++
             }
@@ -42,17 +50,27 @@ extension Papyrus {
             print("Played: \(String(aiTiles.mapFilter({$0.letter})))")
             print("Boundary: \(aiBoundary)")
             do {
-                try play(aiBoundary, submit: true)
+                let points = try play(aiBoundary, submit: false)
+                if points > best?.score {
+                    best?.score = points
+                    best?.configuration = boundaryTiles
+                    best?.output = output
+                }
             } catch {
                 // Reverse changes...
-                for (square, tile) in neededTilePositions {
+                for (square, tile) in output {
                     square.tile = nil
                     tile.placement = .Rack
                 }
-                neededTilePositions.removeAll()
+                output.removeAll()
                 print("Failed! \(error)")
             }
         }
+        if let best = best {
+            try play(best.configuration.0, submit: true)
+            return (score: best.score, squareTiles: best.output)
+        }
+        throw ValidationError.NoOptions
     }
     
     /// - Parameter boundary: Boundary to check.
@@ -60,6 +78,8 @@ extension Papyrus {
     /// - Throws: If boundary cannot be played you will receive a ValidationError.
     /// - Returns: Score of word including intersecting words.
     func play(boundary: Boundary, submit: Bool) throws -> Int {
+        
+        print(boundary)
         
         // Throw error if no player...
         guard let player = player else { throw ValidationError.NoPlayer }
@@ -123,19 +143,44 @@ extension Papyrus {
         print("Score: \(value)")
         
         // If final, add boundaries to played boundaries.
+        // TODO: Replacing outdated existing boundaries, so we don't walk them again later when looking for potential plays.
         if submit {
             // Add boundaries to played boundaries
             var finalBoundaries = [boundary]
-            finalBoundaries.extend(intersections)
+            finalBoundaries.appendContentsOf(intersections)
             for finalBoundary in finalBoundaries {
-                if playedBoundaries.filter({$0.start == finalBoundary.start && $0.end == finalBoundary.end}).count == 0 {
-                   playedBoundaries.append(finalBoundary)
+                if playedBoundaries.filter({$0.start.axis.direction == finalBoundary.start.axis.direction &&
+                    $0.start == finalBoundary.start && $0.end == finalBoundary.end}).count == 0 {
+                    assert(playedBoundaries.filter({$0.start.axis.direction == finalBoundary.start.axis.direction
+                        && $0.start.fixed == finalBoundary.start.fixed}).count < 2, "Must be less than 2")
+                    
+                    // Adjust existing item
+                    if let index = playedBoundaries.indexOf({$0.start.axis.direction == finalBoundary.start.axis.direction
+                        && $0.start.fixed == finalBoundary.start.fixed}) {
+                            let start = playedBoundaries[index].start
+                            let end = playedBoundaries[index].end
+                            let newStart = min(start.iterable, finalBoundary.start.iterable)
+                            let newEnd = max(end.iterable, finalBoundary.end.iterable)
+                            if let adjustedStart = Position.newPosition(start.axis, iterable: newStart, fixed: start.fixed),
+                                adjustedEnd = Position.newPosition(end.axis, iterable: newEnd, fixed: end.fixed) {
+                                    let newBoundary = Boundary(start: adjustedStart, end: adjustedEnd)
+                                    print("Existing \(playedBoundaries[index]),  Adjusted \(newBoundary)")
+                                    playedBoundaries.removeAtIndex(index)
+                                    playedBoundaries.append(newBoundary)
+                                    continue
+                            }
+                    }
+                    
+                    // Create new
+                    playedBoundaries.append(finalBoundary)
                 }
             }
             // Change tiles to 'fixed'
-            tiles.map({$0.placement = Placement.Fixed})
+            tiles.forEach({$0.placement = Placement.Fixed})
             // Increment score
             player.score += value
+            
+            print(playedBoundaries)
             
             // Draw new tiles. If count == 0 && rackCount == 0 complete game
             if replenishRack(player) == 0 && player.rackTiles.count == 0 {

@@ -82,7 +82,7 @@ class GameViewController: UIViewController, GameSceneDelegate, UITextFieldDelega
     func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange, replacementString string: String) -> Bool {
         // Filter alphabet, allow only one character
         let charSet = NSCharacterSet(charactersInString: "ABCDEFGHIJKLMNOPQRSTUVWXYZ").invertedSet
-        let filtered = "".join(string.componentsSeparatedByCharactersInSet(charSet))
+        let filtered = string.componentsSeparatedByCharactersInSet(charSet).joinWithSeparator("")
         let current: NSString = textField.text ?? ""
         let newLength = current.stringByReplacingCharactersInRange(range, withString: string).lengthOfBytesUsingEncoding(NSUTF8StringEncoding)
         return filtered == string && (newLength == 0 || newLength == 1)
@@ -117,10 +117,16 @@ class GameViewController: UIViewController, GameSceneDelegate, UITextFieldDelega
         }
         
         if scene?.game.playerIndex != 0 {
-            do {
-                try scene?.attemptAIPlay()
-            } catch {
-                print("Failure!")
+            var succeeded = false
+            var counter = 0
+            while succeeded == false && counter < 5 {
+                do {
+                    try scene?.attemptAIPlay()
+                    succeeded = true
+                } catch {
+                    print("Failure!")
+                    counter++
+                }
             }
         }
         

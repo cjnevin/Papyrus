@@ -28,7 +28,7 @@ struct Lexicon {
         var index = word.startIndex
         for char in word.uppercaseString.characters {
             if let inner = current?[String(char)] as? LexiconType {
-                index = advance(index, 1)
+                index = index.advancedBy(1)
                 if index == word.endIndex {
                     guard let def = inner[DefKey] as? String else {
                         throw ValidationError.UndefinedWord(word)

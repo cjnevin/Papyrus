@@ -39,8 +39,8 @@ class GameScene: SKScene, GameSceneProtocol {
     /// - SeeAlso: `replaceRackSprites()`, `TileSprite.illuminate()`, `TileSprite.deilluminate()`
     private func completeMove(withTiles moveTiles: [Tile]) {
         // Light up the words we touched...
-        tileSprites.map{ $0.deilluminate() }
-        tileSprites.filter{ moveTiles.contains($0.tile) }.map{ $0.illuminate() }
+        tileSprites.forEach{ $0.deilluminate() }
+        tileSprites.filter{ moveTiles.contains($0.tile) }.forEach{ $0.illuminate() }
         // Remove existing rack sprites.
         if game.playerIndex == 0 {
             replaceRackSprites()
@@ -79,8 +79,8 @@ class GameScene: SKScene, GameSceneProtocol {
     /// Create sprites representing squares in Papyrus game, only called once.
     private func createSquareSprites() {
         if squareSprites.count == 0 {
-            squareSprites.extend(Papyrus.createSquareSprites(forGame: game, frame: self.frame))
-            squareSprites.filter{ $0.parent == nil }.map{ self.addChild($0) }
+            squareSprites.appendContentsOf(Papyrus.createSquareSprites(forGame: game, frame: self.frame))
+            squareSprites.filter{ $0.parent == nil }.forEach{ self.addChild($0) }
         }
     }
     
@@ -92,19 +92,19 @@ class GameScene: SKScene, GameSceneProtocol {
         // Remove existing rack sprites.
         let rackSprites = tileSprites.filter({ (game.player?.rackTiles.contains($0.tile)) == true })
         tileSprites = tileSprites.filter{ !rackSprites.contains($0) }
-        rackSprites.map{ $0.removeFromParent() }
+        rackSprites.forEach{ $0.removeFromParent() }
         // Create new rack sprites in new positions.
         let boardSize = CGRectGetWidth(frame) / CGFloat(PapyrusDimensions) * CGFloat(PapyrusDimensions + 1)
         let newFrame = CGRectMake(frame.origin.x, frame.origin.y, frame.size.width, frame.size.height - boardSize)
-        tileSprites.extend(Papyrus.createRackSprites(forGame: game, frame: newFrame))
-        tileSprites.filter{ $0.parent == nil }.map{ self.addChild($0) }
+        tileSprites.appendContentsOf(Papyrus.createRackSprites(forGame: game, frame: newFrame))
+        tileSprites.filter{ $0.parent == nil }.forEach{ self.addChild($0) }
     }
     
     /// Remove all tile sprites from game.
     private func cleanupSprites() {
-        tileSprites.map{ $0.removeFromParent() }
+        tileSprites.forEach{ $0.removeFromParent() }
         tileSprites.removeAll()
-        squareSprites.map { $0.tileSprite = nil }
+        squareSprites.forEach { $0.tileSprite = nil }
     }
     
     /// - Returns: All sprites for squares contained in array.
@@ -206,6 +206,18 @@ class GameScene: SKScene, GameSceneProtocol {
             }
         }
         */
+        
+        let (_, squareTiles) = try game.playAI()
+        for (square, tile) in squareTiles {
+            let tileSprite = TileSprite.sprite(withTile: tile)
+            tileSprites.append(tileSprite)
+            let squareSprite = squareSprites.filter({$0.square == square}).first
+            squareSprite?.placeTileSprite(tileSprite)
+        }
+        // Change player
+        game.nextPlayer()
+        /*
+        
         var neededTilePositions = [(Square, Tile)]()
         try game.playAI(&neededTilePositions)
         
@@ -225,6 +237,6 @@ class GameScene: SKScene, GameSceneProtocol {
             squareSprite?.placeTileSprite(tileSprite)
         }
         // Change player
-        game.nextPlayer()
+        game.nextPlayer()*/
     }
 }
