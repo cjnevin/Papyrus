@@ -100,7 +100,7 @@ extension Papyrus {
     func rackLoop(initial: Position) -> Position {
         var counter = player?.rackTiles.count ?? 0
         func decrementer(position: Position) -> Bool {
-            if emptyAt(position) != false { counter-- }
+            if emptyAt(position) { counter-- }
             return counter > -1
         }
         return initial.nextWhile(decrementer)

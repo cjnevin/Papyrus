@@ -43,24 +43,28 @@ class Tile: CustomDebugStringConvertible, Equatable, Hashable {
 }
 
 extension Papyrus {
-    /// Returns all tiles in the bag.
+    /// - returns: All tiles in the bag.
     var bagTiles: [Tile] {
         return tiles.filter({$0.placement == Placement.Bag})
     }
     
     /// - parameter position: Position to check.
     /// - returns: Whether there is a tile at a given position.
-    func emptyAt(position: Position) -> Bool? {
-        guard let square = squareAt(position) else { return nil }
-        return square.tile == nil
+    func emptyAt(position: Position) -> Bool {
+        return tileAt(position) == nil
     }
     
     /// - returns: Letter at given position.
     func letterAt(position: Position?) -> Character? {
-        return squareAt(position)?.tile?.letter
+        return tileAt(position)?.letter
     }
     
-    /// Returns all tiles in a given boundary.
+    /// - returns: Tile at a given position.
+    func tileAt(position: Position?) -> Tile? {
+        return squareAt(position)?.tile
+    }
+    
+    /// - returns: All tiles in a given boundary.
     func tilesIn(boundary: Boundary) -> [Tile] {
         return squaresIn(boundary).mapFilter({$0?.tile})
     }

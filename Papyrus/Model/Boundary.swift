@@ -148,13 +148,13 @@ extension Papyrus {
     /// Helper method for walking the board.
     /// - returns: Last position with a valid tile.
     private func nextWhileEmpty(current: Position?) -> Position? {
-        return current?.nextWhile { self.emptyAt($0) == true }
+        return current?.nextWhile { self.emptyAt($0) }
     }
     
     /// Helper method for walking the board.
     /// - returns: Last position with an empty tile.
     private func nextWhileFilled(current: Position?) -> Position? {
-        return current?.nextWhile { self.emptyAt($0) == false }
+        return current?.nextWhile { !self.emptyAt($0) }
     }
 
     /// - parameter boundary: Boundary containing tiles that have been dropped on the board.
@@ -216,10 +216,10 @@ extension Papyrus {
             let e = i <= end.iterable ? end.iterable : i
             // Ensure previous index is empty
             if let startMinusOne = start.positionWithIterable(s - 1)
-                where emptyAt(startMinusOne) == false { continue }
+                where !emptyAt(startMinusOne) { continue }
             // Ensure next index is empty
             if let endPlusOne = end.positionWithIterable(e + 1)
-                where emptyAt(endPlusOne) == false { continue }
+                where !emptyAt(endPlusOne) { continue }
             
             // Skip same boundary as existing word.
             if s == start.iterable && e == end.iterable {
