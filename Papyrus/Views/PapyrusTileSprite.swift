@@ -11,7 +11,7 @@ import SpriteKit
 class TileSprite: SKSpriteNode {
     static var defaultTileSize: CGFloat = 0.0
     
-    /// - Returns: True if tile has yet to be submitted ('Fixed')
+    /// - returns: True if tile has yet to be submitted ('Fixed')
     var movable: Bool {
         return tile.placement != .Fixed
     }

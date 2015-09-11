@@ -38,18 +38,18 @@ extension GameScene {
 
 extension GameScene {
     
-    /// - Returns: Point of held tile if available.
+    /// - returns: Point of held tile if available.
     var heldOrigin: CGPoint? {
         return heldTile?.origin
     }
     
-    /// - Returns: First point in touches set
+    /// - returns: First point in touches set
     private func point(inTouches touches: Set<UITouch>?) -> CGPoint? {
         return touches?.first?.locationInNode(self)
     }
     
-    /// - Parameter point: Point to check for intersection with square sprites
-    /// - Returns: `SquareSprite` that best intersects the point passed in
+    /// - parameter point: Point to check for intersection with square sprites
+    /// - returns: `SquareSprite` that best intersects the point passed in
     private func intersectedSquareSprite(point: CGPoint) -> SquareSprite? {
         // Check if we are holding a tile, if not return
         guard let tileSprite = heldTile else { return nil }

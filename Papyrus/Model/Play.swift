@@ -13,8 +13,8 @@ typealias PlayAIOutput = (score: Int, squareTiles: PlayAISquareTiles)
 
 extension Papyrus {
     
-    ///  Attempt to play an AI move.
-    ///  - parameter neededTilePositions: Tiles to add to the board if successful.
+    /// Attempt to play an AI move.
+    /// - parameter neededTilePositions: Tiles to add to the board if successful.
     func playAI() throws -> PlayAIOutput {
         assert(playerIndex != 0)
         
@@ -36,7 +36,7 @@ extension Papyrus {
             let aiTiles = boundaryTiles.1
             var aiTileIndex = 0
             for iterable in aiBoundary.start.iterable...aiBoundary.end.iterable {
-                let position = Position(axis: aiBoundary.start.axis, iterable: iterable, fixed: aiBoundary.start.fixed)
+                let position = Position(ascending: false, horizontal: aiBoundary.horizontal, iterable: iterable, fixed: aiBoundary.start.fixed)
                 let square = squareAt(position)
                 let tile = aiTiles[aiTileIndex]
                 if tile.placement != .Fixed {
@@ -73,10 +73,10 @@ extension Papyrus {
         throw ValidationError.NoOptions
     }
     
-    /// - Parameter boundary: Boundary to check.
-    /// - Parameter submit: Whether this move is final or just used for validation.
+    /// - parameter boundary: Boundary to check.
+    /// - parameter submit: Whether this move is final or just used for validation.
     /// - Throws: If boundary cannot be played you will receive a ValidationError.
-    /// - Returns: Score of word including intersecting words.
+    /// - returns: Score of word including intersecting words.
     func play(boundary: Boundary, submit: Bool) throws -> Int {
         
         print(boundary)
@@ -149,9 +149,11 @@ extension Papyrus {
             var finalBoundaries = [boundary]
             finalBoundaries.appendContentsOf(intersections)
             for finalBoundary in finalBoundaries {
-                if let index = playedBoundaries.indexOf({$0.iterableInsection(finalBoundary)}) {
+                if let index = playedBoundaries.indexOf({finalBoundary.contains($0)}) {
                     // Stretch existing
-                    playedBoundaries[index].stretch(finalBoundary.start, newEnd: finalBoundary.end)
+                    print("Stretched from \(playedBoundaries[index])")
+                    playedBoundaries[index].stretchInPlace(finalBoundary.start, newEnd: finalBoundary.end)
+                    print("Stretched to \(playedBoundaries[index])")
                 } else {
                     // Create new
                     playedBoundaries.append(finalBoundary)

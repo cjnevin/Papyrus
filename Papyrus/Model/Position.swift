@@ -13,85 +13,104 @@ func == (lhs: Position, rhs: Position) -> Bool {
 }
 
 struct Position: Equatable, Hashable {
-    let axis: Axis
+    let ascending: Bool // -> if true, <- if false
+    let horizontal: Bool
     let iterable: Int
     let fixed: Int
-    /// - Returns: Hash value, unique.
-    var hashValue: Int {
-        return "\(axis.debugDescription),\(iterable),\(fixed)".hashValue
-    }
-    /// - Returns: False if iterable or fixed falls outside of the board boundaries.
-    var isInvalid: Bool {
-        return outOfBounds(iterable) || outOfBounds(fixed)
-    }
-    /// - Returns: False if z is out of the board boundaries.
-    private func outOfBounds(z: Int) -> Bool {
-        return z < 0 || z >= PapyrusDimensions
-    }
-    /// - Returns: True if z is on the boundary.
-    func atEdgeOfBoard(z: Int) -> Bool {
-        return z == 0 || z == PapyrusDimensions - 1
-    }
-    /// - Returns: Value of next item in a given direction. Enforces boundaries.
-    private func adjust(z: Int, dir: Direction) -> Int {
-        let n = dir == .Next ? z + 1 : z - 1
-        return outOfBounds(n) ? z : n
-    }
-    /// - Returns: New position in direction defined by Axis. Boundaries are enforced.
-    func newPosition() -> Position {
-        return Position(axis: axis,
-            iterable: adjust(iterable, dir: axis.direction),
-            fixed: fixed)
-    }
-    /// - Returns: Position on alternate axis.
-    func otherAxis(direction: Direction) -> Position {
-        return Position(axis: axis.inverse(direction),
-            iterable: iterable,
-            fixed: fixed)
-    }
-    /// - Returns: Position with opposite direction.
-    func changeDirection(direction: Direction) -> Position {
-        let horizontal = isHorizontal
-        return Position(axis: horizontal ? Axis.Horizontal(direction) : Axis.Vertical(direction),
-            iterable: horizontal ? fixed : iterable,
-            fixed: horizontal ? iterable : fixed)
-    }
-    /// - Returns: Position with new direction (or self if unnecessary), does not flip iterable/fixed.
-    func switchDirection(direction: Direction) -> Position {
-        if axis.direction == direction { return self }
-        return Position(axis: isHorizontal ? Axis.Horizontal(direction) : Axis.Vertical(direction),
-            iterable:iterable,
-            fixed:fixed)
+    
+    init?(ascending: Bool, horizontal: Bool, iterable: Int, fixed: Int) {
+        self.ascending = ascending
+        self.horizontal = horizontal
+        self.iterable = iterable
+        self.fixed = fixed
+        if isInvalid { return nil }
     }
     
-    /// - Returns: Whether axis is 'Horizontal'.
-    var isHorizontal: Bool {
-        switch axis {
-        case .Horizontal(_): return true
-        case .Vertical(_): return false
+    init?(ascending: Bool, horizontal: Bool, row: Int, col: Int) {
+        self.ascending = ascending
+        self.horizontal = horizontal
+        self.iterable = horizontal ? col : row
+        self.fixed = horizontal ? row : col
+        if isInvalid { return nil }
+    }
+    
+    /// - returns: Hash value, unique.
+    var hashValue: Int {
+        return "\(horizontal),\(ascending),\(iterable),\(fixed)".hashValue
+    }
+    /// - returns: False if iterable or fixed falls outside of the board boundaries.
+    var isInvalid: Bool {
+        return isInvalid(iterable) || isInvalid(fixed)
+    }
+    /// - returns: False if z is out of the board boundaries.
+    private func isInvalid(z: Int) -> Bool {
+        return z < 0 || z >= PapyrusDimensions
+    }
+    /// - returns: Value of next item in a given direction. Enforces boundaries.
+    private func adjust(z: Int) -> Int {
+        let n = ascending ? z + 1 : z - 1
+        return isInvalid(n) ? z : n
+    }
+    /// - returns: New position in direction defined by Axis. Boundaries are enforced.
+    func next() -> Position? {
+        let nextIterable = ascending ? iterable + 1 : iterable - 1
+        if isInvalid(nextIterable) { return nil }
+        return Position(ascending: ascending, horizontal: horizontal, iterable: nextIterable, fixed: fixed)
+    }
+    /// Mutates current item if possible.
+    mutating func nextInPlace() {
+        if let newPosition = next() {
+            self = newPosition
         }
     }
-}
-
-// MARK:- Static Constructors
-extension Position {
-    static func newPosition(axis: Axis, iterable: Int, fixed: Int) -> Position? {
-        let position = Position(axis: axis, iterable: iterable, fixed: fixed)
-        if position.isInvalid { return nil }
-        return position
+    /// Mutates current item while it passes validation.
+    mutating func nextInPlaceWhile(passing: (position: Position) -> Bool) {
+        self = nextWhile(passing)
     }
-    static func newPosition(direction: Direction, horizontal: Bool, row: Int, col: Int) -> Position? {
-        let iterable = horizontal ? col : row
-        let fixed = horizontal ? row : col
-        let axis = (horizontal ? Axis.Horizontal : Axis.Vertical)(direction)
-        return newPosition(axis, iterable: iterable, fixed: fixed)
+    /// - returns: Next position while it passes validation otherwise last position.
+    func nextWhile(passing: (position: Position) -> Bool) -> Position {
+        if let position = next() where passing(position: position) {
+            return position
+        }
+        return self
+    }
+    /*func oppositeAxis() -> Position {
+        return Position(ascending: ascending, horizontal: !horizontal, iterable: iterable, fixed: fixed)!
+    }
+    mutating func oppositeAxisInPlace() {
+        self = oppositeAxis()
+    }
+    func oppositeDirection() -> Position {
+        return Position(ascending: !ascending, horizontal: horizontal, iterable: iterable, fixed: fixed)!
+    }
+    mutating func oppositeDirectionInPlace() {
+        self = oppositeDirection()
+    }
+    */
+    func positionWithAscending(newValue: Bool) -> Position? {
+        if newValue == ascending { return self }
+        return Position(ascending: newValue, horizontal: horizontal, iterable: iterable, fixed: fixed)
+    }
+    
+    func positionWithHorizontal(newValue: Bool) -> Position? {
+        if newValue == horizontal { return self }
+        return Position(ascending: ascending, horizontal: newValue, iterable: iterable, fixed: fixed)
+    }
+    
+    func positionWithFixed(newValue: Int) -> Position? {
+        if newValue == fixed { return self }
+        return Position(ascending: ascending, horizontal: horizontal, iterable: iterable, fixed: newValue)
+    }
+    
+    func positionWithIterable(newValue: Int) -> Position? {
+        if newValue == iterable { return self }
+        return Position(ascending: ascending, horizontal: horizontal, iterable: newValue, fixed: fixed)
     }
 }
-
 
 extension Papyrus {
     /// - Parameter: Initial position to begin this loop, will call position's axis->direction to determine next position.
-    /// - Returns: Furthest possible position from initial position using PapyrusRackAmount.
+    /// - returns: Furthest possible position from initial position using PapyrusRackAmount.
     func getPositionLoop(initial: Position) -> Position {
         var counter = player?.rackTiles.count ?? 0
         func decrementer(position: Position) -> Bool {
@@ -107,16 +126,15 @@ extension Papyrus {
     func loop(position: Position, validator: (position: Position) -> Bool, fun: ((position: Position) -> ())? = nil) -> Position? {
         // Return nil if square is outside of range (should only occur first time)
         if position.isInvalid { return nil }
-        // Check new position.
-        let newPosition = position.newPosition()
-        if newPosition == position { return position }
-        let continued = validator(position: newPosition)
-        if newPosition.isInvalid || !continued {
+        // Get new position
+        guard let newPosition = position.next() else { return position }
+        // Check if it passes validation
+        if validator(position: newPosition) {
+            fun?(position: newPosition)
+            return loop(newPosition, validator: validator, fun: fun) ?? nil
+        } else {
             fun?(position: position)
             return position
-        } else {
-            fun?(position: newPosition)
-            return loop(newPosition, validator: validator, fun: fun) ?? nil//r ?? newPosition
         }
     }
     
@@ -124,9 +142,9 @@ extension Papyrus {
     func loop(position: Position, fun: ((position: Position) -> ())? = nil) -> Position? {
         // Return nil if square is outside of range (should only occur first time)
         // Return nil if this square is empty (should only occur first time)
-        if position.isInvalid || emptyAt(position) == false { return nil }
+        /*if position.isInvalid || emptyAt(position) == false { return nil }
         // Check new position.
-        let newPosition = position.newPosition()
+        let newPosition = position.next()
         if newPosition == position { return position }
         if newPosition.isInvalid || emptyAt(newPosition) == false {
             fun?(position: position)
@@ -134,6 +152,7 @@ extension Papyrus {
         } else {
             fun?(position: newPosition)
             return loop(newPosition, fun: fun)
-        }
+        }*/
+        return nil
     }
 }

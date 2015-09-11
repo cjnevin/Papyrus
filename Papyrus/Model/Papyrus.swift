@@ -46,8 +46,8 @@ class Papyrus {
         squares = Square.createSquares()
     }
     
-    ///  Create a new game.
-    ///  - parameter callback: Callback which will be called throughout all stages of game lifecycle.
+    /// Create a new game.
+    /// - parameter callback: Callback which will be called throughout all stages of game lifecycle.
     func newGame(callback: LifecycleCallback) {
         inProgress = true
         lifecycleCallback?(.Cleanup, self)

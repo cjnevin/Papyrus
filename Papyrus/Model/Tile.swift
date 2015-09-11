@@ -36,7 +36,7 @@ extension Papyrus {
         (6, 1, "R"), (4, 1, "S"), (6, 1, "T"), (4, 1, "U"), (2, 4, "V"), (2, 4, "W"),
         (2, 4, "Y"), (1, 10, "Z"), (2, 0, "?")]
     
-    /// - Returns: Array of tiles created by iterating TileConfiguration.
+    /// - returns: Array of tiles created by iterating TileConfiguration.
     func createTiles() -> [Tile] {
         return Papyrus.TileConfiguration.flatMap { e in
             (0..<e.0).map({ _ in
@@ -50,24 +50,24 @@ extension Papyrus {
         return tiles.filter({$0.placement == Placement.Bag})
     }
     
-    /// - Parameter position: Position to check.
-    /// - Returns: Whether there is a tile at a given position.
+    /// - parameter position: Position to check.
+    /// - returns: Whether there is a tile at a given position.
     func emptyAt(position: Position) -> Bool? {
         guard let square = squareAt(position) else { return nil }
         return square.tile == nil
     }
     
-    /// - Returns: Letter for a given position.
+    /// - returns: Letter for a given position.
     func letterAt(position: Position) -> Character? {
         return squareAt(position)?.tile?.letter
     }
     
-    /// - Returns: Letter for a given position.
+    /// - returns: Letter for a given position.
     func letterAt(row: Int, _ col: Int) -> Character? {
         return squareAt(row, col)?.tile?.letter
     }
     
-    /// - Returns: Letter at given iterable/fixed value for axis.
+    /// - returns: Letter at given iterable/fixed value for axis.
     func letterAt(horizontal: Bool, iterable: Int, fixed: Int) -> Character? {
         return squareAt(horizontal, iterable: iterable, fixed: fixed)?.tile?.letter
     }

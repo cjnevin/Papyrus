@@ -39,7 +39,7 @@ class Player: NSObject {
 }
 
 extension Papyrus {
-    /// - Returns: A new player with their rack pre-filled. Or an error if refill fails.
+    /// - returns: A new player with their rack pre-filled. Or an error if refill fails.
     func createPlayer() -> Player {
         let newPlayer = Player()
         tileIndex += replenishRack(newPlayer)
@@ -55,7 +55,7 @@ extension Papyrus {
         lifecycleCallback?(.ChangedPlayer, self)
     }
     /// Add tiles to a players rack from the bag.
-    /// - Returns: Number of tiles able to be drawn for a player.
+    /// - returns: Number of tiles able to be drawn for a player.
     func replenishRack(player: Player) -> Int {
         let needed = PapyrusRackAmount - player.rackTiles.count
         var count = 0

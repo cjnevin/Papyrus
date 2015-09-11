@@ -20,19 +20,19 @@ protocol GameSceneProtocol {
 }
 
 class GameScene: SKScene, GameSceneProtocol {
-    /// - Returns: Current game object.
+    /// - returns: Current game object.
     internal var game: Papyrus {
         return Papyrus.sharedInstance
     }
-    /// - Returns: Currently dragged tile user is holding.
+    /// - returns: Currently dragged tile user is holding.
     var heldTile: TileSprite? {
         return tileSprites.filter({ $0.tile.placement == Placement.Held }).first
     }
     /// Delegate for tile picking.
     var actionDelegate: GameSceneDelegate?
-    /// - Returns: All square sprites in play.
+    /// - returns: All square sprites in play.
     lazy var squareSprites = [SquareSprite]()
-    /// - Returns: All tile sprites in play.
+    /// - returns: All tile sprites in play.
     lazy var tileSprites = [TileSprite]()
     
     /// Move and illuminate sprites for tiles we just placed.
@@ -47,8 +47,8 @@ class GameScene: SKScene, GameSceneProtocol {
         }
     }
         
-    ///  Handle changes in state of game.
-    ///  - parameter lifecycle: Current state.
+    /// Handle changes in state of game.
+    /// - parameter lifecycle: Current state.
     func changed(lifecycle: Lifecycle) {
         switch lifecycle {
         case .Cleanup:
@@ -107,12 +107,12 @@ class GameScene: SKScene, GameSceneProtocol {
         squareSprites.forEach { $0.tileSprite = nil }
     }
     
-    /// - Returns: All sprites for squares contained in array.
+    /// - returns: All sprites for squares contained in array.
     private func sprites(s: [Square]) -> [SquareSprite] {
         return squareSprites.filter{ s.contains($0.square) }
     }
     
-    /// - Returns: All sprites for tiles contained in array.
+    /// - returns: All sprites for tiles contained in array.
     private func sprites(t: [Tile]) -> [TileSprite] {
         return tileSprites.filter{ t.contains($0.tile) }
     }
@@ -120,9 +120,9 @@ class GameScene: SKScene, GameSceneProtocol {
     
     // MARK:- Checks
     
-    ///  Get position array for sprites with axis.
-    ///  - parameter horizontal: Axis to check.
-    ///  - returns: Array of positions.
+    /// Get position array for sprites with axis.
+    /// - parameter horizontal: Axis to check.
+    /// - returns: Array of positions.
     func getPositions() -> [Position] {
         var offsets = [(row: Int, col: Int)]()
         for sprite in squareSprites where sprite.tileSprite != nil && sprite.tileSprite?.tile.placement != Placement.Fixed {
@@ -134,14 +134,10 @@ class GameScene: SKScene, GameSceneProtocol {
         var positions = [Position]()
         if let firstRow = rows.first?.row, lastRow = rows.last?.row where firstRow == lastRow {
             // Horizontal
-            for col in cols {
-                positions.append(Position(axis: Axis.Horizontal(.Prev), iterable: col.col, fixed: col.row))
-            }
+            positions.appendContentsOf(cols.mapFilter({Position(ascending: false, horizontal: true, iterable: $0.col, fixed: $0.row)}))
         } else if let firstCol = cols.first?.col, lastCol = cols.last?.col where firstCol == lastCol {
-            // Horizontal
-            for row in rows {
-                positions.append(Position(axis: Axis.Vertical(.Prev), iterable: row.row, fixed: row.col))
-            }
+            // Vertical
+            positions.appendContentsOf(cols.mapFilter({Position(ascending: false, horizontal: false, iterable: $0.row, fixed: $0.col)}))
         }
         return positions
     }

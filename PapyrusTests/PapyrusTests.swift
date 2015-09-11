@@ -66,7 +66,7 @@ class PapyrusTests: XCTestCase {
         
         var playedBoundaries = Boundaries()
         // ARCHERS
-        playedBoundaries.append(Boundary(
+        /*playedBoundaries.append(Boundary(
             start: Position(axis: .Horizontal(.Prev), iterable: 5, fixed: 7),
             end: Position(axis: .Horizontal(.Next), iterable: 11, fixed: 7)))
         // DEAD
@@ -85,7 +85,7 @@ class PapyrusTests: XCTestCase {
         playedBoundaries.append(Boundary(start:
             Position(axis: .Vertical(.Prev), iterable: 2, fixed: 9), end:
             Position(axis: .Vertical(.Next), iterable: 8, fixed: 9)))
-        
+        */
         let playableBoundaries = instance.findPlayableBoundaries(playedBoundaries)
         
         // Now determine playable boundaries

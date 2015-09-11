@@ -13,7 +13,7 @@ func == (lhs: Square, rhs: Square) -> Bool {
 }
 
 class Square: CustomDebugStringConvertible, Equatable {
-    /// - Returns: Square array.
+    /// - returns: Square array.
     class func createSquares() -> [[Square]] {
         var squares = [[Square]]()
         let m = PapyrusMiddle
@@ -62,7 +62,7 @@ class Square: CustomDebugStringConvertible, Equatable {
     }
     enum Modifier {
         case None, Letterx2, Letterx3, Center, Wordx2, Wordx3
-        /// - Returns: Word multiplier for this square.
+        /// - returns: Word multiplier for this square.
         var wordMultiplier: Int {
             switch (self) {
             case .Center, .Wordx2: return 2
@@ -70,7 +70,7 @@ class Square: CustomDebugStringConvertible, Equatable {
             default: return 1
             }
         }
-        /// - Returns: Letter multiplier for this square.
+        /// - returns: Letter multiplier for this square.
         var letterMultiplier: Int {
             switch (self) {
             case .Letterx2: return 2
@@ -91,12 +91,12 @@ class Square: CustomDebugStringConvertible, Equatable {
     var debugDescription: String {
         return String(tile?.letter ?? "_")
     }
-    /// - Returns: Letter multiplier for this tile.
+    /// - returns: Letter multiplier for this tile.
     var letterValue: Int {
         guard let tile = tile else { return 0 }
         return (tile.placement == .Fixed ? 1 : type.letterMultiplier) * tile.value
     }
-    /// - Returns: Word multiplier for this tile.
+    /// - returns: Word multiplier for this tile.
     var wordMultiplier: Int {
         guard let tile = tile else { return 0 }
         return (tile.placement == .Fixed ? 1 : type.wordMultiplier)
@@ -105,25 +105,25 @@ class Square: CustomDebugStringConvertible, Equatable {
 
 extension Papyrus {
     
-    /// - Parameter position: Position to check.
-    /// - Returns: Square at given position.
+    /// - parameter position: Position to check.
+    /// - returns: Square at given position.
     func squareAt(position: Position?) -> Square? {
         guard let pos = position where !pos.isInvalid else { return nil }
-        if pos.isHorizontal {
+        if pos.horizontal {
             return squareAt(pos.fixed, pos.iterable)
         } else {
             return squareAt(pos.iterable, pos.fixed)
         }
     }
     
-    /// - Parameter row: Row to check.
-    /// - Parameter col: Column to check.
-    /// - Returns: Square at given row and column.
+    /// - parameter row: Row to check.
+    /// - parameter col: Column to check.
+    /// - returns: Square at given row and column.
     func squareAt(row: Int, _ col: Int) -> Square? {
         return squares[row][col]
     }
     
-    /// - Returns: Square at given iterable/fixed value for axis.
+    /// - returns: Square at given iterable/fixed value for axis.
     func squareAt(horizontal: Bool, iterable: Int, fixed: Int) -> Square? {
         if horizontal {
             return squareAt(fixed, iterable)
@@ -135,7 +135,7 @@ extension Papyrus {
     /// Returns all squares in a given boundary.
     func squaresIn(boundary: Boundary) -> [Square?] {
         if boundary.isValid {
-            let start = boundary.start, end = boundary.end, horizontal = start.isHorizontal
+            let start = boundary.start, end = boundary.end, horizontal = boundary.horizontal
             return (start.iterable...end.iterable).map({
                 squareAt(horizontal, iterable: $0, fixed: start.fixed)
             })

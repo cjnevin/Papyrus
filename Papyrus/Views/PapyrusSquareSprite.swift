@@ -48,13 +48,13 @@ extension Papyrus {
         .None: .Papyrus_Tile
     ]
     
-    /// - Returns: UIColor matching square modifier.
+    /// - returns: UIColor matching square modifier.
     class func colorForSquare(square: Square) -> UIColor {
         guard let color = colorMap[square.type] else { return colorMap[.None]! }
         return color
     }
     
-    /// - Returns: Array of `SquareSprite` instances for each `Square`.
+    /// - returns: Array of `SquareSprite` instances for each `Square`.
     class func createSquareSprites(forGame game: Papyrus, frame: CGRect) -> [SquareSprite] {
         var sprites = [SquareSprite]()
         let squareSize = CGRectGetWidth(frame) / CGFloat(PapyrusDimensions)
