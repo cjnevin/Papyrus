@@ -39,7 +39,7 @@ struct Position: Equatable, Hashable {
         return "\(horizontal),\(ascending),\(iterable),\(fixed)".hashValue
     }
     /// - returns: False if iterable or fixed falls outside of the board boundaries.
-    var isInvalid: Bool {
+    private var isInvalid: Bool {
         return isInvalid(iterable) || isInvalid(fixed)
     }
     /// - returns: False if z is out of the board boundaries.
@@ -74,34 +74,18 @@ struct Position: Equatable, Hashable {
         }
         return self
     }
-    /*func oppositeAxis() -> Position {
-        return Position(ascending: ascending, horizontal: !horizontal, iterable: iterable, fixed: fixed)!
-    }
-    mutating func oppositeAxisInPlace() {
-        self = oppositeAxis()
-    }
-    func oppositeDirection() -> Position {
-        return Position(ascending: !ascending, horizontal: horizontal, iterable: iterable, fixed: fixed)!
-    }
-    mutating func oppositeDirectionInPlace() {
-        self = oppositeDirection()
-    }
-    */
     func positionWithAscending(newValue: Bool) -> Position? {
         if newValue == ascending { return self }
         return Position(ascending: newValue, horizontal: horizontal, iterable: iterable, fixed: fixed)
     }
-    
     func positionWithHorizontal(newValue: Bool) -> Position? {
         if newValue == horizontal { return self }
         return Position(ascending: ascending, horizontal: newValue, iterable: iterable, fixed: fixed)
     }
-    
     func positionWithFixed(newValue: Int) -> Position? {
         if newValue == fixed { return self }
         return Position(ascending: ascending, horizontal: horizontal, iterable: iterable, fixed: newValue)
     }
-    
     func positionWithIterable(newValue: Int) -> Position? {
         if newValue == iterable { return self }
         return Position(ascending: ascending, horizontal: horizontal, iterable: newValue, fixed: fixed)
@@ -111,48 +95,12 @@ struct Position: Equatable, Hashable {
 extension Papyrus {
     /// - Parameter: Initial position to begin this loop, will call position's axis->direction to determine next position.
     /// - returns: Furthest possible position from initial position using PapyrusRackAmount.
-    func getPositionLoop(initial: Position) -> Position {
+    func rackLoop(initial: Position) -> Position {
         var counter = player?.rackTiles.count ?? 0
         func decrementer(position: Position) -> Bool {
             if emptyAt(position) != false { counter-- }
-            return counter > -1 && !position.isInvalid
+            return counter > -1
         }
-        let position = loop(initial, validator: decrementer) ?? initial
-        return position
-    }
-    
-    /// Loop while we are fulfilling the validator.
-    /// Caveat: first position must pass validation prior to being sent to this method.
-    func loop(position: Position, validator: (position: Position) -> Bool, fun: ((position: Position) -> ())? = nil) -> Position? {
-        // Return nil if square is outside of range (should only occur first time)
-        if position.isInvalid { return nil }
-        // Get new position
-        guard let newPosition = position.next() else { return position }
-        // Check if it passes validation
-        if validator(position: newPosition) {
-            fun?(position: newPosition)
-            return loop(newPosition, validator: validator, fun: fun) ?? nil
-        } else {
-            fun?(position: position)
-            return position
-        }
-    }
-    
-    /// Loop while we are fulfilling the empty value
-    func loop(position: Position, fun: ((position: Position) -> ())? = nil) -> Position? {
-        // Return nil if square is outside of range (should only occur first time)
-        // Return nil if this square is empty (should only occur first time)
-        /*if position.isInvalid || emptyAt(position) == false { return nil }
-        // Check new position.
-        let newPosition = position.next()
-        if newPosition == position { return position }
-        if newPosition.isInvalid || emptyAt(newPosition) == false {
-            fun?(position: position)
-            return position
-        } else {
-            fun?(position: newPosition)
-            return loop(newPosition, fun: fun)
-        }*/
-        return nil
+        return initial.nextWhile(decrementer)
     }
 }

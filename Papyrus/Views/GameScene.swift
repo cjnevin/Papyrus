@@ -148,7 +148,7 @@ class GameScene: SKScene, GameSceneProtocol {
         if positions.count < 1 { print("insufficient tiles"); return }
         //if positions.count == 1 { print("special logic"); return }
         if positions.count >= 1 {
-            if let boundary = game.boundary(forPositions: positions) {
+            if let boundary = Boundary(positions: positions) {
                 do {
                     let score = try game.play(boundary, submit: false)
                     actionDelegate?.boundariesChanged(boundary, error: nil, score: score)
@@ -180,7 +180,7 @@ class GameScene: SKScene, GameSceneProtocol {
             tile.resetPosition(origin)
         }
         let positions = getPositions()
-        if let boundary = game.boundary(forPositions: positions) {
+        if let boundary = Boundary(positions: positions) {
             let _ = try game.play(boundary, submit: true)
             replaceRackSprites()
             // Change player

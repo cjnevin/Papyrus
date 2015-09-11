@@ -14,6 +14,7 @@
 		995F04501B7DCF6000CC19A6 /* Boundary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 995F044F1B7DCF6000CC19A6 /* Boundary.swift */; };
 		995F04521B7E548100CC19A6 /* Tile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 995F04511B7E548100CC19A6 /* Tile.swift */; };
 		9960AD531BA34D7400765614 /* PapyrusBoundaryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9960AD521BA34D7400765614 /* PapyrusBoundaryTests.swift */; };
+		9960AD551BA38AFB00765614 /* PapyrusSquareTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9960AD541BA38AFB00765614 /* PapyrusSquareTests.swift */; };
 		99629C091B547DE800510036 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99629C081B547DE800510036 /* AppDelegate.swift */; };
 		99629C0B1B547DE800510036 /* GameScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = 99629C0A1B547DE800510036 /* GameScene.sks */; };
 		99629C121B547DE800510036 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 99629C101B547DE800510036 /* Main.storyboard */; };
@@ -63,6 +64,7 @@
 		995F044F1B7DCF6000CC19A6 /* Boundary.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Boundary.swift; sourceTree = "<group>"; };
 		995F04511B7E548100CC19A6 /* Tile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Tile.swift; sourceTree = "<group>"; };
 		9960AD521BA34D7400765614 /* PapyrusBoundaryTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PapyrusBoundaryTests.swift; sourceTree = "<group>"; };
+		9960AD541BA38AFB00765614 /* PapyrusSquareTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PapyrusSquareTests.swift; sourceTree = "<group>"; };
 		99629C051B547DE800510036 /* Papyrus.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Papyrus.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		99629C081B547DE800510036 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		99629C0A1B547DE800510036 /* GameScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = GameScene.sks; sourceTree = "<group>"; };
@@ -161,6 +163,7 @@
 			children = (
 				99629C211B547DE800510036 /* PapyrusTests.swift */,
 				9960AD521BA34D7400765614 /* PapyrusBoundaryTests.swift */,
+				9960AD541BA38AFB00765614 /* PapyrusSquareTests.swift */,
 				99629C231B547DE800510036 /* Info.plist */,
 			);
 			path = PapyrusTests;
@@ -405,6 +408,7 @@
 			files = (
 				9960AD531BA34D7400765614 /* PapyrusBoundaryTests.swift in Sources */,
 				99629C221B547DE800510036 /* PapyrusTests.swift in Sources */,
+				9960AD551BA38AFB00765614 /* PapyrusSquareTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -58,7 +58,7 @@ class Papyrus {
         players.removeAll()
         tileIndex = 0
         playerIndex = 0
-        tiles.appendContentsOf(createTiles())
+        tiles.appendContentsOf(Tile.createTiles())
         lifecycleCallback?(.Ready, self)
     }
 }

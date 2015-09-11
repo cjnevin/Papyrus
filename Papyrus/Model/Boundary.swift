@@ -17,6 +17,10 @@ func == (lhs: Boundary, rhs: Boundary) -> Bool {
 struct Boundary: CustomDebugStringConvertible, Equatable, Hashable {
     let start: Position
     let end: Position
+    var horizontal: Bool {
+        assert(start.horizontal == end.horizontal)
+        return start.horizontal
+    }
     var length: Int {
         return end.iterable - start.iterable
     }
@@ -29,21 +33,46 @@ struct Boundary: CustomDebugStringConvertible, Equatable, Hashable {
     var debugDescription: String {
         return "\(start.horizontal), \(start.ascending): \(start.iterable),\(start.fixed) - \(end.iterable),\(end.fixed)"
     }
+    
+    init?(start: Position?, end: Position?) {
+        if start == nil || end == nil { return nil }
+        self.start = start!
+        self.end = end!
+    }
+    
+    init?(positions: [Position]) {
+        if let first = positions.first,
+            last = positions.last,
+            firstAscending = first.positionWithAscending(false),
+            lastAscending = last.positionWithAscending(true),
+            firstOtherAxis = firstAscending.positionWithHorizontal(!first.horizontal),
+            lastOtherAxis = lastAscending.positionWithHorizontal(!last.horizontal)
+        {
+            if positions.count == 1 && firstOtherAxis.iterable != lastOtherAxis.iterable {
+                self.start = firstOtherAxis
+                self.end = lastOtherAxis
+            } else {
+                self.start = firstAscending
+                self.end = lastAscending
+            }
+            if !isValid { return nil }
+        }
+        return nil
+    }
+    
     /// - returns: Whether this boundary appears to contain valid positions.
-    var isValid: Bool {
+    private var isValid: Bool {
         let valid = start.fixed == end.fixed &&
             start.iterable <= end.iterable &&
             start.horizontal == end.horizontal
         return valid
     }
-    var horizontal: Bool {
-        assert(start.horizontal == end.horizontal)
-        return start.horizontal
-    }
+    
     /// - returns: True if the axis and fixed values match and the iterable value intersects the given boundary.
     func containedIn(boundary: Boundary) -> Bool {
         return boundary.contains(self)
     }
+    
     /// - returns: True if the given boundary is contained in this boundary.
     func contains(boundary: Boundary) -> Bool {
         // Check if same axis and same fixed value.
@@ -84,7 +113,6 @@ struct Boundary: CustomDebugStringConvertible, Equatable, Hashable {
         return false
     }
     
-    // TODO: Unit test this.
     /// - returns: Whether the given row and column fall within this boundary.
     func encompasses(row: Int, column: Int) -> Bool {
         if horizontal {
@@ -107,7 +135,6 @@ struct Boundary: CustomDebugStringConvertible, Equatable, Hashable {
         return nil
     }
     
-    // TODO: Unit test this.
     /// Stretches the current Boundary to encompass the given start and end positions.
     mutating func stretchInPlace(newStart: Position, newEnd: Position) {
         if let newBoundary = stretch(newStart, newEnd: newEnd) {
@@ -120,29 +147,14 @@ extension Papyrus {
     
     /// Helper method for walking the board.
     /// - returns: Last position with a valid tile.
-    private func nextWhileEmpty(current: Position) -> Position {
-        return current.nextWhile { (position) -> Bool in
-            self.emptyAt(position) == true
-        }
+    private func nextWhileEmpty(current: Position?) -> Position? {
+        return current?.nextWhile { self.emptyAt($0) == true }
     }
     
-    /// Get boundary of sprites we have played.
-    /// - returns: Boundary or nil.
-    func boundary(forPositions positions: [Position]) -> Boundary? {
-        print(positions)
-        // Exit if there are no positions
-        guard let first = positions.first,
-            last = positions.last,
-            firstAscending = first.positionWithAscending(false),
-            lastAscending = last.positionWithAscending(true),
-            firstOtherAxis = firstAscending.positionWithHorizontal(!first.horizontal),
-            lastOtherAxis = lastAscending.positionWithHorizontal(!last.horizontal) else { return nil }
-        
-        let newBoundary = Boundary(start: firstAscending, end: lastAscending)
-        if positions.count > 1 { return newBoundary }
-        if firstAscending.iterable != lastAscending.iterable { return newBoundary }
-        if firstOtherAxis.iterable != lastOtherAxis.iterable { return Boundary(start: firstOtherAxis, end: lastOtherAxis) }
-        return newBoundary
+    /// Helper method for walking the board.
+    /// - returns: Last position with an empty tile.
+    private func nextWhileFilled(current: Position?) -> Position? {
+        return current?.nextWhile { self.emptyAt($0) == false }
     }
 
     /// - parameter boundary: Boundary containing tiles that have been dropped on the board.
@@ -152,14 +164,12 @@ extension Papyrus {
         // Iterate each position in boundary
         for index in boundary.start.iterable...boundary.end.iterable {
             // Flip fixed/iterable values, use index as fixed value.
-            if let invertedFirst = Position(ascending: false, horizontal: !boundary.horizontal, iterable: boundary.start.fixed, fixed: index),
-                invertedLast = Position(ascending: true, horizontal: !boundary.horizontal, iterable: boundary.start.fixed, fixed: index)
+            if let
+                first = nextWhileEmpty(Position(ascending: false, horizontal: !boundary.horizontal, iterable: boundary.start.fixed, fixed: index)),
+                last = nextWhileEmpty(Position(ascending: true, horizontal: !boundary.horizontal, iterable: boundary.start.fixed, fixed: index)),
+                invertedBoundary = Boundary(start: first, end: last) where first.iterable != last.iterable
             {
-                let first = nextWhileEmpty(invertedFirst)
-                let last = nextWhileEmpty(invertedLast)
-                if first.iterable != last.iterable {
-                    boundaries.append(Boundary(start: first, end: last))
-                }
+                boundaries.append(invertedBoundary)
             }
         }
         print(boundaries)
@@ -187,7 +197,7 @@ extension Papyrus {
         let start = boundary.start, end = boundary.end
         if start.iterable >= end.iterable { return nil }
         return String((start.iterable...end.iterable).mapFilter({
-            letterAt(start.horizontal, iterable: $0, fixed: start.fixed)}))
+            letterAt(Position(ascending: false, horizontal: start.horizontal, iterable: $0, fixed: start.fixed))}))
     }
     
     /// Find all possible boundaries for a words boundary.
@@ -197,8 +207,8 @@ extension Papyrus {
         // Find first and last possible position using rack tiles, skipping filled squares.
         // This should be refactored, so that if we hit two empty squares we know we can play a move, if we just hit one and
         // the following square is filled we need to backout.
-        let startPosition = getPositionLoop(boundary.start)
-        let endPosition = getPositionLoop(boundary.end)
+        let startPosition = rackLoop(boundary.start)
+        let endPosition = rackLoop(boundary.end)
         for i in startPosition.iterable...endPosition.iterable {
             // Restrict start index to include the entire word.
             let s = i >= start.iterable ? start.iterable : i
@@ -216,13 +226,13 @@ extension Papyrus {
                 continue
             }
             // Create positions, if possible
-            if let newStart = start.positionWithIterable(s), newEnd = end.positionWithIterable(e) {
-                let newBoundary = Boundary(start: newStart, end: newEnd)
+            if let newStart = start.positionWithIterable(s),
+                newEnd = end.positionWithIterable(e),
+                newBoundary = Boundary(start: newStart, end: newEnd)
+            {
                 assert(newStart.iterable <= start.iterable, "Start is invalid")
                 assert(newEnd.iterable >= end.iterable, "End is invalid")
-                if newBoundary.isValid {
-                    currentBoundaries.insert(newBoundary)
-                }
+                currentBoundaries.insert(newBoundary)
             }
         }
         return currentBoundaries
@@ -246,14 +256,13 @@ extension Papyrus {
             for i in boundary.start.iterable...boundary.end.iterable {
                 // Get positions for current square so we can iterate left/right.
                 // Loop until we hit an empty square.
-                guard let axisStartPosition = Position(ascending: false, horizontal: horizontal, iterable: boundary.start.fixed, fixed:i),
-                    axisEndPosition = Position(ascending: true, horizontal: horizontal, iterable: boundary.end.fixed, fixed: i) else {
-                        print("Skipped!")
-                        continue
+                guard let wordStart = nextWhileFilled(Position(ascending: false, horizontal: horizontal, iterable: boundary.start.fixed, fixed:i)),
+                    wordEnd = nextWhileFilled(Position(ascending: true, horizontal: horizontal, iterable: boundary.end.fixed, fixed: i)),
+                    newBoundary = Boundary(start: wordStart, end: wordEnd) else
+                {
+                    print("Skipped!")
+                    continue
                 }
-                let wordStart = loop(axisStartPosition) ?? axisStartPosition
-                let wordEnd = loop(axisEndPosition) ?? axisEndPosition
-                let newBoundary = Boundary(start: wordStart, end: wordEnd)
                 allBoundaries.unionInPlace(findSameAxisPlaysForBoundary(newBoundary))
             }
         }

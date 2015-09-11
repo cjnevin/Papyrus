@@ -8,17 +8,6 @@
 
 import Foundation
 
-enum Direction: CustomDebugStringConvertible {
-    case Prev
-    case Next
-    var inverse: Direction {
-        return self == .Prev ? .Next : .Prev
-    }
-    var debugDescription: String {
-        return self == .Prev ? "Prev" : "Next"
-    }
-}
-
 enum Placement {
     case Bag
     case Rack

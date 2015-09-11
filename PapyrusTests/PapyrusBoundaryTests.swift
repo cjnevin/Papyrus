@@ -24,7 +24,7 @@ class PapyrusBoundaryTests: XCTestCase {
     func testBoundary() {
         let start = Position(ascending: false, horizontal: true, iterable: 1, fixed: 1)!
         var end = Position(ascending: true, horizontal: true, iterable: 3, fixed: 1)!
-        var boundary = Boundary(start: start, end: end)
+        var boundary = Boundary(start: start, end: end)!
         XCTAssert(boundary.isValid, "Boundary is valid")
         XCTAssert(boundary.encompasses(1, column: 1), "Boundary should encompass first iterable")
         XCTAssert(boundary.encompasses(1, column: 3), "Boundary should encompass last iterable")
@@ -54,7 +54,7 @@ class PapyrusBoundaryTests: XCTestCase {
         XCTAssert(end.ascending, "Start direction is Prev")
         
         let containedBoundary = Boundary(start: Position(ascending: false, horizontal: true, iterable: 1, fixed: 1)!,
-            end: Position(ascending: true, horizontal: true, iterable: 3, fixed: 1)!)
+            end: Position(ascending: true, horizontal: true, iterable: 3, fixed: 1)!)!
         XCTAssert(containedBoundary.containedIn(boundary), "Boundary should contain containedBoundary")
         XCTAssert(boundary.contains(containedBoundary), "Boundary should contain containedBoundary")
         
@@ -64,24 +64,19 @@ class PapyrusBoundaryTests: XCTestCase {
         XCTAssert(end.iterable == 6, "End should be 6")
         
         // Adjacent check
-        let adjacentStart = start.positionWithFixed(2)!
-        let adjacentEnd = end.positionWithFixed(2)!
-        let adjacentBoundary = Boundary(start: adjacentStart, end: adjacentEnd)
+        let adjacentBoundary = Boundary(start: start.positionWithFixed(2), end: end.positionWithFixed(2))!
         XCTAssert(adjacentBoundary.adjacentTo(boundary), "Boundary should be adjacent")
         XCTAssert(boundary.adjacentTo(adjacentBoundary), "Boundary should be adjacent")
         
         // Should intersect
-        let invertedStart = start.positionWithHorizontal(!start.horizontal)!
-        let invertedEnd = end.positionWithHorizontal(!start.horizontal)!
-        let invertedBoundary = Boundary(start: invertedStart, end: invertedEnd)
+        let invertedBoundary = Boundary(start: start.positionWithHorizontal(!start.horizontal), end: end.positionWithHorizontal(!start.horizontal))!
         XCTAssert(invertedBoundary.horizontal != boundary.horizontal, "Boundary should be vertical")
         XCTAssert(!invertedBoundary.horizontal, "Boudnary should be vertical")
         XCTAssert(invertedBoundary.intersects(boundary), "Boundary should intersect")
         
         // Should not intersect
-        let verticalStart = Position(ascending: false, horizontal: false, iterable: 7, fixed: 1)!
-        let verticalEnd = Position(ascending: true, horizontal: false, iterable: 9, fixed: 1)!
-        let verticalBoundary = Boundary(start: verticalStart, end: verticalEnd)
+        let verticalBoundary = Boundary(start: Position(ascending: false, horizontal: false, iterable: 7, fixed: 1),
+            end: Position(ascending: true, horizontal: false, iterable: 9, fixed: 1))!
         XCTAssert(!verticalBoundary.intersects(boundary), "Boundary should not intersect")
     }
 }

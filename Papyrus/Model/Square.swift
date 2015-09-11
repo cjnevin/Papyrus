@@ -108,40 +108,20 @@ extension Papyrus {
     /// - parameter position: Position to check.
     /// - returns: Square at given position.
     func squareAt(position: Position?) -> Square? {
-        guard let pos = position where !pos.isInvalid else { return nil }
+        guard let pos = position else { return nil }
         if pos.horizontal {
-            return squareAt(pos.fixed, pos.iterable)
+            return squares[pos.fixed][pos.iterable]
         } else {
-            return squareAt(pos.iterable, pos.fixed)
-        }
-    }
-    
-    /// - parameter row: Row to check.
-    /// - parameter col: Column to check.
-    /// - returns: Square at given row and column.
-    func squareAt(row: Int, _ col: Int) -> Square? {
-        return squares[row][col]
-    }
-    
-    /// - returns: Square at given iterable/fixed value for axis.
-    func squareAt(horizontal: Bool, iterable: Int, fixed: Int) -> Square? {
-        if horizontal {
-            return squareAt(fixed, iterable)
-        } else {
-            return squareAt(iterable, fixed)
+            return squares[pos.iterable][pos.fixed]
         }
     }
     
     /// Returns all squares in a given boundary.
     func squaresIn(boundary: Boundary) -> [Square?] {
-        if boundary.isValid {
-            let start = boundary.start, end = boundary.end, horizontal = boundary.horizontal
-            return (start.iterable...end.iterable).map({
-                squareAt(horizontal, iterable: $0, fixed: start.fixed)
-            })
-        } else {
-            return []
-        }
+        return (boundary.start.iterable...boundary.end.iterable).map({
+            squareAt(Position(ascending: false, horizontal: boundary.horizontal,
+                iterable: $0, fixed: boundary.start.fixed))
+        })
     }
 }
 

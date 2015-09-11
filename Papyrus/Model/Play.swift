@@ -84,9 +84,6 @@ extension Papyrus {
         // Throw error if no player...
         guard let player = player else { throw ValidationError.NoPlayer }
         
-        // If boundary validation fails, fail.
-        if !boundary.isValid { throw ValidationError.InvalidArrangement }
-        
         // If no words have been played, this boundary must intersect middle.
         let m = PapyrusMiddle - 1
         if playedBoundaries.count == 0 && (boundary.start.fixed != m ||

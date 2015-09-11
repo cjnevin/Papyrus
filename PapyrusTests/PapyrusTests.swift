@@ -27,7 +27,7 @@ class PapyrusTests: XCTestCase {
     }
     
     func runTileTests(instance: Papyrus) {
-        let totalTiles = Papyrus.TileConfiguration.map({$0.0}).reduce(0, combine: +)
+        let totalTiles = TileConfiguration.map({$0.0}).reduce(0, combine: +)
         XCTAssert(instance.tiles.count == totalTiles)
         instance.createPlayer()
         XCTAssert(instance.bagTiles.count == totalTiles - PapyrusRackAmount)
