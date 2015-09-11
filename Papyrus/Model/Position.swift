@@ -9,10 +9,12 @@
 import Foundation
 
 func == (lhs: Position, rhs: Position) -> Bool {
-    return lhs.hashValue == rhs.hashValue
+    if lhs.horizontal == rhs.horizontal { return lhs.hashValue == rhs.hashValue }
+    return lhs.fixed == rhs.iterable && lhs.iterable == rhs.fixed
 }
 
 struct Position: Equatable, Hashable {
+    /// Positions will be equal regardless of ascending flag.
     let ascending: Bool // -> if true, <- if false
     let horizontal: Bool
     let iterable: Int
@@ -36,7 +38,7 @@ struct Position: Equatable, Hashable {
     
     /// - returns: Hash value, unique.
     var hashValue: Int {
-        return "\(horizontal),\(ascending),\(iterable),\(fixed)".hashValue
+        return "\(horizontal),\(iterable),\(fixed)".hashValue
     }
     /// - returns: False if iterable or fixed falls outside of the board boundaries.
     private var isInvalid: Bool {
@@ -80,9 +82,10 @@ struct Position: Equatable, Hashable {
         if newValue == ascending { return self }
         return Position(ascending: newValue, horizontal: horizontal, iterable: iterable, fixed: fixed)
     }
+    /// Swap iterable and fixed when axis changes (row: 5, col: 2) == (col: 2, row: 5).
     func positionWithHorizontal(newValue: Bool) -> Position? {
         if newValue == horizontal { return self }
-        return Position(ascending: ascending, horizontal: newValue, iterable: iterable, fixed: fixed)
+        return Position(ascending: ascending, horizontal: newValue, iterable: fixed, fixed: iterable)
     }
     func positionWithFixed(newValue: Int) -> Position? {
         if newValue == fixed { return self }

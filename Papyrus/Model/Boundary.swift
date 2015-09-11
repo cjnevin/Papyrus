@@ -38,6 +38,7 @@ struct Boundary: CustomDebugStringConvertible, Equatable, Hashable {
         if start == nil || end == nil { return nil }
         self.start = start!
         self.end = end!
+        if !isValid { return nil }
     }
     
     init?(positions: [Position]) {
@@ -76,13 +77,21 @@ struct Boundary: CustomDebugStringConvertible, Equatable, Hashable {
     /// - returns: True if the given boundary is contained in this boundary.
     func contains(boundary: Boundary) -> Bool {
         // Check if same axis and same fixed value.
-        if boundary.start.horizontal == start.horizontal && boundary.start.fixed == start.fixed {
+        if boundary.horizontal == horizontal && boundary.start.fixed == start.fixed {
             // If they coexist on the same fixed line, check if there is any iterable intersection.
             return
                 start.iterable <= boundary.start.iterable &&
                 end.iterable >= boundary.end.iterable
         }
         return false
+    }
+    
+    /// - returns: True if position is within this boundary's range.
+    func contains(position: Position) -> Bool {
+        // If different fixed position it cannot be contained
+        if position.horizontal != horizontal { return false }
+        if position.fixed != start.fixed { return false }
+        return iterableRange.contains(position.iterable)
     }
     
     /// - returns: True if boundary intersects another boundary on opposite axis.
@@ -111,19 +120,6 @@ struct Boundary: CustomDebugStringConvertible, Equatable, Hashable {
                     boundary.start.iterable <= start.iterable)
         }
         return false
-    }
-    
-    /// - returns: Whether the given row and column fall within this boundary.
-    func encompasses(row: Int, column: Int) -> Bool {
-        if horizontal {
-            let sameRow = row == start.fixed && row == end.fixed
-            let validColumn = column >= start.iterable && column <= end.iterable
-            return sameRow && validColumn
-        } else {
-            let sameColumn = column == start.fixed && column == end.fixed
-            let validRow = row >= start.iterable && row <= end.iterable
-            return sameColumn && validRow
-        }
     }
     
     /// - returns: New boundary encompassing the new start and end positions.

@@ -25,8 +25,8 @@ class PapyrusBoundaryTests: XCTestCase {
         let start = Position(ascending: false, horizontal: true, iterable: 1, fixed: 1)!
         var end = Position(ascending: true, horizontal: true, iterable: 3, fixed: 1)!
         var boundary = Boundary(start: start, end: end)!
-        XCTAssert(boundary.encompasses(1, column: 1), "Boundary should encompass first iterable")
-        XCTAssert(boundary.encompasses(1, column: 3), "Boundary should encompass last iterable")
+        XCTAssert(boundary.contains(start), "Boundary should encompass first iterable")
+        XCTAssert(boundary.contains(end), "Boundary should encompass last iterable")
         XCTAssert(boundary.length == boundary.end.iterable - boundary.start.iterable)
         XCTAssert(boundary.horizontal, "Start is horizontal")
         XCTAssert(end.horizontal != end.positionWithHorizontal(!end.horizontal)!.horizontal, "Direction should be different")
@@ -35,19 +35,19 @@ class PapyrusBoundaryTests: XCTestCase {
         end.nextInPlace()
         XCTAssert(lastEnd.next() == end, "New position should return one plus")
         boundary.stretchInPlace(start, newEnd: end)
-        XCTAssert(boundary.encompasses(1, column: 4), "Boundary should include new end")
+        XCTAssert(boundary.contains(end), "Boundary should include new end")
         
         var newStart = start.next()!
         XCTAssert(start.next() == newStart, "New position should return one previous")
         boundary.stretchInPlace(newStart, newEnd: end)
-        XCTAssert(boundary.encompasses(1, column: 0), "Boundary should include newStart")
+        XCTAssert(boundary.contains(newStart), "Boundary should include newStart")
         
         newStart.nextInPlace()
         XCTAssert(newStart == boundary.start, "Start should not be stretchable outside of board boundary")
         
         end.nextInPlace()
         boundary.stretchInPlace(boundary.start, newEnd: end)
-        XCTAssert(boundary.encompasses(1, column: 5), "Boundary should include end.newPosition")
+        XCTAssert(boundary.contains(end), "Boundary should include end.newPosition")
         
         XCTAssert(!newStart.ascending, "Start direction is Prev")
         XCTAssert(end.ascending, "Start direction is Prev")
@@ -68,7 +68,10 @@ class PapyrusBoundaryTests: XCTestCase {
         XCTAssert(boundary.adjacentTo(adjacentBoundary), "Boundary should be adjacent")
         
         // Should intersect
-        let invertedBoundary = Boundary(start: start.positionWithHorizontal(!start.horizontal), end: end.positionWithHorizontal(!start.horizontal))!
+        print(end)
+        let invertedBoundary = Boundary(
+            start: start.positionWithHorizontal(!start.horizontal),
+            end: start.positionWithHorizontal(!start.horizontal)?.positionWithIterable(6))!
         XCTAssert(invertedBoundary.horizontal != boundary.horizontal, "Boundary should be vertical")
         XCTAssert(!invertedBoundary.horizontal, "Boudnary should be vertical")
         XCTAssert(invertedBoundary.intersects(boundary), "Boundary should intersect")
@@ -79,10 +82,15 @@ class PapyrusBoundaryTests: XCTestCase {
         XCTAssert(!verticalBoundary.intersects(boundary), "Boundary should not intersect")
         
         // Test optionals
-        XCTAssert(start.positionWithAscending(true)! != start, "Ascending should be true")
-        XCTAssert(start.positionWithHorizontal(false)! != start, "Horizontal should be false")
+        XCTAssert(start.positionWithAscending(true)!.ascending != start.ascending, "Ascending should be true")
+        XCTAssert(start.positionWithHorizontal(false)! == start, "Horizontal should be false")
+        XCTAssert(end.positionWithHorizontal(false)! == end, "Horizontal should be false")
         XCTAssert(start.positionWithIterable(12)! != start, "Iterable should be 12")
         XCTAssert(start.positionWithFixed(12)! != start, "Fixed should be 12")
+        
+        let a = Position(ascending: false, horizontal: true, iterable: 5, fixed: 6)!
+        let b = Position(ascending: false, horizontal: false, iterable: 6, fixed: 5)!
+        XCTAssert(a == b, "Positions should match if on opposite axis but same fixed")
     }
 }
 
