@@ -25,7 +25,6 @@ class PapyrusBoundaryTests: XCTestCase {
         let start = Position(ascending: false, horizontal: true, iterable: 1, fixed: 1)!
         var end = Position(ascending: true, horizontal: true, iterable: 3, fixed: 1)!
         var boundary = Boundary(start: start, end: end)!
-        XCTAssert(boundary.isValid, "Boundary is valid")
         XCTAssert(boundary.encompasses(1, column: 1), "Boundary should encompass first iterable")
         XCTAssert(boundary.encompasses(1, column: 3), "Boundary should encompass last iterable")
         XCTAssert(boundary.length == boundary.end.iterable - boundary.start.iterable)
@@ -78,6 +77,12 @@ class PapyrusBoundaryTests: XCTestCase {
         let verticalBoundary = Boundary(start: Position(ascending: false, horizontal: false, iterable: 7, fixed: 1),
             end: Position(ascending: true, horizontal: false, iterable: 9, fixed: 1))!
         XCTAssert(!verticalBoundary.intersects(boundary), "Boundary should not intersect")
+        
+        // Test optionals
+        XCTAssert(start.positionWithAscending(true)! != start, "Ascending should be true")
+        XCTAssert(start.positionWithHorizontal(false)! != start, "Horizontal should be false")
+        XCTAssert(start.positionWithIterable(12)! != start, "Iterable should be 12")
+        XCTAssert(start.positionWithFixed(12)! != start, "Fixed should be 12")
     }
 }
 

@@ -1,5 +1,5 @@
 //
-//  PapyrusSquareTests.swift
+//  PapyrusGameTests.swift
 //  Papyrus
 //
 //  Created by Chris Nevin on 11/09/2015.
@@ -9,7 +9,7 @@
 import XCTest
 @testable import Papyrus
 
-class PapyrusSquareTests: XCTestCase {
+class PapyrusGameTests: XCTestCase {
 
     override func setUp() {
         super.setUp()

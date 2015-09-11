@@ -74,6 +74,8 @@ struct Position: Equatable, Hashable {
         }
         return self
     }
+    
+    // MARK:
     func positionWithAscending(newValue: Bool) -> Position? {
         if newValue == ascending { return self }
         return Position(ascending: newValue, horizontal: horizontal, iterable: iterable, fixed: fixed)
