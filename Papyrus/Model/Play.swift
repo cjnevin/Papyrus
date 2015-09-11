@@ -149,28 +149,10 @@ extension Papyrus {
             var finalBoundaries = [boundary]
             finalBoundaries.appendContentsOf(intersections)
             for finalBoundary in finalBoundaries {
-                if playedBoundaries.filter({$0.start.axis.direction == finalBoundary.start.axis.direction &&
-                    $0.start == finalBoundary.start && $0.end == finalBoundary.end}).count == 0 {
-                    assert(playedBoundaries.filter({$0.start.axis.direction == finalBoundary.start.axis.direction
-                        && $0.start.fixed == finalBoundary.start.fixed}).count < 2, "Must be less than 2")
-                    
-                    // Adjust existing item
-                    if let index = playedBoundaries.indexOf({$0.start.axis.direction == finalBoundary.start.axis.direction
-                        && $0.start.fixed == finalBoundary.start.fixed}) {
-                            let start = playedBoundaries[index].start
-                            let end = playedBoundaries[index].end
-                            let newStart = min(start.iterable, finalBoundary.start.iterable)
-                            let newEnd = max(end.iterable, finalBoundary.end.iterable)
-                            if let adjustedStart = Position.newPosition(start.axis, iterable: newStart, fixed: start.fixed),
-                                adjustedEnd = Position.newPosition(end.axis, iterable: newEnd, fixed: end.fixed) {
-                                    let newBoundary = Boundary(start: adjustedStart, end: adjustedEnd)
-                                    print("Existing \(playedBoundaries[index]),  Adjusted \(newBoundary)")
-                                    playedBoundaries.removeAtIndex(index)
-                                    playedBoundaries.append(newBoundary)
-                                    continue
-                            }
-                    }
-                    
+                if let index = playedBoundaries.indexOf({$0.iterableInsection(finalBoundary)}) {
+                    // Stretch existing
+                    playedBoundaries[index].stretch(finalBoundary.start, newEnd: finalBoundary.end)
+                } else {
                     // Create new
                     playedBoundaries.append(finalBoundary)
                 }

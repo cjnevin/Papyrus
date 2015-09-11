@@ -97,6 +97,18 @@ struct Boundary: CustomDebugStringConvertible, Equatable, Hashable {
             return sameColumn && validRow
         }
     }
+    
+    // TODO: Unit test this.
+    /// Stretches the current Boundary to encompass the given start and end positions.
+    mutating func stretch(newStart: Position, newEnd: Position) {
+        if let
+            adjustedStart = Position.newPosition(start.axis, iterable: min(start.iterable, newStart.iterable), fixed: start.fixed),
+            adjustedEnd = Position.newPosition(end.axis, iterable: max(end.iterable, newEnd.iterable), fixed: end.fixed)
+        {
+            print("Stretched existing boundary")
+            self = Boundary(start: adjustedStart, end: adjustedEnd)
+        }
+    }
 }
 
 extension Papyrus {
