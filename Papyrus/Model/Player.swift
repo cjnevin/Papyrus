@@ -8,9 +8,13 @@
 
 import Foundation
 
+func == (lhs: Player, rhs: Player) -> Bool {
+    return ObjectIdentifier(lhs) == ObjectIdentifier(rhs)
+}
+
 /// An instance of a Player which has a score and can be assigned to tiles.
 /// - SeeAlso: Papyrus.player is the current Player.
-class Player: NSObject {
+class Player: Equatable {
     /// Players current score.
     var score: Int = 0
     /// All tiles played by this player.
@@ -35,6 +39,18 @@ class Player: NSObject {
     }
     init(score: Int? = 0) {
         self.score = score!
+    }
+    
+    func moveTile(tile: Tile, to: Placement) -> Bool {
+        if tiles.contains(tile) {
+            tile.placement = to
+            if to == Placement.Bag {
+                tiles.remove(tile)
+                assert(tiles.contains(tile) == false)
+            }
+            return true
+        }
+        return false
     }
 }
 
