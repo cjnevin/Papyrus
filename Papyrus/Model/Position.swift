@@ -67,12 +67,15 @@ struct Position: Equatable, Hashable {
     }
     /// Mutates current item while it passes validation.
     mutating func nextInPlaceWhile(passing: (position: Position) -> Bool) {
-        self = nextWhile(passing)
+        if let position = nextWhile(passing) {
+            self = position
+        }
     }
     /// - returns: Next position while it passes validation otherwise last position.
-    func nextWhile(passing: (position: Position) -> Bool) -> Position {
+    func nextWhile(passing: (position: Position) -> Bool) -> Position? {
+        if !passing(position: self) { return nil }
         if let position = next() where passing(position: position) {
-            return position
+            return position.nextWhile(passing)
         }
         return self
     }
@@ -98,9 +101,21 @@ struct Position: Equatable, Hashable {
 }
 
 extension Papyrus {
+    /// Helper method for walking the board.
+    /// - returns: Last position with a valid tile.
+    func nextWhileEmpty(current: Position?) -> Position? {
+        return current?.nextWhile { self.emptyAt($0) }
+    }
+    
+    /// Helper method for walking the board.
+    /// - returns: Last position with an empty tile.
+    func nextWhileFilled(current: Position?) -> Position? {
+        return current?.nextWhile { !self.emptyAt($0) }
+    }
+
     /// - Parameter: Initial position to begin this loop, will call position's axis->direction to determine next position.
     /// - returns: Furthest possible position from initial position using PapyrusRackAmount.
-    func rackLoop(initial: Position) -> Position {
+    func rackLoop(initial: Position) -> Position? {
         var counter = player?.rackTiles.count ?? 0
         func decrementer(position: Position) -> Bool {
             if emptyAt(position) { counter-- }

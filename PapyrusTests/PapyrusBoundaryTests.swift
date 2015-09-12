@@ -56,7 +56,9 @@ class PapyrusBoundaryTests: XCTestCase {
             end: Position(ascending: true, horizontal: true, iterable: 3, fixed: 1)!)!
         XCTAssert(containedBoundary.containedIn(boundary), "Boundary should contain containedBoundary")
         XCTAssert(boundary.contains(containedBoundary), "Boundary should contain containedBoundary")
-        
+        XCTAssert(containedBoundary.contains(containedBoundary.start), "Boundary should contain start")
+        XCTAssert(!containedBoundary.contains(end), "Boundary should not contain end")
+            
         end.nextInPlaceWhile { (position) -> Bool in
             position.iterable < 7
         }

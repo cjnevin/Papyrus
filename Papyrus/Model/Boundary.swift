@@ -141,18 +141,6 @@ struct Boundary: CustomDebugStringConvertible, Equatable, Hashable {
 
 extension Papyrus {
     
-    /// Helper method for walking the board.
-    /// - returns: Last position with a valid tile.
-    private func nextWhileEmpty(current: Position?) -> Position? {
-        return current?.nextWhile { self.emptyAt($0) }
-    }
-    
-    /// Helper method for walking the board.
-    /// - returns: Last position with an empty tile.
-    private func nextWhileFilled(current: Position?) -> Position? {
-        return current?.nextWhile { !self.emptyAt($0) }
-    }
-
     /// - parameter boundary: Boundary containing tiles that have been dropped on the board.
     /// - returns: Array of boundaries that intersect the supplied boundary.
     func walkBoundary(boundary: Boundary) -> [Boundary] {
@@ -203,8 +191,9 @@ extension Papyrus {
         // Find first and last possible position using rack tiles, skipping filled squares.
         // This should be refactored, so that if we hit two empty squares we know we can play a move, if we just hit one and
         // the following square is filled we need to backout.
-        let startPosition = rackLoop(boundary.start)
-        let endPosition = rackLoop(boundary.end)
+        guard let startPosition = rackLoop(boundary.start), endPosition = rackLoop(boundary.end) else {
+            return currentBoundaries
+        }
         for i in startPosition.iterable...endPosition.iterable {
             // Restrict start index to include the entire word.
             let s = i >= start.iterable ? start.iterable : i

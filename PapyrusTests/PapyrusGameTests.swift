@@ -69,6 +69,21 @@ class PapyrusGameTests: XCTestCase {
         XCTAssert(instance.bagTiles.count == totalTiles - (PapyrusRackAmount * 2))
     }
     
+    func boundaryTests(instance: Papyrus) {
+        XCTAssert(instance.nextWhileEmpty(Position(ascending: false, horizontal: true, iterable: 5, fixed: 5))?.iterable == 0)
+        XCTAssert(instance.nextWhileEmpty(Position(ascending: true, horizontal: true, iterable: 5, fixed: 5))?.iterable == PapyrusDimensions - 1)
+        XCTAssert(instance.nextWhileFilled(Position(ascending: false, horizontal: true, iterable: 5, fixed: 5)) == nil)
+        XCTAssert(instance.nextWhileFilled(Position(ascending: true, horizontal: true, iterable: 5, fixed: 5)) == nil)
+        
+        let tile = instance.bagTiles.first
+        let pos = Position(ascending: true, horizontal: true, iterable: 5, fixed: 5)
+        tile?.placement = Placement.Board
+        instance.squareAt(pos)?.tile = tile
+        XCTAssert(instance.nextWhileFilled(pos) == pos)
+        XCTAssert(instance.nextWhileEmpty(pos) == nil)
+        XCTAssert(instance.nextWhileEmpty(pos?.positionWithIterable(1))?.iterable == 4)
+    }
+    
     func testGame() {
         let instance = Papyrus.sharedInstance
         instance.newGame { (state, game) -> () in
@@ -81,7 +96,7 @@ class PapyrusGameTests: XCTestCase {
                 print("Ready")
                 
                 self.bagRackTests(instance)
-                
+                self.boundaryTests(instance)
                 
                 /*
                 self.runRunsTests(instance)
