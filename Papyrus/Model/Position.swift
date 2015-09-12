@@ -9,13 +9,13 @@
 import Foundation
 
 func == (lhs: Position, rhs: Position) -> Bool {
+    // Match on same axis
     if lhs.horizontal == rhs.horizontal { return lhs.hashValue == rhs.hashValue }
+    // Match on perpendicular axis (swap iterable/fixed)
     return lhs.fixed == rhs.iterable && lhs.iterable == rhs.fixed
 }
 
 struct Position: Equatable, Hashable {
-    /// Positions will be equal regardless of ascending flag.
-    //let ascending: Bool // -> if true, <- if false
     let horizontal: Bool
     let iterable: Int
     let fixed: Int

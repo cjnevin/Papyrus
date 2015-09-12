@@ -46,8 +46,21 @@ class PapyrusBoundaryTests: XCTestCase {
         XCTAssert(newStart == boundary.start, "Start should not be stretchable outside of board boundary")
         
         end.nextInPlace()
+        let stretchedBoundary = boundary.stretch(boundary.start, newEnd: end)
+        let stretchedIterableBoundary = boundary.stretch(boundary.start.iterable, endIterable: end.iterable)
         boundary.stretchInPlace(boundary.start, newEnd: end)
         XCTAssert(boundary.contains(end), "Boundary should include end.newPosition")
+        XCTAssert(boundary == stretchedBoundary, "Boundary should equal stretched boundary")
+        XCTAssert(boundary == stretchedIterableBoundary, "Boundary should equal stretched iterable boundary")
+        
+        let contractedBoundary = boundary.contract(boundary.start.iterable + 1, endIterable: boundary.end.iterable - 1)
+        let manuallyContractedBoundary = Boundary(
+            start: boundary.start.positionWithIterable(boundary.start.iterable + 1),
+            end: boundary.end.positionWithIterable(boundary.end.iterable - 1))
+        boundary.contractInPlace(boundary.start.iterable + 1, endIterable: boundary.end.iterable - 1)
+        XCTAssert(boundary == contractedBoundary, "Boundary should equal contracted boundary")
+        XCTAssert(boundary == manuallyContractedBoundary, "Boundary should equal new boundary")
+        boundary.stretchInPlace(boundary.start.iterable - 1, endIterable: boundary.end.iterable + 1)
         
         let containedBoundary = Boundary(start: Position(horizontal: true, iterable: 1, fixed: 1)!,
             end: Position(horizontal: true, iterable: 3, fixed: 1)!)!

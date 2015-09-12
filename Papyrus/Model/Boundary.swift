@@ -18,7 +18,6 @@ struct Boundary: CustomDebugStringConvertible, Equatable, Hashable {
     let start: Position
     let end: Position
     var horizontal: Bool {
-        assert(start.horizontal == end.horizontal)
         return start.horizontal
     }
     var length: Int {
@@ -120,13 +119,55 @@ struct Boundary: CustomDebugStringConvertible, Equatable, Hashable {
         return false
     }
     
+    // MARK: Contract
+    // These methods favour the lesser values of the two (min/max).
+    
+    /// - returns: New boundary encompassing the new start and end iterable values.
+    func contract(startIterable: Int, endIterable: Int) -> Boundary? {
+        guard let s = start.positionWithIterable(max(start.iterable, startIterable)),
+            e = end.positionWithIterable(min(end.iterable, endIterable)) else { return nil }
+        return Boundary(start: s, end: e)
+    }
+    
+    /// Contracts the current Boundary to encompass the given start and end iterable values.
+    mutating func contractInPlace(startIterable: Int, endIterable: Int) {
+        if let newBoundary = contract(startIterable, endIterable: endIterable) {
+            self = newBoundary
+        }
+    }
+    
+    /// - returns: New boundary encompassing the new start and end positions.
+    func contract(newStart: Position, newEnd: Position) -> Boundary? {
+        return contract(newStart.iterable, endIterable: newEnd.iterable)
+    }
+    
+    /// Stretches the current Boundary to encompass the given start and end positions.
+    mutating func contractInPlace(newStart: Position, newEnd: Position) {
+        if let newBoundary = contract(newStart, newEnd: newEnd) {
+            self = newBoundary
+        }
+    }
+    
+    // MARK: Stretch
+    // These methods favour the greater values of the two (min/max).
+    
+    /// - returns: New boundary encompassing the new start and end iterable values.
+    func stretch(startIterable: Int, endIterable: Int) -> Boundary? {
+        guard let s = start.positionWithIterable(min(start.iterable, startIterable)),
+            e = end.positionWithIterable(max(end.iterable, endIterable)) else { return nil }
+        return Boundary(start: s, end: e)
+    }
+    
+    /// Stretches the current Boundary to encompass the given start and end iterable values.
+    mutating func stretchInPlace(startIterable: Int, endIterable: Int) {
+        if let newBoundary = stretch(startIterable, endIterable: endIterable) {
+            self = newBoundary
+        }
+    }
+    
     /// - returns: New boundary encompassing the new start and end positions.
     func stretch(newStart: Position, newEnd: Position) -> Boundary? {
-        if let s = start.positionWithIterable(min(start.iterable, newStart.iterable)),
-            e = end.positionWithIterable(max(end.iterable, newEnd.iterable)) {
-            return Boundary(start: s, end: e)
-        }
-        return nil
+        return stretch(newStart.iterable, endIterable: newEnd.iterable)
     }
     
     /// Stretches the current Boundary to encompass the given start and end positions.
