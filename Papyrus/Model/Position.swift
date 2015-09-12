@@ -101,21 +101,21 @@ struct Position: Equatable, Hashable {
 }
 
 extension Papyrus {
-    /// Helper method for walking the board.
+    /// - Parameter: Initial position to begin this loop, will call position's horizontal/ascending to determine next position.
     /// - returns: Last position with a valid tile.
-    func nextWhileEmpty(current: Position?) -> Position? {
-        return current?.nextWhile { self.emptyAt($0) }
+    func nextWhileEmpty(initial: Position?) -> Position? {
+        return initial?.nextWhile { self.emptyAt($0) }
     }
     
-    /// Helper method for walking the board.
-    /// - returns: Last position with an empty tile.
-    func nextWhileFilled(current: Position?) -> Position? {
-        return current?.nextWhile { !self.emptyAt($0) }
+    /// - Parameter: Initial position to begin this loop, will call position's horizontal/ascending to determine next position.
+    /// - returns: Last position with an empty square.
+    func nextWhileFilled(initial: Position?) -> Position? {
+        return initial?.nextWhile { !self.emptyAt($0) }
     }
 
-    /// - Parameter: Initial position to begin this loop, will call position's axis->direction to determine next position.
+    /// - Parameter: Initial position to begin this loop, will call position's horizontal/ascending to determine next position.
     /// - returns: Furthest possible position from initial position using PapyrusRackAmount.
-    func rackLoop(initial: Position) -> Position? {
+    func nextWhileEmptyAndTilesInRack(initial: Position) -> Position? {
         var counter = player?.rackTiles.count ?? 0
         func decrementer(position: Position) -> Bool {
             if emptyAt(position) { counter-- }

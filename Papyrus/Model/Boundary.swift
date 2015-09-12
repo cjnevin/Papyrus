@@ -191,7 +191,7 @@ extension Papyrus {
         // Find first and last possible position using rack tiles, skipping filled squares.
         // This should be refactored, so that if we hit two empty squares we know we can play a move, if we just hit one and
         // the following square is filled we need to backout.
-        guard let startPosition = rackLoop(boundary.start), endPosition = rackLoop(boundary.end) else {
+        guard let startPosition = nextWhileEmptyAndTilesInRack(boundary.start), endPosition = nextWhileEmptyAndTilesInRack(boundary.end) else {
             return currentBoundaries
         }
         for i in startPosition.iterable...endPosition.iterable {
