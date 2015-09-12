@@ -54,16 +54,19 @@ extension Papyrus {
         return tileAt(position) == nil
     }
     
+    /// - parameter position: Position to check.
     /// - returns: Letter at given position.
     func letterAt(position: Position?) -> Character? {
         return tileAt(position)?.letter
     }
     
+    /// - parameter position: Position to check.
     /// - returns: Tile at a given position.
     func tileAt(position: Position?) -> Tile? {
         return squareAt(position)?.tile
     }
     
+    /// - parameter boundary: Boundary to check.
     /// - returns: All tiles in a given boundary.
     func tilesIn(boundary: Boundary) -> [Tile] {
         return squaresIn(boundary).mapFilter({$0?.tile})

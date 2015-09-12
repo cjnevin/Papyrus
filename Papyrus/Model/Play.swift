@@ -36,7 +36,7 @@ extension Papyrus {
             let aiTiles = boundaryTiles.1
             var aiTileIndex = 0
             for iterable in aiBoundary.iterableRange {
-                let position = Position(ascending: false, horizontal: aiBoundary.horizontal, iterable: iterable, fixed: aiBoundary.start.fixed)
+                let position = Position(horizontal: aiBoundary.horizontal, iterable: iterable, fixed: aiBoundary.start.fixed)
                 let square = squareAt(position)
                 let tile = aiTiles[aiTileIndex]
                 if tile.placement != .Fixed {

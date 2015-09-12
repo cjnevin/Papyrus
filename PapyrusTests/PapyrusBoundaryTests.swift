@@ -22,8 +22,8 @@ class PapyrusBoundaryTests: XCTestCase {
     }
     
     func testBoundary() {
-        let start = Position(ascending: false, horizontal: true, iterable: 1, fixed: 1)!
-        var end = Position(ascending: true, horizontal: true, iterable: 3, fixed: 1)!
+        let start = Position(horizontal: true, iterable: 1, fixed: 1)!
+        var end = Position(horizontal: true, iterable: 3, fixed: 1)!
         var boundary = Boundary(start: start, end: end)!
         XCTAssert(boundary.contains(start), "Boundary should encompass first iterable")
         XCTAssert(boundary.contains(end), "Boundary should encompass last iterable")
@@ -37,23 +37,20 @@ class PapyrusBoundaryTests: XCTestCase {
         boundary.stretchInPlace(start, newEnd: end)
         XCTAssert(boundary.contains(end), "Boundary should include new end")
         
-        var newStart = start.next()!
-        XCTAssert(start.next() == newStart, "New position should return one previous")
+        var newStart = start.previous()!
+        XCTAssert(start.previous() == newStart, "New position should return one previous")
         boundary.stretchInPlace(newStart, newEnd: end)
         XCTAssert(boundary.contains(newStart), "Boundary should include newStart")
         
-        newStart.nextInPlace()
+        newStart.previousInPlace()
         XCTAssert(newStart == boundary.start, "Start should not be stretchable outside of board boundary")
         
         end.nextInPlace()
         boundary.stretchInPlace(boundary.start, newEnd: end)
         XCTAssert(boundary.contains(end), "Boundary should include end.newPosition")
         
-        XCTAssert(!newStart.ascending, "Start direction is Prev")
-        XCTAssert(end.ascending, "Start direction is Prev")
-        
-        let containedBoundary = Boundary(start: Position(ascending: false, horizontal: true, iterable: 1, fixed: 1)!,
-            end: Position(ascending: true, horizontal: true, iterable: 3, fixed: 1)!)!
+        let containedBoundary = Boundary(start: Position(horizontal: true, iterable: 1, fixed: 1)!,
+            end: Position(horizontal: true, iterable: 3, fixed: 1)!)!
         XCTAssert(containedBoundary.containedIn(boundary), "Boundary should contain containedBoundary")
         XCTAssert(boundary.contains(containedBoundary), "Boundary should contain containedBoundary")
         XCTAssert(containedBoundary.contains(containedBoundary.start), "Boundary should contain start")
@@ -79,19 +76,18 @@ class PapyrusBoundaryTests: XCTestCase {
         XCTAssert(invertedBoundary.intersects(boundary), "Boundary should intersect")
         
         // Should not intersect
-        let verticalBoundary = Boundary(start: Position(ascending: false, horizontal: false, iterable: 7, fixed: 1),
-            end: Position(ascending: true, horizontal: false, iterable: 9, fixed: 1))!
+        let verticalBoundary = Boundary(start: Position(horizontal: false, iterable: 7, fixed: 1),
+            end: Position(horizontal: false, iterable: 9, fixed: 1))!
         XCTAssert(!verticalBoundary.intersects(boundary), "Boundary should not intersect")
         
         // Test optionals
-        XCTAssert(start.positionWithAscending(true)!.ascending != start.ascending, "Ascending should be true")
         XCTAssert(start.positionWithHorizontal(false)! == start, "Horizontal should be false")
         XCTAssert(end.positionWithHorizontal(false)! == end, "Horizontal should be false")
         XCTAssert(start.positionWithIterable(12)! != start, "Iterable should be 12")
         XCTAssert(start.positionWithFixed(12)! != start, "Fixed should be 12")
         
-        let a = Position(ascending: false, horizontal: true, iterable: 5, fixed: 6)!
-        let b = Position(ascending: false, horizontal: false, iterable: 6, fixed: 5)!
+        let a = Position(horizontal: true, iterable: 5, fixed: 6)!
+        let b = Position(horizontal: false, iterable: 6, fixed: 5)!
         XCTAssert(a == b, "Positions should match if on opposite axis but same fixed")
     }
 }

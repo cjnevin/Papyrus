@@ -104,7 +104,6 @@ class Square: CustomDebugStringConvertible, Equatable {
 }
 
 extension Papyrus {
-    
     /// - parameter position: Position to check.
     /// - returns: Square at given position.
     func squareAt(position: Position?) -> Square? {
@@ -116,10 +115,11 @@ extension Papyrus {
         }
     }
     
-    /// Returns all squares in a given boundary.
+    /// - parameter boundary: Boundary to check.
+    /// - returns: All squares in a given boundary.
     func squaresIn(boundary: Boundary) -> [Square?] {
         return (boundary.start.iterable...boundary.end.iterable).map({
-            squareAt(Position(ascending: false, horizontal: boundary.horizontal,
+            squareAt(Position(horizontal: boundary.horizontal,
                 iterable: $0, fixed: boundary.start.fixed))
         })
     }

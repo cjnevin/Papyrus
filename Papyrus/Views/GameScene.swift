@@ -134,10 +134,10 @@ class GameScene: SKScene, GameSceneProtocol {
         var positions = [Position]()
         if let firstRow = rows.first?.row, lastRow = rows.last?.row where firstRow == lastRow {
             // Horizontal
-            positions.appendContentsOf(cols.mapFilter({Position(ascending: false, horizontal: true, iterable: $0.col, fixed: $0.row)}))
+            positions.appendContentsOf(cols.mapFilter({Position(horizontal: true, iterable: $0.col, fixed: $0.row)}))
         } else if let firstCol = cols.first?.col, lastCol = cols.last?.col where firstCol == lastCol {
             // Vertical
-            positions.appendContentsOf(cols.mapFilter({Position(ascending: false, horizontal: false, iterable: $0.row, fixed: $0.col)}))
+            positions.appendContentsOf(cols.mapFilter({Position(horizontal: false, iterable: $0.row, fixed: $0.col)}))
         }
         return positions
     }

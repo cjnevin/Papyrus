@@ -31,7 +31,7 @@ struct Boundary: CustomDebugStringConvertible, Equatable, Hashable {
         return debugDescription.hashValue
     }
     var debugDescription: String {
-        return "\(start.horizontal), \(start.ascending): \(start.iterable),\(start.fixed) - \(end.iterable),\(end.fixed)"
+        return "\(start.horizontal): \(start.iterable),\(start.fixed) - \(end.iterable),\(end.fixed)"
     }
     
     init?(start: Position?, end: Position?) {
@@ -44,17 +44,15 @@ struct Boundary: CustomDebugStringConvertible, Equatable, Hashable {
     init?(positions: [Position]) {
         if let first = positions.first,
             last = positions.last,
-            firstAscending = first.positionWithAscending(false),
-            lastAscending = last.positionWithAscending(true),
-            firstOtherAxis = firstAscending.positionWithHorizontal(!first.horizontal),
-            lastOtherAxis = lastAscending.positionWithHorizontal(!last.horizontal)
+            firstOtherAxis = first.positionWithHorizontal(!first.horizontal),
+            lastOtherAxis = last.positionWithHorizontal(!last.horizontal)
         {
             if positions.count == 1 && firstOtherAxis.iterable != lastOtherAxis.iterable {
                 self.start = firstOtherAxis
                 self.end = lastOtherAxis
             } else {
-                self.start = firstAscending
-                self.end = lastAscending
+                self.start = first
+                self.end = last
             }
             if !isValid { return nil }
         }
@@ -149,8 +147,8 @@ extension Papyrus {
         for index in boundary.start.iterable...boundary.end.iterable {
             // Flip fixed/iterable values, use index as fixed value.
             if let
-                first = nextWhileEmpty(Position(ascending: false, horizontal: !boundary.horizontal, iterable: boundary.start.fixed, fixed: index)),
-                last = nextWhileEmpty(Position(ascending: true, horizontal: !boundary.horizontal, iterable: boundary.start.fixed, fixed: index)),
+                first = nextWhileEmpty(Position(horizontal: !boundary.horizontal, iterable: boundary.start.fixed, fixed: index)),
+                last = nextWhileEmpty(Position(horizontal: !boundary.horizontal, iterable: boundary.start.fixed, fixed: index)),
                 invertedBoundary = Boundary(start: first, end: last) where first.iterable != last.iterable
             {
                 boundaries.append(invertedBoundary)
@@ -181,7 +179,7 @@ extension Papyrus {
         let start = boundary.start, end = boundary.end
         if start.iterable >= end.iterable { return nil }
         return String((start.iterable...end.iterable).mapFilter({
-            letterAt(Position(ascending: false, horizontal: start.horizontal, iterable: $0, fixed: start.fixed))}))
+            letterAt(Position(horizontal: start.horizontal, iterable: $0, fixed: start.fixed))}))
     }
     
     /// Find all possible boundaries for a words boundary.
@@ -241,8 +239,8 @@ extension Papyrus {
             for i in boundary.start.iterable...boundary.end.iterable {
                 // Get positions for current square so we can iterate left/right.
                 // Loop until we hit an empty square.
-                guard let wordStart = nextWhileFilled(Position(ascending: false, horizontal: horizontal, iterable: boundary.start.fixed, fixed:i)),
-                    wordEnd = nextWhileFilled(Position(ascending: true, horizontal: horizontal, iterable: boundary.end.fixed, fixed: i)),
+                guard let wordStart = previousWhileFilled(Position(horizontal: horizontal, iterable: boundary.start.fixed, fixed:i)),
+                    wordEnd = nextWhileFilled(Position(horizontal: horizontal, iterable: boundary.end.fixed, fixed: i)),
                     newBoundary = Boundary(start: wordStart, end: wordEnd) else
                 {
                     print("Skipped!")
