@@ -53,13 +53,13 @@ class PapyrusBoundaryTests: XCTestCase {
         XCTAssert(boundary == stretchedBoundary, "Boundary should equal stretched boundary")
         XCTAssert(boundary == stretchedIterableBoundary, "Boundary should equal stretched iterable boundary")
         
-        let contractedBoundary = boundary.contract(boundary.start.iterable + 1, endIterable: boundary.end.iterable - 1)
-        let manuallyContractedBoundary = Boundary(
+        let shrunkBoundary = boundary.shrink(boundary.start.iterable + 1, endIterable: boundary.end.iterable - 1)
+        let manuallyShrunkBoundary = Boundary(
             start: boundary.start.positionWithIterable(boundary.start.iterable + 1),
             end: boundary.end.positionWithIterable(boundary.end.iterable - 1))
-        boundary.contractInPlace(boundary.start.iterable + 1, endIterable: boundary.end.iterable - 1)
-        XCTAssert(boundary == contractedBoundary, "Boundary should equal contracted boundary")
-        XCTAssert(boundary == manuallyContractedBoundary, "Boundary should equal new boundary")
+        boundary.shrinkInPlace(boundary.start.iterable + 1, endIterable: boundary.end.iterable - 1)
+        XCTAssert(boundary == shrunkBoundary, "Boundary should equal shrunk boundary")
+        XCTAssert(boundary == manuallyShrunkBoundary, "Boundary should equal new boundary")
         boundary.stretchInPlace(boundary.start.iterable - 1, endIterable: boundary.end.iterable + 1)
         
         let containedBoundary = Boundary(start: Position(horizontal: true, iterable: 1, fixed: 1)!,
