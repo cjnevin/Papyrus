@@ -188,7 +188,7 @@ extension Papyrus {
         for index in boundary.start.iterable...boundary.end.iterable {
             // Flip fixed/iterable values, use index as fixed value.
             if let
-                first = nextWhileEmpty(Position(horizontal: !boundary.horizontal, iterable: boundary.start.fixed, fixed: index)),
+                first = previousWhileEmpty(Position(horizontal: !boundary.horizontal, iterable: boundary.start.fixed, fixed: index)),
                 last = nextWhileEmpty(Position(horizontal: !boundary.horizontal, iterable: boundary.start.fixed, fixed: index)),
                 invertedBoundary = Boundary(start: first, end: last) where first.iterable != last.iterable
             {
@@ -230,7 +230,9 @@ extension Papyrus {
         // Find first and last possible position using rack tiles, skipping filled squares.
         // This should be refactored, so that if we hit two empty squares we know we can play a move, if we just hit one and
         // the following square is filled we need to backout.
-        guard let startPosition = nextWhileEmptyAndTilesInRack(boundary.start), endPosition = nextWhileEmptyAndTilesInRack(boundary.end) else {
+        guard let
+            startPosition = previousWhileTilesInRack(boundary.start),
+            endPosition = nextWhileTilesInRack(boundary.end) else {
             return currentBoundaries
         }
         for i in startPosition.iterable...endPosition.iterable {

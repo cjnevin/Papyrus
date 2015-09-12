@@ -138,7 +138,7 @@ extension Papyrus {
 
     /// - Parameter: Initial position to begin this loop.
     /// - returns: Furthest possible position from initial position using PapyrusRackAmount.
-    func nextWhileEmptyAndTilesInRack(initial: Position) -> Position? {
+    func nextWhileTilesInRack(initial: Position) -> Position? {
         var counter = player?.rackTiles.count ?? 0
         func decrementer(position: Position) -> Bool {
             if emptyAt(position) { counter-- }
@@ -162,7 +162,7 @@ extension Papyrus {
     
     /// - Parameter: Initial position to begin this loop.
     /// - returns: Furthest possible position from initial position using PapyrusRackAmount.
-    func previousWhileEmptyAndTilesInRack(initial: Position) -> Position? {
+    func previousWhileTilesInRack(initial: Position) -> Position? {
         var counter = player?.rackTiles.count ?? 0
         func decrementer(position: Position) -> Bool {
             if emptyAt(position) { counter-- }
