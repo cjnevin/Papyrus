@@ -11,9 +11,25 @@ import XCTest
 
 class PapyrusTests: XCTestCase {
 
+    let instance = Papyrus.sharedInstance
+    
     override func setUp() {
         super.setUp()
         // Put setup code here. This method is called before the invocation of each test method in the class.
+        instance.newGame { (state, game) -> () in
+            switch state {
+            case .Cleanup:
+                print("Cleanup")
+            case .Preparing:
+                print("Preparing")
+            case .Ready:
+                print("Ready")
+            case .ChangedPlayer:
+                print("Player changed")
+            case .Completed:
+                print("Completed")
+            }
+        }
     }
     
     override func tearDown() {
@@ -21,17 +37,7 @@ class PapyrusTests: XCTestCase {
         super.tearDown()
     }
     
-    func testPlayer() {
-        XCTAssert(Player(score: 10).score == 10)
-        XCTAssert(Player().score == 0)
-    }
-    
-    func testTiles() {
-        let totalTiles = TileConfiguration.map({$0.0}).reduce(0, combine: +)
-        XCTAssert(Tile.createTiles().count == totalTiles)
-    }
-    
-    func bagRackTests(instance: Papyrus) {
+    func testBagAndRack() {
         XCTAssert(instance.squareAt(nil) == nil)
         XCTAssert(instance.squareAt(Position(horizontal: false, iterable: 0, fixed: 0)) != nil)
         
@@ -71,7 +77,7 @@ class PapyrusTests: XCTestCase {
         XCTAssert(instance.player == player, "Expected to return to first player")
     }
     
-    func boundaryTests(instance: Papyrus) {
+    func testInstanceBoundaryMethods() {
         XCTAssert(instance.previousWhileEmpty(Position(horizontal: true, iterable: 5, fixed: 5))?.iterable == 0)
         XCTAssert(instance.nextWhileEmpty(Position(horizontal: true, iterable: 5, fixed: 5))?.iterable == PapyrusDimensions - 1)
         XCTAssert(instance.previousWhileFilled(Position(horizontal: true, iterable: 5, fixed: 5)) == nil)
@@ -93,26 +99,18 @@ class PapyrusTests: XCTestCase {
         XCTAssert(instance.nextWhileFilled(pos2) == pos, "Expected pos")
         XCTAssert(instance.nextWhileEmpty(emptyPos) == emptyPos, "Expected emptyPos")
         XCTAssert(instance.previousWhileFilled(pos) == pos2, "Expected pos2")
-        XCTAssert(Boundary(positions: [pos2, pos])!.start == pos2, "Expected start to match pos2")
-        XCTAssert(Boundary(positions: [pos2, pos])!.end == pos, "Expected end to match pos")
-        XCTAssert(Boundary(positions: [pos, pos2]) == nil, "Expected nil if start > end")
-        XCTAssert(Boundary(positions: [pos2])!.end == pos2, "Expected end to match pos2")
         XCTAssert(instance.readable(Boundary(positions: [pos2, pos])!) == "\(tile2.letter)\(tile.letter)", "Expected readable string from tile letters")
-        
-        // Reset tiles
-        tile2.placement = Placement.Bag
-        tile.placement = Placement.Bag
-        instance.squareAt(pos2)?.tile = nil
-        instance.squareAt(pos)?.tile = nil
     }
     
-    func whileTests(instance: Papyrus) {
+    func testWhileMethods() {
+        instance.createPlayer()
         XCTAssert(instance.player?.rackTiles.count == 7, "Expected 7 rack tiles")
         XCTAssert(instance.previousWhileTilesInRack(Position(horizontal: true, row: 7, col: 7)!)?.iterable == 1, "Expected (7)-7 to land on square 1")
         XCTAssert(instance.nextWhileTilesInRack(Position(horizontal: true, row: 7, col: 7)!)?.iterable == PapyrusDimensions - 2, "Expected (7)+7 to land on square 13")
     }
     
-    func playableBoundariesTest(instance: Papyrus) {
+    func testPlayableBoundariesMethod() {
+        instance.createPlayer()
         XCTAssert(instance.player?.rackTiles.count == 7, "Expected 7 rack tiles")
         XCTAssert(PapyrusDimensions == 15, "Expected 15")
         
@@ -155,8 +153,7 @@ class PapyrusTests: XCTestCase {
         print(instance.playableBoundaries(forBoundary: boundary))*/
     }
     
-    func placementTests(instance: Papyrus) {
-        
+    func testFindPlayableBoundaries() {
         instance.squares[2][9].tile = Tile("R", 1)
         instance.squares[3][9].tile = Tile("E", 1)
         instance.squares[4][9].tile = Tile("S", 1)
@@ -228,37 +225,5 @@ class PapyrusTests: XCTestCase {
         print(playableBoundaries.count)
         
         //XCTAssert(playableBoundaries.count == 100)
-    }
-    
-    
-    func testGame() {
-        let instance = Papyrus.sharedInstance
-        instance.newGame { (state, game) -> () in
-            switch state {
-            case .Cleanup:
-                print("Cleanup")
-            case .Preparing:
-                print("Preparing")
-            case .Ready:
-                print("Ready")
-                
-                self.bagRackTests(instance)
-                self.boundaryTests(instance)
-                self.whileTests(instance)
-                self.playableBoundariesTest(instance)
-                self.placementTests(instance)
-                
-                /*
-                self.runRunsTests(instance)
-                self.runTileErrorTests(instance)
-                self.runTilePlacementTests(instance)
-                */
-            case .ChangedPlayer:
-                print("Player changed")
-                
-            case .Completed:
-                print("Completed")
-            }
-        }
     }
 }

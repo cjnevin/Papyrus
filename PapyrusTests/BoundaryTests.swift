@@ -128,6 +128,12 @@ class BoundaryTests: XCTestCase {
         XCTAssert(start.positionWithFixed(start.fixed)! == start, "Expected same object")
         XCTAssert(start.positionWithFixed(20) == nil, "Expected nil")
         
+        // For positions initializer
+        XCTAssert(Boundary(positions: [start, end])!.start == start, "Expected start to match start")
+        XCTAssert(Boundary(positions: [start, end])!.end == end, "Expected end to match end")
+        XCTAssert(Boundary(positions: [end, start]) == nil, "Expected nil if start > end")
+        XCTAssert(Boundary(positions: [end])!.end == end, "Expected end to match end")
+        
         let positions: [Position] = []
         XCTAssert(Boundary(positions: positions) == nil, "Expected nil")
         XCTAssert(Boundary(start: end, end: start) == nil, "Expected nil")

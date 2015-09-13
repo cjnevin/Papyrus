@@ -49,6 +49,7 @@ class Papyrus {
     /// Create a new game.
     /// - parameter callback: Callback which will be called throughout all stages of game lifecycle.
     func newGame(callback: LifecycleCallback) {
+        squares.flatMap({$0}).forEach({$0.tile = nil})
         inProgress = true
         lifecycleCallback?(.Cleanup, self)
         lifecycleCallback = callback

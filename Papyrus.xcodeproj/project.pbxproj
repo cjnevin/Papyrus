@@ -18,6 +18,8 @@
 		9960AD571BA3F6C700765614 /* UtilTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9960AD561BA3F6C700765614 /* UtilTests.swift */; };
 		9960AD591BA56BBB00765614 /* SquareTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9960AD581BA56BBB00765614 /* SquareTests.swift */; };
 		9960AD5B1BA57CC900765614 /* LexiconTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9960AD5A1BA57CC900765614 /* LexiconTests.swift */; };
+		9960AD5D1BA5858C00765614 /* TileTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9960AD5C1BA5858C00765614 /* TileTests.swift */; };
+		9960AD5F1BA585A700765614 /* PlayerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9960AD5E1BA585A700765614 /* PlayerTests.swift */; };
 		99629C091B547DE800510036 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99629C081B547DE800510036 /* AppDelegate.swift */; };
 		99629C0B1B547DE800510036 /* GameScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = 99629C0A1B547DE800510036 /* GameScene.sks */; };
 		99629C121B547DE800510036 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 99629C101B547DE800510036 /* Main.storyboard */; };
@@ -70,6 +72,8 @@
 		9960AD561BA3F6C700765614 /* UtilTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UtilTests.swift; sourceTree = "<group>"; };
 		9960AD581BA56BBB00765614 /* SquareTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SquareTests.swift; sourceTree = "<group>"; };
 		9960AD5A1BA57CC900765614 /* LexiconTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LexiconTests.swift; sourceTree = "<group>"; };
+		9960AD5C1BA5858C00765614 /* TileTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TileTests.swift; sourceTree = "<group>"; };
+		9960AD5E1BA585A700765614 /* PlayerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerTests.swift; sourceTree = "<group>"; };
 		99629C051B547DE800510036 /* Papyrus.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Papyrus.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		99629C081B547DE800510036 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		99629C0A1B547DE800510036 /* GameScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = GameScene.sks; sourceTree = "<group>"; };
@@ -168,8 +172,10 @@
 				9960AD521BA34D7400765614 /* BoundaryTests.swift */,
 				9960AD5A1BA57CC900765614 /* LexiconTests.swift */,
 				9960AD541BA38AFB00765614 /* PapyrusTests.swift */,
+				9960AD5C1BA5858C00765614 /* TileTests.swift */,
 				9960AD581BA56BBB00765614 /* SquareTests.swift */,
 				9960AD561BA3F6C700765614 /* UtilTests.swift */,
+				9960AD5E1BA585A700765614 /* PlayerTests.swift */,
 				99629C231B547DE800510036 /* Info.plist */,
 			);
 			path = PapyrusTests;
@@ -412,7 +418,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9960AD5F1BA585A700765614 /* PlayerTests.swift in Sources */,
 				9960AD591BA56BBB00765614 /* SquareTests.swift in Sources */,
+				9960AD5D1BA5858C00765614 /* TileTests.swift in Sources */,
 				9960AD531BA34D7400765614 /* BoundaryTests.swift in Sources */,
 				9960AD571BA3F6C700765614 /* UtilTests.swift in Sources */,
 				9960AD5B1BA57CC900765614 /* LexiconTests.swift in Sources */,
