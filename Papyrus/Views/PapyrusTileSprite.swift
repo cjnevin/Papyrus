@@ -7,6 +7,7 @@
 //
 
 import SpriteKit
+import PapyrusCore
 
 class TileSprite: SKSpriteNode {
     static var defaultTileSize: CGFloat = 0.0

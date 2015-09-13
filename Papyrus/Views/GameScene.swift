@@ -8,6 +8,7 @@
 
 import SpriteKit
 import SceneKit
+import PapyrusCore
 
 protocol GameSceneDelegate {
     func boundariesChanged(boundary: Boundary?, error: ValidationError?, score: Int)
@@ -21,9 +22,9 @@ protocol GameSceneProtocol {
 
 class GameScene: SKScene, GameSceneProtocol {
     /// - returns: Current game object.
-    internal var game: Papyrus {
-        return Papyrus.sharedInstance
-    }
+    let game = Papyrus()
+    let lexicon = Lexicon(withFilePath: NSBundle.mainBundle().pathForResource("CSW12", ofType: "plist")!)!
+    
     /// - returns: Currently dragged tile user is holding.
     var heldTile: TileSprite? {
         return tileSprites.filter({ $0.tile.placement == Placement.Held }).first
@@ -150,7 +151,7 @@ class GameScene: SKScene, GameSceneProtocol {
         if positions.count >= 1 {
             if let boundary = Boundary(positions: positions) {
                 do {
-                    let score = try game.play(boundary, submit: false)
+                    let score = try game.play(boundary, submit: false, lexicon: lexicon)
                     actionDelegate?.boundariesChanged(boundary, error: nil, score: score)
                 } catch let err as ValidationError {
                     switch err {
@@ -181,7 +182,7 @@ class GameScene: SKScene, GameSceneProtocol {
         }
         let positions = getPositions()
         if let boundary = Boundary(positions: positions) {
-            let _ = try game.play(boundary, submit: true)
+            let _ = try game.play(boundary, submit: true, lexicon: lexicon)
             replaceRackSprites()
             // Change player
             game.nextPlayer()
@@ -203,7 +204,7 @@ class GameScene: SKScene, GameSceneProtocol {
         }
         */
         
-        let (_, squareTiles) = try game.playAI()
+        let (_, squareTiles) = try game.playAI(lexicon)
         for (square, tile) in squareTiles {
             let tileSprite = TileSprite.sprite(withTile: tile)
             tileSprites.append(tileSprite)

@@ -8,6 +8,7 @@
 
 import UIKit
 import SpriteKit
+import PapyrusCore
 
 class GameViewController: UIViewController, GameSceneDelegate, UITextFieldDelegate {
     @IBOutlet var skView: SKView?
@@ -16,7 +17,7 @@ class GameViewController: UIViewController, GameSceneDelegate, UITextFieldDelega
     override func viewDidLoad() {
         super.viewDidLoad()
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
-            Lexicon.sharedInstance
+            scene
         }
         if let view = skView, gscene = GameScene(fileNamed:"GameScene") {
             gscene.scaleMode = SKSceneScaleMode.ResizeFill
@@ -34,13 +35,13 @@ class GameViewController: UIViewController, GameSceneDelegate, UITextFieldDelega
     
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
-        if !Papyrus.sharedInstance.inProgress {
+        if scene?.game.inProgress == false {
             newGame()
         }
     }
     
     func newGame() {
-        Papyrus.sharedInstance.newGame() { [weak self] (lifecycle, game) in
+        scene?.game.newGame() { [weak self] (lifecycle, game) in
             guard let this = self, scene = this.scene else { return }
             switch (lifecycle) {
             case .Cleanup:

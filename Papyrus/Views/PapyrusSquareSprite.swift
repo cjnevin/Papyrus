@@ -7,6 +7,7 @@
 //
 
 import SpriteKit
+import PapyrusCore
 
 class SquareSprite: SKSpriteNode {
     let row: Int
@@ -39,7 +40,7 @@ class SquareSprite: SKSpriteNode {
 }
 
 extension Papyrus {
-    private static let colorMap: [Square.Modifier: UIColor] = [
+    private static let colorMap: [Modifier: UIColor] = [
         .Center: .Papyrus_Center,
         .Letterx2: .Papyrus_Letterx2,
         .Letterx3: .Papyrus_Letterx3,

@@ -7,6 +7,7 @@
 //
 
 import SpriteKit
+import PapyrusCore
 
 extension GameScene {
     
