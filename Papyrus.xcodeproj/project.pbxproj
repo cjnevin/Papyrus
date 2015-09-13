@@ -14,8 +14,8 @@
 		995F04501B7DCF6000CC19A6 /* Boundary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 995F044F1B7DCF6000CC19A6 /* Boundary.swift */; };
 		995F04521B7E548100CC19A6 /* Tile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 995F04511B7E548100CC19A6 /* Tile.swift */; };
 		9960AD531BA34D7400765614 /* BoundaryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9960AD521BA34D7400765614 /* BoundaryTests.swift */; };
-		9960AD551BA38AFB00765614 /* GameTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9960AD541BA38AFB00765614 /* GameTests.swift */; };
-		9960AD571BA3F6C700765614 /* PapyrusUtilTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9960AD561BA3F6C700765614 /* PapyrusUtilTests.swift */; };
+		9960AD551BA38AFB00765614 /* PapyrusTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9960AD541BA38AFB00765614 /* PapyrusTests.swift */; };
+		9960AD571BA3F6C700765614 /* UtilTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9960AD561BA3F6C700765614 /* UtilTests.swift */; };
 		9960AD591BA56BBB00765614 /* SquareTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9960AD581BA56BBB00765614 /* SquareTests.swift */; };
 		9960AD5B1BA57CC900765614 /* LexiconTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9960AD5A1BA57CC900765614 /* LexiconTests.swift */; };
 		99629C091B547DE800510036 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99629C081B547DE800510036 /* AppDelegate.swift */; };
@@ -23,7 +23,6 @@
 		99629C121B547DE800510036 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 99629C101B547DE800510036 /* Main.storyboard */; };
 		99629C141B547DE800510036 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 99629C131B547DE800510036 /* Assets.xcassets */; };
 		99629C171B547DE800510036 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 99629C151B547DE800510036 /* LaunchScreen.storyboard */; };
-		99629C221B547DE800510036 /* PapyrusTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99629C211B547DE800510036 /* PapyrusTests.swift */; };
 		99629C2D1B547DE800510036 /* PapyrusUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99629C2C1B547DE800510036 /* PapyrusUITests.swift */; };
 		99629C4B1B547E3800510036 /* Papyrus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99629C3C1B547E3800510036 /* Papyrus.swift */; };
 		99629C4C1B547E3800510036 /* Lexicon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99629C3D1B547E3800510036 /* Lexicon.swift */; };
@@ -67,8 +66,8 @@
 		995F044F1B7DCF6000CC19A6 /* Boundary.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Boundary.swift; sourceTree = "<group>"; };
 		995F04511B7E548100CC19A6 /* Tile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Tile.swift; sourceTree = "<group>"; };
 		9960AD521BA34D7400765614 /* BoundaryTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BoundaryTests.swift; sourceTree = "<group>"; };
-		9960AD541BA38AFB00765614 /* GameTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameTests.swift; sourceTree = "<group>"; };
-		9960AD561BA3F6C700765614 /* PapyrusUtilTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PapyrusUtilTests.swift; sourceTree = "<group>"; };
+		9960AD541BA38AFB00765614 /* PapyrusTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PapyrusTests.swift; sourceTree = "<group>"; };
+		9960AD561BA3F6C700765614 /* UtilTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UtilTests.swift; sourceTree = "<group>"; };
 		9960AD581BA56BBB00765614 /* SquareTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SquareTests.swift; sourceTree = "<group>"; };
 		9960AD5A1BA57CC900765614 /* LexiconTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LexiconTests.swift; sourceTree = "<group>"; };
 		99629C051B547DE800510036 /* Papyrus.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Papyrus.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -79,7 +78,6 @@
 		99629C161B547DE800510036 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		99629C181B547DE800510036 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		99629C1D1B547DE800510036 /* PapyrusTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PapyrusTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		99629C211B547DE800510036 /* PapyrusTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PapyrusTests.swift; sourceTree = "<group>"; };
 		99629C231B547DE800510036 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		99629C281B547DE800510036 /* PapyrusUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PapyrusUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		99629C2C1B547DE800510036 /* PapyrusUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PapyrusUITests.swift; sourceTree = "<group>"; };
@@ -167,12 +165,11 @@
 		99629C201B547DE800510036 /* PapyrusTests */ = {
 			isa = PBXGroup;
 			children = (
-				99629C211B547DE800510036 /* PapyrusTests.swift */,
 				9960AD521BA34D7400765614 /* BoundaryTests.swift */,
 				9960AD5A1BA57CC900765614 /* LexiconTests.swift */,
-				9960AD541BA38AFB00765614 /* GameTests.swift */,
+				9960AD541BA38AFB00765614 /* PapyrusTests.swift */,
 				9960AD581BA56BBB00765614 /* SquareTests.swift */,
-				9960AD561BA3F6C700765614 /* PapyrusUtilTests.swift */,
+				9960AD561BA3F6C700765614 /* UtilTests.swift */,
 				99629C231B547DE800510036 /* Info.plist */,
 			);
 			path = PapyrusTests;
@@ -417,10 +414,9 @@
 			files = (
 				9960AD591BA56BBB00765614 /* SquareTests.swift in Sources */,
 				9960AD531BA34D7400765614 /* BoundaryTests.swift in Sources */,
-				99629C221B547DE800510036 /* PapyrusTests.swift in Sources */,
-				9960AD571BA3F6C700765614 /* PapyrusUtilTests.swift in Sources */,
+				9960AD571BA3F6C700765614 /* UtilTests.swift in Sources */,
 				9960AD5B1BA57CC900765614 /* LexiconTests.swift in Sources */,
-				9960AD551BA38AFB00765614 /* GameTests.swift in Sources */,
+				9960AD551BA38AFB00765614 /* PapyrusTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
