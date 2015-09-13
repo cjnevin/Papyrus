@@ -41,21 +41,10 @@ struct Boundary: CustomDebugStringConvertible, Equatable, Hashable {
     }
     
     init?(positions: [Position]) {
-        if let first = positions.first,
-            last = positions.last,
-            firstOtherAxis = first.positionWithHorizontal(!first.horizontal),
-            lastOtherAxis = last.positionWithHorizontal(!last.horizontal)
-        {
-            if positions.count == 1 && firstOtherAxis.iterable != lastOtherAxis.iterable {
-                self.start = firstOtherAxis
-                self.end = lastOtherAxis
-            } else {
-                self.start = first
-                self.end = last
-            }
-            if !isValid { return nil }
-        }
-        return nil
+        guard let first = positions.first, last = positions.last else { return nil }
+        self.start = first
+        self.end = last
+        if !isValid { return nil }
     }
     
     /// - returns: Whether this boundary appears to contain valid positions.
@@ -85,8 +74,11 @@ struct Boundary: CustomDebugStringConvertible, Equatable, Hashable {
     
     /// - returns: True if position is within this boundary's range.
     func contains(position: Position) -> Bool {
+        // If different axis, swap
+        if position.horizontal != horizontal {
+            return contains(position.positionWithHorizontal(horizontal)!)
+        }
         // If different fixed position it cannot be contained
-        if position.horizontal != horizontal { return false }
         if position.fixed != start.fixed { return false }
         return iterableRange.contains(position.iterable)
     }
@@ -100,6 +92,20 @@ struct Boundary: CustomDebugStringConvertible, Equatable, Hashable {
         // Check if iterable value intersects on either range
         return iterableRange.contains({boundary.iterableRange.contains($0)}) ||
             boundary.iterableRange.contains({iterableRange.contains($0)})
+    }
+    
+    /// Currently unused.
+    /// - returns: Boundary at previous fixed index or nil.
+    func previous() -> Boundary? {
+        return Boundary(start: start.positionWithFixed(start.fixed - 1),
+            end: end.positionWithFixed(end.fixed - 1))
+    }
+    
+    /// Currently unused.
+    /// - returns: Boundary at next fixed index or nil.
+    func next() -> Boundary? {
+        return Boundary(start: start.positionWithFixed(start.fixed + 1),
+            end: end.positionWithFixed(end.fixed + 1))
     }
     
     /// - returns: True if on adjacent fixed value and iterable seems to be in the same range.
@@ -202,17 +208,16 @@ extension Papyrus {
         second: Position -> () -> Position?) -> Bool {
         // Current position must be empty
         assert(emptyAt(position))
-        // Check next index (or previous if at end) is empty
-        if let startNext = first(position)() where emptyAt(startNext) {
-            return true
-        } else {
-            // Check previous index (or next if at end) is empty or edge of board
-            if let startPrevious = second(position)() {
-                return emptyAt(startPrevious)
-            } else {
+            // Check next index (or previous if at end) is empty
+            if let startNext = first(position)() where emptyAt(startNext) {
                 return true
+            } else {
+                // Check previous index (or next if at end) is empty or edge of board
+                if let startPrevious = second(position)() {
+                    return emptyAt(startPrevious)
+                }
             }
-        }
+            return true
     }
     
     /// - returns: Array of boundaries including this boundary which may be possible with the players tiles.
@@ -296,10 +301,8 @@ extension Papyrus {
     /// Does not currently check for gaps - use another method for gap checking and validation.
     /// - parameter boundary: The boundary to get the letters for.
     func readable(boundary: Boundary) -> String? {
-        let start = boundary.start, end = boundary.end
-        if start.iterable >= end.iterable { return nil }
         return String(boundary.iterableRange.mapFilter({
-            letterAt(Position(horizontal: start.horizontal, iterable: $0, fixed: start.fixed))}))
+            letterAt(Position(horizontal: boundary.start.horizontal, iterable: $0, fixed: boundary.start.fixed))}))
     }
     
     // TODO: Fix this method, some of these boundaries don't include complete words.

@@ -1,5 +1,5 @@
 //
-//  PapyrusGameTests.swift
+//  GameTests.swift
 //  Papyrus
 //
 //  Created by Chris Nevin on 11/09/2015.
@@ -9,7 +9,7 @@
 import XCTest
 @testable import Papyrus
 
-class PapyrusGameTests: XCTestCase {
+class GameTests: XCTestCase {
 
     override func setUp() {
         super.setUp()
@@ -26,16 +26,15 @@ class PapyrusGameTests: XCTestCase {
         XCTAssert(Player().score == 0)
     }
     
-    func testSquares() {
-        XCTAssert(Square.createSquares().flatten().count == PapyrusDimensions * PapyrusDimensions)
-    }
-    
     func testTiles() {
         let totalTiles = TileConfiguration.map({$0.0}).reduce(0, combine: +)
         XCTAssert(Tile.createTiles().count == totalTiles)
     }
     
     func bagRackTests(instance: Papyrus) {
+        XCTAssert(instance.squareAt(nil) == nil)
+        XCTAssert(instance.squareAt(Position(horizontal: false, iterable: 0, fixed: 0)) != nil)
+        
         let totalTiles = TileConfiguration.map({$0.0}).reduce(0, combine: +)
         XCTAssert(instance.tiles.count == totalTiles)
         instance.createPlayer()
@@ -78,26 +77,31 @@ class PapyrusGameTests: XCTestCase {
         XCTAssert(instance.previousWhileFilled(Position(horizontal: true, iterable: 5, fixed: 5)) == nil)
         XCTAssert(instance.nextWhileFilled(Position(horizontal: true, iterable: 5, fixed: 5)) == nil)
         
-        let tile = instance.bagTiles.first
-        let pos = Position(horizontal: true, iterable: 5, fixed: 5)
-        tile?.placement = Placement.Board
+        let tile = instance.bagTiles.first!
+        let pos = Position(horizontal: true, iterable: 5, fixed: 5)!
+        tile.placement = Placement.Board
         instance.squareAt(pos)?.tile = tile
         XCTAssert(instance.nextWhileFilled(pos) == pos)
         XCTAssert(instance.nextWhileEmpty(pos) == nil)
-        XCTAssert(instance.nextWhileEmpty(pos?.positionWithIterable(1))?.iterable == 4)
+        XCTAssert(instance.nextWhileEmpty(pos.positionWithIterable(1))?.iterable == 4)
         
-        let tile2 = instance.bagTiles.first
-        let pos2 = Position(horizontal: true, iterable: 4, fixed: 5)
-        tile?.placement = Placement.Board
-        let emptyPos = pos2?.positionWithIterable(3)
+        let tile2 = instance.bagTiles.first!
+        let pos2 = Position(horizontal: true, iterable: 4, fixed: 5)!
+        tile.placement = Placement.Board
+        let emptyPos = pos2.positionWithIterable(3)
         instance.squareAt(pos2)?.tile = tile2
-        XCTAssert(instance.nextWhileFilled(pos2) == pos)
-        XCTAssert(instance.nextWhileEmpty(emptyPos) == emptyPos)
-        XCTAssert(instance.previousWhileFilled(pos) == pos2)
+        XCTAssert(instance.nextWhileFilled(pos2) == pos, "Expected pos")
+        XCTAssert(instance.nextWhileEmpty(emptyPos) == emptyPos, "Expected emptyPos")
+        XCTAssert(instance.previousWhileFilled(pos) == pos2, "Expected pos2")
+        XCTAssert(Boundary(positions: [pos2, pos])!.start == pos2, "Expected start to match pos2")
+        XCTAssert(Boundary(positions: [pos2, pos])!.end == pos, "Expected end to match pos")
+        XCTAssert(Boundary(positions: [pos, pos2]) == nil, "Expected nil if start > end")
+        XCTAssert(Boundary(positions: [pos2])!.end == pos2, "Expected end to match pos2")
+        XCTAssert(instance.readable(Boundary(positions: [pos2, pos])!) == "\(tile2.letter)\(tile.letter)", "Expected readable string from tile letters")
         
         // Reset tiles
-        tile2?.placement = Placement.Bag
-        tile?.placement = Placement.Bag
+        tile2.placement = Placement.Bag
+        tile.placement = Placement.Bag
         instance.squareAt(pos2)?.tile = nil
         instance.squareAt(pos)?.tile = nil
     }

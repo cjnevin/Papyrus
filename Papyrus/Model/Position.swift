@@ -20,8 +20,6 @@ struct Position: Equatable, Hashable {
     let iterable: Int
     let fixed: Int
     
-    
-    
     init?(horizontal: Bool, iterable: Int, fixed: Int) {
         self.horizontal = horizontal
         self.iterable = iterable
@@ -145,8 +143,9 @@ extension Papyrus {
     /// - Parameter: Initial position to begin this loop.
     /// - returns: Furthest possible position from initial position using PapyrusRackAmount.
     func nextWhileTilesInRack(initial: Position) -> Position? {
+        assert(player != nil)
         if initial.iterable == PapyrusDimensions - 1 { return initial }
-        var counter = player?.rackTiles.count ?? 0
+        var counter = player!.rackTiles.count
         var position: Position? = initial
         while (counter > 0 && position != nil) {
             if emptyAt(position!) { counter-- }
@@ -174,8 +173,9 @@ extension Papyrus {
     /// - Parameter: Initial position to begin this loop.
     /// - returns: Furthest possible position from initial position using PapyrusRackAmount.
     func previousWhileTilesInRack(initial: Position) -> Position? {
+        assert(player != nil)
         if initial.iterable == 0 { return initial }
-        var counter = player?.rackTiles.count ?? 0
+        var counter = player!.rackTiles.count
         var position: Position? = initial
         while (counter > 0 && position != nil) {
             if emptyAt(position!) { counter-- }
