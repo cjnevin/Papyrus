@@ -1,0 +1,3 @@
+[submodule "PapyrusCore"]
+	path = PapyrusCore
+	url = https://ChrisAU@github.com/ChrisAU/PapyrusCore.git

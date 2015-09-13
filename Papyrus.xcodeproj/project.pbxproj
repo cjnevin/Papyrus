@@ -41,6 +41,27 @@
 			remoteGlobalIDString = 99629C041B547DE800510036;
 			remoteInfo = Papyrus;
 		};
+		99FD435B1BA59BF900F50DCF /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 99FD43561BA59BF900F50DCF /* PapyrusCore.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 9960AD6A1BA589D800765614;
+			remoteInfo = PapyrusCore;
+		};
+		99FD435D1BA59BF900F50DCF /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 99FD43561BA59BF900F50DCF /* PapyrusCore.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 9960AD741BA589D800765614;
+			remoteInfo = PapyrusCoreTests;
+		};
+		99FD435F1BA59C0800F50DCF /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 99FD43561BA59BF900F50DCF /* PapyrusCore.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 9960AD691BA589D800765614;
+			remoteInfo = PapyrusCore;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
@@ -66,6 +87,7 @@
 		99FD43391BA5901E00F50DCF /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		99FD433B1BA5901E00F50DCF /* CSW12.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = CSW12.plist; sourceTree = "<group>"; };
 		99FD433C1BA5901E00F50DCF /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		99FD43561BA59BF900F50DCF /* PapyrusCore.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = PapyrusCore.xcodeproj; path = PapyrusCore/PapyrusCore.xcodeproj; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -116,6 +138,7 @@
 		99629C071B547DE800510036 /* Papyrus */ = {
 			isa = PBXGroup;
 			children = (
+				99FD43561BA59BF900F50DCF /* PapyrusCore.xcodeproj */,
 				99629C081B547DE800510036 /* AppDelegate.swift */,
 				99DF9E0D1B54ED7300F58DA7 /* Extensions */,
 				99629C581B547E8200510036 /* ViewControllers */,
@@ -195,6 +218,15 @@
 			path = Dictionaries;
 			sourceTree = "<group>";
 		};
+		99FD43571BA59BF900F50DCF /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				99FD435C1BA59BF900F50DCF /* PapyrusCore.framework */,
+				99FD435E1BA59BF900F50DCF /* PapyrusCoreTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -209,6 +241,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				99FD43601BA59C0800F50DCF /* PBXTargetDependency */,
 			);
 			name = Papyrus;
 			productName = Papyrus;
@@ -286,6 +319,12 @@
 			mainGroup = 99629BFC1B547DE800510036;
 			productRefGroup = 99629C061B547DE800510036 /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = 99FD43571BA59BF900F50DCF /* Products */;
+					ProjectRef = 99FD43561BA59BF900F50DCF /* PapyrusCore.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				99629C041B547DE800510036 /* Papyrus */,
@@ -294,6 +333,23 @@
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		99FD435C1BA59BF900F50DCF /* PapyrusCore.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = PapyrusCore.framework;
+			remoteRef = 99FD435B1BA59BF900F50DCF /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		99FD435E1BA59BF900F50DCF /* PapyrusCoreTests.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = PapyrusCoreTests.xctest;
+			remoteRef = 99FD435D1BA59BF900F50DCF /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		99629C031B547DE800510036 /* Resources */ = {
@@ -370,6 +426,11 @@
 			isa = PBXTargetDependency;
 			target = 99629C041B547DE800510036 /* Papyrus */;
 			targetProxy = 99629C291B547DE800510036 /* PBXContainerItemProxy */;
+		};
+		99FD43601BA59C0800F50DCF /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = PapyrusCore;
+			targetProxy = 99FD435F1BA59C0800F50DCF /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
