@@ -328,7 +328,7 @@ extension Papyrus {
                 }
             })
         }
-        print("Boundaries: \(allBoundaries)")
+        //print("Boundaries: \(allBoundaries)")
         return Array(allBoundaries)
     }
 }

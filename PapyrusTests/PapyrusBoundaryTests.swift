@@ -27,7 +27,7 @@ class PapyrusBoundaryTests: XCTestCase {
         var boundary = Boundary(start: start, end: end)!
         XCTAssert(boundary.contains(start), "Boundary should encompass first iterable")
         XCTAssert(boundary.contains(end), "Boundary should encompass last iterable")
-        XCTAssert(boundary.length == boundary.end.iterable - boundary.start.iterable)
+        XCTAssert(boundary.length == boundary.iterableRange.endIndex - boundary.iterableRange.startIndex)
         XCTAssert(boundary.horizontal, "Start is horizontal")
         XCTAssert(end.horizontal != end.positionWithHorizontal(!end.horizontal)!.horizontal, "Direction should be different")
         
