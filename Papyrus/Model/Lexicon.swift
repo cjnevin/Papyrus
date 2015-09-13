@@ -30,10 +30,8 @@ struct Lexicon {
             if let inner = current?[String(char)] as? LexiconType {
                 index = index.advancedBy(1)
                 if index == word.endIndex {
-                    guard let def = inner[DefKey] as? String else {
-                        throw ValidationError.UndefinedWord(word)
-                    }
-                    return def
+                    // Defined but definition is missing is still defined
+                    return inner[DefKey] as? String ?? ""
                 }
                 current = inner
             } else {
@@ -44,12 +42,11 @@ struct Lexicon {
     }
     
     func anagramsOf(letters: String, length: Int, prefix: String,
-        fixedLetters: [(Int, Character)], fixedCount: Int, source: AnyObject,
+        fixedLetters: [(Int, Character)], fixedCount: Int, source: LexiconType,
         inout results: [String])
     {
-        guard let source = source as? LexiconType else { return }
         let prefixLength = prefix.lengthOfBytesUsingEncoding(NSUTF8StringEncoding)
-        if let c = fixedLetters.filter({$0.0 == prefixLength}).map({$0.1}).first, newSource = source[String(c)] {
+        if let c = fixedLetters.filter({$0.0 == prefixLength}).map({$0.1}).first, newSource = source[String(c)] as? LexiconType {
             let newPrefix = prefix + String(c)
             let reverseFiltered = fixedLetters.filter({$0.0 != prefixLength})
             anagramsOf(letters, length: length, prefix: newPrefix,
@@ -72,7 +69,7 @@ struct Lexicon {
                 // Create anagrams with remaining letters
                 anagramsOf(newLetters, length: length, prefix: prefix + key,
                     fixedLetters: fixedLetters, fixedCount: fixedCount,
-                    source: value, results: &results)
+                    source: value as! LexiconType, results: &results)
             }
         }
     }

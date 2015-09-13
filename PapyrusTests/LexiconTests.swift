@@ -53,4 +53,23 @@ class LexiconTests: XCTestCase {
         XCTAssert(results.sort() == ["CAR", "COR", "CUR"])
     }
 
+    func wrappedDefined(str: String) -> Bool {
+        do {
+            return !(try lexicon.defined(str).isEmpty)
+        }
+        catch {
+            return false
+        }
+    }
+    
+    func testDefinitions() {
+        XCTAssert(!wrappedDefined(""))
+        XCTAssert(wrappedDefined("CAT"))
+        XCTAssert(!wrappedDefined("CATX"))
+        XCTAssert(!wrappedDefined("ACTPER"))
+        XCTAssert(wrappedDefined("PERIODONTAL"))
+        XCTAssert(wrappedDefined("PARTIER"))
+        XCTAssert(!wrappedDefined("SUPERCALIFRAGILISTICEXPIALIDOCIOUS"))
+    }
+    
 }
