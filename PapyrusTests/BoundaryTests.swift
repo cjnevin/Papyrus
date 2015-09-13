@@ -85,7 +85,7 @@ class BoundaryTests: XCTestCase {
         XCTAssert(containedBoundary.contains(containedBoundary.start), "Boundary should contain start")
         XCTAssert(!containedBoundary.contains(end), "Boundary should not contain end")
         XCTAssert(boundary.contains(end.positionWithHorizontal(false)!), "Boundary should contain end even if axis is switched")
-            
+        
         end.nextInPlaceWhile { (position) -> Bool in
             position.iterable < 7
         }
@@ -128,6 +128,8 @@ class BoundaryTests: XCTestCase {
         XCTAssert(start.positionWithFixed(start.fixed)! == start, "Expected same object")
         XCTAssert(start.positionWithFixed(20) == nil, "Expected nil")
         
+        let positions: [Position] = []
+        XCTAssert(Boundary(positions: positions) == nil, "Expected nil")
         XCTAssert(Boundary(start: end, end: start) == nil, "Expected nil")
         XCTAssert(Boundary(start: start, end: verticalBoundary.end) == nil, "Expected nil")
         

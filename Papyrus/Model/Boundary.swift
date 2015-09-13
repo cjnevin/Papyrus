@@ -87,7 +87,7 @@ struct Boundary: CustomDebugStringConvertible, Equatable, Hashable {
     func intersects(boundary: Boundary) -> Bool {
         // Check if different axis
         if horizontal == boundary.start.horizontal { return false }
-        // Check if same fixed value
+        // FIXME: Check if same fixed value ??
         if start.fixed != boundary.start.fixed { return false }
         // Check if iterable value intersects on either range
         return iterableRange.contains({boundary.iterableRange.contains($0)}) ||
