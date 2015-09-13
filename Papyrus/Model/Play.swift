@@ -109,7 +109,7 @@ extension Papyrus {
         
         // If words have been played, it must intersect one of these played words.
         // Assumption: Previous boundaries have passed validation.
-        let intersections = walkBoundary(boundary)
+        let intersections = findIntersections(forBoundary: boundary)
         if playedBoundaries.count > 0 && intersections.count == 0 {
             throw ValidationError.NoIntersection
         }

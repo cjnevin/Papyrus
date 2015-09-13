@@ -21,7 +21,7 @@ struct Boundary: CustomDebugStringConvertible, Equatable, Hashable {
         return start.horizontal
     }
     var length: Int {
-        return end.iterable - start.iterable
+        return iterableRange.endIndex - iterableRange.startIndex
     }
     var iterableRange: Range<Int> {
         return start.iterable...end.iterable
@@ -124,9 +124,10 @@ struct Boundary: CustomDebugStringConvertible, Equatable, Hashable {
     
     /// - returns: New boundary encompassing the new start and end iterable values.
     func shrink(startIterable: Int, endIterable: Int) -> Boundary? {
-        guard let s = start.positionWithIterable(max(start.iterable, startIterable)),
-            e = end.positionWithIterable(min(end.iterable, endIterable)) else { return nil }
-        return Boundary(start: s, end: e)
+        if startIterable == start.iterable && endIterable == end.iterable { return self }
+        return Boundary(
+            start: start.positionWithMaxIterable(startIterable),
+            end: end.positionWithMinIterable(endIterable))
     }
     
     /// Shrinks the current Boundary to encompass the given start and end iterable values.
@@ -153,9 +154,10 @@ struct Boundary: CustomDebugStringConvertible, Equatable, Hashable {
     
     /// - returns: New boundary encompassing the new start and end iterable values.
     func stretch(startIterable: Int, endIterable: Int) -> Boundary? {
-        guard let s = start.positionWithIterable(min(start.iterable, startIterable)),
-            e = end.positionWithIterable(max(end.iterable, endIterable)) else { return nil }
-        return Boundary(start: s, end: e)
+        if startIterable == start.iterable && endIterable == end.iterable { return self }
+        return Boundary(
+            start: start.positionWithMinIterable(startIterable),
+            end: end.positionWithMaxIterable(endIterable))
     }
     
     /// Stretches the current Boundary to encompass the given start and end iterable values.
@@ -179,24 +181,101 @@ struct Boundary: CustomDebugStringConvertible, Equatable, Hashable {
 }
 
 extension Papyrus {
-    
     /// - parameter boundary: Boundary containing tiles that have been dropped on the board.
-    /// - returns: Array of boundaries that intersect the supplied boundary.
-    func walkBoundary(boundary: Boundary) -> [Boundary] {
-        var boundaries = [Boundary]()
-        // Iterate each position in boundary
-        for index in boundary.start.iterable...boundary.end.iterable {
+    /// - returns: Array of word boundaries that intersect the supplied boundary.
+    func findIntersections(forBoundary boundary: Boundary) -> [Boundary] {
+        return boundary.iterableRange.mapFilter { (index) -> (Boundary?) in
             // Flip fixed/iterable values, use index as fixed value.
-            if let
-                first = previousWhileEmpty(Position(horizontal: !boundary.horizontal, iterable: boundary.start.fixed, fixed: index)),
-                last = nextWhileEmpty(Position(horizontal: !boundary.horizontal, iterable: boundary.start.fixed, fixed: index)),
-                invertedBoundary = Boundary(start: first, end: last) where first.iterable != last.iterable
-            {
-                boundaries.append(invertedBoundary)
+            guard let invertedPosition = Position(horizontal: !boundary.horizontal, iterable: boundary.start.fixed, fixed: index),
+                wordStart = previousWhileFilled(invertedPosition),
+                wordEnd = nextWhileFilled(invertedPosition),
+                wordBoundary = Boundary(start: wordStart, end: wordEnd) else { return nil }
+            return wordBoundary
+        }
+    }
+    
+    /// Curried function for checking if an empty position is playable.
+    /// We need to check previous item to see if it's empty otherwise
+    /// next item must be empty (i.e. 2 squares must be free).
+    private func validEmpty(position: Position,
+        first: Position -> () -> Position?,
+        second: Position -> () -> Position?) -> Bool {
+        // Current position must be empty
+        assert(emptyAt(position))
+        // Check next index (or previous if at end) is empty
+        if let startNext = first(position)() where emptyAt(startNext) {
+            return true
+        } else {
+            // Check previous index (or next if at end) is empty or edge of board
+            if let startPrevious = second(position)() {
+                return emptyAt(startPrevious)
+            } else {
+                return true
             }
         }
-        print(boundaries)
-        return boundaries
+    }
+    
+    /// - returns: Array of boundaries including this boundary which may be possible with the players tiles.
+    func playableBoundaries(forBoundary boundary: Boundary) -> Set<Boundary>? {
+        // Cannot return any plays if player has no tiles
+        guard let rackCount = player?.rackTiles.count where rackCount > 0 else { return nil }
+        // Ensure boundary is all tiles, no empty squares
+        let boundaryTileCount = tilesIn(boundary).count
+        assert(boundaryTileCount == boundary.length)
+        
+        // Bang everything, we want an assertion if anything fails (as it shouldn't)
+        let minMaxBoundary = boundary.stretch(
+            previousWhileTilesInRack(boundary.start)!,
+            newEnd: nextWhileTilesInRack(boundary.end)!)!
+        
+        // Get maximum word size, then shift the iterable index
+        var maxLength = boundary.length + rackCount
+        
+        // Adjust for existing tiles on the board
+        maxLength += tilesIn(minMaxBoundary).count - boundaryTileCount
+        
+        // Get range of lengths (must add at least one tile)
+        let lengthRange = boundary.length..<maxLength
+        
+        return Set(minMaxBoundary.iterableRange.flatMap({ (startIterable) -> ([Boundary?]) in
+            lengthRange.map({ (length) -> (Boundary?) in
+                let endIterable = startIterable + length
+                
+                guard let stretched = boundary.stretch(startIterable, endIterable: endIterable) else { return nil }
+                
+                // If we don't have enough tiles in our rack and on the board, this boundary is invalid
+                if self.tilesIn(stretched).count + rackCount < stretched.length {
+                    print("Not enough tiles \(stretched.length), \(self.tilesIn(stretched))")
+                    return nil
+                }
+                
+                // Validate start
+                if self.emptyAt(stretched.start) {
+                    if !self.validEmpty(stretched.start, first: Position.next, second: Position.previous) { return nil }
+                } else {
+                    // Must be filled, bang here so we get an assertion otherwise
+                    let startFilled = self.previousWhileFilled(stretched.start)!
+                    // Stretch to include found tiles
+                    stretched.stretch(startFilled, newEnd: stretched.end)
+                    // TODO: Might need to check the startFilled.iterable - 2 square is empty here
+                }
+                
+                // Validate end
+                if self.emptyAt(stretched.end) {
+                    if !self.validEmpty(stretched.end, first: Position.previous, second: Position.next) { return nil }
+                } else {
+                    // Must be filled, bang here so we get an assertion otherwise
+                    let endFilled = self.nextWhileFilled(stretched.end)!
+                    // Stretch to include found tiles
+                    stretched.stretch(stretched.start, newEnd: endFilled)
+                    // TODO: Might need to check the endFilled.iterable + 2 square is empty here
+                    
+                }
+                
+                // Must be valid
+                return stretched
+            })
+        }).mapFilter({$0}))
     }
     
     /// Calculate score for a given boundary.
@@ -219,49 +298,8 @@ extension Papyrus {
     func readable(boundary: Boundary) -> String? {
         let start = boundary.start, end = boundary.end
         if start.iterable >= end.iterable { return nil }
-        return String((start.iterable...end.iterable).mapFilter({
+        return String(boundary.iterableRange.mapFilter({
             letterAt(Position(horizontal: start.horizontal, iterable: $0, fixed: start.fixed))}))
-    }
-    
-    /// Find all possible boundaries for a words boundary.
-    private func findSameAxisPlaysForBoundary(boundary: Boundary) -> Set<Boundary> {
-        var currentBoundaries = Set<Boundary>()
-        let start = boundary.start, end = boundary.end
-        // Find first and last possible position using rack tiles, skipping filled squares.
-        // This should be refactored, so that if we hit two empty squares we know we can play a move, if we just hit one and
-        // the following square is filled we need to backout.
-        guard let
-            startPosition = previousWhileTilesInRack(boundary.start),
-            endPosition = nextWhileTilesInRack(boundary.end) else {
-            return currentBoundaries
-        }
-        for i in startPosition.iterable...endPosition.iterable {
-            // Restrict start index to include the entire word.
-            let s = i >= start.iterable ? start.iterable : i
-            // Restrict end index to include the entire word.
-            let e = i <= end.iterable ? end.iterable : i
-            // Ensure previous index is empty
-            if let startMinusOne = start.positionWithIterable(s - 1)
-                where !emptyAt(startMinusOne) { continue }
-            // Ensure next index is empty
-            if let endPlusOne = end.positionWithIterable(e + 1)
-                where !emptyAt(endPlusOne) { continue }
-            
-            // Skip same boundary as existing word.
-            if s == start.iterable && e == end.iterable {
-                continue
-            }
-            // Create positions, if possible
-            if let newStart = start.positionWithIterable(s),
-                newEnd = end.positionWithIterable(e),
-                newBoundary = Boundary(start: newStart, end: newEnd)
-            {
-                assert(newStart.iterable <= start.iterable, "Start is invalid")
-                assert(newEnd.iterable >= end.iterable, "End is invalid")
-                currentBoundaries.insert(newBoundary)
-            }
-        }
-        return currentBoundaries
     }
     
     // TODO: Fix this method, some of these boundaries don't include complete words.
@@ -272,25 +310,23 @@ extension Papyrus {
     func findPlayableBoundaries(boundaries: Boundaries) -> Boundaries {
         var allBoundaries = Set<Boundary>()
         for boundary in boundaries {
-            
-            allBoundaries.unionInPlace(findSameAxisPlaysForBoundary(boundary))
-            
-            // Iterate length of word on other axis, collecting perpendicular tiles
-            let horizontal = !boundary.horizontal
-            
+            if let boundaries = playableBoundaries(forBoundary: boundary) {
+                allBoundaries.unionInPlace(boundaries)
+            }
             // Iterate all positions on same axis, then flip to other axis and iterate until we find maximum play size.
-            for i in boundary.start.iterable...boundary.end.iterable {
+            boundary.iterableRange.forEach({
                 // Get positions for current square so we can iterate left/right.
                 // Loop until we hit an empty square.
-                guard let wordStart = previousWhileFilled(Position(horizontal: horizontal, iterable: boundary.start.fixed, fixed:i)),
-                    wordEnd = nextWhileFilled(Position(horizontal: horizontal, iterable: boundary.end.fixed, fixed: i)),
-                    newBoundary = Boundary(start: wordStart, end: wordEnd) else
-                {
-                    print("Skipped!")
-                    continue
+                if let wordBoundary =
+                    Boundary(
+                        start: previousWhileFilled(
+                            Position(horizontal: !boundary.horizontal, iterable: boundary.start.fixed, fixed: $0)),
+                        end: nextWhileFilled(
+                            Position(horizontal: !boundary.horizontal, iterable: boundary.end.fixed, fixed: $0))),
+                    invertedBoundaries = playableBoundaries(forBoundary: wordBoundary) {
+                        allBoundaries.unionInPlace(invertedBoundaries)
                 }
-                allBoundaries.unionInPlace(findSameAxisPlaysForBoundary(newBoundary))
-            }
+            })
         }
         print("Boundaries: \(allBoundaries)")
         return Array(allBoundaries)

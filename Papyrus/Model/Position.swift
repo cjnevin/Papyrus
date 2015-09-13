@@ -20,8 +20,9 @@ struct Position: Equatable, Hashable {
     let iterable: Int
     let fixed: Int
     
+    
+    
     init?(horizontal: Bool, iterable: Int, fixed: Int) {
-        //self.ascending = ascending
         self.horizontal = horizontal
         self.iterable = iterable
         self.fixed = fixed
@@ -29,7 +30,6 @@ struct Position: Equatable, Hashable {
     }
     
     init?(horizontal: Bool, row: Int, col: Int) {
-        //self.ascending = ascending
         self.horizontal = horizontal
         self.iterable = horizontal ? col : row
         self.fixed = horizontal ? row : col
@@ -121,16 +121,22 @@ struct Position: Equatable, Hashable {
         if isInvalid(newValue) { return nil }
         return Position(horizontal: horizontal, iterable: newValue, fixed: fixed)
     }
+    func positionWithMinIterable(newValue: Int) -> Position? {
+        return positionWithIterable(min(iterable, newValue))
+    }
+    func positionWithMaxIterable(newValue: Int) -> Position? {
+        return positionWithIterable(max(iterable, newValue))
+    }
 }
 
 extension Papyrus {
-    /// - Parameter: Initial position to begin this loop.
+    /// - Parameter: Initial position to begin this loop. Fails if initial position is filled.
     /// - returns: Last position with a valid tile.
     func nextWhileEmpty(initial: Position?) -> Position? {
         return initial?.nextWhile { self.emptyAt($0) }
     }
     
-    /// - Parameter: Initial position to begin this loop.
+    /// - Parameter: Initial position to begin this loop. Fails if initial position is empty.
     /// - returns: Last position with an empty square.
     func nextWhileFilled(initial: Position?) -> Position? {
         return initial?.nextWhile { !self.emptyAt($0) }
@@ -139,22 +145,27 @@ extension Papyrus {
     /// - Parameter: Initial position to begin this loop.
     /// - returns: Furthest possible position from initial position using PapyrusRackAmount.
     func nextWhileTilesInRack(initial: Position) -> Position? {
+        if initial.iterable == PapyrusDimensions - 1 { return initial }
         var counter = player?.rackTiles.count ?? 0
-        func decrementer(position: Position) -> Bool {
-            if emptyAt(position) { counter-- }
-            return counter > -1
+        var position: Position? = initial
+        while (counter > 0 && position != nil) {
+            if emptyAt(position!) { counter-- }
+            if counter > 0 {
+                position?.nextInPlace()
+            }
         }
-        return initial.nextWhile(decrementer)
+        return position
     }
     
     
-    /// - Parameter: Initial position to begin this loop.
+    
+    /// - Parameter: Initial position to begin this loop. Fails if initial position is filled.
     /// - returns: Last position with a valid tile.
     func previousWhileEmpty(initial: Position?) -> Position? {
         return initial?.previousWhile { self.emptyAt($0) }
     }
     
-    /// - Parameter: Initial position to begin this loop.
+    /// - Parameter: Initial position to begin this loop. Fails if initial position is empty.
     /// - returns: Last position with an empty square.
     func previousWhileFilled(initial: Position?) -> Position? {
         return initial?.previousWhile { !self.emptyAt($0) }
@@ -163,11 +174,15 @@ extension Papyrus {
     /// - Parameter: Initial position to begin this loop.
     /// - returns: Furthest possible position from initial position using PapyrusRackAmount.
     func previousWhileTilesInRack(initial: Position) -> Position? {
+        if initial.iterable == 0 { return initial }
         var counter = player?.rackTiles.count ?? 0
-        func decrementer(position: Position) -> Bool {
-            if emptyAt(position) { counter-- }
-            return counter > -1
+        var position: Position? = initial
+        while (counter > 0 && position != nil) {
+            if emptyAt(position!) { counter-- }
+            if counter > 0 {
+                position?.previousInPlace()
+            }
         }
-        return initial.previousWhile(decrementer)
+        return position
     }
 }

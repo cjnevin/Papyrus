@@ -66,36 +66,37 @@ class PapyrusTests: XCTestCase {
         
         var playedBoundaries = Boundaries()
         // ARCHERS
-        /*playedBoundaries.append(Boundary(
-            start: Position(axis: .Horizontal(.Prev), iterable: 5, fixed: 7),
-            end: Position(axis: .Horizontal(.Next), iterable: 11, fixed: 7)))
+        playedBoundaries.append(Boundary(
+            start: Position(horizontal: true, iterable: 5, fixed: 7),
+            end: Position(horizontal: true, iterable: 11, fixed: 7))!)
         // DEAD
         playedBoundaries.append(Boundary(
-            start: Position(axis: .Horizontal(.Prev), iterable: 4, fixed: 10),
-            end: Position(axis: .Horizontal(.Next), iterable: 9, fixed: 10)))
+            start: Position(horizontal: true, iterable: 4, fixed: 10),
+            end: Position(horizontal: true, iterable: 9, fixed: 10))!)
         // CARD
-        playedBoundaries.append(Boundary(start:
-            Position(axis: .Vertical(.Prev), iterable: 7, fixed: 7), end:
-            Position(axis: .Vertical(.Next), iterable: 10, fixed: 7)))
+        playedBoundaries.append(Boundary(
+            start: Position(horizontal: false, iterable: 7, fixed: 7),
+            end: Position(horizontal: false, iterable: 10, fixed: 7))!)
         // ARIE
-        playedBoundaries.append(Boundary(start:
-            Position(axis: .Vertical(.Prev), iterable: 7, fixed: 5), end:
-            Position(axis: .Vertical(.Next), iterable: 10, fixed: 5)))
+        playedBoundaries.append(Boundary(
+            start: Position(horizontal: false, iterable: 7, fixed: 5),
+            end: Position(horizontal: false, iterable: 10, fixed: 5))!)
         // RESUME
-        playedBoundaries.append(Boundary(start:
-            Position(axis: .Vertical(.Prev), iterable: 2, fixed: 9), end:
-            Position(axis: .Vertical(.Next), iterable: 8, fixed: 9)))
-        */
+        playedBoundaries.append(Boundary(
+            start: Position(horizontal: false, iterable: 2, fixed: 9),
+            end: Position(horizontal: false, iterable: 8, fixed: 9))!)
+        
         let playableBoundaries = instance.findPlayableBoundaries(playedBoundaries)
         
         // Now determine playable boundaries
-        /*for row in 0..<PapyrusDimensions {
+        for row in 0..<PapyrusDimensions {
             var line = [Character]()
             for col in 0..<PapyrusDimensions {
                 var letter: Character = "_"
                 for boundary in playableBoundaries {
-                    if boundary.encompasses(row, column: col) {
-                        letter = instance.letterAt(row, col) ?? "#"
+                    let position = Position(horizontal: boundary.horizontal, row: row, col: col)!
+                    if boundary.contains(position) {
+                        letter = instance.letterAt(position) ?? "#"
                         break
                     }
                 }
@@ -103,7 +104,7 @@ class PapyrusTests: XCTestCase {
             }
             print(line)
         }
-        XCTAssert(playableBoundaries.count == 100)*/
+        XCTAssert(playableBoundaries.count == 100)
     }
     
     
