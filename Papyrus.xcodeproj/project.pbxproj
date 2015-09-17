@@ -18,11 +18,11 @@
 		99629C651B547E8200510036 /* PapyrusSquareSpriteAnimations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99629C5E1B547E8200510036 /* PapyrusSquareSpriteAnimations.swift */; };
 		99629C661B547E8200510036 /* PapyrusTileSprite.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99629C5F1B547E8200510036 /* PapyrusTileSprite.swift */; };
 		99629C671B547E8200510036 /* PapyrusTileSpriteAnimations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99629C601B547E8200510036 /* PapyrusTileSpriteAnimations.swift */; };
+		996E23C51BAB74450052F1E2 /* output.json in Resources */ = {isa = PBXBuildFile; fileRef = 996E23C41BAB74450052F1E2 /* output.json */; };
 		99DF9E0F1B54ED8200F58DA7 /* UIKitExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99DF9E0E1B54ED8200F58DA7 /* UIKitExtensions.swift */; };
 		99FD433D1BA5901E00F50DCF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 99FD43351BA5901E00F50DCF /* Assets.xcassets */; };
 		99FD433E1BA5901E00F50DCF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 99FD43361BA5901E00F50DCF /* LaunchScreen.storyboard */; };
 		99FD433F1BA5901E00F50DCF /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 99FD43381BA5901E00F50DCF /* Main.storyboard */; };
-		99FD43401BA5901E00F50DCF /* CSW12.plist in Resources */ = {isa = PBXBuildFile; fileRef = 99FD433B1BA5901E00F50DCF /* CSW12.plist */; };
 		99FD43411BA5901E00F50DCF /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 99FD433C1BA5901E00F50DCF /* Info.plist */; };
 /* End PBXBuildFile section */
 
@@ -81,11 +81,11 @@
 		99629C5E1B547E8200510036 /* PapyrusSquareSpriteAnimations.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PapyrusSquareSpriteAnimations.swift; sourceTree = "<group>"; };
 		99629C5F1B547E8200510036 /* PapyrusTileSprite.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PapyrusTileSprite.swift; sourceTree = "<group>"; };
 		99629C601B547E8200510036 /* PapyrusTileSpriteAnimations.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PapyrusTileSpriteAnimations.swift; sourceTree = "<group>"; };
+		996E23C41BAB74450052F1E2 /* output.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = output.json; sourceTree = "<group>"; };
 		99DF9E0E1B54ED8200F58DA7 /* UIKitExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIKitExtensions.swift; sourceTree = "<group>"; };
 		99FD43351BA5901E00F50DCF /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		99FD43371BA5901E00F50DCF /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		99FD43391BA5901E00F50DCF /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
-		99FD433B1BA5901E00F50DCF /* CSW12.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = CSW12.plist; sourceTree = "<group>"; };
 		99FD433C1BA5901E00F50DCF /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		99FD43561BA59BF900F50DCF /* PapyrusCore.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = PapyrusCore.xcodeproj; path = PapyrusCore/PapyrusCore.xcodeproj; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
@@ -213,7 +213,7 @@
 		99FD433A1BA5901E00F50DCF /* Dictionaries */ = {
 			isa = PBXGroup;
 			children = (
-				99FD433B1BA5901E00F50DCF /* CSW12.plist */,
+				996E23C41BAB74450052F1E2 /* output.json */,
 			);
 			path = Dictionaries;
 			sourceTree = "<group>";
@@ -357,7 +357,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				99FD433E1BA5901E00F50DCF /* LaunchScreen.storyboard in Resources */,
-				99FD43401BA5901E00F50DCF /* CSW12.plist in Resources */,
+				996E23C51BAB74450052F1E2 /* output.json in Resources */,
 				99FD43411BA5901E00F50DCF /* Info.plist in Resources */,
 				99FD433D1BA5901E00F50DCF /* Assets.xcassets in Resources */,
 				99629C0B1B547DE800510036 /* GameScene.sks in Resources */,
