@@ -23,10 +23,8 @@ protocol GameSceneProtocol {
 class GameScene: SKScene, GameSceneProtocol {
     /// - returns: Current game object.
     let game = Papyrus()
-    var dawg: Dawg {
-        let path = NSBundle.mainBundle().pathForResource("output", ofType: "json")!
-        return Dawg.load(path)!
-    }
+    let dawg = Dawg.load(NSBundle.mainBundle().pathForResource("output", ofType: "json")!)!
+    
     //let lexicon = Lexicon(withFilePath: NSBundle.mainBundle().pathForResource("CSW12", ofType: "plist")!)!
     
     /// - returns: Currently dragged tile user is holding.
