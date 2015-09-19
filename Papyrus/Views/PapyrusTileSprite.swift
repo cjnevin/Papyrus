@@ -65,7 +65,7 @@ class TileSprite: SKSpriteNode {
     /// Change letter presented on tile, only works for blank tiles.
     func changeLetter(newLetter: Character) {
         if self.tile.value == 0 {
-            self.tile.letter = newLetter
+            self.tile.changeLetter(newLetter)
             self.letterLabel.text = String(newLetter)
         }
     }

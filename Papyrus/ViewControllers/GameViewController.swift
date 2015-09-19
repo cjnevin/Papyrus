@@ -41,7 +41,7 @@ class GameViewController: UIViewController, GameSceneDelegate, UITextFieldDelega
     }
     
     func newGame() {
-        scene?.game.newGame() { [weak self] (lifecycle, game) in
+        scene?.game.newGame(scene!.dawg) { [weak self] (lifecycle, game) in
             guard let this = self, scene = this.scene else { return }
             switch (lifecycle) {
             case .Cleanup:
@@ -52,7 +52,7 @@ class GameViewController: UIViewController, GameSceneDelegate, UITextFieldDelega
                 this.title = "Papyrus"
                 this.enableButtons(true)
                 game.createPlayer() // Me
-                game.createPlayer() // AI
+                game.createPlayer(Difficulty.Champion) // AI
             default:
                 this.title = "Complete"
             }
@@ -60,7 +60,7 @@ class GameViewController: UIViewController, GameSceneDelegate, UITextFieldDelega
         }
     }
     
-    func boundariesChanged(boundary: Boundary?, error: ValidationError?, score: Int) {
+    func boundariesChanged(boundary: Boundary?, error: ErrorType?, score: Int) {
         navigationItem.rightBarButtonItem?.enabled = boundary != nil && error == nil && score > 0
         print("Score: \(score)")
     }

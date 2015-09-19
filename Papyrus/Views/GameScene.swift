@@ -10,8 +10,13 @@ import SpriteKit
 import SceneKit
 import PapyrusCore
 
+enum SceneError: ErrorType {
+    case NoBoundary
+    
+}
+
 protocol GameSceneDelegate {
-    func boundariesChanged(boundary: Boundary?, error: ValidationError?, score: Int)
+    func boundariesChanged(boundary: Boundary?, error: ErrorType?, score: Int)
     func pickLetter(completion: (Character) -> ())
 }
 
@@ -24,8 +29,6 @@ class GameScene: SKScene, GameSceneProtocol {
     /// - returns: Current game object.
     let game = Papyrus()
     let dawg = Dawg.load(NSBundle.mainBundle().pathForResource("output", ofType: "json")!)!
-    
-    //let lexicon = Lexicon(withFilePath: NSBundle.mainBundle().pathForResource("CSW12", ofType: "plist")!)!
     
     /// - returns: Currently dragged tile user is holding.
     var heldTile: TileSprite? {
@@ -89,9 +92,6 @@ class GameScene: SKScene, GameSceneProtocol {
     
     /// Replace rack sprites with newly drawn tiles.
     private func replaceRackSprites() {
-        
-        
-        
         // Remove existing rack sprites.
         let rackSprites = tileSprites.filter({ (game.player?.rackTiles.contains($0.tile)) == true })
         tileSprites = tileSprites.filter{ !rackSprites.contains($0) }
@@ -153,8 +153,9 @@ class GameScene: SKScene, GameSceneProtocol {
         if positions.count >= 1 {
             if let boundary = Boundary(positions: positions) {
                 do {
-                    let score = try game.play(boundary, submit: false, dawg: dawg)
-                    actionDelegate?.boundariesChanged(boundary, error: nil, score: score)
+                    let move = try game.getMove(forBoundary: boundary)
+                    print("Points: \(move.total) total: \(game.player?.score)")
+                    actionDelegate?.boundariesChanged(boundary, error: nil, score: move.total)
                 } catch let err as ValidationError {
                     switch err {
                     case .InsufficientTiles: print("not enough tiles")
@@ -172,7 +173,8 @@ class GameScene: SKScene, GameSceneProtocol {
                 }
             } else {
                 print("No boundary")
-                actionDelegate?.boundariesChanged(nil, error: ValidationError.NoBoundary, score: 0)
+                actionDelegate?.boundariesChanged(nil, error:
+                    SceneError.NoBoundary, score: 0)
             }
         }
     }
@@ -184,7 +186,9 @@ class GameScene: SKScene, GameSceneProtocol {
         }
         let positions = getPositions()
         if let boundary = Boundary(positions: positions) {
-            let _ = try game.play(boundary, submit: true, dawg: dawg)
+            let move = try game.getMove(forBoundary: boundary)
+            game.player?.submit(move)
+            game.draw(game.player!)
             replaceRackSprites()
             // Change player
             game.nextPlayer()
@@ -193,49 +197,22 @@ class GameScene: SKScene, GameSceneProtocol {
     
     /// Attempt AI move.
     func attemptAIPlay() throws {
-        /*
-        let boundaries = game.findPlayableBoundaries(game.playedBoundaries)
-        for boundary in boundaries {
-            for index in boundary.start.iterable...boundary.end.iterable {
-                if boundary.start.isHorizontal {
-                    squareSprites.filter({$0.row == boundary.start.fixed && $0.col == index}).first?.background.color = UIColor.redColor()
-                } else {
-                    squareSprites.filter({$0.col == boundary.start.fixed && $0.row == index}).first?.background.color = UIColor.blueColor()
-                }
+        if let move = try game.getAIMoves().first {
+            game.player!.submit(move)
+            game.draw(game.player!)
+            for i in 0..<move.word.length {
+                let square = move.word.squares[i]
+                let tile = move.word.tiles[i]
+                let tileSprite = TileSprite.sprite(withTile: tile)
+                tileSprites.append(tileSprite)
+                let squareSprite = squareSprites.filter({$0.square == square}).first
+                squareSprite?.placeTileSprite(tileSprite)
             }
+        } else {
+            print("")
         }
-        */
         
-        let (_, squareTiles) = try game.playAI(dawg)
-        for (square, tile) in squareTiles {
-            let tileSprite = TileSprite.sprite(withTile: tile)
-            tileSprites.append(tileSprite)
-            let squareSprite = squareSprites.filter({$0.square == square}).first
-            squareSprite?.placeTileSprite(tileSprite)
-        }
         // Change player
         game.nextPlayer()
-        /*
-        
-        var neededTilePositions = [(Square, Tile)]()
-        try game.playAI(&neededTilePositions)
-        
-        let spriteArray = sprites(neededTilePositions.map({$0.0}))
-        spriteArray.map({$0.background.color = UIColor.purpleColor()})
-        
-        
-        // TODO: INVERSE AXIS IS WRONG NEED TO ITERATE BOUNDARY FOR EACH STEP WITH GIVEN START/END POINT AROUND CURRENT TILE
-        // ASSUME CONTINUE UNTIL WE HIT AN EMPTY SQUARE.
-        
-        // TODO: Fix playable boundaries, not going to end of line.
-        // Played: UNPIN (actually appended to UN-PINIONS)
-        for (square, tile) in neededTilePositions {
-            let tileSprite = TileSprite.sprite(withTile: tile)
-            tileSprites.append(tileSprite)
-            let squareSprite = squareSprites.filter({$0.square == square}).first
-            squareSprite?.placeTileSprite(tileSprite)
-        }
-        // Change player
-        game.nextPlayer()*/
     }
 }

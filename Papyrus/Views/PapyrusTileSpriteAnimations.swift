@@ -48,7 +48,7 @@ extension TileSprite {
     }
     
     func animateDropToRack(point: CGPoint) {
-        if tile.value == 0 { tile.letter = "?" } // Reset letter
+        if tile.value == 0 { tile.changeLetter("?") } // Reset letter
         animateMoveTo(point, completion: { () -> () in
             self.zPosition = 0
         })
