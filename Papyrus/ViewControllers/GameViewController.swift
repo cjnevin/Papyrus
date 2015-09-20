@@ -68,7 +68,7 @@ class GameViewController: UIViewController, GameSceneDelegate, UITextFieldDelega
     func pickLetter(completion: (Character) -> ()) {
         let alertController = UIAlertController(title: "Enter Replacement Letter", message: nil, preferredStyle: .Alert)
         let OKAction = UIAlertAction(title: "OK", style: .Default) { (action) in
-            if let letter = alertController.textFields?.first?.text?.characters.first {
+            if let letter = alertController.textFields?.first?.text?.lowercaseString.characters.first {
                 completion(letter)
             }
         }
@@ -82,7 +82,7 @@ class GameViewController: UIViewController, GameSceneDelegate, UITextFieldDelega
     
     func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange, replacementString string: String) -> Bool {
         // Filter alphabet, allow only one character
-        let charSet = NSCharacterSet(charactersInString: "ABCDEFGHIJKLMNOPQRSTUVWXYZ").invertedSet
+        let charSet = NSCharacterSet(charactersInString: "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ").invertedSet
         let filtered = string.componentsSeparatedByCharactersInSet(charSet).joinWithSeparator("")
         let current: NSString = textField.text ?? ""
         let newLength = current.stringByReplacingCharactersInRange(range, withString: string).lengthOfBytesUsingEncoding(NSUTF8StringEncoding)

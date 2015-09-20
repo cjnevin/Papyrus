@@ -150,11 +150,12 @@ class GameScene: SKScene, GameSceneProtocol {
         if positions.count < 1 { print("insufficient tiles"); return }
         //if positions.count == 1 { print("special logic"); return }
         if positions.count >= 1 {
-            if let boundary = Boundary(positions: positions) {
+            var playable = false
+            if let boundary = game.stretchWhileFilled(Boundary(positions: positions)) {
                 do {
                     let move = try game.getMove(forBoundary: boundary)
-                    print("Points: \(move.total) total: \(game.player?.score)")
                     actionDelegate?.boundariesChanged(boundary, error: nil, score: move.total)
+                    playable = true
                 } catch let err as ValidationError {
                     switch err {
                     case .InsufficientTiles: print("not enough tiles")
@@ -175,6 +176,34 @@ class GameScene: SKScene, GameSceneProtocol {
                 actionDelegate?.boundariesChanged(nil, error:
                     SceneError.NoBoundary, score: 0)
             }
+            if !playable && positions.count == 1 {
+                if let boundary = game.stretchWhileFilled(Boundary(positions:
+                    positions.mapFilter({$0.positionWithHorizontal(!$0.horizontal)})))
+                {
+                    do {
+                        let move = try game.getMove(forBoundary: boundary)
+                        actionDelegate?.boundariesChanged(boundary, error: nil, score: move.total)
+                    } catch let err as ValidationError {
+                        switch err {
+                        case .InsufficientTiles: print("not enough tiles")
+                        case .InvalidArrangement: print("invalid arrangement")
+                        case .NoCenterIntersection: print("no center")
+                        case .NoIntersection: print("no intersection")
+                        case .UnfilledSquare(_): print("skipped square")
+                        case .UndefinedWord(let word): print("undefined \(word)")
+                        case .Message(let message): print(message)
+                        default: break
+                        }
+                        actionDelegate?.boundariesChanged(boundary, error: err, score: 0)
+                    } catch _ {
+                        actionDelegate?.boundariesChanged(boundary, error: nil, score: 0)
+                    }
+                } else {
+                    print("No boundary")
+                    actionDelegate?.boundariesChanged(nil, error:
+                        SceneError.NoBoundary, score: 0)
+                }
+            }
         }
     }
     
@@ -187,6 +216,7 @@ class GameScene: SKScene, GameSceneProtocol {
         if let boundary = Boundary(positions: positions) {
             let move = try game.getMove(forBoundary: boundary)
             game.player?.submit(move)
+            print("Points: \(move.total) total: \(game.player!.score)")
             game.draw(game.player!)
             replaceRackSprites()
             // Change player
@@ -197,7 +227,9 @@ class GameScene: SKScene, GameSceneProtocol {
     /// Attempt AI move.
     func attemptAIPlay() throws {
         if let move = try game.getAIMoves().first {
+            print(move)
             game.player!.submit(move)
+            print("AI Points: \(move.total), total: \(game.player!.score)")
             game.draw(game.player!)
             for i in 0..<move.word.length {
                 let square = move.word.squares[i]
@@ -208,7 +240,7 @@ class GameScene: SKScene, GameSceneProtocol {
                 squareSprite?.placeTileSprite(tileSprite)
             }
         } else {
-            print("")
+            print("Cannot play any moves")
         }
         
         // Change player

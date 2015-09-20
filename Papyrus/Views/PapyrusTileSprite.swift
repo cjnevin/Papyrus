@@ -34,7 +34,7 @@ class TileSprite: SKSpriteNode {
     init(tile: Tile, edge: CGFloat, scale: CGFloat) {
         TileSprite.defaultTileSize = edge
         self.tile = tile;
-        let letter = String(tile.letter)
+        let letter = String(tile.letter).uppercaseString
         let label = SKLabelNode(text: letter)
         label.fontColor = UIColor.blackColor()
         label.fontSize = 27
@@ -66,7 +66,7 @@ class TileSprite: SKSpriteNode {
     func changeLetter(newLetter: Character) {
         if self.tile.value == 0 {
             self.tile.changeLetter(newLetter)
-            self.letterLabel.text = String(newLetter)
+            self.letterLabel.text = String(newLetter).uppercaseString
         }
     }
     
