@@ -12,7 +12,6 @@ import PapyrusCore
 
 enum SceneError: ErrorType {
     case NoBoundary
-    
 }
 
 protocol GameSceneDelegate {
