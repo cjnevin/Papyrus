@@ -12,16 +12,18 @@ import PapyrusCore
 
 enum SceneError: ErrorType {
     case NoBoundary
+    case UnknownError
 }
 
 protocol GameSceneDelegate {
-    func boundariesChanged(boundary: Boundary?, error: ErrorType?, score: Int)
+    func invalidMove(error: ErrorType?)
+    func validMove(move: Move)
     func pickLetter(completion: (Character) -> ())
 }
 
 protocol GameSceneProtocol {
     func changed(lifecycle: Lifecycle)
-    func submitPlay() throws
+    func submit(move: Move) throws
 }
 
 class GameScene: SKScene, GameSceneProtocol {
@@ -144,84 +146,69 @@ class GameScene: SKScene, GameSceneProtocol {
         return positions
     }
     
+    func moveForPositions(positions: [Position]) throws -> Move? {
+        guard let boundary = game.stretchWhileFilled(Boundary(positions: positions)) else {
+            throw SceneError.NoBoundary
+        }
+        do {
+            let move = try game.getMove(forBoundary: boundary)
+            actionDelegate?.validMove(move)
+            return move
+        } catch let err as ValidationError {
+            switch err {
+            case .InsufficientTiles: print("not enough tiles")
+            case .InvalidArrangement: print("invalid arrangement")
+            case .NoCenterIntersection: print("no center")
+            case .NoIntersection: print("no intersection")
+            case .UnfilledSquare(_): print("skipped square")
+            case .UndefinedWord(let word): print("undefined \(word)")
+            case .Message(let message): print(message)
+            default: break
+            }
+            throw err
+        } catch _ {
+            throw SceneError.UnknownError
+        }
+    }
+    
     /// Check to see if play is valid.
-    func checkBoundary() {
+    func validate() {
         let positions = getPositions()
         if positions.count < 1 { print("insufficient tiles"); return }
-        //if positions.count == 1 { print("special logic"); return }
         if positions.count >= 1 {
-            var playable = false
-            if let boundary = game.stretchWhileFilled(Boundary(positions: positions)) {
-                do {
-                    let move = try game.getMove(forBoundary: boundary)
-                    actionDelegate?.boundariesChanged(boundary, error: nil, score: move.total)
-                    playable = true
-                } catch let err as ValidationError {
-                    switch err {
-                    case .InsufficientTiles: print("not enough tiles")
-                    case .InvalidArrangement: print("invalid arrangement")
-                    case .NoCenterIntersection: print("no center")
-                    case .NoIntersection: print("no intersection")
-                    case .UnfilledSquare(_): print("skipped square")
-                    case .UndefinedWord(let word): print("undefined \(word)")
-                    case .Message(let message): print(message)
-                    default: break
-                    }
-                    actionDelegate?.boundariesChanged(boundary, error: err, score: 0)
-                } catch _ {
-                    actionDelegate?.boundariesChanged(boundary, error: nil, score: 0)
+            do {
+                if let move = try moveForPositions(positions) {
+                    actionDelegate?.validMove(move)
                 }
-            } else {
-                print("No boundary")
-                actionDelegate?.boundariesChanged(nil, error:
-                    SceneError.NoBoundary, score: 0)
-            }
-            if !playable && positions.count == 1 {
-                if let boundary = game.stretchWhileFilled(Boundary(positions:
-                    positions.mapFilter({$0.positionWithHorizontal(!$0.horizontal)})))
-                {
-                    do {
-                        let move = try game.getMove(forBoundary: boundary)
-                        actionDelegate?.boundariesChanged(boundary, error: nil, score: move.total)
-                    } catch let err as ValidationError {
-                        switch err {
-                        case .InsufficientTiles: print("not enough tiles")
-                        case .InvalidArrangement: print("invalid arrangement")
-                        case .NoCenterIntersection: print("no center")
-                        case .NoIntersection: print("no intersection")
-                        case .UnfilledSquare(_): print("skipped square")
-                        case .UndefinedWord(let word): print("undefined \(word)")
-                        case .Message(let message): print(message)
-                        default: break
-                        }
-                        actionDelegate?.boundariesChanged(boundary, error: err, score: 0)
-                    } catch _ {
-                        actionDelegate?.boundariesChanged(boundary, error: nil, score: 0)
-                    }
+            } catch {
+                if positions.count > 1 {
+                    actionDelegate?.invalidMove(error)
                 } else {
-                    print("No boundary")
-                    actionDelegate?.boundariesChanged(nil, error:
-                        SceneError.NoBoundary, score: 0)
+                    // If single position, try other axis
+                    let invertedPositions = positions.mapFilter({$0.positionWithHorizontal(!$0.horizontal)})
+                    do {
+                        if let move = try moveForPositions(invertedPositions) {
+                            actionDelegate?.validMove(move)
+                        }
+                    } catch {
+                        actionDelegate?.invalidMove(error)
+                    }
                 }
             }
         }
     }
     
     /// Attempt to submit a word, will throw an error if validation fails.
-    func submitPlay() throws {
+    func submit(move: Move) {
         if let tile = heldTile, origin = heldOrigin {
             tile.resetPosition(origin)
         }
-        let positions = getPositions()
-        if let boundary = Boundary(positions: positions) {
-            let move = try game.getMove(forBoundary: boundary)
-            game.player?.submit(move)
-            print("Points: \(move.total) total: \(game.player!.score)")
-            game.draw(game.player!)
-            replaceRackSprites()
-            // Change player
-            game.nextPlayer()
-        }
+        game.player?.submit(move)
+        print("Points: \(move.total) total: \(game.player!.score)")
+        game.draw(game.player!)
+        replaceRackSprites()
+        // Change player
+        game.nextPlayer()
     }
     
     /// Attempt AI move.

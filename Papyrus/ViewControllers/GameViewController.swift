@@ -13,6 +13,7 @@ import PapyrusCore
 class GameViewController: UIViewController, GameSceneDelegate, UITextFieldDelegate {
     @IBOutlet var skView: SKView?
     var scene: GameScene?
+    var unsubmittedMove: Move?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -40,6 +41,25 @@ class GameViewController: UIViewController, GameSceneDelegate, UITextFieldDelega
         }
     }
     
+    override func shouldAutorotate() -> Bool {
+        return false
+    }
+    
+    override func supportedInterfaceOrientations() -> UIInterfaceOrientationMask {
+        return .Portrait
+    }
+    
+    override func didReceiveMemoryWarning() {
+        super.didReceiveMemoryWarning()
+        // Release any cached data, images, etc that aren't in use.
+    }
+    
+    override func prefersStatusBarHidden() -> Bool {
+        return true
+    }
+    
+    // MARK: - Game
+    
     func newGame() {
         scene?.game.newGame(scene!.dawg) { [weak self] (lifecycle, game) in
             guard let this = self, scene = this.scene else { return }
@@ -60,9 +80,45 @@ class GameViewController: UIViewController, GameSceneDelegate, UITextFieldDelega
         }
     }
     
-    func boundariesChanged(boundary: Boundary?, error: ErrorType?, score: Int) {
-        navigationItem.rightBarButtonItem?.enabled = boundary != nil && error == nil && score > 0
-        print("Score: \(score)")
+    func enableButtons(enabled: Bool) {
+        navigationItem.leftBarButtonItem?.enabled = enabled
+        navigationItem.rightBarButtonItem?.enabled = enabled
+    }
+    
+    func restart(sender: UIBarButtonItem) {
+        enableButtons(false)
+        newGame()
+    }
+    
+    func submit(sender: UIBarButtonItem) {
+        guard let move = unsubmittedMove else { return }
+        scene?.submit(move)
+        if scene?.game.playerIndex != 0 {
+            var succeeded = false
+            var counter = 0
+            while succeeded == false && counter < 5 {
+                do {
+                    try scene?.attemptAIPlay()
+                    succeeded = true
+                } catch {
+                    print("Failure!")
+                    counter++
+                }
+            }
+        }
+    }
+    
+    
+    // MARK:- Action Delegate
+    
+    func invalidMove(error: ErrorType?) {
+        navigationItem.rightBarButtonItem?.enabled = false
+        unsubmittedMove = nil
+    }
+    
+    func validMove(move: Move) {
+        navigationItem.rightBarButtonItem?.enabled = move.total > 0
+        unsubmittedMove = move
     }
     
     func pickLetter(completion: (Character) -> ()) {
@@ -87,66 +143,5 @@ class GameViewController: UIViewController, GameSceneDelegate, UITextFieldDelega
         let current: NSString = textField.text ?? ""
         let newLength = current.stringByReplacingCharactersInRange(range, withString: string).lengthOfBytesUsingEncoding(NSUTF8StringEncoding)
         return filtered == string && (newLength == 0 || newLength == 1)
-    }
-    
-    func enableButtons(enabled: Bool) {
-        navigationItem.leftBarButtonItem?.enabled = enabled
-        navigationItem.rightBarButtonItem?.enabled = enabled
-    }
-    
-    func restart(sender: UIBarButtonItem) {
-        enableButtons(false)
-        newGame()
-    }
-    
-    func submit(sender: UIBarButtonItem) {
-        do {
-            try scene?.submitPlay()
-        } catch let err as ValidationError {
-            switch err {
-            case .Message(let s):
-                let alertController = UIAlertController(title: s, message: nil, preferredStyle: .Alert)
-                let OKAction = UIAlertAction(title: "OK", style: .Default) { (action) in
-                }
-                alertController.addAction(OKAction)
-                presentViewController(alertController, animated: true, completion: nil)
-            default:
-                print(err)
-            }
-        } catch {
-            
-        }
-        
-        if scene?.game.playerIndex != 0 {
-            var succeeded = false
-            var counter = 0
-            while succeeded == false && counter < 5 {
-                do {
-                    try scene?.attemptAIPlay()
-                    succeeded = true
-                } catch {
-                    print("Failure!")
-                    counter++
-                }
-            }
-        }
-        
-    }
-    
-    override func shouldAutorotate() -> Bool {
-        return false
-    }
-    
-    override func supportedInterfaceOrientations() -> UIInterfaceOrientationMask {
-        return .Portrait
-    }
-    
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Release any cached data, images, etc that aren't in use.
-    }
-    
-    override func prefersStatusBarHidden() -> Bool {
-        return true
     }
 }

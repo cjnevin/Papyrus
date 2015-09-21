@@ -78,11 +78,11 @@ extension GameScene {
         emptySquare.animateDropTileSprite(sprite, originalPoint: origin, completion: nil)
         let tile = sprite.tile
         tile.placement = .Board
-        checkBoundary()
+        validate()
         if tile.value == 0 && tile.letter == "?" {
             actionDelegate?.pickLetter({ [weak self] (c) -> () in
                 sprite.changeLetter(c)
-                self?.checkBoundary()
+                self?.validate()
             })
         }
     }
@@ -94,10 +94,10 @@ extension GameScene {
         animated == true ? sprite.animateDropToRack(point) : sprite.resetPosition(point)
         let tile = sprite.tile
         tile.placement = .Rack
-        checkBoundary()
+        validate()
         if tile.value == 0 {
             sprite.changeLetter("?")
-            checkBoundary()
+            validate()
         }
     }
     
