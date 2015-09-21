@@ -93,10 +93,11 @@ class GameViewController: UIViewController, GameSceneDelegate, UITextFieldDelega
     func submit(sender: UIBarButtonItem) {
         guard let move = unsubmittedMove else { return }
         scene?.submit(move)
-        if scene?.game.playerIndex != 0 {
+        while scene?.game.playerIndex != 0 {
             var succeeded = false
             var counter = 0
-            while succeeded == false && counter < 5 {
+            let numberOfRetries = 3
+            while succeeded == false && counter < numberOfRetries {
                 do {
                     try scene?.attemptAIPlay()
                     succeeded = true
@@ -104,6 +105,10 @@ class GameViewController: UIViewController, GameSceneDelegate, UITextFieldDelega
                     print("Failure!")
                     counter++
                 }
+            }
+            // Cannot succeed, skip
+            if !succeeded {
+                scene?.game.nextPlayer()
             }
         }
     }

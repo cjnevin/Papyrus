@@ -11,6 +11,7 @@ import SceneKit
 import PapyrusCore
 
 enum SceneError: ErrorType {
+    case Thinking
     case NoBoundary
     case UnknownError
 }
@@ -53,7 +54,7 @@ class GameScene: SKScene, GameSceneProtocol {
             replaceRackSprites()
         }
     }
-        
+    
     /// Handle changes in state of game.
     /// - parameter lifecycle: Current state.
     func changed(lifecycle: Lifecycle) {
@@ -72,7 +73,7 @@ class GameScene: SKScene, GameSceneProtocol {
             
         case .Completed:
             print("Completed")
-        
+            
         case .ChangedPlayer:
             // Lock tiles...
             print("Changed player \(game.playerIndex)")
@@ -173,25 +174,26 @@ class GameScene: SKScene, GameSceneProtocol {
     
     /// Check to see if play is valid.
     func validate() {
-        let positions = getPositions()
+        actionDelegate?.invalidMove(SceneError.Thinking)
+        let positions = self.getPositions()
         if positions.count < 1 { print("insufficient tiles"); return }
         if positions.count >= 1 {
             do {
-                if let move = try moveForPositions(positions) {
-                    actionDelegate?.validMove(move)
+                if let move = try self.moveForPositions(positions) {
+                    self.actionDelegate?.validMove(move)
                 }
             } catch {
                 if positions.count > 1 {
-                    actionDelegate?.invalidMove(error)
+                    self.actionDelegate?.invalidMove(error)
                 } else {
                     // If single position, try other axis
                     let invertedPositions = positions.mapFilter({$0.positionWithHorizontal(!$0.horizontal)})
                     do {
-                        if let move = try moveForPositions(invertedPositions) {
-                            actionDelegate?.validMove(move)
+                        if let move = try self.moveForPositions(invertedPositions) {
+                            self.actionDelegate?.validMove(move)
                         }
                     } catch {
-                        actionDelegate?.invalidMove(error)
+                        self.actionDelegate?.invalidMove(error)
                     }
                 }
             }
@@ -222,8 +224,8 @@ class GameScene: SKScene, GameSceneProtocol {
                 let square = move.word.squares[i]
                 let tile = move.word.tiles[i]
                 let tileSprite = TileSprite.sprite(withTile: tile)
-                tileSprites.append(tileSprite)
-                let squareSprite = squareSprites.filter({$0.square == square}).first
+                self.tileSprites.append(tileSprite)
+                let squareSprite = self.squareSprites.filter({$0.square == square}).first
                 squareSprite?.placeTileSprite(tileSprite)
             }
         } else {
