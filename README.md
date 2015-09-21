@@ -10,6 +10,7 @@ Currently a new game will begin with a human player and an AI opponent, this opp
 There is some word needed in the UI as up until recently it's been mostly unit tested.
 
 AI still needs:
+- Filter blank tiles? (Algorithm takes too long to determine possible words.)
 - Return tiles to bag if no moves exist (drop all? or just a couple?)
 - Return lower scoring words if difficulty is reduced
 - Precalculate moves before previous player has their turn then recalculate if that move is affected (lookahead)
