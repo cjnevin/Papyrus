@@ -14,6 +14,10 @@ class GameViewController: UIViewController, GameSceneDelegate, UITextFieldDelega
     @IBOutlet var skView: SKView?
     var scene: GameScene?
     var unsubmittedMove: Move?
+    var submit: UIBarButtonItem?
+    var shuffle: UIBarButtonItem?
+    var swap: UIBarButtonItem?
+    var restart: UIBarButtonItem?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -30,8 +34,18 @@ class GameViewController: UIViewController, GameSceneDelegate, UITextFieldDelega
             gscene.actionDelegate = self
         }
         title = "Papyrus"
-        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Submit", style: .Done, target: self, action: "submit:")
-        navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Refresh, target: self, action: "restart:")
+        
+        submit = UIBarButtonItem(title: "Submit", style: .Done, target: self, action: "submit:")
+        restart = UIBarButtonItem(barButtonSystemItem: .Trash, target: self, action: "restart:")
+        shuffle = UIBarButtonItem(barButtonSystemItem: .Refresh, target: self, action: "shuffle:")
+        swap = UIBarButtonItem(title: "Swap", style: .Plain, target: self, action: "swap:")
+        
+        shuffle?.enabled = false
+        swap?.enabled = false
+        restart?.enabled = false
+        
+        navigationItem.leftBarButtonItems = [shuffle!, swap!]
+        navigationItem.rightBarButtonItems = [submit!, restart!]
     }
     
     override func viewWillLayoutSubviews() {
@@ -60,9 +74,12 @@ class GameViewController: UIViewController, GameSceneDelegate, UITextFieldDelega
     
     // MARK: - Game
     
-    func newGame() {
-        scene?.game.newGame(scene!.dawg) { [weak self] (lifecycle, game) in
+    func setup() {
+        guard let scene = scene else { return }
+        enableButtons(false)
+        scene.game.newGame { [weak self] (lifecycle, game) -> () in
             guard let this = self, scene = this.scene else { return }
+            this.enableButtons(false)
             switch (lifecycle) {
             case .Cleanup:
                 this.title = "Cleanup"
@@ -70,9 +87,13 @@ class GameViewController: UIViewController, GameSceneDelegate, UITextFieldDelega
                 this.title = "Loading..."
             case .Ready:
                 this.title = "Papyrus"
-                this.enableButtons(true)
+                this.enableButtons(false)
                 game.createPlayer() // Me
                 game.createPlayer(Difficulty.Champion) // AI
+            case .EndedTurn:
+                this.title = "Ended Turn"
+            case .ChangedPlayer:
+                this.title = "Next Turn"
             default:
                 this.title = "Complete"
             }
@@ -80,49 +101,56 @@ class GameViewController: UIViewController, GameSceneDelegate, UITextFieldDelega
         }
     }
     
+    func newGame() {
+        enableButtons(false)
+        if Papyrus.dawg == nil {
+            GameScene.operationQueue.addOperationWithBlock { () -> Void in
+                Papyrus.dawg = Dawg.load(NSBundle.mainBundle().pathForResource("output", ofType: "json")!)!
+                NSOperationQueue.mainQueue().addOperationWithBlock({ [weak self] () -> Void in
+                    self?.setup()
+                })
+            }
+        } else {
+            setup()
+        }
+    }
+    
     func enableButtons(enabled: Bool) {
-        navigationItem.leftBarButtonItem?.enabled = enabled
-        navigationItem.rightBarButtonItem?.enabled = enabled
+        submit?.enabled = enabled
+        swap?.enabled = scene?.game.playerIndex == 0
+        shuffle?.enabled = scene?.game.playerIndex == 0
+        restart?.enabled = scene?.game.playerIndex == 0
+    }
+    
+    func swap(sender: UIBarButtonItem) {
+        guard let player = scene?.game.player, tiles = scene?.game.player?.rackTiles else { return }
+        player.returnTiles(tiles)
+        scene?.game.draw(player)
+    }
+    
+    func shuffle(sender: UIBarButtonItem) {
+        
     }
     
     func restart(sender: UIBarButtonItem) {
-        enableButtons(false)
         newGame()
     }
     
     func submit(sender: UIBarButtonItem) {
         guard let move = unsubmittedMove else { return }
         scene?.submit(move)
-        while scene?.game.playerIndex != 0 {
-            var succeeded = false
-            var counter = 0
-            let numberOfRetries = 3
-            while succeeded == false && counter < numberOfRetries {
-                do {
-                    try scene?.attemptAIPlay()
-                    succeeded = true
-                } catch {
-                    print("Failure!")
-                    counter++
-                }
-            }
-            // Cannot succeed, skip
-            if !succeeded {
-                scene?.game.nextPlayer()
-            }
-        }
     }
     
     
     // MARK:- Action Delegate
     
     func invalidMove(error: ErrorType?) {
-        navigationItem.rightBarButtonItem?.enabled = false
+        enableButtons(false)
         unsubmittedMove = nil
     }
     
     func validMove(move: Move) {
-        navigationItem.rightBarButtonItem?.enabled = move.total > 0
+        enableButtons(move.total > 0)
         unsubmittedMove = move
     }
     

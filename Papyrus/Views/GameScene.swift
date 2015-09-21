@@ -13,6 +13,7 @@ import PapyrusCore
 enum SceneError: ErrorType {
     case Thinking
     case NoBoundary
+    case NoMoves
     case UnknownError
 }
 
@@ -30,7 +31,6 @@ protocol GameSceneProtocol {
 class GameScene: SKScene, GameSceneProtocol {
     /// - returns: Current game object.
     let game = Papyrus()
-    let dawg = Dawg.load(NSBundle.mainBundle().pathForResource("output", ofType: "json")!)!
     
     /// - returns: Currently dragged tile user is holding.
     var heldTile: TileSprite? {
@@ -43,16 +43,21 @@ class GameScene: SKScene, GameSceneProtocol {
     /// - returns: All tile sprites in play.
     lazy var tileSprites = [TileSprite]()
     
-    /// Move and illuminate sprites for tiles we just placed.
-    /// - SeeAlso: `replaceRackSprites()`, `TileSprite.illuminate()`, `TileSprite.deilluminate()`
-    private func completeMove(withTiles moveTiles: [Tile]) {
-        // Light up the words we touched...
-        tileSprites.forEach{ $0.deilluminate() }
-        tileSprites.filter{ moveTiles.contains($0.tile) }.forEach{ $0.illuminate() }
-        // Remove existing rack sprites.
-        if game.playerIndex == 0 {
-            replaceRackSprites()
+    static var operationQueue: NSOperationQueue {
+        struct Static {
+            static let instance = NSOperationQueue()
         }
+        Static.instance.maxConcurrentOperationCount = 1
+        return Static.instance
+    }
+    
+    /// Illuminate sprites for tiles we just placed.
+    /// - SeeAlso: `TileSprite.illuminate()`, `TileSprite.deilluminate()`
+    private func highlight(move: Move) {
+        // Light up the words we touched...
+        let tiles = move.word.tiles + move.intersections.flatMap({$0.tiles})
+        tileSprites.forEach{ $0.deilluminate() }
+        tileSprites.filter{ tiles.contains($0.tile) }.forEach{ $0.illuminate() }
     }
     
     /// Handle changes in state of game.
@@ -73,11 +78,26 @@ class GameScene: SKScene, GameSceneProtocol {
             
         case .Completed:
             print("Completed")
+        
+        case .NoMoves:
+            game.nextPlayer()
             
         case .ChangedPlayer:
             // Lock tiles...
             print("Changed player \(game.playerIndex)")
+            if game.playerIndex != 0 {
+                attemptAIPlay({ (move, error) -> () in
+                    print(move, error)
+                })
+            }
             
+        case .EndedTurn:
+            // Remove existing rack sprites.
+            if game.playerIndex == 0 {
+                replaceRackSprites()
+            }
+            // Change player
+            game.nextPlayer()
         }
         
     }
@@ -206,33 +226,44 @@ class GameScene: SKScene, GameSceneProtocol {
             tile.resetPosition(origin)
         }
         game.player?.submit(move)
+        highlight(move)
         print("Points: \(move.total) total: \(game.player!.score)")
         game.draw(game.player!)
-        replaceRackSprites()
-        // Change player
-        game.nextPlayer()
     }
     
-    /// Attempt AI move.
-    func attemptAIPlay() throws {
-        if let move = try game.getAIMoves().first {
-            print(move)
-            game.player!.submit(move)
-            print("AI Points: \(move.total), total: \(game.player!.score)")
-            game.draw(game.player!)
-            for i in 0..<move.word.length {
-                let square = move.word.squares[i]
-                let tile = move.word.tiles[i]
-                let tileSprite = TileSprite.sprite(withTile: tile)
-                self.tileSprites.append(tileSprite)
-                let squareSprite = self.squareSprites.filter({$0.square == square}).first
-                squareSprite?.placeTileSprite(tileSprite)
+    func attemptAIPlay(completion: (move: Move?, error: ErrorType?) -> ()) {
+        GameScene.operationQueue.addOperationWithBlock { [weak self] () -> Void in
+            guard let game = self?.game, player = game.player else { return }
+            print("Rack: \(player.rackTiles)")
+            var move: Move?
+            var errorType: ErrorType?
+            do {
+                move = try game.getAIMoves().first
+                if move == nil {
+                    errorType = SceneError.NoMoves
+                }
+            } catch {
+                errorType = error
             }
-        } else {
-            print("Cannot play any moves")
+            NSOperationQueue.mainQueue().addOperationWithBlock({ [weak self] () -> Void in
+                guard let move = move else {
+                    completion(move: nil, error: errorType)
+                    return
+                }
+                player.submit(move)
+                print("AI Points: \(move.total) total: \(game.player!.score)")
+                for i in 0..<move.word.length {
+                    let square = move.word.squares[i]
+                    let tile = move.word.tiles[i]
+                    let tileSprite = TileSprite.sprite(withTile: tile)
+                    self?.tileSprites.append(tileSprite)
+                    let squareSprite = self?.squareSprites.filter({$0.square == square}).first
+                    squareSprite?.placeTileSprite(tileSprite)
+                }
+                self?.highlight(move)
+                game.draw(player)
+                completion(move: move, error: errorType)
+            })
         }
-        
-        // Change player
-        game.nextPlayer()
     }
 }
