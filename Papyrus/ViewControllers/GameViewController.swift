@@ -12,6 +12,8 @@ import PapyrusCore
 
 class GameViewController: UIViewController, GameSceneDelegate, UITextFieldDelegate {
     @IBOutlet var skView: SKView?
+    
+    let watchdog = Watchdog(threshold: 0.2)
     var scene: GameScene?
     var unsubmittedMove: Move?
     var submit: UIBarButtonItem?
@@ -88,8 +90,6 @@ class GameViewController: UIViewController, GameSceneDelegate, UITextFieldDelega
             case .Ready:
                 this.title = "Papyrus"
                 this.enableButtons(false)
-                game.createPlayer() // Me
-                game.createPlayer(Difficulty.Champion) // AI
             case .EndedTurn:
                 this.title = "Ended Turn"
             case .ChangedPlayer:
@@ -105,7 +105,7 @@ class GameViewController: UIViewController, GameSceneDelegate, UITextFieldDelega
         enableButtons(false)
         if Papyrus.dawg == nil {
             GameScene.operationQueue.addOperationWithBlock { () -> Void in
-                Papyrus.dawg = Dawg.load(NSBundle.mainBundle().pathForResource("output", ofType: "json")!)!
+                Papyrus.dawg = Dawg.load(NSBundle.mainBundle().pathForResource("sowpods", ofType: "json")!)!
                 NSOperationQueue.mainQueue().addOperationWithBlock({ [weak self] () -> Void in
                     self?.setup()
                 })

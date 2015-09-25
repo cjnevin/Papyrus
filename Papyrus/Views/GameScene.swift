@@ -74,7 +74,11 @@ class GameScene: SKScene, GameSceneProtocol {
             
         case .Ready:
             print("Ready")
+            game.createPlayer()
             replaceRackSprites()
+            game.createPlayer(.Champion)
+            game.createPlayer(.Champion)
+            game.createPlayer(.Champion)
             
         case .Completed:
             print("Completed")
