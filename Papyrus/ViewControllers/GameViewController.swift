@@ -105,7 +105,7 @@ class GameViewController: UIViewController, GameSceneDelegate, UITextFieldDelega
         enableButtons(false)
         if Papyrus.dawg == nil {
             GameScene.operationQueue.addOperationWithBlock { () -> Void in
-                Papyrus.dawg = Dawg.load(NSBundle.mainBundle().pathForResource("sowpods", ofType: "json")!)!
+                Papyrus.dawg = Dawg.load(NSBundle.mainBundle().pathForResource("sowpods", ofType: "bin")!)!
                 NSOperationQueue.mainQueue().addOperationWithBlock({ [weak self] () -> Void in
                     self?.setup()
                 })
