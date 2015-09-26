@@ -8,7 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		9933CF5C1B5981F6009466B0 /* SpriteKitExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9933CF5B1B5981F6009466B0 /* SpriteKitExtensions.swift */; };
-		993CB5ED1BB4913F00692603 /* twl06.json in Resources */ = {isa = PBXBuildFile; fileRef = 993CB5EC1BB4913F00692603 /* twl06.json */; };
+		995DD83C1BB6213A009B409D /* sowpods.bin in Resources */ = {isa = PBXBuildFile; fileRef = 995DD83A1BB6213A009B409D /* sowpods.bin */; };
+		995DD83D1BB6213A009B409D /* twl06.bin in Resources */ = {isa = PBXBuildFile; fileRef = 995DD83B1BB6213A009B409D /* twl06.bin */; };
 		99629C091B547DE800510036 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99629C081B547DE800510036 /* AppDelegate.swift */; };
 		99629C0B1B547DE800510036 /* GameScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = 99629C0A1B547DE800510036 /* GameScene.sks */; };
 		99629C2D1B547DE800510036 /* PapyrusUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99629C2C1B547DE800510036 /* PapyrusUITests.swift */; };
@@ -20,7 +21,6 @@
 		99629C661B547E8200510036 /* PapyrusTileSprite.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99629C5F1B547E8200510036 /* PapyrusTileSprite.swift */; };
 		99629C671B547E8200510036 /* PapyrusTileSpriteAnimations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99629C601B547E8200510036 /* PapyrusTileSpriteAnimations.swift */; };
 		99B5013B1BB0C7FB0098767C /* Watchdog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99B5013A1BB0C7FB0098767C /* Watchdog.swift */; };
-		99DB96551BB4B2DD0097F5C0 /* sowpods.json in Resources */ = {isa = PBXBuildFile; fileRef = 99DB96541BB4B2DD0097F5C0 /* sowpods.json */; };
 		99DF9E0F1B54ED8200F58DA7 /* UIKitExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99DF9E0E1B54ED8200F58DA7 /* UIKitExtensions.swift */; };
 		99FD433D1BA5901E00F50DCF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 99FD43351BA5901E00F50DCF /* Assets.xcassets */; };
 		99FD433E1BA5901E00F50DCF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 99FD43361BA5901E00F50DCF /* LaunchScreen.storyboard */; };
@@ -68,7 +68,8 @@
 
 /* Begin PBXFileReference section */
 		9933CF5B1B5981F6009466B0 /* SpriteKitExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SpriteKitExtensions.swift; sourceTree = "<group>"; };
-		993CB5EC1BB4913F00692603 /* twl06.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = twl06.json; sourceTree = "<group>"; };
+		995DD83A1BB6213A009B409D /* sowpods.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = sowpods.bin; sourceTree = "<group>"; };
+		995DD83B1BB6213A009B409D /* twl06.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = twl06.bin; sourceTree = "<group>"; };
 		99629C051B547DE800510036 /* Papyrus.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Papyrus.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		99629C081B547DE800510036 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		99629C0A1B547DE800510036 /* GameScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = GameScene.sks; sourceTree = "<group>"; };
@@ -85,7 +86,6 @@
 		99629C5F1B547E8200510036 /* PapyrusTileSprite.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PapyrusTileSprite.swift; sourceTree = "<group>"; };
 		99629C601B547E8200510036 /* PapyrusTileSpriteAnimations.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PapyrusTileSpriteAnimations.swift; sourceTree = "<group>"; };
 		99B5013A1BB0C7FB0098767C /* Watchdog.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Watchdog.swift; sourceTree = "<group>"; };
-		99DB96541BB4B2DD0097F5C0 /* sowpods.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = sowpods.json; sourceTree = "<group>"; };
 		99DF9E0E1B54ED8200F58DA7 /* UIKitExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIKitExtensions.swift; sourceTree = "<group>"; };
 		99FD43351BA5901E00F50DCF /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		99FD43371BA5901E00F50DCF /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -218,8 +218,8 @@
 		99FD433A1BA5901E00F50DCF /* Dictionaries */ = {
 			isa = PBXGroup;
 			children = (
-				99DB96541BB4B2DD0097F5C0 /* sowpods.json */,
-				993CB5EC1BB4913F00692603 /* twl06.json */,
+				995DD83A1BB6213A009B409D /* sowpods.bin */,
+				995DD83B1BB6213A009B409D /* twl06.bin */,
 			);
 			path = Dictionaries;
 			sourceTree = "<group>";
@@ -362,13 +362,13 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				995DD83D1BB6213A009B409D /* twl06.bin in Resources */,
 				99FD433E1BA5901E00F50DCF /* LaunchScreen.storyboard in Resources */,
 				99FD43411BA5901E00F50DCF /* Info.plist in Resources */,
 				99FD433D1BA5901E00F50DCF /* Assets.xcassets in Resources */,
 				99629C0B1B547DE800510036 /* GameScene.sks in Resources */,
-				99DB96551BB4B2DD0097F5C0 /* sowpods.json in Resources */,
-				993CB5ED1BB4913F00692603 /* twl06.json in Resources */,
 				99FD433F1BA5901E00F50DCF /* Main.storyboard in Resources */,
+				995DD83C1BB6213A009B409D /* sowpods.bin in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
