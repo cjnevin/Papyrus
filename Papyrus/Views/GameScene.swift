@@ -82,6 +82,10 @@ class GameScene: SKScene, GameSceneProtocol {
             
         case .Completed:
             print("Completed")
+            for player in game.players {
+                print("- \(player.difficulty) score: \(player.score)")
+            }
+            print("Winning score: \(game.players.map({$0.score}).maxElement())")
         
         case .NoMoves:
             game.nextPlayer()
