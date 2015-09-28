@@ -77,8 +77,6 @@ class GameScene: SKScene, GameSceneProtocol {
             game.createPlayer()
             replaceRackSprites()
             game.createPlayer(.Champion)
-            game.createPlayer(.Champion)
-            game.createPlayer(.Champion)
             
         case .Completed:
             print("Completed")
@@ -93,15 +91,17 @@ class GameScene: SKScene, GameSceneProtocol {
         case .ChangedPlayer:
             // Lock tiles...
             print("Changed player \(game.playerIndex)")
-            if game.playerIndex != 0 {
+            let isHuman = game.player?.difficulty == .Human
+            if !isHuman {
                 attemptAIPlay({ (move, error) -> () in
                     print(move, error)
                 })
             }
             
         case .EndedTurn:
-            // Remove existing rack sprites.
-            if game.playerIndex == 0 {
+            let isHuman = game.player?.difficulty == .Human
+            if isHuman {
+            // Replace rack sprites.
                 replaceRackSprites()
             }
             // Change player
