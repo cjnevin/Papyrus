@@ -105,6 +105,7 @@ extension GameScene {
     /// Throws an error if 'place' method fails.
     private func pickup(atPoint point: CGPoint?) throws {
         guard let point = point else { return }
+        if game.player?.difficulty != .Human { return }
         if let s = squareSprites.filter({ $0.containsPoint(point) && $0.tileSprite != nil }).first,
             t = s.pickupTileSprite() {
             // Pickup from board

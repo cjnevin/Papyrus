@@ -96,6 +96,7 @@ class GameViewController: UIViewController, GameSceneDelegate, UITextFieldDelega
                 this.title = "Next Turn"
             default:
                 this.title = "Complete"
+                this.enableButtons(false)
             }
             scene.changed(lifecycle)
         }
@@ -116,10 +117,11 @@ class GameViewController: UIViewController, GameSceneDelegate, UITextFieldDelega
     }
     
     func enableButtons(enabled: Bool) {
-        submit?.enabled = enabled
-        swap?.enabled = scene?.game.playerIndex == 0
-        shuffle?.enabled = scene?.game.playerIndex == 0
-        restart?.enabled = scene?.game.playerIndex == 0
+        let isHuman = scene?.game.player?.difficulty == .Human
+        submit?.enabled = isHuman && enabled
+        swap?.enabled = isHuman
+        shuffle?.enabled = isHuman
+        restart?.enabled = isHuman || scene?.game.lifecycle == .Completed
     }
     
     func swap(sender: UIBarButtonItem) {
