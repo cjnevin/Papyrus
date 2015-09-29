@@ -3,11 +3,9 @@
 
 Incomplete Scrabble game written in Swift 2.0 on top of SceneKit.
 
-This game handles all single player and *some* AI logic (calculates moves, submits them) so far, note that it is all running on the main thread currently while I try to figure out the best approach to parallelise the logic.
+This game handles all single player and *some* AI logic (calculates moves, submits them).
 
 Currently a new game will begin with a human player and an AI opponent, this opponent will almost certainly beat you as it currently chooses the highest possible score.
-
-There is some word needed in the UI as up until recently it's been mostly unit tested.
 
 AI still needs:
 - Filter blank tiles? (Algorithm takes too long to determine possible words.)
@@ -17,7 +15,7 @@ AI still needs:
 
 Human player still needs:
 - Return tiles to bag if no moves exist (user can choose)
-- Hints? Calculate a move for me
+- Hints? Calculate a move for me (20% penalty?/skip next turn?)
 
 UI still needs:
 - Shuffle tiles button
