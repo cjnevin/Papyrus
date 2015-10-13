@@ -76,6 +76,8 @@ class GameScene: SKScene, GameSceneProtocol {
             print("Ready")
             game.createPlayer()
             replaceRackSprites()
+            game.createPlayer(.Newbie)
+            game.createPlayer(.Average)
             game.createPlayer(.Champion)
             
         case .Completed:
@@ -150,128 +152,4 @@ class GameScene: SKScene, GameSceneProtocol {
         return tileSprites.filter{ t.contains($0.tile) }
     }
     
-    
-    // MARK:- Checks
-    
-    /// Get position array for sprites with axis.
-    /// - parameter horizontal: Axis to check.
-    /// - returns: Array of positions.
-    func getPositions() -> [Position] {
-        var offsets = [(row: Int, col: Int)]()
-        for sprite in squareSprites where sprite.tileSprite != nil && sprite.tileSprite?.tile.placement != Placement.Fixed {
-            offsets.append((sprite.square.row, sprite.square.column))
-        }
-        let rows = offsets.sort({$0.row < $1.row})
-        let cols = offsets.sort({$0.col < $1.col})
-        
-        var positions = [Position]()
-        if let firstRow = rows.first?.row, lastRow = rows.last?.row where firstRow == lastRow {
-            // Horizontal
-            positions.appendContentsOf(cols.mapFilter({Position(horizontal: true, iterable: $0.col, fixed: $0.row)}))
-        } else if let firstCol = cols.first?.col, lastCol = cols.last?.col where firstCol == lastCol {
-            // Vertical
-            positions.appendContentsOf(cols.mapFilter({Position(horizontal: false, iterable: $0.row, fixed: $0.col)}))
-        }
-        return positions
-    }
-    
-    func moveForPositions(positions: [Position]) throws -> Move? {
-        guard let boundary = game.stretchWhileFilled(Boundary(positions: positions)) else {
-            throw SceneError.NoBoundary
-        }
-        do {
-            let move = try game.getMove(forBoundary: boundary)
-            actionDelegate?.validMove(move)
-            return move
-        } catch let err as ValidationError {
-            switch err {
-            case .InsufficientTiles: print("not enough tiles")
-            case .InvalidArrangement: print("invalid arrangement")
-            case .NoCenterIntersection: print("no center")
-            case .NoIntersection: print("no intersection")
-            case .UnfilledSquare(_): print("skipped square")
-            case .UndefinedWord(let word): print("undefined \(word)")
-            case .Message(let message): print(message)
-            default: break
-            }
-            throw err
-        } catch _ {
-            throw SceneError.UnknownError
-        }
-    }
-    
-    /// Check to see if play is valid.
-    func validate() {
-        actionDelegate?.invalidMove(SceneError.Thinking)
-        let positions = self.getPositions()
-        if positions.count < 1 { print("insufficient tiles"); return }
-        if positions.count >= 1 {
-            do {
-                if let move = try self.moveForPositions(positions) {
-                    self.actionDelegate?.validMove(move)
-                }
-            } catch {
-                if positions.count > 1 {
-                    self.actionDelegate?.invalidMove(error)
-                } else {
-                    // If single position, try other axis
-                    let invertedPositions = positions.mapFilter({$0.positionWithHorizontal(!$0.horizontal)})
-                    do {
-                        if let move = try self.moveForPositions(invertedPositions) {
-                            self.actionDelegate?.validMove(move)
-                        }
-                    } catch {
-                        self.actionDelegate?.invalidMove(error)
-                    }
-                }
-            }
-        }
-    }
-    
-    /// Attempt to submit a word, will throw an error if validation fails.
-    func submit(move: Move) {
-        if let tile = heldTile, origin = heldOrigin {
-            tile.resetPosition(origin)
-        }
-        game.player?.submit(move)
-        highlight(move)
-        print("Points: \(move.total) total: \(game.player!.score)")
-        game.draw(game.player!)
-    }
-    
-    func attemptAIPlay(completion: (move: Move?, error: ErrorType?) -> ()) {
-        GameScene.operationQueue.addOperationWithBlock { [weak self] () -> Void in
-            guard let game = self?.game, player = game.player else { return }
-            print("Rack: \(player.rackTiles)")
-            var move: Move?
-            var errorType: ErrorType?
-            do {
-                move = try game.getAIMoves().first
-                if move == nil {
-                    errorType = SceneError.NoMoves
-                }
-            } catch {
-                errorType = error
-            }
-            NSOperationQueue.mainQueue().addOperationWithBlock({ [weak self] () -> Void in
-                guard let move = move else {
-                    completion(move: nil, error: errorType)
-                    return
-                }
-                player.submit(move)
-                print("AI Points: \(move.total) total: \(game.player!.score)")
-                for i in 0..<move.word.length {
-                    let square = move.word.squares[i]
-                    let tile = move.word.tiles[i]
-                    let tileSprite = TileSprite.sprite(withTile: tile)
-                    self?.tileSprites.append(tileSprite)
-                    let squareSprite = self?.squareSprites.filter({$0.square == square}).first
-                    squareSprite?.placeTileSprite(tileSprite)
-                }
-                self?.highlight(move)
-                game.draw(player)
-                completion(move: move, error: errorType)
-            })
-        }
-    }
 }

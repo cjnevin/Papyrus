@@ -20,6 +20,12 @@
 		99629C651B547E8200510036 /* PapyrusSquareSpriteAnimations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99629C5E1B547E8200510036 /* PapyrusSquareSpriteAnimations.swift */; };
 		99629C661B547E8200510036 /* PapyrusTileSprite.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99629C5F1B547E8200510036 /* PapyrusTileSprite.swift */; };
 		99629C671B547E8200510036 /* PapyrusTileSpriteAnimations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99629C601B547E8200510036 /* PapyrusTileSpriteAnimations.swift */; };
+		997D186B1BCC4EEC0050B872 /* PapyrusViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 997D186A1BCC4EEC0050B872 /* PapyrusViewController.swift */; };
+		997D186D1BCC570B0050B872 /* TileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 997D186C1BCC570B0050B872 /* TileView.swift */; };
+		997D186F1BCC57310050B872 /* TileView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 997D186E1BCC57310050B872 /* TileView.xib */; };
+		997D18711BCC5AD70050B872 /* Engine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 997D18701BCC5AD70050B872 /* Engine.swift */; };
+		997D18731BCC5B1C0050B872 /* BoardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 997D18721BCC5B1C0050B872 /* BoardView.swift */; };
+		997D20291BCD7AED002FBC62 /* DraggableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 997D20281BCD7AED002FBC62 /* DraggableView.swift */; };
 		99B5013B1BB0C7FB0098767C /* Watchdog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99B5013A1BB0C7FB0098767C /* Watchdog.swift */; };
 		99DF9E0F1B54ED8200F58DA7 /* UIKitExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99DF9E0E1B54ED8200F58DA7 /* UIKitExtensions.swift */; };
 		99FD433D1BA5901E00F50DCF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 99FD43351BA5901E00F50DCF /* Assets.xcassets */; };
@@ -85,6 +91,12 @@
 		99629C5E1B547E8200510036 /* PapyrusSquareSpriteAnimations.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PapyrusSquareSpriteAnimations.swift; sourceTree = "<group>"; };
 		99629C5F1B547E8200510036 /* PapyrusTileSprite.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PapyrusTileSprite.swift; sourceTree = "<group>"; };
 		99629C601B547E8200510036 /* PapyrusTileSpriteAnimations.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PapyrusTileSpriteAnimations.swift; sourceTree = "<group>"; };
+		997D186A1BCC4EEC0050B872 /* PapyrusViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PapyrusViewController.swift; sourceTree = "<group>"; };
+		997D186C1BCC570B0050B872 /* TileView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TileView.swift; path = Papyrus/Views/TileView.swift; sourceTree = SOURCE_ROOT; };
+		997D186E1BCC57310050B872 /* TileView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TileView.xib; sourceTree = "<group>"; };
+		997D18701BCC5AD70050B872 /* Engine.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Engine.swift; path = ViewControllers/Engine.swift; sourceTree = "<group>"; };
+		997D18721BCC5B1C0050B872 /* BoardView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BoardView.swift; sourceTree = "<group>"; };
+		997D20281BCD7AED002FBC62 /* DraggableView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DraggableView.swift; path = ../ViewControllers/DraggableView.swift; sourceTree = "<group>"; };
 		99B5013A1BB0C7FB0098767C /* Watchdog.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Watchdog.swift; sourceTree = "<group>"; };
 		99DF9E0E1B54ED8200F58DA7 /* UIKitExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIKitExtensions.swift; sourceTree = "<group>"; };
 		99FD43351BA5901E00F50DCF /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -144,6 +156,7 @@
 			children = (
 				99FD43561BA59BF900F50DCF /* PapyrusCore.xcodeproj */,
 				99629C081B547DE800510036 /* AppDelegate.swift */,
+				997D18701BCC5AD70050B872 /* Engine.swift */,
 				99B5013A1BB0C7FB0098767C /* Watchdog.swift */,
 				99DF9E0D1B54ED7300F58DA7 /* Extensions */,
 				99629C581B547E8200510036 /* ViewControllers */,
@@ -175,6 +188,7 @@
 			isa = PBXGroup;
 			children = (
 				99629C591B547E8200510036 /* GameViewController.swift */,
+				997D186A1BCC4EEC0050B872 /* PapyrusViewController.swift */,
 			);
 			name = ViewControllers;
 			path = Papyrus/ViewControllers;
@@ -183,6 +197,10 @@
 		99629C5A1B547E8200510036 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				997D18721BCC5B1C0050B872 /* BoardView.swift */,
+				997D20281BCD7AED002FBC62 /* DraggableView.swift */,
+				997D186C1BCC570B0050B872 /* TileView.swift */,
+				997D186E1BCC57310050B872 /* TileView.xib */,
 				99629C5B1B547E8200510036 /* GameScene.swift */,
 				99629C5C1B547E8200510036 /* GameSceneTouches.swift */,
 				99629C5D1B547E8200510036 /* PapyrusSquareSprite.swift */,
@@ -368,6 +386,7 @@
 				99FD433D1BA5901E00F50DCF /* Assets.xcassets in Resources */,
 				99629C0B1B547DE800510036 /* GameScene.sks in Resources */,
 				99FD433F1BA5901E00F50DCF /* Main.storyboard in Resources */,
+				997D186F1BCC57310050B872 /* TileView.xib in Resources */,
 				995DD83C1BB6213A009B409D /* sowpods.bin in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -395,6 +414,8 @@
 			files = (
 				99629C671B547E8200510036 /* PapyrusTileSpriteAnimations.swift in Sources */,
 				99629C631B547E8200510036 /* GameSceneTouches.swift in Sources */,
+				997D20291BCD7AED002FBC62 /* DraggableView.swift in Sources */,
+				997D186D1BCC570B0050B872 /* TileView.swift in Sources */,
 				99629C661B547E8200510036 /* PapyrusTileSprite.swift in Sources */,
 				99B5013B1BB0C7FB0098767C /* Watchdog.swift in Sources */,
 				99629C091B547DE800510036 /* AppDelegate.swift in Sources */,
@@ -402,8 +423,11 @@
 				99629C611B547E8200510036 /* GameViewController.swift in Sources */,
 				99DF9E0F1B54ED8200F58DA7 /* UIKitExtensions.swift in Sources */,
 				99629C651B547E8200510036 /* PapyrusSquareSpriteAnimations.swift in Sources */,
+				997D186B1BCC4EEC0050B872 /* PapyrusViewController.swift in Sources */,
 				99629C641B547E8200510036 /* PapyrusSquareSprite.swift in Sources */,
+				997D18731BCC5B1C0050B872 /* BoardView.swift in Sources */,
 				9933CF5C1B5981F6009466B0 /* SpriteKitExtensions.swift in Sources */,
+				997D18711BCC5AD70050B872 /* Engine.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -551,7 +575,6 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				GCC_OPTIMIZATION_LEVEL = fast;
 				INFOPLIST_FILE = "$(SRCROOT)/Papyrus/Resources/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.cjnevin.Papyrus;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -564,7 +587,6 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = "$(SRCROOT)/Papyrus/Resources/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.cjnevin.Papyrus;
 				PRODUCT_NAME = "$(TARGET_NAME)";

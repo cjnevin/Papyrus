@@ -15,7 +15,7 @@ class SquareSprite: SKSpriteNode {
     /// `Square` on board this sprite is representing.
     let square: Square
     /// Background sprite inset by 1pt to account for border.
-    let background: SKSpriteNode
+    //let background: SKSpriteNode
     /// Original point of `TileSprite` we dropped on this `Square`.
     var origin: CGPoint?
     /// Sprite for `Tile` contained within this `Square`.
@@ -29,15 +29,46 @@ class SquareSprite: SKSpriteNode {
         self.row = row
         self.col = col
         self.square = square
-        self.background = SKSpriteNode(texture: nil, color: Papyrus.colorForSquare(square), size: CGSizeMake(edge-1, edge-1))
-        super.init(texture: nil, color: UIColor.Papyrus_SquareBorder, size: CGSizeMake(edge, edge))
-        self.addChild(self.background)
+        //self.background = SKSpriteNode(texture: nil, color: Papyrus.colorForSquare(square), size: CGSizeMake(edge-1, edge-1))
+        super.init(texture: nil, color: Papyrus.colorForSquare(square), size: CGSizeMake(edge, edge))
+        //self.addChild(self.background)
     }
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 }
+
+class BoardSquare {
+    let row: Int
+    let col: Int
+    let edge: CGFloat
+    let square: Square
+    
+    init(row: Int, col: Int, edge: CGFloat, square: Square) {
+        self.row = row
+        self.col = col
+        self.edge = edge
+        self.square = square
+    }
+    
+    class func createBoard(forGame game: Papyrus, frame: CGRect) -> [BoardSquare] {
+        let range = 0..<PapyrusDimensions
+        let squareSize = CGRectGetWidth(frame) / CGFloat(PapyrusDimensions)
+        var buffer = [BoardSquare]()
+        for row in range {
+            for col in range {
+                buffer.append(BoardSquare(
+                    row: row,
+                    col: col,
+                    edge: squareSize,
+                    square: game.squares[row][col]))
+            }
+        }
+        return buffer
+    }
+}
+
 
 extension Papyrus {
     private static let colorMap: [Modifier: UIColor] = [

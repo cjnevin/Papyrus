@@ -8,6 +8,7 @@
 
 import UIKit
 import SpriteKit
+import SceneKit
 import PapyrusCore
 
 class GameViewController: UIViewController, GameSceneDelegate, UITextFieldDelegate {

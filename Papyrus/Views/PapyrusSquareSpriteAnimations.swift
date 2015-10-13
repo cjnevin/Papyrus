@@ -12,7 +12,7 @@ extension SquareSprite {
     
     /// Glow a different color to signify an error.
     override func warningGlow() {
-        background.warningGlow()
+        self.warningGlow()
     }
     
     /// Initial placement, no shrink animation
