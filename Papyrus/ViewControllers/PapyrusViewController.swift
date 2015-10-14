@@ -11,6 +11,7 @@ import PapyrusCore
 
 class PapyrusViewController: UIViewController {
     
+    @IBOutlet var draggableView: DraggableView!
     @IBOutlet var boardView: BoardView!
     let watchdog = Watchdog(threshold: 0.2)
     var submit: UIBarButtonItem?
@@ -27,8 +28,9 @@ class PapyrusViewController: UIViewController {
         title = "Papyrus"
         
         game = Papyrus(callback: lifecycleChanged)
-        boardView.layoutSquares(Array(game.squares.flatten()))
-        
+        game.newGame()
+        boardView.game = game
+       
         submit = UIBarButtonItem(title: "Submit", style: .Done, target: self, action: "submit:")
         restart = UIBarButtonItem(barButtonSystemItem: .Trash, target: self, action: "restart:")
         shuffle = UIBarButtonItem(barButtonSystemItem: .Refresh, target: self, action: "shuffle:")
@@ -45,13 +47,13 @@ class PapyrusViewController: UIViewController {
     func newGame() {
         lifecycleChanged(.Preparing)
         if Papyrus.dawg == nil {
-            Papyrus.operationQueue.addOperationWithBlock { () -> Void in
-                Papyrus.dawg = Dawg.load(NSBundle.mainBundle().pathForResource("sowpods", ofType: "bin")!)!
-                NSOperationQueue.mainQueue().addOperationWithBlock({ [weak self] () -> Void in
-                    self?.game.newGame()
-                    })
-            }
-            return
+            //Papyrus.operationQueue.addOperationWithBlock { () -> Void in
+            //    Papyrus.dawg = Dawg.load(NSBundle.mainBundle().pathForResource("sowpods", ofType: "bin")!)!
+            //    NSOperationQueue.mainQueue().addOperationWithBlock({ [weak self] () -> Void in
+            //        self?.game.newGame()
+            //        })
+            //}
+            //return
         }
         game.newGame()
     }
@@ -90,7 +92,11 @@ class PapyrusViewController: UIViewController {
         submit?.enabled = isHuman && enabled
         swap?.enabled = isHuman
         shuffle?.enabled = isHuman
-        restart?.enabled = isHuman || game.lifecycle.gameComplete()
+        var gameOver = false
+        if case .GameOver = game.lifecycle {
+            gameOver = true
+        }
+        restart?.enabled = isHuman || gameOver
     }
     
     func replaceRack() {

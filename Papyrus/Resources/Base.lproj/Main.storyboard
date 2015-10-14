@@ -17,29 +17,114 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="dvs-5v-E33" customClass="BoardView" customModule="Papyrus" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="64" width="600" height="473"/>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="7gg-Y5-WQL" customClass="DraggableView" customModule="Papyrus" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="0.0" width="240" height="128"/>
+                                <subviews>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="U7H-bQ-90k" customClass="BoardView" customModule="Papyrus" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="0.0" width="240" height="128"/>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" secondItem="U7H-bQ-90k" secondAttribute="height" multiplier="1:1" id="Rs6-c8-Fhx"/>
+                                        </constraints>
+                                        <variation key="default">
+                                            <mask key="constraints">
+                                                <exclude reference="Rs6-c8-Fhx"/>
+                                            </mask>
+                                        </variation>
+                                        <variation key="heightClass=regular">
+                                            <mask key="constraints">
+                                                <include reference="Rs6-c8-Fhx"/>
+                                            </mask>
+                                        </variation>
+                                    </view>
+                                </subviews>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" secondItem="dvs-5v-E33" secondAttribute="height" multiplier="600:473" id="lwU-xK-zTz"/>
+                                    <constraint firstItem="U7H-bQ-90k" firstAttribute="leading" secondItem="7gg-Y5-WQL" secondAttribute="leading" id="Dzf-xb-RCB"/>
+                                    <constraint firstAttribute="bottom" secondItem="U7H-bQ-90k" secondAttribute="bottom" constant="92" id="Hjj-vA-nVP"/>
+                                    <constraint firstAttribute="trailing" secondItem="U7H-bQ-90k" secondAttribute="trailing" id="NpU-hX-pMe"/>
+                                    <constraint firstItem="U7H-bQ-90k" firstAttribute="top" secondItem="7gg-Y5-WQL" secondAttribute="top" id="PKY-jo-mq8"/>
                                 </constraints>
+                                <variation key="default">
+                                    <mask key="subviews">
+                                        <exclude reference="U7H-bQ-90k"/>
+                                    </mask>
+                                    <mask key="constraints">
+                                        <exclude reference="Dzf-xb-RCB"/>
+                                        <exclude reference="Hjj-vA-nVP"/>
+                                        <exclude reference="NpU-hX-pMe"/>
+                                        <exclude reference="PKY-jo-mq8"/>
+                                    </mask>
+                                </variation>
+                                <variation key="heightClass=regular">
+                                    <mask key="subviews">
+                                        <include reference="U7H-bQ-90k"/>
+                                    </mask>
+                                    <mask key="constraints">
+                                        <include reference="Dzf-xb-RCB"/>
+                                        <exclude reference="Hjj-vA-nVP"/>
+                                        <include reference="NpU-hX-pMe"/>
+                                        <include reference="PKY-jo-mq8"/>
+                                    </mask>
+                                </variation>
+                                <connections>
+                                    <outlet property="boardView" destination="U7H-bQ-90k" id="kGo-ev-G5B"/>
+                                </connections>
                             </view>
+                            <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="g9J-FQ-MXr">
+                                <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                                <items>
+                                    <barButtonItem systemItem="stop" id="7m2-a9-Xbk"/>
+                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="I98-k8-Ehh"/>
+                                    <barButtonItem title="Shuffle" id="f7e-5R-30g"/>
+                                    <barButtonItem systemItem="refresh" id="FRl-lE-Ptu"/>
+                                </items>
+                                <variation key="heightClass=regular" fixedFrame="YES">
+                                    <rect key="frame" x="0.0" y="756" width="600" height="44"/>
+                                </variation>
+                            </toolbar>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="dvs-5v-E33" firstAttribute="leading" secondItem="4aa-cn-i0z" secondAttribute="leading" id="34z-8l-njX"/>
-                            <constraint firstItem="dvs-5v-E33" firstAttribute="top" secondItem="Dfu-bY-qac" secondAttribute="bottom" id="4sG-L2-ncR"/>
-                            <constraint firstAttribute="trailing" secondItem="dvs-5v-E33" secondAttribute="trailing" id="bhH-lK-XXh"/>
+                            <constraint firstItem="7gg-Y5-WQL" firstAttribute="top" secondItem="Dfu-bY-qac" secondAttribute="bottom" id="Jjr-OS-12w"/>
+                            <constraint firstAttribute="trailing" secondItem="7gg-Y5-WQL" secondAttribute="trailing" id="SCz-kE-wF8"/>
+                            <constraint firstItem="7gg-Y5-WQL" firstAttribute="leading" secondItem="4aa-cn-i0z" secondAttribute="leading" id="gKU-a7-RKA"/>
+                            <constraint firstItem="2zo-5g-MkW" firstAttribute="top" secondItem="7gg-Y5-WQL" secondAttribute="bottom" constant="44" id="iUc-gq-Jbn"/>
                         </constraints>
+                        <variation key="default">
+                            <mask key="subviews">
+                                <exclude reference="7gg-Y5-WQL"/>
+                                <exclude reference="g9J-FQ-MXr"/>
+                            </mask>
+                            <mask key="constraints">
+                                <exclude reference="iUc-gq-Jbn"/>
+                                <exclude reference="Jjr-OS-12w"/>
+                                <exclude reference="SCz-kE-wF8"/>
+                                <exclude reference="gKU-a7-RKA"/>
+                            </mask>
+                        </variation>
+                        <variation key="heightClass=regular">
+                            <mask key="subviews">
+                                <include reference="7gg-Y5-WQL"/>
+                                <include reference="g9J-FQ-MXr"/>
+                            </mask>
+                            <mask key="constraints">
+                                <include reference="iUc-gq-Jbn"/>
+                                <include reference="Jjr-OS-12w"/>
+                                <include reference="SCz-kE-wF8"/>
+                                <include reference="gKU-a7-RKA"/>
+                            </mask>
+                        </variation>
                     </view>
                     <navigationItem key="navigationItem" title="Papyrus" id="ePs-hW-a3W"/>
                     <connections>
-                        <outlet property="boardView" destination="dvs-5v-E33" id="Qwm-bG-V6q"/>
+                        <outlet property="boardView" destination="U7H-bQ-90k" id="zF7-tV-Ru2"/>
+                        <outlet property="draggableView" destination="7gg-Y5-WQL" id="ile-vi-J0E"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="eiI-7D-yMl" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="71" y="395"/>
+            <point key="canvasLocation" x="71" y="394.5"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="joD-sy-QiM">

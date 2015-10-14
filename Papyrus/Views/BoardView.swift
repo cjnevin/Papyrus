@@ -19,12 +19,10 @@ class BoardView: UIView {
         .None: .Papyrus_Tile
     ]
     
+    var game: Papyrus?
     var frames: [CGRect]?
-    
-    let range = 0..<PapyrusDimensions
-    var squares: [Square]?
-    var squareSize: CGFloat {
-        return CGRectGetWidth(frame) / CGFloat(PapyrusDimensions)
+    var squares: [Square]? {
+        return game?.squares.flatMap({$0})
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -32,24 +30,32 @@ class BoardView: UIView {
         backgroundColor = UIColor.Papyrus_Square
     }
     
-    override func layoutSubviews() {
+    override func drawRect(rect: CGRect) {
+        super.drawRect(rect)
         
-    }
-    
-    func layoutSquares(squares: [Square]) {
-        for square in squares.filter({$0.type != .None}) {
-            let sublayer = CALayer()
-            sublayer.backgroundColor = BoardView.colorMap[square.type]?.CGColor
-            sublayer.frame = CGRect(
-                x: squareSize * CGFloat(square.column),
-                y: squareSize * CGFloat(square.row),
-                width: squareSize, height: squareSize)
-            layer.addSublayer(sublayer)
+        let size = CGRectGetWidth(rect) / CGFloat(PapyrusDimensions)
+        squares?.filter({ $0.type != .None }).forEach({ (square) -> () in
+            BoardView.colorMap[square.type]?.set()
+            UIBezierPath(rect: CGRect(
+                x: size * CGFloat(square.column),
+                y: size * CGFloat(square.row),
+                width: size, height: size)).fill()
+        })
+        
+        let context = UIGraphicsGetCurrentContext()
+        CGContextSetRGBStrokeColor(context, 0.5, 0.5, 0.5, 1.0)
+        CGContextSetLineWidth(context, 0.5)
+        (0...PapyrusDimensions).forEach { (i) -> () in
+            let offset = CGFloat(i) * size
+            CGContextMoveToPoint(context, offset, 0)
+            CGContextAddLineToPoint(context, offset, rect.size.height)
+            CGContextMoveToPoint(context, 0, offset)
+            CGContextAddLineToPoint(context, rect.size.width, offset)
         }
-        self.squares = squares
-        self.frames = calculateFrames()
+        CGContextStrokePath(context)
     }
     
+    /*
     func calculateFrames() -> [CGRect] {
         let size = squareSize
         return range.flatMap { (row) -> [CGRect] in
@@ -60,5 +66,5 @@ class BoardView: UIView {
             }
         }
     }
-    
+    */
 }
