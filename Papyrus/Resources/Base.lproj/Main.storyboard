@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9046" systemVersion="14F27" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="Jkl-8b-dRO">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9046" systemVersion="15A284" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="Jkl-8b-dRO">
     <dependencies>
+        <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9035"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
     </dependencies>
@@ -22,6 +23,7 @@
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="U7H-bQ-90k" customClass="BoardView" customModule="Papyrus" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="0.0" width="240" height="128"/>
+                                        <animations/>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         <constraints>
                                             <constraint firstAttribute="width" secondItem="U7H-bQ-90k" secondAttribute="height" multiplier="1:1" id="Rs6-c8-Fhx"/>
@@ -38,6 +40,7 @@
                                         </variation>
                                     </view>
                                 </subviews>
+                                <animations/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
                                     <constraint firstItem="U7H-bQ-90k" firstAttribute="leading" secondItem="7gg-Y5-WQL" secondAttribute="leading" id="Dzf-xb-RCB"/>
@@ -73,23 +76,38 @@
                             </view>
                             <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="g9J-FQ-MXr">
                                 <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                                <animations/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="44" id="OcV-P8-OaY"/>
+                                </constraints>
                                 <items>
                                     <barButtonItem systemItem="stop" id="7m2-a9-Xbk"/>
                                     <barButtonItem style="plain" systemItem="flexibleSpace" id="I98-k8-Ehh"/>
                                     <barButtonItem title="Shuffle" id="f7e-5R-30g"/>
                                     <barButtonItem systemItem="refresh" id="FRl-lE-Ptu"/>
                                 </items>
-                                <variation key="heightClass=regular" fixedFrame="YES">
-                                    <rect key="frame" x="0.0" y="756" width="600" height="44"/>
+                                <variation key="default">
+                                    <mask key="constraints">
+                                        <exclude reference="OcV-P8-OaY"/>
+                                    </mask>
+                                </variation>
+                                <variation key="heightClass=regular">
+                                    <mask key="constraints">
+                                        <include reference="OcV-P8-OaY"/>
+                                    </mask>
                                 </variation>
                             </toolbar>
                         </subviews>
+                        <animations/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstItem="g9J-FQ-MXr" firstAttribute="top" secondItem="7gg-Y5-WQL" secondAttribute="bottom" id="3oX-Xh-gS6"/>
                             <constraint firstItem="7gg-Y5-WQL" firstAttribute="top" secondItem="Dfu-bY-qac" secondAttribute="bottom" id="Jjr-OS-12w"/>
                             <constraint firstAttribute="trailing" secondItem="7gg-Y5-WQL" secondAttribute="trailing" id="SCz-kE-wF8"/>
+                            <constraint firstItem="2zo-5g-MkW" firstAttribute="top" secondItem="g9J-FQ-MXr" secondAttribute="bottom" id="XV0-H1-IRF"/>
+                            <constraint firstItem="g9J-FQ-MXr" firstAttribute="leading" secondItem="7gg-Y5-WQL" secondAttribute="leading" id="dx0-Vi-2t7"/>
                             <constraint firstItem="7gg-Y5-WQL" firstAttribute="leading" secondItem="4aa-cn-i0z" secondAttribute="leading" id="gKU-a7-RKA"/>
-                            <constraint firstItem="2zo-5g-MkW" firstAttribute="top" secondItem="7gg-Y5-WQL" secondAttribute="bottom" constant="44" id="iUc-gq-Jbn"/>
+                            <constraint firstItem="g9J-FQ-MXr" firstAttribute="trailing" secondItem="7gg-Y5-WQL" secondAttribute="trailing" id="h9G-ib-TST"/>
                         </constraints>
                         <variation key="default">
                             <mask key="subviews">
@@ -97,10 +115,13 @@
                                 <exclude reference="g9J-FQ-MXr"/>
                             </mask>
                             <mask key="constraints">
-                                <exclude reference="iUc-gq-Jbn"/>
                                 <exclude reference="Jjr-OS-12w"/>
                                 <exclude reference="SCz-kE-wF8"/>
                                 <exclude reference="gKU-a7-RKA"/>
+                                <exclude reference="3oX-Xh-gS6"/>
+                                <exclude reference="dx0-Vi-2t7"/>
+                                <exclude reference="h9G-ib-TST"/>
+                                <exclude reference="XV0-H1-IRF"/>
                             </mask>
                         </variation>
                         <variation key="heightClass=regular">
@@ -109,10 +130,13 @@
                                 <include reference="g9J-FQ-MXr"/>
                             </mask>
                             <mask key="constraints">
-                                <include reference="iUc-gq-Jbn"/>
                                 <include reference="Jjr-OS-12w"/>
                                 <include reference="SCz-kE-wF8"/>
                                 <include reference="gKU-a7-RKA"/>
+                                <include reference="3oX-Xh-gS6"/>
+                                <include reference="dx0-Vi-2t7"/>
+                                <include reference="h9G-ib-TST"/>
+                                <include reference="XV0-H1-IRF"/>
                             </mask>
                         </variation>
                     </view>
@@ -133,6 +157,7 @@
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="xpT-9L-ouR">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
+                        <animations/>
                     </navigationBar>
                     <connections>
                         <segue destination="trd-fT-hXK" kind="relationship" relationship="rootViewController" id="wxU-7m-EJj"/>
