@@ -9,9 +9,6 @@
 import SpriteKit
 
 extension TileSprite {
-    override func warningGlow() {
-        background.warningGlow()
-    }
     
     func cancelAnimations() {
         if hasActions() {
@@ -63,7 +60,7 @@ extension TileSprite {
         background.runAction(glow)
     }
     
-    func animateShrink(completion: (() -> ())?) {
+    func animateShrink(completion: (() -> ())? = nil) {
         position = CGPointZero
         zPosition = 100
         let drop = SKAction.sequence([
