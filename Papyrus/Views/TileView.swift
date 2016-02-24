@@ -9,57 +9,96 @@
 import UIKit
 import PapyrusCore
 
+protocol TileViewDelegate {
+    func pickedUp(tileView: TileView)
+    func frameForDropping(tileView: TileView) -> CGRect
+}
+
 class TileView: UIView {
-    static let LetterFontSize: CGFloat = 25
-    
-    var letterLabel: UILabel!
-    var pointLabel: UILabel!
-    weak var tile: Tile?
-    
-    init(frame: CGRect, tile: Tile) {
-        super.init(frame: frame)
-        
-        let w = CGRectGetWidth(frame)
-        let h = CGRectGetHeight(frame)
-        
-        self.tile = tile
-        letterLabel = UILabel(frame: CGRect(x: 0, y: 0, width: w, height: h))
-        letterLabel.minimumScaleFactor = 0.5
-        letterLabel.font = UIFont.systemFontOfSize(TileView.LetterFontSize)
-        letterLabel.text = "\(tile.letter)".uppercaseString
-        letterLabel.adjustsFontSizeToFitWidth = true
-        letterLabel.textAlignment = .Center
-        letterLabel.autoresizingMask = [.FlexibleHeight, .FlexibleWidth]
-        letterLabel.layer.borderWidth = 0.75
-        letterLabel.layer.masksToBounds = true
-        self.addSubview(letterLabel)
-        
-        if tile.value > 0 {
-            pointLabel = UILabel(frame: CGRect(x: w - 15, y: h - 15, width: 10, height: 10))
-            pointLabel.text = "\(tile.value)"
-            pointLabel.font = UIFont.systemFontOfSize(UIFont.smallSystemFontSize())
-            pointLabel.minimumScaleFactor = 0.05
-            pointLabel.adjustsFontSizeToFitWidth = true
-            pointLabel.textAlignment = .Right
-            pointLabel.autoresizingMask = [.FlexibleHeight, .FlexibleWidth]
-            self.addSubview(pointLabel)
+    var draggable: Bool = false {
+        didSet {
+            draggable ? makeDraggable() : makeUndraggable()
         }
     }
-
+    
+    var initialPoint: CGPoint!
+    var delegate: TileViewDelegate!
+    weak var tile: Tile!
+    
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
+        initialPoint = center
     }
     
+    init(frame: CGRect, tile: Tile, delegate: TileViewDelegate) {
+        self.delegate = delegate
+        self.tile = tile
+        super.init(frame: frame)
+        initialPoint = center
+    }
+
     override func didMoveToSuperview() {
         super.didMoveToSuperview()
-        layer.borderColor = UIColor.Papyrus_TileBorder.CGColor
-        layer.borderWidth = 0.75
-        layer.masksToBounds = true
-        backgroundColor = UIColor.Papyrus_Tile
+        draggable = superview != nil
     }
     
-    func setTile(tile: Tile) {
-        letterLabel.text = "\(tile.letter)".uppercaseString
-        pointLabel.text = "\(tile.value)"
+    override func drawRect(rect: CGRect) {
+        guard let tile = tile, context = UIGraphicsGetCurrentContext() else {
+            return
+        }
+        let drawable = TileDrawable(tile: tile, rect: rect, fillColor: .yellowColor(), textColor: .blackColor(), strokeColor: .redColor())
+        drawable.draw(context)
+    }
+}
+
+// MARK: - UIGestures
+
+extension TileView : UIGestureRecognizerDelegate {
+    func makeDraggable() {
+        let panGesture = UIPanGestureRecognizer(target: self, action: "didPan:")
+        panGesture.delegate = self
+        addGestureRecognizer(panGesture)
+        
+        let pressGesture = UILongPressGestureRecognizer(target: self, action: "didPress:")
+        pressGesture.minimumPressDuration = 0.001
+        pressGesture.delegate = self
+        addGestureRecognizer(pressGesture)
+    }
+    
+    func makeUndraggable() {
+        gestureRecognizers?.forEach { removeGestureRecognizer($0) }
+    }
+    
+    func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWithGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        return gestureRecognizers?.contains(gestureRecognizer) == true &&
+            gestureRecognizers?.contains(otherGestureRecognizer) == true
+    }
+    
+    func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldReceiveTouch touch: UITouch) -> Bool {
+        return true
+    }
+    
+    func didPress(pressGesture: UILongPressGestureRecognizer) {
+        switch pressGesture.state {
+        case .Began:
+            initialPoint = center
+            UIView.animateWithDuration(0.1, animations: { () -> Void in
+                self.delegate.pickedUp(self)
+                self.superview?.bringSubviewToFront(self)
+                self.transform = CGAffineTransformMakeScale(0.8, 0.8)
+            })
+        case .Cancelled, .Ended, .Failed:
+            UIView.animateWithDuration(0.1, animations: { () -> Void in
+                self.transform = CGAffineTransformIdentity
+                self.transform = self.frame.transformTo(self.delegate.frameForDropping(self))
+            })
+        default:
+            break
+        }
+    }
+    
+    func didPan(panGesture: UIPanGestureRecognizer) {
+        let translation = panGesture.translationInView(superview)
+        center = CGPointMake(initialPoint.x + translation.x, initialPoint.y + translation.y)
     }
 }

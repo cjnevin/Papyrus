@@ -10,15 +10,10 @@ import UIKit
 import SpriteKit
 import PapyrusCore
 
-class PapyrusViewController: UIViewController, DragDelegate {
+class PapyrusViewController: UIViewController {
     
-    @IBOutlet var boardView: BoardView!
-    @IBOutlet var skView: SKView!
-    
-    /// - returns: All tile sprites in play.
-    lazy var tileSprites = [TileSprite]()
-    
-    var scene: TileScene!
+    @IBOutlet weak var gameView: GameView!
+
     let watchdog = Watchdog(threshold: 0.2)
     var submit: UIBarButtonItem?
     var shuffle: UIBarButtonItem?
@@ -30,27 +25,13 @@ class PapyrusViewController: UIViewController, DragDelegate {
     var game: Papyrus!
     var unsubmittedMove: Move?
     
-    var heldSprite: TileSprite? {
-        return tileSprites.filter({$0.tile.placement == .Held}).first
-    }
-    var heldOrigin: CGPoint? {
-        return heldSprite?.origin
-    }
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         title = "Papyrus"
         
         game = Papyrus(callback: lifecycleChanged)
-        
-        scene = TileScene(fileNamed:"TileScene")!
-        scene.dragDelegate = self
-        scene.scaleMode = .ResizeFill
-        scene.backgroundColor = UIColor.clearColor()
-        
-        skView.allowsTransparency = true
-        skView.presentScene(scene)
+        gameView.game = game
         
         submit = UIBarButtonItem(title: "Submit", style: .Done, target: self, action: "submit:")
         restart = UIBarButtonItem(barButtonSystemItem: .Trash, target: self, action: "restart:")
@@ -68,7 +49,7 @@ class PapyrusViewController: UIViewController, DragDelegate {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         if !firstRun {
-            boardView.game = game
+            gameView.game = game
             newGame()
             
             firstRun = true
@@ -80,9 +61,10 @@ class PapyrusViewController: UIViewController, DragDelegate {
         if Papyrus.dawg == nil {
             game.operationQueue.addOperationWithBlock { () -> Void in
                 Papyrus.dawg = Dawg.load(NSBundle.mainBundle().pathForResource("sowpods", ofType: "bin")!)!
-                NSOperationQueue.mainQueue().addOperationWithBlock({ [weak self] () -> Void in
+                
+                NSOperationQueue.mainQueue().addOperationWithBlock() { [weak self] in
                     self?.game.newGame()
-                    })
+                }
             }
             return
         }
@@ -101,13 +83,15 @@ class PapyrusViewController: UIViewController, DragDelegate {
         case .Ready:
             title = "Papyrus"
             game.createPlayer()
+            gameView.replaceRackTiles()
             
-            replaceRackSprites()
+            //replaceRackSprites()
             
         case .EndedTurn(let move):
             title = "Ended Turn \(move)"
             if game.player?.difficulty == .Human {
-                replaceRackSprites()
+                gameView.replaceRackTiles()
+                //replaceRackSprites()
             }
             
         case .ChangedPlayer:
@@ -154,35 +138,9 @@ class PapyrusViewController: UIViewController, DragDelegate {
         game.submitMove(move)
     }
     
-    // MARK: - Tiles
-    
-    /// Replace rack sprites with newly drawn tiles.
-    private func replaceRackSprites() {
-        // Remove existing rack sprites.
-        let rackSprites = tileSprites.filter({ (game.player?.rackTiles.contains($0.tile)) == true })
-        tileSprites = tileSprites.filter{ !rackSprites.contains($0) }
-        rackSprites.forEach{ $0.removeFromParent() }
-        
-        var sprites = [TileSprite]()
-        let spacing: CGFloat = 5
-        let squareEdge = (CGRectGetWidth(boardView.bounds) - (spacing * 2)) / CGFloat(PapyrusRackAmount)
-        var count: CGFloat = 1
-        let top = CGRectGetHeight(skView.bounds) - CGRectGetHeight(boardView.bounds)
-        game.player?.rackTiles.forEach({ (tile) -> () in
-            let sprite = TileSprite(tile: tile, edge: squareEdge, scale: 1.0)
-            let point = CGPoint(x: spacing + count * squareEdge - (squareEdge / 2), y: top - (squareEdge / 2) - spacing)
-            sprite.position = point
-            sprite.origin = point
-            sprites.append(sprite)
-            count++
-        })
-        
-        tileSprites.appendContentsOf(sprites)
-        tileSprites.filter{ $0.parent == nil }.forEach{ scene.addChild($0) }
-    }
-    
     // MARK:- Drag Delegate
     
+    /*
     func resetHeld() {
         if let sprite = heldSprite {
             sprite.position = sprite.origin
@@ -251,5 +209,5 @@ class PapyrusViewController: UIViewController, DragDelegate {
     
     func move(toPoint point: CGPoint) {
         heldSprite?.position = point
-    }
+    }*/
 }
