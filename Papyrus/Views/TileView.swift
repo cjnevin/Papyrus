@@ -46,7 +46,7 @@ class TileView: UIView {
         guard let tile = tile, context = UIGraphicsGetCurrentContext() else {
             return
         }
-        let drawable = TileDrawable(tile: tile, rect: rect, fillColor: .yellowColor(), textColor: .blackColor(), strokeColor: .redColor())
+        let drawable = TileDrawable(tile: tile, rect: rect)
         drawable.draw(context)
     }
 }

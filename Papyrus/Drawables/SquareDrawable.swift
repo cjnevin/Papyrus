@@ -9,36 +9,26 @@
 import UIKit
 import PapyrusCore
 
-extension Square {
-    func rectWithEdge(edge: CGFloat) -> CGRect {
-        return CGRect(
-            origin: CGPoint(x: edge * CGFloat(column), y: edge * CGFloat(row)),
-            size: CGSize(width: edge, height: edge))
-    }
-}
-
 struct SquareDrawable : Drawable {
     private let rect: CGRect
-    private let fillColor: UIColor
-    private let strokeColor: UIColor?
-    private let strokeWidth: CGFloat?
+    var shader: Shader
     
-    init(rect: CGRect, fillColor: UIColor, strokeColor: UIColor? = nil, strokeWidth: CGFloat? = 1.0) {
+    init(rect: CGRect, shader: Shader) {
         self.rect = rect
-        self.fillColor = fillColor
-        self.strokeColor = strokeColor
-        self.strokeWidth = strokeWidth
+        self.shader = shader
     }
     
-    init(square: Square, edge: CGFloat, fillColor: UIColor, strokeColor: UIColor? = nil, strokeWidth: CGFloat? = 1.0) {
-        self.init(rect: square.rectWithEdge(edge), fillColor: fillColor, strokeColor: strokeColor, strokeWidth: strokeWidth)
+    init(square: Square, edge: CGFloat, shader: Shader? = nil) {
+        self.rect = square.rectWithEdge(edge)
+        self.shader = shader ?? SquareShader(square: square)
     }
     
     func draw(renderer: Renderer) {
-        renderer.fillRect(rect, color: fillColor)
-        
-        if let strokeColor = strokeColor, strokeWidth = strokeWidth {
-            renderer.strokeRect(rect, color: strokeColor, width: strokeWidth)
+        if shader.fillColor != nil {
+            renderer.fillRect(rect, shader: shader)
+        }
+        if shader.strokeColor != nil {
+            renderer.strokeRect(rect, shader: shader)
         }
     }
 }

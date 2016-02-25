@@ -9,6 +9,9 @@
 import UIKit
 
 protocol Drawable {
+    /// Represents color information for Drawables.
+    var shader: Shader { get set }
+    
     /// Issues drawing commands to `renderer` to represent `self`.
     func draw(renderer: Renderer)
 }

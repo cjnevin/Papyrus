@@ -24,7 +24,24 @@ protocol Renderer {
     
     /// Draws `text` in a given rectangle.
     func drawText(text: NSAttributedString, rect: CGRect)
+}
+
+
+extension Renderer {
+    /// Fills a rectangle using a `shader` to provide `fillColor`.
+    func fillRect(rect: CGRect, shader: Shader) {
+        fillRect(rect, color: shader.fillColor!)
+    }
     
-    /// Draws `text` in `color` and `font` in a given rectangle.
-    func drawText(text: String, font: UIFont, color: UIColor, rect: CGRect)
+    /// Strokes a rectangle using `shader` to provide `strokeColor` and `strokeWidth`.
+    func strokeRect(rect: CGRect, shader: Shader) {
+        strokeRect(rect, color: shader.strokeColor!, width: shader.strokeWidth!)
+    }
+    
+    /// Draws text using the `textColor` defined by the `shader`.
+    func drawText(text: NSAttributedString, rect: CGRect, shader: Shader) {
+        let mutable = NSMutableAttributedString(attributedString: text)
+        mutable.addAttributes([NSForegroundColorAttributeName: shader.textColor!], range: NSMakeRange(0, mutable.length))
+        drawText(mutable, rect: rect)
+    }
 }

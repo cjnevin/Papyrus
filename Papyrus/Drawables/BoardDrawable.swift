@@ -10,41 +10,30 @@ import UIKit
 import PapyrusCore
 
 struct BoardDrawable: Drawable {
-    private let colorMap: [Modifier: UIColor] = [
-        .Center: .Papyrus_Center,
-        .Letterx2: .Papyrus_Letterx2,
-        .Letterx3: .Papyrus_Letterx3,
-        .Wordx2: .Papyrus_Wordx2,
-        .Wordx3: .Papyrus_Wordx3,
-        .None: .Papyrus_Tile
-    ]
     private var drawables: [Drawable]!
     private let rect: CGRect
     private let squareSize: CGFloat
     private let range: Range<Int>
     
+    var shader: Shader
+    
     init(squares: [Square], rect: CGRect) {
         self.rect = rect
-        self.range = (0...Int(sqrt(Double(squares.count))))
-        self.squareSize = CGRectGetWidth(rect) / CGFloat(PapyrusDimensions)
+        range = (0...Int(sqrt(Double(squares.count))))
+        squareSize = CGRectGetWidth(rect) / CGFloat(PapyrusDimensions)
+        shader = FillShader(color: .Papyrus_Tile)
         drawables = squares.flatMap{ (square) -> Drawable? in
             if let tile = square.tile {
-                return TileDrawable(tile: tile,
-                    rect: square.rectWithEdge(squareSize),
-                    fillColor: UIColor.whiteColor(),
-                    textColor: UIColor.redColor(),
-                    strokeColor: UIColor.blueColor())
+                return TileDrawable(tile: tile, rect: square.rectWithEdge(squareSize))
             } else if square.type != .None {
-                return SquareDrawable(square: square,
-                    edge: squareSize,
-                    fillColor: colorMap[square.type]!)
+                return SquareDrawable(square: square, edge: squareSize)
             }
             return nil
         }
-        drawables.insert(SquareDrawable(rect: rect, fillColor: colorMap[.None]!), atIndex: 0)
     }
     
     func draw(renderer: Renderer) {
+        renderer.fillRect(rect, shader: shader)
         drawables.forEach({ $0.draw(renderer) })
         range.forEach { (i) -> () in
             let offset = CGFloat(i) * squareSize
