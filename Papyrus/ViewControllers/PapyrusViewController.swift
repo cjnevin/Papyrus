@@ -10,7 +10,7 @@ import UIKit
 import SpriteKit
 import PapyrusCore
 
-class PapyrusViewController: UIViewController {
+class PapyrusViewController: UIViewController, PapyrusDelegate {
     
     @IBOutlet weak var gameView: GameView!
 
@@ -30,7 +30,7 @@ class PapyrusViewController: UIViewController {
         
         title = "Papyrus"
         
-        game = Papyrus(callback: lifecycleChanged)
+        game = Papyrus(delegate: self)
         gameView.game = game
         
         submit = UIBarButtonItem(title: "Submit", style: .Done, target: self, action: "submit:")
@@ -57,7 +57,8 @@ class PapyrusViewController: UIViewController {
     }
     
     func newGame() {
-        lifecycleChanged(.Preparing)
+        enableButtons(false)
+        title = "Learning Words..."
         if Papyrus.dawg == nil {
             game.operationQueue.addOperationWithBlock { () -> Void in
                 Papyrus.dawg = Dawg.load(NSBundle.mainBundle().pathForResource("sowpods", ofType: "bin")!)!
@@ -71,50 +72,12 @@ class PapyrusViewController: UIViewController {
         game.newGame()
     }
     
-    func lifecycleChanged(lifecycle: Lifecycle) {
-        enableButtons(false)
-        switch (lifecycle) {
-        case .NoGame:
-            title = "Cleanup"
-            
-        case .Preparing:
-            title = "Loading..."
-        
-        case .Ready:
-            title = "Papyrus"
-            game.createPlayer()
-            gameView.replaceRackTiles()
-            
-            //replaceRackSprites()
-            
-        case .EndedTurn(let move):
-            title = "Ended Turn \(move)"
-            if game.player?.difficulty == .Human {
-                gameView.replaceRackTiles()
-                //replaceRackSprites()
-            }
-            
-        case .ChangedPlayer:
-            title = "Next Turn"
-            print("Changed player \(game.playerIndex)")
-            
-        default:
-            title = "Game Over"
-            game.players.forEach { print("- \($0.difficulty) score: \($0.score)") }
-            print("Winning score: \(game.players.map({$0.score}).maxElement())")
-        }
-    }
-    
     func enableButtons(enabled: Bool) {
         let isHuman = game.player?.difficulty == .Human
         submit?.enabled = isHuman && enabled
         swap?.enabled = isHuman
         shuffle?.enabled = isHuman
-        var gameOver = false
-        if case .GameOver = game.lifecycle {
-            gameOver = true
-        }
-        restart?.enabled = isHuman || gameOver
+        restart?.enabled = isHuman || game.gameOver
     }
     
     // MARK: - Buttons
@@ -138,7 +101,56 @@ class PapyrusViewController: UIViewController {
         game.submitMove(move)
     }
     
-    // MARK:- Drag Delegate
+    // MARK:- Papyrus Delegate
+    
+    func gameBegan(papyrus: Papyrus) {
+        enableButtons(true)
+        title = "Papyrus"
+        game.createPlayer()
+        gameView.replaceRackTiles()
+    }
+    
+    func gameEnded(papyrus: Papyrus) {
+        enableButtons(true)
+        title = "Game Over"
+        print("Winner \(papyrus.winner)")
+        print("Winning score: \(game.players.map({$0.score}).maxElement())")
+        game.players.forEach { print("- \($0.difficulty) score: \($0.score)") }
+    }
+    
+    func gameLoading(papyrus: Papyrus) {
+        enableButtons(false)
+        title = "Loading..."
+    }
+    
+    func turnBegan(papyrus: Papyrus) {
+        enableButtons(true)
+        print("Changed player \(game.playerIndex)")
+    }
+    
+    func turnEnded(move: Move, papyrus: Papyrus) {
+        print("Turn ended \(game.playerIndex)")
+        if game.player?.difficulty == .Human {
+            gameView.replaceRackTiles()
+        }
+    }
+    
+    func turnSkipped(papyrus: Papyrus) {
+        enableButtons(true)
+        print("Turn skipped \(game.playerIndex)")
+    }
+    
+    func tileDropped(square: Square, papyrus: Papyrus) {
+        
+    }
+    
+    func tileRemoved(square: Square, papyrus: Papyrus) {
+        enableButtons(true)
+    }
+    
+    func movePossible(move: Move, papyrus: Papyrus) {
+        enableButtons(true)
+    }
     
     /*
     func resetHeld() {
