@@ -14,6 +14,7 @@
 		993A534D1C7EED0F001F93CB /* FillShader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 993A534C1C7EED0F001F93CB /* FillShader.swift */; };
 		993A534F1C7F8A3E001F93CB /* Square+CGRect.swift in Sources */ = {isa = PBXBuildFile; fileRef = 993A534E1C7F8A3E001F93CB /* Square+CGRect.swift */; };
 		993A53511C7F8A64001F93CB /* NSAttributedString+Convenience.swift in Sources */ = {isa = PBXBuildFile; fileRef = 993A53501C7F8A64001F93CB /* NSAttributedString+Convenience.swift */; };
+		993A53531C7F8CA6001F93CB /* Papyrus+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 993A53521C7F8CA6001F93CB /* Papyrus+Extensions.swift */; };
 		995DD83C1BB6213A009B409D /* sowpods.bin in Resources */ = {isa = PBXBuildFile; fileRef = 995DD83A1BB6213A009B409D /* sowpods.bin */; };
 		995DD83D1BB6213A009B409D /* twl06.bin in Resources */ = {isa = PBXBuildFile; fileRef = 995DD83B1BB6213A009B409D /* twl06.bin */; };
 		99629C091B547DE800510036 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99629C081B547DE800510036 /* AppDelegate.swift */; };
@@ -81,6 +82,7 @@
 		993A534C1C7EED0F001F93CB /* FillShader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FillShader.swift; sourceTree = "<group>"; };
 		993A534E1C7F8A3E001F93CB /* Square+CGRect.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Square+CGRect.swift"; sourceTree = "<group>"; };
 		993A53501C7F8A64001F93CB /* NSAttributedString+Convenience.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSAttributedString+Convenience.swift"; sourceTree = "<group>"; };
+		993A53521C7F8CA6001F93CB /* Papyrus+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Papyrus+Extensions.swift"; sourceTree = "<group>"; };
 		995DD83A1BB6213A009B409D /* sowpods.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = sowpods.bin; sourceTree = "<group>"; };
 		995DD83B1BB6213A009B409D /* twl06.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = twl06.bin; sourceTree = "<group>"; };
 		99629C051B547DE800510036 /* Papyrus.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Papyrus.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -142,6 +144,15 @@
 				993A534A1C7EE338001F93CB /* TileShader.swift */,
 			);
 			path = Shaders;
+			sourceTree = "<group>";
+		};
+		993A53541C7F8DB9001F93CB /* PapyrusCore */ = {
+			isa = PBXGroup;
+			children = (
+				993A53521C7F8CA6001F93CB /* Papyrus+Extensions.swift */,
+				993A534E1C7F8A3E001F93CB /* Square+CGRect.swift */,
+			);
+			name = PapyrusCore;
 			sourceTree = "<group>";
 		};
 		99629BFC1B547DE800510036 = {
@@ -220,8 +231,8 @@
 		99D36F481C7E6B2B00A5ADA8 /* Drawables */ = {
 			isa = PBXGroup;
 			children = (
-				99D36F491C7E6B2B00A5ADA8 /* BoardDrawable.swift */,
 				99D36F4A1C7E6B2B00A5ADA8 /* Drawable.swift */,
+				99D36F491C7E6B2B00A5ADA8 /* BoardDrawable.swift */,
 				99D36F4B1C7E6B2B00A5ADA8 /* SquareDrawable.swift */,
 				99D36F4C1C7E6B2B00A5ADA8 /* TileDrawable.swift */,
 			);
@@ -240,10 +251,10 @@
 		99DF9E0D1B54ED7300F58DA7 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				993A53541C7F8DB9001F93CB /* PapyrusCore */,
 				9901443E1C7E4E61005C81BF /* CGRect+Extensions.swift */,
-				99DF9E0E1B54ED8200F58DA7 /* UIColor+Papyrus.swift */,
-				993A534E1C7F8A3E001F93CB /* Square+CGRect.swift */,
 				993A53501C7F8A64001F93CB /* NSAttributedString+Convenience.swift */,
+				99DF9E0E1B54ED8200F58DA7 /* UIColor+Papyrus.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -455,6 +466,7 @@
 				99D36F541C7E6B2B00A5ADA8 /* CGContext+Renderer.swift in Sources */,
 				99C3D1F31C7BAF510024B932 /* GameView.swift in Sources */,
 				997D186B1BCC4EEC0050B872 /* PapyrusViewController.swift in Sources */,
+				993A53531C7F8CA6001F93CB /* Papyrus+Extensions.swift in Sources */,
 				99D36F531C7E6B2B00A5ADA8 /* TileDrawable.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

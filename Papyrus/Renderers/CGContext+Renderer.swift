@@ -32,15 +32,4 @@ extension CGContext : Renderer {
     func drawText(text: NSAttributedString, rect: CGRect) {
         text.drawInRect(rect)
     }
-    
-    func drawText(text: String, font: UIFont, color: UIColor, rect: CGRect) {
-        let style = NSMutableParagraphStyle()
-        style.alignment = .Center
-        let textAttributes = [
-            NSFontAttributeName: font,
-            NSForegroundColorAttributeName: color,
-            NSParagraphStyleAttributeName: style
-        ]
-        drawText(NSAttributedString(string: text, attributes: textAttributes), rect: rect)
-    }
 }

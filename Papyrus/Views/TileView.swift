@@ -21,6 +21,7 @@ class TileView: UIView {
         }
     }
     
+    var initialFrame: CGRect!
     var initialPoint: CGPoint!
     var delegate: TileViewDelegate!
     weak var tile: Tile!
@@ -28,6 +29,7 @@ class TileView: UIView {
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         initialPoint = center
+        initialFrame = frame
     }
     
     init(frame: CGRect, tile: Tile, delegate: TileViewDelegate) {
@@ -35,11 +37,13 @@ class TileView: UIView {
         self.tile = tile
         super.init(frame: frame)
         initialPoint = center
+        initialFrame = frame
     }
 
     override func didMoveToSuperview() {
         super.didMoveToSuperview()
         draggable = superview != nil
+        contentMode = .Redraw
     }
     
     override func drawRect(rect: CGRect) {
@@ -81,16 +85,21 @@ extension TileView : UIGestureRecognizerDelegate {
     func didPress(pressGesture: UILongPressGestureRecognizer) {
         switch pressGesture.state {
         case .Began:
-            initialPoint = center
+            self.delegate.pickedUp(self)
+            let center = self.center
             UIView.animateWithDuration(0.1, animations: { () -> Void in
-                self.delegate.pickedUp(self)
+                self.bounds = self.initialFrame
+                self.center = center
                 self.superview?.bringSubviewToFront(self)
-                self.transform = CGAffineTransformMakeScale(0.8, 0.8)
+                self.transform = CGAffineTransformMakeScale(0.9, 0.9)
             })
         case .Cancelled, .Ended, .Failed:
-            UIView.animateWithDuration(0.1, animations: { () -> Void in
-                self.transform = CGAffineTransformIdentity
-                self.transform = self.frame.transformTo(self.delegate.frameForDropping(self))
+            let newFrame = self.delegate.frameForDropping(self)
+            UIView.animateWithDuration(0.1, animations: {
+                self.transform = CGAffineTransformMakeScale(1.0, 1.0)
+                self.center = CGPoint(x: CGRectGetMidX(newFrame), y: CGRectGetMidY(newFrame))
+                self.bounds = newFrame
+            }, completion: { (complete) in
             })
         default:
             break
@@ -99,6 +108,7 @@ extension TileView : UIGestureRecognizerDelegate {
     
     func didPan(panGesture: UIPanGestureRecognizer) {
         let translation = panGesture.translationInView(superview)
-        center = CGPointMake(initialPoint.x + translation.x, initialPoint.y + translation.y)
+        center = CGPointMake(center.x + translation.x, center.y + translation.y)
+        panGesture.setTranslation(CGPointZero, inView: superview)
     }
 }

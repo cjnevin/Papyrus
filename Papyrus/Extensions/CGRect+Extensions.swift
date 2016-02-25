@@ -21,13 +21,18 @@ extension CGRect {
         case Bottom = 1.0
     }
     
+    /// Sum of width plus height.
+    var widthPlusHeight : CGFloat {
+        return width + height
+    }
+    
     func innerRectForSize(size: CGSize,
         verticalAlignment: VerticalAlignment,
         horizontalAlignment: HorizontalAlignment) -> CGRect {
             return CGRect(
                 origin: CGPoint(
-                    x: (self.size.width - size.width) * horizontalAlignment.rawValue,
-                    y: (self.size.height - size.height) * verticalAlignment.rawValue),
+                    x: origin.x + (self.size.width - size.width) * horizontalAlignment.rawValue,
+                    y: origin.y + (self.size.height - size.height) * verticalAlignment.rawValue),
                 size: size)
     }
     
@@ -38,8 +43,8 @@ extension CGRect {
     
     func center() -> CGPoint {
         return CGPoint(
-            x: CGRectGetWidth(self) / 2 + self.origin.x,
-            y: CGRectGetHeight(self) / 2 + self.origin.y)
+            x: CGRectGetWidth(self) / 2 + origin.x,
+            y: CGRectGetHeight(self) / 2 + origin.y)
     }
     
     func scaleX(width: CGFloat) -> CGFloat {
@@ -50,22 +55,5 @@ extension CGRect {
     func scaleY(height: CGFloat) -> CGFloat {
         let scale = height / CGRectGetHeight(self)
         return scale
-    }
-    
-    func transformTo(toRect: CGRect) -> CGAffineTransform {
-        let fromRect = self
-        let sx = toRect.size.width / fromRect.size.width
-        let sy = toRect.size.height / fromRect.size.height
-        
-        let scale = CGAffineTransformMakeScale(sx, sy)
-        
-        let heightDiff = fromRect.size.height - toRect.size.height
-        let widthDiff = fromRect.size.width - toRect.size.width
-        
-        let dx = toRect.origin.x - widthDiff / 2 - fromRect.origin.x
-        let dy = toRect.origin.y - heightDiff / 2 - fromRect.origin.y
-        
-        let trans = CGAffineTransformMakeTranslation(dx, dy)
-        return CGAffineTransformConcat(scale, trans)
     }
 }

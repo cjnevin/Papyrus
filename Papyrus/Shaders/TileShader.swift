@@ -16,7 +16,11 @@ struct TileShader : Shader {
     var strokeWidth: CGFloat?
     init(tile: Tile) {
         // Based on state of tile, render differently.
-        fillColor = .Papyrus_Tile
+        if tile.placement == .Board {
+            fillColor = .Papyrus_TileIlluminated
+        } else {
+            fillColor = .Papyrus_Tile
+        }
         textColor = .blackColor()
         strokeColor = .Papyrus_TileBorder
         strokeWidth = 1.0
