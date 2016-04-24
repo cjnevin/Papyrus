@@ -24,7 +24,9 @@ class TileView: UIView {
     var initialFrame: CGRect!
     var initialPoint: CGPoint!
     var delegate: TileViewDelegate!
-    weak var tile: Tile!
+    var tile: Character!
+    var points: Int!
+    var onBoard: Bool = false
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
@@ -32,9 +34,11 @@ class TileView: UIView {
         initialFrame = frame
     }
     
-    init(frame: CGRect, tile: Tile, delegate: TileViewDelegate) {
+    init(frame: CGRect, tile: Character, points: Int, onBoard: Bool, delegate: TileViewDelegate) {
         self.delegate = delegate
         self.tile = tile
+        self.points = points
+        self.onBoard = onBoard
         super.init(frame: frame)
         initialPoint = center
         initialFrame = frame
@@ -50,7 +54,7 @@ class TileView: UIView {
         guard let tile = tile, context = UIGraphicsGetCurrentContext() else {
             return
         }
-        let drawable = TileDrawable(tile: tile, rect: rect)
+        let drawable = TileDrawable(tile: tile, points: points, rect: rect, onBoard: onBoard)
         drawable.draw(context)
     }
 }

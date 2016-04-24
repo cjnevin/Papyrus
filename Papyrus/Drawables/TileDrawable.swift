@@ -19,25 +19,26 @@ struct TileDrawable : Drawable {
     var shader: Shader
     
     private let rect: CGRect
-    private let tile: Tile
+    private let tile: Character
     private var letter: String {
-        return String(tile.letter).uppercaseString
+        return String(tile).uppercaseString
     }
-    private var points: String {
-        return String(tile.value)
-    }
+    private let points: String
+    private let onBoard: Bool
     
-    init(tile: Tile, rect: CGRect, shader: Shader? = nil) {
-        self.shader = shader ?? TileShader(tile: tile)
+    init(tile: Character, points: Int, rect: CGRect, onBoard: Bool, shader: Shader? = nil) {
+        self.shader = shader ?? TileShader(tile: tile, onBoard: onBoard)
+        self.onBoard = onBoard
         self.tile = tile
         self.rect = rect
+        self.points = "\(points)"
     }
     
     func draw(renderer: Renderer) {
         renderer.fillRect(rect, shader: shader)
         renderer.strokeRect(rect, shader: shader)
         
-        let letterFont = (tile.placement == .Board || tile.placement == .Fixed) ? UIFont.tileLetterFontSmall : UIFont.tileLetterFontBig
+        let letterFont = onBoard ? UIFont.tileLetterFontSmall : UIFont.tileLetterFontBig
         let letterText = NSAttributedString(string: letter, font: letterFont)
         let letterRect = rect.centeredRectForSize(letterText.size())
         renderer.drawText(letterText, rect: letterRect, shader: shader)

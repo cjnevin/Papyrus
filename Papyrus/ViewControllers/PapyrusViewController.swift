@@ -10,10 +10,12 @@ import UIKit
 import SpriteKit
 import PapyrusCore
 
-class PapyrusViewController: UIViewController, PapyrusDelegate {
+class PapyrusViewController: UIViewController {
     
     @IBOutlet weak var gameView: GameView!
 
+    let gameQueue = NSOperationQueue()
+    
     let watchdog = Watchdog(threshold: 0.2)
     var submit: UIBarButtonItem?
     var shuffle: UIBarButtonItem?
@@ -22,16 +24,19 @@ class PapyrusViewController: UIViewController, PapyrusDelegate {
     
     var firstRun: Bool = false
     
-    var game: Papyrus!
-    var unsubmittedMove: Move?
+    var dictionary: Dawg!
+    var game: Game?
+    var gameOver: Bool = true
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        title = "Papyrus"
+        gameQueue.maxConcurrentOperationCount = 1
+        gameQueue.addOperationWithBlock { [weak self] in
+            self?.dictionary = Dawg.load(NSBundle.mainBundle().pathForResource("sowpods", ofType: "bin")!)!
+        }
         
-        game = Papyrus(delegate: self)
-        gameView.game = game
+        title = "Papyrus"
         
         submit = UIBarButtonItem(title: "Submit", style: .Done, target: self, action: "submit:")
         restart = UIBarButtonItem(barButtonSystemItem: .Trash, target: self, action: "restart:")
@@ -56,36 +61,64 @@ class PapyrusViewController: UIViewController, PapyrusDelegate {
         }
     }
     
+    func handleEvent(event: GameEvent) {
+        NSOperationQueue.mainQueue().addOperationWithBlock {
+            switch event {
+            case .Over(_):
+                self.gameOver = true
+                self.title = "Game Over"
+            case .TurnEnded:
+                self.gameView.game = self.game
+                if self.game?.player is Human {
+                    self.gameView.replaceRackTiles()
+                }
+            default:
+                break
+            }
+        }
+    }
+    
     func newGame() {
         enableButtons(false)
-        title = "Learning Words..."
-        if Papyrus.dawg == nil {
-            game.operationQueue.addOperationWithBlock { () -> Void in
-                Papyrus.dawg = Dawg.load(NSBundle.mainBundle().pathForResource("sowpods", ofType: "bin")!)!
-                
-                NSOperationQueue.mainQueue().addOperationWithBlock() { [weak self] in
-                    self?.game.newGame()
+        title = "Starting..."
+        if dictionary == nil {
+            gameQueue.addOperationWithBlock { [weak self] in
+                self?.dictionary = Dawg.load(NSBundle.mainBundle().pathForResource("sowpods", ofType: "bin")!)!
+            }
+        }
+        gameQueue.addOperationWithBlock { [weak self] in
+            guard let strongSelf = self else { return }
+            let computer = Computer(difficulty: .Hard, rack: [], score: 0, solves: [], consecutiveSkips: 0)
+            let computer2 = Computer(difficulty: .Hard, rack: [], score: 0, solves: [], consecutiveSkips: 0)
+            //let human = Human(rack: [], score: 0, solves: [], consecutiveSkips: 0)
+            strongSelf.game = Game.newGame(strongSelf.dictionary, bag: Bag(withBlanks: false), players: [computer, computer2], eventHandler: strongSelf.handleEvent)
+            NSOperationQueue.mainQueue().addOperationWithBlock {
+                strongSelf.gameView.game = strongSelf.game
+                strongSelf.title = "Started"
+                strongSelf.gameQueue.addOperationWithBlock {
+                    strongSelf.game?.start()
                 }
             }
-            return
         }
-        game.newGame()
     }
     
     func enableButtons(enabled: Bool) {
-        let isHuman = game.player?.difficulty == .Human
+        let isHuman = game?.player is Human
         submit?.enabled = isHuman && enabled
         swap?.enabled = isHuman
         shuffle?.enabled = isHuman
-        restart?.enabled = isHuman || game.gameOver
+        restart?.enabled = isHuman || gameOver
     }
     
     // MARK: - Buttons
     
     func swap(sender: UIBarButtonItem) {
-        guard let player = game.player else { return }
-        player.returnTiles(player.rackTiles)
-        game.draw(player)
+        gameQueue.addOperationWithBlock { [weak self] in
+            guard let game = self?.game else {
+                return
+            }
+            self!.game!.swapTiles(game.player.rack)
+        }
     }
     
     func shuffle(sender: UIBarButtonItem) {
@@ -93,63 +126,12 @@ class PapyrusViewController: UIViewController, PapyrusDelegate {
     }
     
     func restart(sender: UIBarButtonItem) {
-        game.newGame()
+        newGame()
     }
     
     func submit(sender: UIBarButtonItem) {
-        guard let move = unsubmittedMove else { return }
-        game.submitMove(move)
-    }
-    
-    // MARK:- Papyrus Delegate
-    
-    func gameBegan(papyrus: Papyrus) {
-        enableButtons(true)
-        title = "Papyrus"
-        game.createPlayer()
-        gameView.replaceRackTiles()
-    }
-    
-    func gameEnded(papyrus: Papyrus) {
-        enableButtons(true)
-        title = "Game Over"
-        print("Winner \(papyrus.winner)")
-        print("Winning score: \(game.players.map({$0.score}).maxElement())")
-        game.players.forEach { print("- \($0.difficulty) score: \($0.score)") }
-    }
-    
-    func gameLoading(papyrus: Papyrus) {
-        enableButtons(false)
-        title = "Loading..."
-    }
-    
-    func turnBegan(papyrus: Papyrus) {
-        enableButtons(true)
-        print("Changed player \(game.playerIndex)")
-    }
-    
-    func turnEnded(move: Move, papyrus: Papyrus) {
-        print("Turn ended \(game.playerIndex)")
-        if game.player?.difficulty == .Human {
-            gameView.replaceRackTiles()
-        }
-    }
-    
-    func turnSkipped(papyrus: Papyrus) {
-        enableButtons(true)
-        print("Turn skipped \(game.playerIndex)")
-    }
-    
-    func tileDropped(square: Square, papyrus: Papyrus) {
-        
-    }
-    
-    func tileRemoved(square: Square, papyrus: Papyrus) {
-        enableButtons(true)
-    }
-    
-    func movePossible(move: Move, papyrus: Papyrus) {
-        enableButtons(true)
+        //guard let move = unsubmittedMove else { return }
+        //game.submitMove(move)
     }
     
     /*

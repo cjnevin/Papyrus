@@ -17,19 +17,25 @@ struct BoardDrawable: Drawable {
     
     var shader: Shader
     
-    init(squares: [Square], rect: CGRect) {
+    init(board: Board, rect: CGRect) {
         self.rect = rect
-        range = (0...Int(sqrt(Double(squares.count))))
-        squareSize = CGRectGetWidth(rect) / CGFloat(PapyrusDimensions)
+        squareSize = CGRectGetWidth(rect) / CGFloat(board.boardSize)
         shader = FillShader(color: .Papyrus_Tile)
-        drawables = squares.flatMap{ (square) -> Drawable? in
-            if let tile = square.tile {
-                return TileDrawable(tile: tile, rect: square.rectWithEdge(squareSize))
-            } else if square.type != .None {
-                return SquareDrawable(square: square, edge: squareSize)
+        range = 0..<board.boardSize
+        var drawables = [Drawable]()
+        for (y, column) in board.board.enumerate() {
+            for (x, square) in column.enumerate() {
+                let point = CGPoint(x: CGFloat(x) * squareSize, y: CGFloat(y) * squareSize)
+                let rect = CGRect(origin: point, size: CGSize(width: squareSize, height: squareSize))
+                if square == board.empty {
+                    drawables.append(SquareDrawable(rect: rect, shader: SquareShader(x: x, y: y, board: board)))
+                } else {
+                    // TODO: Not handling ?
+                    drawables.append(TileDrawable(tile: square, points: board.letterPoints[square] ?? 0, rect: rect, onBoard: true))
+                }
             }
-            return nil
         }
+        self.drawables = drawables
     }
     
     func draw(renderer: Renderer) {

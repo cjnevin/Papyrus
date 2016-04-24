@@ -18,11 +18,6 @@ struct SquareDrawable : Drawable {
         self.shader = shader
     }
     
-    init(square: Square, edge: CGFloat, shader: Shader? = nil) {
-        self.rect = square.rectWithEdge(edge)
-        self.shader = shader ?? SquareShader(square: square)
-    }
-    
     func draw(renderer: Renderer) {
         if shader.fillColor != nil {
             renderer.fillRect(rect, shader: shader)

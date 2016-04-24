@@ -12,17 +12,33 @@ import PapyrusCore
 class GameView : UIView, TileViewDelegate {
     // Consts
     private let tileSpacing = CGFloat(5)
-    private let rackMax = CGFloat(PapyrusRackAmount)
     
-    var game: Papyrus?
+    var rackMax: CGFloat { return CGFloat(game?.rackAmount ?? 0) }
+    var game: Game? {
+        didSet {
+            dropped.removeAll()
+            setNeedsDisplay()
+        }
+    }
+    var dropped = Set<TileView>()
     
     /// - returns: Tuples containing square and rect for empty squares.
-    private var suitableSquareFrames: [(Square, CGRect)] {
-        guard let dimensions = game?.dimensions, squares = game?.flattenedSquares where dimensions > 0 else {
-            return []
+    typealias Square = (x: Int, y: Int, rect: CGRect)
+    private var suitableSquareFrames: [Square] {
+        guard let game = game else { return [] }
+        let dimensions = CGFloat(game.board.boardSize)
+        let squareSize = CGRectGetWidth(boardRect) / dimensions
+        var suitable = [Square]()
+        for (y, column) in game.board.board.enumerate() {
+            for (x, square) in column.enumerate() {
+                let point = CGPoint(x: CGFloat(x) * squareSize, y: CGFloat(y) * squareSize)
+                let rect = CGRect(origin: point, size: CGSize(width: squareSize, height: squareSize))
+                if square == game.board.empty && dropped.filter({ $0.frame == rect }).count == 0 {
+                    suitable.append((x, y, rect))
+                }
+            }
         }
-        let edge = CGRectGetWidth(boardRect) / CGFloat(dimensions)
-        return squares.filter{ $0.tile == nil }.map{ ($0, $0.rectWithEdge(edge)) }
+        return suitable
     }
     
     // UI
@@ -43,11 +59,11 @@ class GameView : UIView, TileViewDelegate {
     }
     
     override func drawRect(rect: CGRect) {
-        guard let squares = game?.flattenedSquares, context = UIGraphicsGetCurrentContext() else {
+        guard let game = game, context = UIGraphicsGetCurrentContext() else {
             return
         }
         CGContextSaveGState(context)
-        BoardDrawable(squares: squares, rect: boardRect).draw(context)
+        BoardDrawable(board: game.board, rect: boardRect).draw(context)
         let blackColor = UIColor.blackColor().CGColor
         CGContextSetStrokeColorWithColor(context, blackColor)
         CGContextSetLineWidth(context, 0.5)
@@ -57,23 +73,26 @@ class GameView : UIView, TileViewDelegate {
     
     /// Replace rack sprites with newly drawn tiles.
     func replaceRackTiles() {
+        guard let game = game else {
+            return
+        }
         tileViews?.forEach { $0.removeFromSuperview() }
         let tileY = bounds.size.width + tileSpacing
         let tileEdge = (CGRectGetWidth(bounds) - (tileSpacing * rackMax) - tileSpacing) / rackMax
-        tileViews = game?.rackTiles?.enumerate().map{ (index, tile) in
+        tileViews = game.player.rack.enumerate().map{ (index, tile) in
             let tileX = tileSpacing + ((tileSpacing + tileEdge) * CGFloat(index))
             let tileRect = CGRect(x: tileX, y: tileY, width: tileEdge, height: tileEdge)
-            return TileView(frame: tileRect, tile: tile, delegate: self)
+            return TileView(frame: tileRect, tile: tile, points: game.board.letterPoints[tile] ?? 0, onBoard: false, delegate: self)
         }
         tileViews?.forEach { addSubview($0) }
     }
     
     // MARK: - TileViewDelegate
     
-    func bestIntersection(forRect: CGRect) -> (square: Square, rect: CGRect, intersection: CGRect)? {
-        return suitableSquareFrames.flatMap({ (square, squareRect) -> (square: Square, rect: CGRect, intersection: CGRect)? in
+    func bestIntersection(forRect: CGRect) -> (x: Int, y: Int, rect: CGRect, intersection: CGRect)? {
+        return suitableSquareFrames.flatMap({ (x, y, squareRect) -> (x: Int, y: Int, rect: CGRect, intersection: CGRect)? in
             let intersection = CGRectIntersection(squareRect, forRect)
-            return intersection.widthPlusHeight > 0 ? (square, squareRect, intersection) : nil
+            return intersection.widthPlusHeight > 0 ? (x, y, squareRect, intersection) : nil
         }).sort({ (lhs, rhs) in
             return lhs.intersection.widthPlusHeight < rhs.intersection.widthPlusHeight
         }).last
@@ -82,9 +101,8 @@ class GameView : UIView, TileViewDelegate {
     func frameForDropping(tileView: TileView) -> CGRect {
         if CGRectIntersectsRect(tileView.frame, boardRect) {
             if let intersection = bestIntersection(tileView.frame) {
-                assert(intersection.square.tile == nil)
-                intersection.square.tile = tileView.tile
-                tileView.tile.placement = .Board
+                dropped.insert(tileView)
+                tileView.onBoard = true
                 return intersection.rect
             }
         }
@@ -93,9 +111,9 @@ class GameView : UIView, TileViewDelegate {
     }
     
     func pickedUp(tileView: TileView) {
-        game?.flattenedSquares?
-            .filter{ $0.tile == tileView.tile }
-            .forEach{ $0.tile = nil }
-        tileView.tile.placement = .Held
+        if let index = dropped.indexOf(tileView) {
+            dropped.removeAtIndex(index)
+        }
+        tileView.onBoard = false
     }
 }

@@ -10,19 +10,29 @@ import UIKit
 import PapyrusCore
 
 struct SquareShader: Shader {
-    private let colorMap: [Modifier: UIColor] = [
-        .Center: .Papyrus_Center,
-        .Letterx2: .Papyrus_Letterx2,
-        .Letterx3: .Papyrus_Letterx3,
-        .Wordx2: .Papyrus_Wordx2,
-        .Wordx3: .Papyrus_Wordx3,
-        .None: .Papyrus_Tile
-    ]
     var fillColor: UIColor?
     var textColor: UIColor?
     var strokeColor: UIColor?
     var strokeWidth: CGFloat?
-    init(square: Square) {
-        fillColor = colorMap[square.type]!
+    init(x: Int, y: Int, board: Board) {
+        if x == board.center && y == board.center {
+            fillColor = .Papyrus_Center
+            return
+        }
+        switch board.letterMultipliers[y][x] {
+        case 2:
+            fillColor = .Papyrus_Letterx2
+        case 3:
+            fillColor = .Papyrus_Letterx3
+        default:
+            switch board.wordMultipliers[y][x] {
+            case 2:
+                fillColor = .Papyrus_Wordx2
+            case 3:
+                fillColor = .Papyrus_Wordx3
+            default:
+                fillColor = .Papyrus_Tile
+            }
+        }
     }
 }
