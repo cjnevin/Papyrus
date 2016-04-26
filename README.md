@@ -1,5 +1,5 @@
 # Papyrus
-![](https://reposs.herokuapp.com/?path=ChrisAU/Papyrus/)
+![](https://reposs.herokuapp.com/?path=ChrisAU/Papyrus)
 
 Scrabble game written in Swift implementing the PapyrusCore for the game logic.
 
