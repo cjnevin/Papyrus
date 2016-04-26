@@ -26,7 +26,14 @@ class TileView: UIView {
     var delegate: TileViewDelegate!
     var tile: Character!
     var points: Int!
-    var onBoard: Bool = false
+    var onBoard: Bool = false {
+        didSet {
+            setNeedsDisplay()
+        }
+    }
+    
+    var x: Int?
+    var y: Int?
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
@@ -63,11 +70,11 @@ class TileView: UIView {
 
 extension TileView : UIGestureRecognizerDelegate {
     func makeDraggable() {
-        let panGesture = UIPanGestureRecognizer(target: self, action: "didPan:")
+        let panGesture = UIPanGestureRecognizer(target: self, action: #selector(didPan))
         panGesture.delegate = self
         addGestureRecognizer(panGesture)
         
-        let pressGesture = UILongPressGestureRecognizer(target: self, action: "didPress:")
+        let pressGesture = UILongPressGestureRecognizer(target: self, action: #selector(didPress))
         pressGesture.minimumPressDuration = 0.001
         pressGesture.delegate = self
         addGestureRecognizer(pressGesture)
@@ -91,7 +98,7 @@ extension TileView : UIGestureRecognizerDelegate {
         case .Began:
             self.delegate.pickedUp(self)
             let center = self.center
-            UIView.animateWithDuration(0.1, animations: { () -> Void in
+            UIView.animateWithDuration(0.1, animations: {
                 self.bounds = self.initialFrame
                 self.center = center
                 self.superview?.bringSubviewToFront(self)
