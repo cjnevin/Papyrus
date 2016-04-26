@@ -40,20 +40,4 @@ extension CGRect {
         return innerRectForSize(size, verticalAlignment: .Center,
             horizontalAlignment: .Center)
     }
-    
-    func center() -> CGPoint {
-        return CGPoint(
-            x: CGRectGetWidth(self) / 2 + origin.x,
-            y: CGRectGetHeight(self) / 2 + origin.y)
-    }
-    
-    func scaleX(width: CGFloat) -> CGFloat {
-        let scale = width / CGRectGetWidth(self)
-        return scale
-    }
-    
-    func scaleY(height: CGFloat) -> CGFloat {
-        let scale = height / CGRectGetHeight(self)
-        return scale
-    }
 }

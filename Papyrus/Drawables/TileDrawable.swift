@@ -39,11 +39,11 @@ struct TileDrawable : Drawable {
         renderer.strokeRect(rect, shader: shader)
         
         let letterFont = onBoard ? UIFont.tileLetterFontSmall : UIFont.tileLetterFontBig
-        let letterText = NSAttributedString(string: letter, font: letterFont)
+        let letterText = NSAttributedString(string: letter, attributes: [NSFontAttributeName: letterFont])
         let letterRect = rect.centeredRectForSize(letterText.size())
         renderer.drawText(letterText, rect: letterRect, shader: shader)
         
-        let pointsText = NSAttributedString(string: points, font: .pointsFont)
+        let pointsText = NSAttributedString(string: points, attributes: [NSFontAttributeName: UIFont.pointsFont])
         let pointsRect = CGRectInset(rect, 2, 1).innerRectForSize(pointsText.size(),
             verticalAlignment: .Bottom, horizontalAlignment: .Right)
         renderer.drawText(pointsText, rect: pointsRect, shader: shader)

@@ -95,7 +95,6 @@ class PapyrusViewController: UIViewController {
             let human = Human(rack: [], score: 0, solves: [], consecutiveSkips: 0)
             strongSelf.game = Game.newGame(strongSelf.dictionary, bag: Bag(withBlanks: false), players: [computer, computer2, human], eventHandler: strongSelf.handleEvent)
             NSOperationQueue.mainQueue().addOperationWithBlock {
-                //strongSelf.gameView.game = strongSelf.game
                 strongSelf.title = "Started"
                 strongSelf.gameQueue.addOperationWithBlock {
                     strongSelf.game?.start()
@@ -150,75 +149,4 @@ class PapyrusViewController: UIViewController {
         }
         print(result)
     }
-    
-    /*
-    func resetHeld() {
-        if let sprite = heldSprite {
-            sprite.position = sprite.origin
-            sprite.tile.placement = .Rack
-            if let square = game.squaresFor([sprite.tile]).first {
-                square.tile = nil
-            }
-        }
-    }
-    
-    func pickup(atPoint point: CGPoint) {
-        resetHeld()
-        
-        if game.player?.difficulty != .Human { return }
-        if let square = boardView.squareAtPoint(point) where square.tile != nil {
-            // Pickup from board
-            guard let tileSprite = tileSprites.filter({$0.tile == square.tile}).first where tileSprite.movable else { return }
-            square.tile = nil
-            square.tile?.placement = .Held
-            tileSprite.position = point
-            tileSprite.animateGrow()
-        }
-        else if let tileSprite = tileSprites.filter({$0.containsPoint(point) && !$0.hasActions()}).first {
-            // Pickup from rack
-            tileSprite.tile.placement = .Held
-            tileSprite.animatePickupFromRack(point)
-        }
-        // TODO: Check if valid play with tiles left on board
-    }
-    
-    func dropInRack() {
-        guard let point = heldOrigin, sprite = heldSprite, tile = heldSprite?.tile else { return }
-        sprite.resetPosition(point)
-        tile.placement = .Rack
-        if tile.value == 0 {
-            sprite.changeLetter("?")
-        }
-        // TODO: Check if valid play with tiles left on board
-    }
-    
-    func drop(atPoint point: CGPoint) {
-        guard let sprite = heldSprite else { return }
-        let spriteFrame = CGRect(origin: scene.convertPoint(sprite.position, fromNode: sprite),
-            size: sprite.frame.size)
-        if let (square, destinationFrame) = boardView.bestSquareIntersection(spriteFrame, point: point) {
-            
-            let destPoint = destinationFrame.origin //scene.convertPoint(destinationFrame.origin, toNode: sprite)
-            
-            let tile = sprite.tile
-            tile.placement = .Board
-            square.tile = tile
-            
-            sprite.animateShrink()
-            sprite.position = CGPoint(x: destPoint.x + destinationFrame.size.width / 2,
-                y: destPoint.y + destinationFrame.size.height / 2)
-            
-            if tile.value == 0 && tile.letter == "?" {
-                // TODO: Letter selection
-            }
-        } else {
-            // Reset
-            dropInRack()
-        }
-        // TODO: Check if valid play with tiles on board
-    }
-    
-    func move(toPoint point: CGPoint) {
-        heldSprite?.position = point
-    }*/
 }
