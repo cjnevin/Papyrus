@@ -66,6 +66,7 @@ class PapyrusViewController: UIViewController {
     
     func newGame() {
         enableButtons(false)
+        gameOver = false
         title = "Starting..."
         if dictionary == nil {
             gameQueue.addOperationWithBlock { [weak self] in
@@ -113,10 +114,6 @@ class PapyrusViewController: UIViewController {
     
     func restart(sender: UIAlertAction) {
         newGame()
-    }
-    
-    @IBAction func search(sender: UIBarButtonItem) {
-        
     }
     
     @IBAction func action(sender: UIBarButtonItem) {

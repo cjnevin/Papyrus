@@ -2,7 +2,6 @@
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10116" systemVersion="15D21" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="Jkl-8b-dRO">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
-        <capability name="Navigation items with more than one left or right bar item" minToolsVersion="7.0"/>
     </dependencies>
     <scenes>
         <!--Papyrus-->
@@ -44,18 +43,11 @@
                     </view>
                     <extendedEdge key="edgesForExtendedLayout"/>
                     <navigationItem key="navigationItem" title="Papyrus" id="ePs-hW-a3W">
-                        <leftBarButtonItems>
-                            <barButtonItem systemItem="action" id="SSC-L5-TMp">
-                                <connections>
-                                    <action selector="action:" destination="trd-fT-hXK" id="obU-Hh-Gmz"/>
-                                </connections>
-                            </barButtonItem>
-                            <barButtonItem systemItem="search" id="k4o-RC-byi">
-                                <connections>
-                                    <action selector="search:" destination="trd-fT-hXK" id="q4r-J5-9EO"/>
-                                </connections>
-                            </barButtonItem>
-                        </leftBarButtonItems>
+                        <barButtonItem key="leftBarButtonItem" systemItem="action" id="SSC-L5-TMp">
+                            <connections>
+                                <action selector="action:" destination="trd-fT-hXK" id="obU-Hh-Gmz"/>
+                            </connections>
+                        </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" title="Submit" id="F1b-Cs-4xQ">
                             <connections>
                                 <action selector="submit:" destination="trd-fT-hXK" id="cEr-0Y-DqV"/>
@@ -64,10 +56,19 @@
                     </navigationItem>
                     <connections>
                         <outlet property="gameView" destination="4aa-cn-i0z" id="91a-0l-hxg"/>
+                        <outlet property="searchDisplayController" destination="Q6z-gf-lv5" id="5AS-at-00a"/>
                         <outlet property="submitButton" destination="F1b-Cs-4xQ" id="TE7-vG-8NA"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="eiI-7D-yMl" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <searchDisplayController id="Q6z-gf-lv5">
+                    <connections>
+                        <outlet property="delegate" destination="trd-fT-hXK" id="XDJ-HV-1LR"/>
+                        <outlet property="searchContentsController" destination="trd-fT-hXK" id="OeB-Qt-jdG"/>
+                        <outlet property="searchResultsDataSource" destination="trd-fT-hXK" id="gbY-1y-NhF"/>
+                        <outlet property="searchResultsDelegate" destination="trd-fT-hXK" id="83A-7H-JLC"/>
+                    </connections>
+                </searchDisplayController>
             </objects>
             <point key="canvasLocation" x="71" y="394.5"/>
         </scene>
