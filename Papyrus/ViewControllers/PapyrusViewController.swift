@@ -11,16 +11,12 @@ import SpriteKit
 import PapyrusCore
 
 class PapyrusViewController: UIViewController {
-    
     @IBOutlet weak var gameView: GameView!
+    @IBOutlet weak var submitButton: UIBarButtonItem!
 
     let gameQueue = NSOperationQueue()
     
     let watchdog = Watchdog(threshold: 0.2)
-    var submitButton: UIBarButtonItem!
-    var shuffleButton: UIBarButtonItem!
-    var swapButton: UIBarButtonItem!
-    var restartButton: UIBarButtonItem!
     
     var firstRun: Bool = false
     
@@ -40,18 +36,6 @@ class PapyrusViewController: UIViewController {
         }
         
         title = "Papyrus"
-        
-        submitButton = UIBarButtonItem(title: "Submit", style: .Done, target: self, action: #selector(submit))
-        restartButton = UIBarButtonItem(barButtonSystemItem: .Trash, target: self, action: #selector(restart))
-        shuffleButton = UIBarButtonItem(barButtonSystemItem: .Refresh, target: self, action: #selector(shuffle))
-        swapButton = UIBarButtonItem(title: "Swap", style: .Plain, target: self, action: #selector(swap))
-        
-        shuffleButton.enabled = false
-        swapButton.enabled = false
-        restartButton.enabled = false
-        
-        navigationItem.leftBarButtonItems = [shuffleButton, swapButton]
-        navigationItem.rightBarButtonItems = [submitButton, restartButton]
     }
     
     override func viewDidLayoutSubviews() {
@@ -106,29 +90,46 @@ class PapyrusViewController: UIViewController {
     func enableButtons(enabled: Bool) {
         let isHuman = game?.player is Human
         submitButton.enabled = isHuman && enabled
-        swapButton.enabled = isHuman
-        shuffleButton.enabled = isHuman
-        restartButton.enabled = isHuman || gameOver
     }
     
     // MARK: - Buttons
     
-    func swap(sender: UIBarButtonItem) {
+    func swap(sender: UIAlertAction) {
         gameQueue.addOperationWithBlock { [weak self] in
-            guard let game = self?.game else {
-                return
-            }
-            self!.game!.swapTiles(game.player.rack)
+            guard let strongSelf = self where strongSelf.game?.player != nil else { return }
+            strongSelf.game!.swapTiles(strongSelf.game!.player.rack)
         }
     }
     
-    func shuffle(sender: UIBarButtonItem) {
+    func shuffle(sender: UIAlertAction) {
+        gameQueue.addOperationWithBlock { [weak self] in
+            guard let strongSelf = self else { return }
+            strongSelf.game?.shuffleRack()
+            NSOperationQueue.mainQueue().addOperationWithBlock {
+                strongSelf.presenter.game = strongSelf.game
+            }
+        }
+    }
+    
+    func restart(sender: UIAlertAction) {
+        newGame()
+    }
+    
+    @IBAction func search(sender: UIBarButtonItem) {
         
     }
     
-    func restart(sender: UIBarButtonItem) {
-        newGame()
+    @IBAction func action(sender: UIBarButtonItem) {
+        let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .ActionSheet)
+        if game?.player is Human && !gameOver {
+            actionSheet.addAction(UIAlertAction(title: "Shuffle", style: .Default, handler: shuffle))
+            actionSheet.addAction(UIAlertAction(title: "Swap", style: .Default, handler: swap))
+        }
+        actionSheet.addAction(UIAlertAction(title: gameOver ? "New Game" : "Restart", style: .Destructive, handler: restart))
+        actionSheet.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: nil))
+        presentViewController(actionSheet, animated: true, completion: nil)
     }
+    
     
     private func play(solution: Solution) {
         gameQueue.addOperationWithBlock { [weak self] in
@@ -137,7 +138,7 @@ class PapyrusViewController: UIViewController {
         }
     }
     
-    func submit(sender: UIBarButtonItem) {
+    @IBAction func submit(sender: UIBarButtonItem) {
         let result = game?.validate(presenter.tiles())
         switch result! {
         case let .Valid(solution):
