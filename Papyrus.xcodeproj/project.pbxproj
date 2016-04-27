@@ -7,21 +7,27 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		9933CF5C1B5981F6009466B0 /* SpriteKitExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9933CF5B1B5981F6009466B0 /* SpriteKitExtensions.swift */; };
+		9901443F1C7E4E61005C81BF /* CGRect+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9901443E1C7E4E61005C81BF /* CGRect+Extensions.swift */; };
+		993A53481C7EE273001F93CB /* Shader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 993A53461C7EE273001F93CB /* Shader.swift */; };
+		993A53491C7EE273001F93CB /* SquareShader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 993A53471C7EE273001F93CB /* SquareShader.swift */; };
+		993A534B1C7EE338001F93CB /* TileShader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 993A534A1C7EE338001F93CB /* TileShader.swift */; };
+		993A534D1C7EED0F001F93CB /* FillShader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 993A534C1C7EED0F001F93CB /* FillShader.swift */; };
 		995DD83C1BB6213A009B409D /* sowpods.bin in Resources */ = {isa = PBXBuildFile; fileRef = 995DD83A1BB6213A009B409D /* sowpods.bin */; };
 		995DD83D1BB6213A009B409D /* twl06.bin in Resources */ = {isa = PBXBuildFile; fileRef = 995DD83B1BB6213A009B409D /* twl06.bin */; };
 		99629C091B547DE800510036 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99629C081B547DE800510036 /* AppDelegate.swift */; };
-		99629C0B1B547DE800510036 /* GameScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = 99629C0A1B547DE800510036 /* GameScene.sks */; };
 		99629C2D1B547DE800510036 /* PapyrusUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99629C2C1B547DE800510036 /* PapyrusUITests.swift */; };
-		99629C611B547E8200510036 /* GameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99629C591B547E8200510036 /* GameViewController.swift */; };
-		99629C621B547E8200510036 /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99629C5B1B547E8200510036 /* GameScene.swift */; };
-		99629C631B547E8200510036 /* GameSceneTouches.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99629C5C1B547E8200510036 /* GameSceneTouches.swift */; };
-		99629C641B547E8200510036 /* PapyrusSquareSprite.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99629C5D1B547E8200510036 /* PapyrusSquareSprite.swift */; };
-		99629C651B547E8200510036 /* PapyrusSquareSpriteAnimations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99629C5E1B547E8200510036 /* PapyrusSquareSpriteAnimations.swift */; };
-		99629C661B547E8200510036 /* PapyrusTileSprite.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99629C5F1B547E8200510036 /* PapyrusTileSprite.swift */; };
-		99629C671B547E8200510036 /* PapyrusTileSpriteAnimations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99629C601B547E8200510036 /* PapyrusTileSpriteAnimations.swift */; };
+		997D186B1BCC4EEC0050B872 /* PapyrusViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 997D186A1BCC4EEC0050B872 /* PapyrusViewController.swift */; };
+		997D186D1BCC570B0050B872 /* TileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 997D186C1BCC570B0050B872 /* TileView.swift */; };
+		999925B01CD091E9005D1C89 /* GamePresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 999925AF1CD091E9005D1C89 /* GamePresenter.swift */; };
 		99B5013B1BB0C7FB0098767C /* Watchdog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99B5013A1BB0C7FB0098767C /* Watchdog.swift */; };
-		99DF9E0F1B54ED8200F58DA7 /* UIKitExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99DF9E0E1B54ED8200F58DA7 /* UIKitExtensions.swift */; };
+		99C3D1F31C7BAF510024B932 /* GameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99C3D1F21C7BAF510024B932 /* GameView.swift */; };
+		99D36F501C7E6B2B00A5ADA8 /* BoardDrawable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99D36F491C7E6B2B00A5ADA8 /* BoardDrawable.swift */; };
+		99D36F511C7E6B2B00A5ADA8 /* Drawable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99D36F4A1C7E6B2B00A5ADA8 /* Drawable.swift */; };
+		99D36F521C7E6B2B00A5ADA8 /* SquareDrawable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99D36F4B1C7E6B2B00A5ADA8 /* SquareDrawable.swift */; };
+		99D36F531C7E6B2B00A5ADA8 /* TileDrawable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99D36F4C1C7E6B2B00A5ADA8 /* TileDrawable.swift */; };
+		99D36F541C7E6B2B00A5ADA8 /* CGContext+Renderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99D36F4E1C7E6B2B00A5ADA8 /* CGContext+Renderer.swift */; };
+		99D36F551C7E6B2B00A5ADA8 /* Renderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99D36F4F1C7E6B2B00A5ADA8 /* Renderer.swift */; };
+		99DF9E0F1B54ED8200F58DA7 /* UIColor+Papyrus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99DF9E0E1B54ED8200F58DA7 /* UIColor+Papyrus.swift */; };
 		99FD433D1BA5901E00F50DCF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 99FD43351BA5901E00F50DCF /* Assets.xcassets */; };
 		99FD433E1BA5901E00F50DCF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 99FD43361BA5901E00F50DCF /* LaunchScreen.storyboard */; };
 		99FD433F1BA5901E00F50DCF /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 99FD43381BA5901E00F50DCF /* Main.storyboard */; };
@@ -67,26 +73,32 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		9933CF5B1B5981F6009466B0 /* SpriteKitExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SpriteKitExtensions.swift; sourceTree = "<group>"; };
+		9901443E1C7E4E61005C81BF /* CGRect+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CGRect+Extensions.swift"; sourceTree = "<group>"; };
+		993A53461C7EE273001F93CB /* Shader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Shader.swift; sourceTree = "<group>"; };
+		993A53471C7EE273001F93CB /* SquareShader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SquareShader.swift; sourceTree = "<group>"; };
+		993A534A1C7EE338001F93CB /* TileShader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TileShader.swift; sourceTree = "<group>"; };
+		993A534C1C7EED0F001F93CB /* FillShader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FillShader.swift; sourceTree = "<group>"; };
 		995DD83A1BB6213A009B409D /* sowpods.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = sowpods.bin; sourceTree = "<group>"; };
 		995DD83B1BB6213A009B409D /* twl06.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = twl06.bin; sourceTree = "<group>"; };
 		99629C051B547DE800510036 /* Papyrus.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Papyrus.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		99629C081B547DE800510036 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		99629C0A1B547DE800510036 /* GameScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = GameScene.sks; sourceTree = "<group>"; };
 		99629C1D1B547DE800510036 /* PapyrusTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PapyrusTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		99629C231B547DE800510036 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		99629C281B547DE800510036 /* PapyrusUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PapyrusUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		99629C2C1B547DE800510036 /* PapyrusUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PapyrusUITests.swift; sourceTree = "<group>"; };
 		99629C2E1B547DE800510036 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		99629C591B547E8200510036 /* GameViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameViewController.swift; sourceTree = "<group>"; };
-		99629C5B1B547E8200510036 /* GameScene.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameScene.swift; sourceTree = "<group>"; };
-		99629C5C1B547E8200510036 /* GameSceneTouches.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameSceneTouches.swift; sourceTree = "<group>"; };
-		99629C5D1B547E8200510036 /* PapyrusSquareSprite.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PapyrusSquareSprite.swift; sourceTree = "<group>"; };
-		99629C5E1B547E8200510036 /* PapyrusSquareSpriteAnimations.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PapyrusSquareSpriteAnimations.swift; sourceTree = "<group>"; };
-		99629C5F1B547E8200510036 /* PapyrusTileSprite.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PapyrusTileSprite.swift; sourceTree = "<group>"; };
-		99629C601B547E8200510036 /* PapyrusTileSpriteAnimations.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PapyrusTileSpriteAnimations.swift; sourceTree = "<group>"; };
+		997D186A1BCC4EEC0050B872 /* PapyrusViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PapyrusViewController.swift; sourceTree = "<group>"; };
+		997D186C1BCC570B0050B872 /* TileView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TileView.swift; path = Papyrus/Views/TileView.swift; sourceTree = SOURCE_ROOT; };
+		999925AF1CD091E9005D1C89 /* GamePresenter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GamePresenter.swift; sourceTree = "<group>"; };
 		99B5013A1BB0C7FB0098767C /* Watchdog.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Watchdog.swift; sourceTree = "<group>"; };
-		99DF9E0E1B54ED8200F58DA7 /* UIKitExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIKitExtensions.swift; sourceTree = "<group>"; };
+		99C3D1F21C7BAF510024B932 /* GameView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameView.swift; sourceTree = "<group>"; };
+		99D36F491C7E6B2B00A5ADA8 /* BoardDrawable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BoardDrawable.swift; sourceTree = "<group>"; };
+		99D36F4A1C7E6B2B00A5ADA8 /* Drawable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Drawable.swift; sourceTree = "<group>"; };
+		99D36F4B1C7E6B2B00A5ADA8 /* SquareDrawable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SquareDrawable.swift; sourceTree = "<group>"; };
+		99D36F4C1C7E6B2B00A5ADA8 /* TileDrawable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TileDrawable.swift; sourceTree = "<group>"; };
+		99D36F4E1C7E6B2B00A5ADA8 /* CGContext+Renderer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CGContext+Renderer.swift"; sourceTree = "<group>"; };
+		99D36F4F1C7E6B2B00A5ADA8 /* Renderer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Renderer.swift; sourceTree = "<group>"; };
+		99DF9E0E1B54ED8200F58DA7 /* UIColor+Papyrus.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIColor+Papyrus.swift"; sourceTree = "<group>"; };
 		99FD43351BA5901E00F50DCF /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		99FD43371BA5901E00F50DCF /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		99FD43391BA5901E00F50DCF /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -119,6 +131,17 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		993A53451C7EE273001F93CB /* Shaders */ = {
+			isa = PBXGroup;
+			children = (
+				993A53461C7EE273001F93CB /* Shader.swift */,
+				993A534C1C7EED0F001F93CB /* FillShader.swift */,
+				993A53471C7EE273001F93CB /* SquareShader.swift */,
+				993A534A1C7EE338001F93CB /* TileShader.swift */,
+			);
+			path = Shaders;
+			sourceTree = "<group>";
+		};
 		99629BFC1B547DE800510036 = {
 			isa = PBXGroup;
 			children = (
@@ -145,10 +168,13 @@
 				99FD43561BA59BF900F50DCF /* PapyrusCore.xcodeproj */,
 				99629C081B547DE800510036 /* AppDelegate.swift */,
 				99B5013A1BB0C7FB0098767C /* Watchdog.swift */,
-				99DF9E0D1B54ED7300F58DA7 /* Extensions */,
+				99D36F481C7E6B2B00A5ADA8 /* Drawables */,
+				99D36F4D1C7E6B2B00A5ADA8 /* Renderers */,
+				993A53451C7EE273001F93CB /* Shaders */,
 				99629C581B547E8200510036 /* ViewControllers */,
+				999925AE1CD091E9005D1C89 /* Presenters */,
 				99629C5A1B547E8200510036 /* Views */,
-				99629C0A1B547DE800510036 /* GameScene.sks */,
+				99DF9E0D1B54ED7300F58DA7 /* Extensions */,
 				99FD43341BA5901E00F50DCF /* Resources */,
 			);
 			path = Papyrus;
@@ -174,7 +200,7 @@
 		99629C581B547E8200510036 /* ViewControllers */ = {
 			isa = PBXGroup;
 			children = (
-				99629C591B547E8200510036 /* GameViewController.swift */,
+				997D186A1BCC4EEC0050B872 /* PapyrusViewController.swift */,
 			);
 			name = ViewControllers;
 			path = Papyrus/ViewControllers;
@@ -183,22 +209,46 @@
 		99629C5A1B547E8200510036 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				99629C5B1B547E8200510036 /* GameScene.swift */,
-				99629C5C1B547E8200510036 /* GameSceneTouches.swift */,
-				99629C5D1B547E8200510036 /* PapyrusSquareSprite.swift */,
-				99629C5E1B547E8200510036 /* PapyrusSquareSpriteAnimations.swift */,
-				99629C5F1B547E8200510036 /* PapyrusTileSprite.swift */,
-				99629C601B547E8200510036 /* PapyrusTileSpriteAnimations.swift */,
+				99C3D1F21C7BAF510024B932 /* GameView.swift */,
+				997D186C1BCC570B0050B872 /* TileView.swift */,
 			);
 			name = Views;
 			path = Papyrus/Views;
 			sourceTree = SOURCE_ROOT;
 		};
+		999925AE1CD091E9005D1C89 /* Presenters */ = {
+			isa = PBXGroup;
+			children = (
+				999925AF1CD091E9005D1C89 /* GamePresenter.swift */,
+			);
+			path = Presenters;
+			sourceTree = "<group>";
+		};
+		99D36F481C7E6B2B00A5ADA8 /* Drawables */ = {
+			isa = PBXGroup;
+			children = (
+				99D36F4A1C7E6B2B00A5ADA8 /* Drawable.swift */,
+				99D36F491C7E6B2B00A5ADA8 /* BoardDrawable.swift */,
+				99D36F4B1C7E6B2B00A5ADA8 /* SquareDrawable.swift */,
+				99D36F4C1C7E6B2B00A5ADA8 /* TileDrawable.swift */,
+			);
+			path = Drawables;
+			sourceTree = "<group>";
+		};
+		99D36F4D1C7E6B2B00A5ADA8 /* Renderers */ = {
+			isa = PBXGroup;
+			children = (
+				99D36F4E1C7E6B2B00A5ADA8 /* CGContext+Renderer.swift */,
+				99D36F4F1C7E6B2B00A5ADA8 /* Renderer.swift */,
+			);
+			path = Renderers;
+			sourceTree = "<group>";
+		};
 		99DF9E0D1B54ED7300F58DA7 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
-				99DF9E0E1B54ED8200F58DA7 /* UIKitExtensions.swift */,
-				9933CF5B1B5981F6009466B0 /* SpriteKitExtensions.swift */,
+				9901443E1C7E4E61005C81BF /* CGRect+Extensions.swift */,
+				99DF9E0E1B54ED8200F58DA7 /* UIColor+Papyrus.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -366,7 +416,6 @@
 				99FD433E1BA5901E00F50DCF /* LaunchScreen.storyboard in Resources */,
 				99FD43411BA5901E00F50DCF /* Info.plist in Resources */,
 				99FD433D1BA5901E00F50DCF /* Assets.xcassets in Resources */,
-				99629C0B1B547DE800510036 /* GameScene.sks in Resources */,
 				99FD433F1BA5901E00F50DCF /* Main.storyboard in Resources */,
 				995DD83C1BB6213A009B409D /* sowpods.bin in Resources */,
 			);
@@ -393,17 +442,24 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				99629C671B547E8200510036 /* PapyrusTileSpriteAnimations.swift in Sources */,
-				99629C631B547E8200510036 /* GameSceneTouches.swift in Sources */,
-				99629C661B547E8200510036 /* PapyrusTileSprite.swift in Sources */,
+				993A534B1C7EE338001F93CB /* TileShader.swift in Sources */,
+				993A53481C7EE273001F93CB /* Shader.swift in Sources */,
+				99D36F501C7E6B2B00A5ADA8 /* BoardDrawable.swift in Sources */,
+				997D186D1BCC570B0050B872 /* TileView.swift in Sources */,
+				99D36F521C7E6B2B00A5ADA8 /* SquareDrawable.swift in Sources */,
+				993A534D1C7EED0F001F93CB /* FillShader.swift in Sources */,
+				993A53491C7EE273001F93CB /* SquareShader.swift in Sources */,
+				9901443F1C7E4E61005C81BF /* CGRect+Extensions.swift in Sources */,
 				99B5013B1BB0C7FB0098767C /* Watchdog.swift in Sources */,
+				999925B01CD091E9005D1C89 /* GamePresenter.swift in Sources */,
+				99D36F551C7E6B2B00A5ADA8 /* Renderer.swift in Sources */,
 				99629C091B547DE800510036 /* AppDelegate.swift in Sources */,
-				99629C621B547E8200510036 /* GameScene.swift in Sources */,
-				99629C611B547E8200510036 /* GameViewController.swift in Sources */,
-				99DF9E0F1B54ED8200F58DA7 /* UIKitExtensions.swift in Sources */,
-				99629C651B547E8200510036 /* PapyrusSquareSpriteAnimations.swift in Sources */,
-				99629C641B547E8200510036 /* PapyrusSquareSprite.swift in Sources */,
-				9933CF5C1B5981F6009466B0 /* SpriteKitExtensions.swift in Sources */,
+				99DF9E0F1B54ED8200F58DA7 /* UIColor+Papyrus.swift in Sources */,
+				99D36F511C7E6B2B00A5ADA8 /* Drawable.swift in Sources */,
+				99D36F541C7E6B2B00A5ADA8 /* CGContext+Renderer.swift in Sources */,
+				99C3D1F31C7BAF510024B932 /* GameView.swift in Sources */,
+				997D186B1BCC4EEC0050B872 /* PapyrusViewController.swift in Sources */,
+				99D36F531C7E6B2B00A5ADA8 /* TileDrawable.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -551,7 +607,6 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				GCC_OPTIMIZATION_LEVEL = fast;
 				INFOPLIST_FILE = "$(SRCROOT)/Papyrus/Resources/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.cjnevin.Papyrus;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -564,7 +619,6 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = "$(SRCROOT)/Papyrus/Resources/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.cjnevin.Papyrus;
 				PRODUCT_NAME = "$(TARGET_NAME)";
