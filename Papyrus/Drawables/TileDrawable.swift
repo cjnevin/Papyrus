@@ -31,7 +31,7 @@ struct TileDrawable : Drawable {
         self.onBoard = onBoard
         self.tile = tile
         self.rect = rect
-        self.points = "\(points)"
+        self.points = points > 0 ? "\(points)" : ""
     }
     
     func draw(renderer: Renderer) {

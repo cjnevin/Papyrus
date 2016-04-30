@@ -31,7 +31,7 @@ struct BoardDrawable: Drawable {
                     drawables.append(SquareDrawable(rect: rect, shader: SquareShader(x: x, y: y, board: board)))
                 } else {
                     // TODO: Not handling '?'
-                    drawables.append(TileDrawable(tile: square, points: board.letterPoints[square] ?? 0, rect: rect, onBoard: true))
+                    drawables.append(TileDrawable(tile: square, points: Bag.letterPoints[square] ?? 0, rect: rect, onBoard: true))
                 }
             }
         }

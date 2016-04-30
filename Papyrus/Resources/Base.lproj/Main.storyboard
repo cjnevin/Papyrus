@@ -2,6 +2,9 @@
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10116" systemVersion="15D21" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="Jkl-8b-dRO">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
+        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
+        <capability name="Navigation items with more than one left or right bar item" minToolsVersion="7.0"/>
     </dependencies>
     <scenes>
         <!--Papyrus-->
@@ -25,29 +28,110 @@
                                     <barButtonItem systemItem="refresh" id="FRl-lE-Ptu"/>
                                 </items>
                                 <variation key="heightClass=regular" fixedFrame="YES">
-                                    <rect key="frame" x="0.0" y="756" width="600" height="44"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="0.0" height="44"/>
                                 </variation>
                             </toolbar>
+                            <view alpha="0.0" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="3dp-bN-fMR">
+                                <rect key="frame" x="0.0" y="0.0" width="240" height="128"/>
+                                <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                            </view>
+                            <containerView opaque="NO" alpha="0.0" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="rwX-f3-NTO">
+                                <rect key="frame" x="0.0" y="0.0" width="240" height="128"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="rwX-f3-NTO" secondAttribute="height" multiplier="4:3" id="a7w-Vx-wjf"/>
+                                    <constraint firstAttribute="width" secondItem="rwX-f3-NTO" secondAttribute="height" multiplier="260:149" id="dXb-US-5P4"/>
+                                </constraints>
+                                <variation key="default">
+                                    <mask key="constraints">
+                                        <exclude reference="a7w-Vx-wjf"/>
+                                        <exclude reference="dXb-US-5P4"/>
+                                    </mask>
+                                </variation>
+                                <variation key="heightClass=regular">
+                                    <mask key="constraints">
+                                        <exclude reference="a7w-Vx-wjf"/>
+                                        <include reference="dXb-US-5P4"/>
+                                    </mask>
+                                </variation>
+                                <connections>
+                                    <segue destination="Gzw-WM-e8k" kind="embed" identifier="TilePickerSegue" id="zIv-8e-Yjc"/>
+                                </connections>
+                            </containerView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="3dp-bN-fMR" firstAttribute="leading" secondItem="4aa-cn-i0z" secondAttribute="leading" id="0vf-y9-dB3"/>
+                            <constraint firstAttribute="trailing" secondItem="rwX-f3-NTO" secondAttribute="trailing" constant="15" id="JFf-Hq-lvx">
+                                <variation key="heightClass=regular" constant="40"/>
+                            </constraint>
+                            <constraint firstItem="rwX-f3-NTO" firstAttribute="top" secondItem="Dfu-bY-qac" secondAttribute="bottom" constant="139" id="MqE-d9-AN9">
+                                <variation key="heightClass=regular" constant="40"/>
+                            </constraint>
+                            <constraint firstItem="rwX-f3-NTO" firstAttribute="centerX" secondItem="4aa-cn-i0z" secondAttribute="centerX" id="Q48-oM-d1e"/>
+                            <constraint firstItem="3dp-bN-fMR" firstAttribute="top" secondItem="Dfu-bY-qac" secondAttribute="bottom" id="Rgd-Y2-4Rx"/>
+                            <constraint firstItem="rwX-f3-NTO" firstAttribute="leading" secondItem="4aa-cn-i0z" secondAttribute="leading" constant="15" id="SpE-Ah-lnO">
+                                <variation key="heightClass=regular" constant="40"/>
+                            </constraint>
+                            <constraint firstItem="rwX-f3-NTO" firstAttribute="centerY" secondItem="4aa-cn-i0z" secondAttribute="centerY" id="XUe-rH-jX2">
+                                <variation key="heightClass=regular" constant="-80"/>
+                            </constraint>
+                            <constraint firstItem="2zo-5g-MkW" firstAttribute="top" secondItem="3dp-bN-fMR" secondAttribute="bottom" id="eUE-jP-ugi"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="rwX-f3-NTO" secondAttribute="trailing" constant="80" id="kAp-Vp-3l2"/>
+                            <constraint firstAttribute="trailing" secondItem="3dp-bN-fMR" secondAttribute="trailing" id="qwP-aB-R8B"/>
+                        </constraints>
                         <variation key="default">
                             <mask key="subviews">
                                 <exclude reference="g9J-FQ-MXr"/>
+                                <exclude reference="3dp-bN-fMR"/>
+                                <exclude reference="rwX-f3-NTO"/>
+                            </mask>
+                            <mask key="constraints">
+                                <exclude reference="0vf-y9-dB3"/>
+                                <exclude reference="Rgd-Y2-4Rx"/>
+                                <exclude reference="qwP-aB-R8B"/>
+                                <exclude reference="JFf-Hq-lvx"/>
+                                <exclude reference="MqE-d9-AN9"/>
+                                <exclude reference="Q48-oM-d1e"/>
+                                <exclude reference="SpE-Ah-lnO"/>
+                                <exclude reference="XUe-rH-jX2"/>
+                                <exclude reference="kAp-Vp-3l2"/>
+                                <exclude reference="eUE-jP-ugi"/>
                             </mask>
                         </variation>
                         <variation key="heightClass=regular">
                             <mask key="subviews">
                                 <include reference="g9J-FQ-MXr"/>
+                                <include reference="3dp-bN-fMR"/>
+                                <include reference="rwX-f3-NTO"/>
+                            </mask>
+                            <mask key="constraints">
+                                <include reference="0vf-y9-dB3"/>
+                                <include reference="Rgd-Y2-4Rx"/>
+                                <include reference="qwP-aB-R8B"/>
+                                <include reference="JFf-Hq-lvx"/>
+                                <include reference="MqE-d9-AN9"/>
+                                <include reference="Q48-oM-d1e"/>
+                                <include reference="SpE-Ah-lnO"/>
+                                <exclude reference="XUe-rH-jX2"/>
+                                <exclude reference="kAp-Vp-3l2"/>
+                                <include reference="eUE-jP-ugi"/>
                             </mask>
                         </variation>
                     </view>
                     <extendedEdge key="edgesForExtendedLayout"/>
                     <navigationItem key="navigationItem" title="Papyrus" id="ePs-hW-a3W">
-                        <barButtonItem key="leftBarButtonItem" systemItem="action" id="SSC-L5-TMp">
-                            <connections>
-                                <action selector="action:" destination="trd-fT-hXK" id="obU-Hh-Gmz"/>
-                            </connections>
-                        </barButtonItem>
+                        <leftBarButtonItems>
+                            <barButtonItem systemItem="action" id="SSC-L5-TMp">
+                                <connections>
+                                    <action selector="action:" destination="trd-fT-hXK" id="obU-Hh-Gmz"/>
+                                </connections>
+                            </barButtonItem>
+                            <barButtonItem title="Reset" id="buU-gN-B6e">
+                                <connections>
+                                    <action selector="reset:" destination="trd-fT-hXK" id="LPT-N7-7UD"/>
+                                </connections>
+                            </barButtonItem>
+                        </leftBarButtonItems>
                         <barButtonItem key="rightBarButtonItem" title="Submit" id="F1b-Cs-4xQ">
                             <connections>
                                 <action selector="submit:" destination="trd-fT-hXK" id="cEr-0Y-DqV"/>
@@ -55,9 +139,12 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
+                        <outlet property="blackoutView" destination="3dp-bN-fMR" id="fPp-RH-Fx8"/>
                         <outlet property="gameView" destination="4aa-cn-i0z" id="91a-0l-hxg"/>
+                        <outlet property="resetButton" destination="buU-gN-B6e" id="bhy-Hc-Zgn"/>
                         <outlet property="searchDisplayController" destination="Q6z-gf-lv5" id="5AS-at-00a"/>
                         <outlet property="submitButton" destination="F1b-Cs-4xQ" id="TE7-vG-8NA"/>
+                        <outlet property="tilePickerContainerView" destination="rwX-f3-NTO" id="vhL-AF-hm2"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="eiI-7D-yMl" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -87,6 +174,19 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="zN2-OL-bsH" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-603" y="395"/>
+        </scene>
+        <!--Tile Picker View Controller-->
+        <scene sceneID="6wS-yY-DbJ">
+            <objects>
+                <viewController id="Gzw-WM-e8k" customClass="TilePickerViewController" customModule="Papyrus" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="o5a-Jq-bs7">
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="XUv-w2-cTD" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="742" y="206.25"/>
         </scene>
     </scenes>
 </document>
