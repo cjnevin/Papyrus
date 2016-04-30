@@ -9,6 +9,13 @@
 import Foundation
 import PapyrusCore
 
+protocol GamePresenterDelegate {
+    func handlePlacement(presenter: GamePresenter)
+    func handleBlank(tileView: TileView, presenter: GamePresenter)
+}
+
+typealias PlacedTile = [(x: Int, y: Int, letter: Character)]
+
 class GamePresenter: TileViewDelegate {
     private var boardRect: CGRect {
         var rect = gameView.bounds
@@ -26,13 +33,12 @@ class GamePresenter: TileViewDelegate {
     private var tileWidth: CGFloat {
         return (CGRectGetWidth(boardRect) - (tileSpacing * tileRackMax) - tileSpacing) / tileRackMax
     }
-    private var droppedTiles = Set<TileView>()
     
+    var delegate: GamePresenterDelegate!
     var gameView: GameView!
     var game: Game! {
         didSet {
-            droppedTiles.forEach { $0.removeFromSuperview() }
-            droppedTiles.removeAll()
+            gameView.tileViews = nil
             gameView.drawable = BoardDrawable(board: game.board, rect: boardRect)
             if game.player is Computer { return }
             gameView.tileViews = rackTiles()
@@ -45,14 +51,17 @@ class GamePresenter: TileViewDelegate {
         return game.player.rack.enumerate().map ({ (index, tile) in
             let x = tileSpacing + ((tileSpacing + width) * CGFloat(index))
             let tileRect = CGRect(x: x, y: y, width: width, height: width)
-            return TileView(frame: tileRect, tile: tile, points: game.board.letterPoints[tile] ?? 0, onBoard: false, delegate: self)
+            let tileView = TileView(frame: tileRect, tile: tile, points: Bag.letterPoints[tile] ?? 0, onBoard: false, delegate: self)
+            tileView.draggable = true
+            return tileView
         })
     }
     
     // MARK: TileViewDelegate
     
-    func tiles() -> [(x: Int, y: Int, letter: Character)] {
-        return droppedTiles.map({ ($0.x!, $0.y!, $0.tile) })
+    func placedTiles() -> PlacedTile {
+        let shrunkTiles = gameView.tileViews!.filter({ $0.x != nil && $0.y != nil })
+        return shrunkTiles.map({ ($0.x!, $0.y!, $0.tile) })
     }
     
     typealias Square = (x: Int, y: Int, rect: CGRect)
@@ -60,12 +69,13 @@ class GamePresenter: TileViewDelegate {
     /// - returns: Tuples containing square and rect for empty squares.
     private var suitableSquares: [Square] {
         let squareSize = squareWidth
+        let placed = placedTiles()
         var suitable = [Square]()
         for (y, column) in game.board.board.enumerate() {
             for (x, square) in column.enumerate() {
                 let point = CGPoint(x: CGFloat(x) * squareSize, y: CGFloat(y) * squareSize)
                 let rect = CGRect(origin: point, size: CGSize(width: squareSize, height: squareSize))
-                if square == game.board.empty && droppedTiles.filter({ $0.x == x && $0.y == y }).count == 0 {
+                if square == game.board.empty && placed.filter({ $0.x == x && $0.y == y }).count == 0 {
                     suitable.append((x, y, rect))
                 }
             }
@@ -82,20 +92,20 @@ class GamePresenter: TileViewDelegate {
         }).last
     }
     
+    func tapped(tileView: TileView) {
+        
+    }
     
     func pickedUp(tileView: TileView) {
-        if let index = droppedTiles.indexOf(tileView) {
-            droppedTiles.removeAtIndex(index)
-        }
         tileView.x = nil
         tileView.y = nil
         tileView.onBoard = false
+        delegate.handlePlacement(self)
     }
     
     func frameForDropping(tileView: TileView) -> CGRect {
         if CGRectIntersectsRect(tileView.frame, boardRect) {
             if let intersection = bestIntersection(tileView.frame) {
-                droppedTiles.insert(tileView)
                 tileView.onBoard = true
                 tileView.x = intersection.x
                 tileView.y = intersection.y
@@ -104,5 +114,12 @@ class GamePresenter: TileViewDelegate {
         }
         // Fallback, return current frame
         return tileView.initialFrame
+    }
+    
+    func dropped(tileView: TileView) {
+        delegate.handlePlacement(self)
+        if tileView.tile == Bag.blankLetter {
+            delegate.handleBlank(tileView, presenter: self)
+        }
     }
 }

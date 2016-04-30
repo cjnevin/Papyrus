@@ -12,6 +12,8 @@ import PapyrusCore
 protocol TileViewDelegate {
     func pickedUp(tileView: TileView)
     func frameForDropping(tileView: TileView) -> CGRect
+    func dropped(tileView: TileView)
+    func tapped(tileView: TileView)
 }
 
 class TileView: UIView {
@@ -21,10 +23,20 @@ class TileView: UIView {
         }
     }
     
+    var tappable: Bool = false {
+        didSet {
+            tappable ? makeTappable() : makeUntappable()
+        }
+    }
+    
     var initialFrame: CGRect!
     var initialPoint: CGPoint!
     var delegate: TileViewDelegate!
-    var tile: Character!
+    var tile: Character! {
+        didSet {
+            setNeedsDisplay()
+        }
+    }
     var points: Int!
     var onBoard: Bool = false {
         didSet {
@@ -53,7 +65,6 @@ class TileView: UIView {
 
     override func didMoveToSuperview() {
         super.didMoveToSuperview()
-        draggable = superview != nil
         contentMode = .Redraw
     }
     
@@ -81,7 +92,17 @@ extension TileView : UIGestureRecognizerDelegate {
     }
     
     func makeUndraggable() {
-        gestureRecognizers?.forEach { removeGestureRecognizer($0) }
+        gestureRecognizers?.forEach { if $0 is UIPanGestureRecognizer || $0 is UILongPressGestureRecognizer { removeGestureRecognizer($0) } }
+    }
+    
+    func makeTappable() {
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(didTap))
+        tapGesture.delegate = self
+        addGestureRecognizer(tapGesture)
+    }
+    
+    func makeUntappable() {
+        gestureRecognizers?.forEach { if $0 is UITapGestureRecognizer { removeGestureRecognizer($0) } }
     }
     
     func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWithGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
@@ -91,6 +112,10 @@ extension TileView : UIGestureRecognizerDelegate {
     
     func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldReceiveTouch touch: UITouch) -> Bool {
         return true
+    }
+    
+    func didTap(tapGesture: UITapGestureRecognizer) {
+        delegate.tapped(self)
     }
     
     func didPress(pressGesture: UILongPressGestureRecognizer) {
@@ -111,6 +136,7 @@ extension TileView : UIGestureRecognizerDelegate {
                 self.center = CGPoint(x: CGRectGetMidX(newFrame), y: CGRectGetMidY(newFrame))
                 self.bounds = newFrame
             }, completion: { (complete) in
+                self.delegate.dropped(self)
             })
         default:
             break

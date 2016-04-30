@@ -19,13 +19,13 @@ struct SquareShader: Shader {
             fillColor = .Papyrus_Center
             return
         }
-        switch board.letterMultipliers[y][x] {
+        switch Board.letterMultipliers[y][x] {
         case 2:
             fillColor = .Papyrus_Letterx2
         case 3:
             fillColor = .Papyrus_Letterx3
         default:
-            switch board.wordMultipliers[y][x] {
+            switch Board.wordMultipliers[y][x] {
             case 2:
                 fillColor = .Papyrus_Wordx2
             case 3:
