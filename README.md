@@ -7,6 +7,5 @@ AI supports varying levels of difficulty.
 
 Outstanding ToDo's:
 - Lookahead to reduce time spent waiting between turns.
-- Ability to return tiles to bag.
 - Ability to calculate a hint?
 - Ability to swap tiles. AI handles this automatically, there is currently no UI for human players to do this.
