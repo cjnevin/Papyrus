@@ -14,14 +14,14 @@ struct TileShader : Shader {
     var textColor: UIColor?
     var strokeColor: UIColor?
     var strokeWidth: CGFloat?
-    init(tile: Character, onBoard: Bool) {
+    init(tile: Character, points: Int, onBoard: Bool) {
         // Based on state of tile, render differently.
         if onBoard {
             fillColor = .Papyrus_TileIlluminated
         } else {
             fillColor = .Papyrus_Tile
         }
-        textColor = .blackColor()
+        textColor = (points == 0 ? .grayColor() : .blackColor())
         strokeColor = .Papyrus_TileBorder
         strokeWidth = 1.0
     }

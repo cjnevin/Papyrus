@@ -44,6 +44,10 @@ class TileView: UIView {
         }
     }
     
+    var isBlank: Bool {
+        return points == 0
+    }
+    
     var x: Int?
     var y: Int?
     
