@@ -30,8 +30,11 @@ struct BoardDrawable: Drawable {
                 if square == board.empty {
                     drawables.append(SquareDrawable(rect: rect, shader: SquareShader(x: x, y: y, board: board)))
                 } else {
-                    // TODO: Not handling '?'
-                    drawables.append(TileDrawable(tile: square, points: Bag.letterPoints[square] ?? 0, rect: rect, onBoard: true))
+                    var points = 0
+                    if board.playedBlanks.contains({ $0.x == x && $0.y == y }) == false {
+                        points = Bag.letterPoints[square] ?? 0
+                    }
+                    drawables.append(TileDrawable(tile: square, points: points, rect: rect, onBoard: true))
                 }
             }
         }

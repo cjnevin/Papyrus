@@ -95,7 +95,7 @@ class PapyrusViewController: UIViewController, GamePresenterDelegate {
         gameQueue.addOperationWithBlock { [weak self] in
             guard let strongSelf = self else { return }
             let computer = Computer(difficulty: .Hard, rack: [], score: 0, solves: [], consecutiveSkips: 0)
-            let computer2 = Computer(difficulty: .Hard, rack: [], score: 0, solves: [], consecutiveSkips: 0)
+            let computer2 = Computer(difficulty: .Easy, rack: [], score: 0, solves: [], consecutiveSkips: 0)
             let human = Human(rack: [], score: 0, solves: [], consecutiveSkips: 0)
             strongSelf.game = Game.newGame(strongSelf.dictionary, bag: Bag(withBlanks: true), players: [computer, computer2, human], eventHandler: strongSelf.handleEvent)
             NSOperationQueue.mainQueue().addOperationWithBlock {
@@ -140,9 +140,10 @@ class PapyrusViewController: UIViewController, GamePresenterDelegate {
         guard let game = game where gameOver == false else { return nil }
         if game.player is Human {
             let placed = presenter.placedTiles()
+            let blanks = presenter.blankTiles()
             resetButton.enabled = placed.count > 0
             
-            let result = game.validate(placed)
+            let result = game.validate(placed, blanks: blanks)
             switch result {
             case let .Valid(solution):
                 submitButton.enabled = true
@@ -161,7 +162,7 @@ class PapyrusViewController: UIViewController, GamePresenterDelegate {
     func swap(sender: UIAlertAction) {
         gameQueue.addOperationWithBlock { [weak self] in
             guard let strongSelf = self where strongSelf.game?.player != nil else { return }
-            strongSelf.game!.swapTiles(strongSelf.game!.player.rack)
+            strongSelf.game!.swapTiles(strongSelf.game!.player.rack.map({ $0.letter }))
         }
     }
     

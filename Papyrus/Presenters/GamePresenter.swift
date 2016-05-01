@@ -51,7 +51,7 @@ class GamePresenter: TileViewDelegate {
         return game.player.rack.enumerate().map ({ (index, tile) in
             let x = tileSpacing + ((tileSpacing + width) * CGFloat(index))
             let tileRect = CGRect(x: x, y: y, width: width, height: width)
-            let tileView = TileView(frame: tileRect, tile: tile, points: Bag.letterPoints[tile] ?? 0, onBoard: false, delegate: self)
+            let tileView = TileView(frame: tileRect, tile: tile.letter, points: tile.isBlank ? 0 : Bag.letterPoints[tile.letter] ?? 0, onBoard: false, delegate: self)
             tileView.draggable = true
             return tileView
         })
@@ -62,6 +62,11 @@ class GamePresenter: TileViewDelegate {
     func placedTiles() -> PlacedTile {
         let shrunkTiles = gameView.tileViews!.filter({ $0.x != nil && $0.y != nil })
         return shrunkTiles.map({ ($0.x!, $0.y!, $0.tile) })
+    }
+    
+    func blankTiles() -> [(x: Int, y: Int)] {
+        let shrunkTiles = gameView.tileViews!.filter({ $0.x != nil && $0.y != nil && $0.isBlank })
+        return shrunkTiles.map({ ($0.x!, $0.y!) })
     }
     
     typealias Square = (x: Int, y: Int, rect: CGRect)
