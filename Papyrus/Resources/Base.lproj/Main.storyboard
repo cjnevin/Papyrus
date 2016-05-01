@@ -2,6 +2,7 @@
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10116" systemVersion="15D21" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="Jkl-8b-dRO">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
+        <capability name="Alignment constraints with different attributes" minToolsVersion="5.1"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="Navigation items with more than one left or right bar item" minToolsVersion="7.0"/>
@@ -19,18 +20,6 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="536"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="g9J-FQ-MXr">
-                                <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
-                                <items>
-                                    <barButtonItem systemItem="stop" id="7m2-a9-Xbk"/>
-                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="I98-k8-Ehh"/>
-                                    <barButtonItem title="Shuffle" id="f7e-5R-30g"/>
-                                    <barButtonItem systemItem="refresh" id="FRl-lE-Ptu"/>
-                                </items>
-                                <variation key="heightClass=regular" fixedFrame="YES">
-                                    <rect key="frame" x="0.0" y="0.0" width="0.0" height="44"/>
-                                </variation>
-                            </toolbar>
                             <view alpha="0.0" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="3dp-bN-fMR">
                                 <rect key="frame" x="0.0" y="0.0" width="240" height="128"/>
                                 <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
@@ -81,11 +70,11 @@
                         </constraints>
                         <variation key="default">
                             <mask key="subviews">
-                                <exclude reference="g9J-FQ-MXr"/>
                                 <exclude reference="3dp-bN-fMR"/>
                                 <exclude reference="rwX-f3-NTO"/>
                             </mask>
                             <mask key="constraints">
+                                <exclude reference="eUE-jP-ugi"/>
                                 <exclude reference="0vf-y9-dB3"/>
                                 <exclude reference="Rgd-Y2-4Rx"/>
                                 <exclude reference="qwP-aB-R8B"/>
@@ -95,16 +84,15 @@
                                 <exclude reference="SpE-Ah-lnO"/>
                                 <exclude reference="XUe-rH-jX2"/>
                                 <exclude reference="kAp-Vp-3l2"/>
-                                <exclude reference="eUE-jP-ugi"/>
                             </mask>
                         </variation>
                         <variation key="heightClass=regular">
                             <mask key="subviews">
-                                <include reference="g9J-FQ-MXr"/>
                                 <include reference="3dp-bN-fMR"/>
                                 <include reference="rwX-f3-NTO"/>
                             </mask>
                             <mask key="constraints">
+                                <include reference="eUE-jP-ugi"/>
                                 <include reference="0vf-y9-dB3"/>
                                 <include reference="Rgd-Y2-4Rx"/>
                                 <include reference="qwP-aB-R8B"/>
@@ -114,7 +102,6 @@
                                 <include reference="SpE-Ah-lnO"/>
                                 <exclude reference="XUe-rH-jX2"/>
                                 <exclude reference="kAp-Vp-3l2"/>
-                                <include reference="eUE-jP-ugi"/>
                             </mask>
                         </variation>
                     </view>
@@ -179,7 +166,12 @@
         <scene sceneID="6wS-yY-DbJ">
             <objects>
                 <viewController id="Gzw-WM-e8k" customClass="TilePickerViewController" customModule="Papyrus" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="xNc-jB-9VY"/>
+                        <viewControllerLayoutGuide type="bottom" id="CCq-7q-59Z"/>
+                    </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="o5a-Jq-bs7">
+                        <rect key="frame" x="0.0" y="0.0" width="240" height="128"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
