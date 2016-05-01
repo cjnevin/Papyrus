@@ -42,10 +42,7 @@ class PapyrusViewController: UIViewController, GamePresenterDelegate {
         presenter.delegate = self
         
         gameQueue.maxConcurrentOperationCount = 1
-        gameQueue.addOperationWithBlock { [weak self] in
-            self?.dictionary = Dawg.load(NSBundle.mainBundle().pathForResource("sowpods", ofType: "bin")!)!
-        }
-        
+
         title = "Papyrus"
     }
     
@@ -94,10 +91,10 @@ class PapyrusViewController: UIViewController, GamePresenterDelegate {
         }
         gameQueue.addOperationWithBlock { [weak self] in
             guard let strongSelf = self else { return }
-            let computer = Computer(difficulty: .Hard, rack: [], score: 0, solves: [], consecutiveSkips: 0)
-            let computer2 = Computer(difficulty: .Easy, rack: [], score: 0, solves: [], consecutiveSkips: 0)
-            let human = Human(rack: [], score: 0, solves: [], consecutiveSkips: 0)
-            strongSelf.game = Game.newGame(strongSelf.dictionary, bag: Bag(withBlanks: true), players: [computer, computer2, human], eventHandler: strongSelf.handleEvent)
+            let computer = Computer()
+            let computer2 = Computer(difficulty: .Easy)
+            let human = Human()
+            strongSelf.game = Game.newGame(strongSelf.dictionary, bag: Bag(), players: [computer, computer2, human], eventHandler: strongSelf.handleEvent)
             NSOperationQueue.mainQueue().addOperationWithBlock {
                 strongSelf.title = "Started"
                 strongSelf.gameQueue.addOperationWithBlock {
