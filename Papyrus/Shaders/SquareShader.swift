@@ -15,23 +15,27 @@ struct SquareShader: Shader {
     var strokeColor: UIColor?
     var strokeWidth: CGFloat?
     init(x: Int, y: Int, board: Board) {
-        if x == board.center && y == board.center {
-            fillColor = .Papyrus_Center
+        if x == board.config.center && y == board.config.center {
+            fillColor = .centerSquareColor
             return
         }
-        switch Board.letterMultipliers[y][x] {
+        switch board.config.letterMultipliers[y][x] {
         case 2:
-            fillColor = .Papyrus_Letterx2
+            fillColor = .doubleLetterSquareColor
         case 3:
-            fillColor = .Papyrus_Letterx3
+            fillColor = .tripleLetterSquareColor
+        case 4:
+            fillColor = .quadrupleLetterSquareColor
         default:
-            switch Board.wordMultipliers[y][x] {
+            switch board.config.wordMultipliers[y][x] {
             case 2:
-                fillColor = .Papyrus_Wordx2
+                fillColor = .doubleWordSquareColor
             case 3:
-                fillColor = .Papyrus_Wordx3
+                fillColor = .tripleWordSquareColor
+            case 4:
+                fillColor = .quadrupleWordSquareColor
             default:
-                fillColor = .Papyrus_Tile
+                fillColor = .tileColor
             }
         }
     }

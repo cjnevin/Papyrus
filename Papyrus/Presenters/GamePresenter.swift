@@ -9,12 +9,12 @@
 import Foundation
 import PapyrusCore
 
+typealias PlacedTile = [(x: Int, y: Int, letter: Character)]
+
 protocol GamePresenterDelegate {
     func handlePlacement(presenter: GamePresenter)
     func handleBlank(tileView: TileView, presenter: GamePresenter)
 }
-
-typealias PlacedTile = [(x: Int, y: Int, letter: Character)]
 
 class GamePresenter: TileViewDelegate {
     private var boardRect: CGRect {
@@ -23,7 +23,7 @@ class GamePresenter: TileViewDelegate {
         return rect
     }
     private var squareWidth: CGFloat {
-        return CGRectGetWidth(boardRect) / CGFloat(game.board.boardSize)
+        return CGRectGetWidth(boardRect) / CGFloat(game.board.config.size)
     }
     
     private let tileSpacing = CGFloat(5)
@@ -39,7 +39,7 @@ class GamePresenter: TileViewDelegate {
     var game: Game! {
         didSet {
             gameView.tileViews = nil
-            gameView.drawable = BoardDrawable(board: game.board, rect: boardRect)
+            gameView.drawable = BoardDrawable(board: game.board, distribution: game.bag.distribution, rect: boardRect)
             if game.player is Computer { return }
             gameView.tileViews = rackTiles()
         }
@@ -51,7 +51,7 @@ class GamePresenter: TileViewDelegate {
         return game.player.rack.enumerate().map ({ (index, tile) in
             let x = tileSpacing + ((tileSpacing + width) * CGFloat(index))
             let tileRect = CGRect(x: x, y: y, width: width, height: width)
-            let tileView = TileView(frame: tileRect, tile: tile.letter, points: tile.isBlank ? 0 : Bag.letterPoints[tile.letter] ?? 0, onBoard: false, delegate: self)
+            let tileView = TileView(frame: tileRect, tile: tile.letter, points: tile.isBlank ? 0 : game.bag.distribution.letterPoints[tile.letter] ?? 0, onBoard: false, delegate: self)
             tileView.draggable = true
             return tileView
         })
@@ -80,7 +80,7 @@ class GamePresenter: TileViewDelegate {
             for (x, square) in column.enumerate() {
                 let point = CGPoint(x: CGFloat(x) * squareSize, y: CGFloat(y) * squareSize)
                 let rect = CGRect(origin: point, size: CGSize(width: squareSize, height: squareSize))
-                if square == game.board.empty && placed.filter({ $0.x == x && $0.y == y }).count == 0 {
+                if square == game.board.config.empty && placed.filter({ $0.x == x && $0.y == y }).count == 0 {
                     suitable.append((x, y, rect))
                 }
             }

@@ -7,7 +7,6 @@
 //
 
 import UIKit
-import SpriteKit
 import PapyrusCore
 
 class PapyrusViewController: UIViewController, GamePresenterDelegate {
@@ -21,10 +20,10 @@ class PapyrusViewController: UIViewController, GamePresenterDelegate {
     
     var firstRun: Bool = false
     
-    var dictionary: Dawg!
     var game: Game?
     var presenter = GamePresenter()
     var gameOver: Bool = true
+    var dictionary: Dawg!
     var tilePickerViewController: TilePickerViewController!
     @IBOutlet weak var tilePickerContainerView: UIView!
     @IBOutlet weak var blackoutView: UIView!
@@ -32,6 +31,7 @@ class PapyrusViewController: UIViewController, GamePresenterDelegate {
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         if segue.identifier == "TilePickerSegue" {
             tilePickerViewController = segue.destinationViewController as! TilePickerViewController
+            tilePickerViewController.distribution = ScrabbleDistribution()
         }
     }
     
@@ -58,9 +58,10 @@ class PapyrusViewController: UIViewController, GamePresenterDelegate {
     func handleEvent(event: GameEvent) {
         NSOperationQueue.mainQueue().addOperationWithBlock {
             switch event {
-            case .Over(_):
+            case let .Over(winner):
                 self.gameOver = true
                 self.title = "Game Over"
+                print("Winner: \(winner)")
             case .TurnStarted:
                 self.resetButton.enabled = false
                 self.submitButton.enabled = false
@@ -80,6 +81,7 @@ class PapyrusViewController: UIViewController, GamePresenterDelegate {
     }
     
     func newGame() {
+        let superScrabble = true
         submitButton.enabled = false
         resetButton.enabled = false
         gameOver = false
@@ -92,9 +94,19 @@ class PapyrusViewController: UIViewController, GamePresenterDelegate {
         gameQueue.addOperationWithBlock { [weak self] in
             guard let strongSelf = self else { return }
             let computer = Computer()
-            let computer2 = Computer(difficulty: .Easy)
+            let computer2 = Computer()
             let human = Human()
-            strongSelf.game = Game.newGame(strongSelf.dictionary, bag: Bag(), players: [computer, computer2, human], eventHandler: strongSelf.handleEvent)
+            
+            var board: Board!
+            var bag: Bag!
+            if superScrabble {
+                board = Board(config: SuperScrabbleBoardConfig())
+                bag = Bag(distribution: SuperScrabbleDistribution())
+            } else {
+                board = Board(config: ScrabbleBoardConfig())
+                bag = Bag(distribution: SuperScrabbleDistribution())
+            }
+            strongSelf.game = Game.newGame(strongSelf.dictionary, board: board, bag: bag, players: [computer, computer2, human], eventHandler: strongSelf.handleEvent)
             NSOperationQueue.mainQueue().addOperationWithBlock {
                 strongSelf.title = "Started"
                 strongSelf.gameQueue.addOperationWithBlock {
@@ -102,11 +114,6 @@ class PapyrusViewController: UIViewController, GamePresenterDelegate {
                 }
             }
         }
-    }
-    
-    func enableButtons(enabled: Bool) {
-        let isHuman = game?.player is Human
-        submitButton.enabled = isHuman && enabled
     }
     
     // MARK: - GamePresenterDelegate
