@@ -123,8 +123,10 @@ class GamePresenter: TileViewDelegate {
     
     func dropped(tileView: TileView) {
         delegate.handlePlacement(self)
-        if tileView.tile == Bag.blankLetter {
+        if tileView.tile == Bag.blankLetter && tileView.onBoard {
             delegate.handleBlank(tileView, presenter: self)
+        } else if tileView.isBlank && !tileView.onBoard {
+            tileView.tile = Bag.blankLetter
         }
     }
 }
