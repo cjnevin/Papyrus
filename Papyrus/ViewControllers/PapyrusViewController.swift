@@ -81,7 +81,7 @@ class PapyrusViewController: UIViewController, GamePresenterDelegate {
     }
     
     func newGame() {
-        let superScrabble = true
+        let superScrabble = false
         submitButton.enabled = false
         resetButton.enabled = false
         gameOver = false
@@ -96,16 +96,8 @@ class PapyrusViewController: UIViewController, GamePresenterDelegate {
             let computer = Computer()
             let computer2 = Computer()
             let human = Human()
-            
-            var board: Board!
-            var bag: Bag!
-            if superScrabble {
-                board = Board(config: SuperScrabbleBoardConfig())
-                bag = Bag(distribution: SuperScrabbleDistribution())
-            } else {
-                board = Board(config: ScrabbleBoardConfig())
-                bag = Bag(distribution: ScrabbleDistribution())
-            }
+            let board = Board(config: superScrabble ? SuperScrabbleBoardConfig() : ScrabbleBoardConfig())
+            let bag = Bag(distribution: superScrabble ? SuperScrabbleDistribution() : ScrabbleDistribution())
             strongSelf.game = Game.newGame(strongSelf.dictionary, board: board, bag: bag, players: [computer, computer2, human], eventHandler: strongSelf.handleEvent)
             NSOperationQueue.mainQueue().addOperationWithBlock {
                 strongSelf.title = "Started"
