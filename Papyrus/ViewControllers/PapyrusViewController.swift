@@ -104,7 +104,7 @@ class PapyrusViewController: UIViewController, GamePresenterDelegate {
                 bag = Bag(distribution: SuperScrabbleDistribution())
             } else {
                 board = Board(config: ScrabbleBoardConfig())
-                bag = Bag(distribution: SuperScrabbleDistribution())
+                bag = Bag(distribution: ScrabbleDistribution())
             }
             strongSelf.game = Game.newGame(strongSelf.dictionary, board: board, bag: bag, players: [computer, computer2, human], eventHandler: strongSelf.handleEvent)
             NSOperationQueue.mainQueue().addOperationWithBlock {
