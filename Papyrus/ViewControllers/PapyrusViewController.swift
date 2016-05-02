@@ -20,6 +20,15 @@ class PapyrusViewController: UIViewController, GamePresenterDelegate {
     
     var firstRun: Bool = false
     
+    let superScrabbleKey = "PapyrusGameTypeSuper"
+    var superScrabble: Bool {
+        get {
+            return NSUserDefaults.standardUserDefaults().boolForKey(superScrabbleKey)
+        }
+        set {
+            NSUserDefaults.standardUserDefaults().setBool(newValue, forKey: superScrabbleKey)
+        }
+    }
     var game: Game?
     var presenter = GamePresenter()
     var gameOver: Bool = true
@@ -81,7 +90,6 @@ class PapyrusViewController: UIViewController, GamePresenterDelegate {
     }
     
     func newGame() {
-        let superScrabble = false
         submitButton.enabled = false
         resetButton.enabled = false
         gameOver = false
@@ -96,8 +104,8 @@ class PapyrusViewController: UIViewController, GamePresenterDelegate {
             let computer = Computer()
             let computer2 = Computer()
             let human = Human()
-            let board = Board(config: superScrabble ? SuperScrabbleBoardConfig() : ScrabbleBoardConfig())
-            let bag = Bag(distribution: superScrabble ? SuperScrabbleDistribution() : ScrabbleDistribution())
+            let board = Board(config: strongSelf.superScrabble ? SuperScrabbleBoardConfig() : ScrabbleBoardConfig())
+            let bag = Bag(distribution: strongSelf.superScrabble ? SuperScrabbleDistribution() : ScrabbleDistribution())
             strongSelf.game = Game.newGame(strongSelf.dictionary, board: board, bag: bag, players: [computer, computer2, human], eventHandler: strongSelf.handleEvent)
             NSOperationQueue.mainQueue().addOperationWithBlock {
                 strongSelf.title = "Started"
@@ -183,12 +191,27 @@ class PapyrusViewController: UIViewController, GamePresenterDelegate {
         newGame()
     }
     
+    func gameTypeSuper(sender: UIAlertAction) {
+        superScrabble = true
+        newGame()
+    }
+    
+    func gameTypeNormal(sender: UIAlertAction) {
+        superScrabble = false
+        newGame()
+    }
+    
     @IBAction func action(sender: UIBarButtonItem) {
         let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .ActionSheet)
         if game?.player is Human && !gameOver {
             actionSheet.addAction(UIAlertAction(title: "Shuffle", style: .Default, handler: shuffle))
             actionSheet.addAction(UIAlertAction(title: "Swap", style: .Default, handler: swap))
             actionSheet.addAction(UIAlertAction(title: "Skip", style: .Default, handler: skip))
+            if superScrabble {
+                actionSheet.addAction(UIAlertAction(title: "Play Scrabble", style: .Default, handler: gameTypeNormal))
+            } else {
+                actionSheet.addAction(UIAlertAction(title: "Play Super Scrabble", style: .Default, handler: gameTypeSuper))
+            }
         }
         actionSheet.addAction(UIAlertAction(title: gameOver ? "New Game" : "Restart", style: .Destructive, handler: restart))
         actionSheet.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: nil))
