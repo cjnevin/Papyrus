@@ -17,22 +17,22 @@ struct BoardDrawable: Drawable {
     
     var shader: Shader
     
-    init(board: Board, rect: CGRect) {
+    init(board: Board, distribution: LetterDistribution, rect: CGRect) {
         self.rect = rect
-        squareSize = CGRectGetWidth(rect) / CGFloat(board.boardSize)
-        shader = FillShader(color: .Papyrus_Tile)
-        range = 0..<board.boardSize
+        squareSize = CGRectGetWidth(rect) / CGFloat(board.config.size)
+        shader = FillShader(color: .tileColor)
+        range = board.config.boardRange
         var drawables = [Drawable]()
         for (y, column) in board.board.enumerate() {
             for (x, square) in column.enumerate() {
                 let point = CGPoint(x: CGFloat(x) * squareSize, y: CGFloat(y) * squareSize)
                 let rect = CGRect(origin: point, size: CGSize(width: squareSize, height: squareSize))
-                if square == board.empty {
+                if square == board.config.empty {
                     drawables.append(SquareDrawable(rect: rect, shader: SquareShader(x: x, y: y, board: board)))
                 } else {
                     var points = 0
                     if board.playedBlanks.contains({ $0.x == x && $0.y == y }) == false {
-                        points = Bag.letterPoints[square] ?? 0
+                        points = distribution.letterPoints[square] ?? 0
                     }
                     drawables.append(TileDrawable(tile: square, points: points, rect: rect, onBoard: true))
                 }

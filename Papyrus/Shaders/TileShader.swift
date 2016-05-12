@@ -17,12 +17,12 @@ struct TileShader : Shader {
     init(tile: Character, points: Int, onBoard: Bool) {
         // Based on state of tile, render differently.
         if onBoard {
-            fillColor = .Papyrus_TileIlluminated
+            fillColor = .tileIlluminatedColor
         } else {
-            fillColor = .Papyrus_Tile
+            fillColor = .tileColor
         }
         textColor = (points == 0 ? .grayColor() : .blackColor())
-        strokeColor = .Papyrus_TileBorder
+        strokeColor = .tileBorderColor
         strokeWidth = 1.0
     }
 }

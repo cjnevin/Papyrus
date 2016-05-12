@@ -15,6 +15,7 @@ class TilePickerViewController : UIViewController, TileViewDelegate {
     let perRow: Int = 7
     let padding: CGFloat = 4
     
+    var distribution: LetterDistribution!
     var tileViews: [TileView]?
     var shapeLayer: CAShapeLayer?
     var completionHandler: ((Character) -> ())? = nil
@@ -27,7 +28,7 @@ class TilePickerViewController : UIViewController, TileViewDelegate {
         
         let containerRect = CGRectInset(view.bounds, inset, inset)
         let tileSize = ceil(containerRect.size.width / CGFloat(perRow))
-        let noBlanks = Bag.letterPoints.filter({$0.0 != Bag.blankLetter }).sort({$0.0 < $1.0})
+        let noBlanks = distribution.letterPoints.filter({$0.0 != Bag.blankLetter }).sort({$0.0 < $1.0})
         let lastRow = Int(noBlanks.count / perRow)
         let path = UIBezierPath()
         tileViews = noBlanks.enumerate().map { (index, value) -> TileView in

@@ -7,10 +7,14 @@
 //
 
 import UIKit
-import SpriteKit
 import PapyrusCore
 
 class PapyrusViewController: UIViewController, GamePresenterDelegate {
+    enum SegueId: String {
+        case PreferencesSegue
+        case TilePickerSegue
+    }
+    
     @IBOutlet weak var gameView: GameView!
     @IBOutlet weak var submitButton: UIBarButtonItem!
     @IBOutlet weak var resetButton: UIBarButtonItem!
@@ -21,17 +25,24 @@ class PapyrusViewController: UIViewController, GamePresenterDelegate {
     
     var firstRun: Bool = false
     
-    var dictionary: Dawg!
     var game: Game?
     var presenter = GamePresenter()
     var gameOver: Bool = true
+    var dictionary: Dawg!
     var tilePickerViewController: TilePickerViewController!
     @IBOutlet weak var tilePickerContainerView: UIView!
     @IBOutlet weak var blackoutView: UIView!
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        if segue.identifier == "TilePickerSegue" {
+        if segue.identifier == SegueId.TilePickerSegue.rawValue {
             tilePickerViewController = segue.destinationViewController as! TilePickerViewController
+            tilePickerViewController.distribution = ScrabbleDistribution()
+        } else if segue.identifier == SegueId.PreferencesSegue.rawValue {
+            let navigationController = segue.destinationViewController as! UINavigationController
+            let preferencesController = navigationController.viewControllers.first! as! PreferencesViewController
+            preferencesController.saveHandler = {
+                self.newGame()
+            }
         }
     }
     
@@ -58,9 +69,10 @@ class PapyrusViewController: UIViewController, GamePresenterDelegate {
     func handleEvent(event: GameEvent) {
         NSOperationQueue.mainQueue().addOperationWithBlock {
             switch event {
-            case .Over(_):
+            case let .Over(winner):
                 self.gameOver = true
                 self.title = "Game Over"
+                print("Winner: \(winner)")
             case .TurnStarted:
                 self.resetButton.enabled = false
                 self.submitButton.enabled = false
@@ -91,10 +103,16 @@ class PapyrusViewController: UIViewController, GamePresenterDelegate {
         }
         gameQueue.addOperationWithBlock { [weak self] in
             guard let strongSelf = self else { return }
-            let computer = Computer()
-            let computer2 = Computer(difficulty: .Easy)
-            let human = Human()
-            strongSelf.game = Game.newGame(strongSelf.dictionary, bag: Bag(), players: [computer, computer2, human], eventHandler: strongSelf.handleEvent)
+            var players = [Player]()
+            for _ in 0..<Preferences.sharedInstance.opponents {
+                let difficulty = Preferences.sharedInstance.difficulty
+                players.append(Computer(difficulty: difficulty))
+            }
+            players.append(Human())
+            let superScrabble = Preferences.sharedInstance.gameType == .SuperScrabble
+            let board = Board(config: superScrabble ? SuperScrabbleBoardConfig() : ScrabbleBoardConfig())
+            let bag = Bag(distribution: superScrabble ? SuperScrabbleDistribution() : ScrabbleDistribution())
+            strongSelf.game = Game.newGame(strongSelf.dictionary, board: board, bag: bag, players: players, eventHandler: strongSelf.handleEvent)
             NSOperationQueue.mainQueue().addOperationWithBlock {
                 strongSelf.title = "Started"
                 strongSelf.gameQueue.addOperationWithBlock {
@@ -102,11 +120,6 @@ class PapyrusViewController: UIViewController, GamePresenterDelegate {
                 }
             }
         }
-    }
-    
-    func enableButtons(enabled: Bool) {
-        let isHuman = game?.player is Human
-        submitButton.enabled = isHuman && enabled
     }
     
     // MARK: - GamePresenterDelegate
@@ -184,8 +197,13 @@ class PapyrusViewController: UIViewController, GamePresenterDelegate {
         newGame()
     }
     
+    func showPreferences(sender: UIAlertAction) {
+        performSegueWithIdentifier("PreferencesSegue", sender: self)
+    }
+    
     @IBAction func action(sender: UIBarButtonItem) {
         let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .ActionSheet)
+        actionSheet.addAction(UIAlertAction(title: "Preferences", style: .Default, handler: showPreferences))
         if game?.player is Human && !gameOver {
             actionSheet.addAction(UIAlertAction(title: "Shuffle", style: .Default, handler: shuffle))
             actionSheet.addAction(UIAlertAction(title: "Swap", style: .Default, handler: swap))

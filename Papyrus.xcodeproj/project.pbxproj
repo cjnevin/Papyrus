@@ -12,6 +12,8 @@
 		993A53491C7EE273001F93CB /* SquareShader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 993A53471C7EE273001F93CB /* SquareShader.swift */; };
 		993A534B1C7EE338001F93CB /* TileShader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 993A534A1C7EE338001F93CB /* TileShader.swift */; };
 		993A534D1C7EED0F001F93CB /* FillShader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 993A534C1C7EED0F001F93CB /* FillShader.swift */; };
+		994BFCC41CD7B7E900D96156 /* PreferencesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 994BFCC31CD7B7E900D96156 /* PreferencesViewController.swift */; };
+		994BFCC91CD7C31600D96156 /* Preferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = 994BFCC81CD7C31600D96156 /* Preferences.swift */; };
 		995DD83C1BB6213A009B409D /* sowpods.bin in Resources */ = {isa = PBXBuildFile; fileRef = 995DD83A1BB6213A009B409D /* sowpods.bin */; };
 		995DD83D1BB6213A009B409D /* twl06.bin in Resources */ = {isa = PBXBuildFile; fileRef = 995DD83B1BB6213A009B409D /* twl06.bin */; };
 		99629C091B547DE800510036 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99629C081B547DE800510036 /* AppDelegate.swift */; };
@@ -79,6 +81,8 @@
 		993A53471C7EE273001F93CB /* SquareShader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SquareShader.swift; sourceTree = "<group>"; };
 		993A534A1C7EE338001F93CB /* TileShader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TileShader.swift; sourceTree = "<group>"; };
 		993A534C1C7EED0F001F93CB /* FillShader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FillShader.swift; sourceTree = "<group>"; };
+		994BFCC31CD7B7E900D96156 /* PreferencesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PreferencesViewController.swift; sourceTree = "<group>"; };
+		994BFCC81CD7C31600D96156 /* Preferences.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Preferences.swift; sourceTree = "<group>"; };
 		995DD83A1BB6213A009B409D /* sowpods.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = sowpods.bin; sourceTree = "<group>"; };
 		995DD83B1BB6213A009B409D /* twl06.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = twl06.bin; sourceTree = "<group>"; };
 		99629C051B547DE800510036 /* Papyrus.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Papyrus.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -144,6 +148,14 @@
 			path = Shaders;
 			sourceTree = "<group>";
 		};
+		994BFCC71CD7C30E00D96156 /* DataSources */ = {
+			isa = PBXGroup;
+			children = (
+				994BFCC81CD7C31600D96156 /* Preferences.swift */,
+			);
+			path = DataSources;
+			sourceTree = "<group>";
+		};
 		99629BFC1B547DE800510036 = {
 			isa = PBXGroup;
 			children = (
@@ -170,6 +182,7 @@
 				99FD43561BA59BF900F50DCF /* PapyrusCore.xcodeproj */,
 				99629C081B547DE800510036 /* AppDelegate.swift */,
 				99B5013A1BB0C7FB0098767C /* Watchdog.swift */,
+				994BFCC71CD7C30E00D96156 /* DataSources */,
 				99D36F481C7E6B2B00A5ADA8 /* Drawables */,
 				99D36F4D1C7E6B2B00A5ADA8 /* Renderers */,
 				993A53451C7EE273001F93CB /* Shaders */,
@@ -203,6 +216,7 @@
 			isa = PBXGroup;
 			children = (
 				997D186A1BCC4EEC0050B872 /* PapyrusViewController.swift */,
+				994BFCC31CD7B7E900D96156 /* PreferencesViewController.swift */,
 				99CDF8551CD417C30007DC89 /* TilePickerViewController.swift */,
 			);
 			name = ViewControllers;
@@ -453,6 +467,7 @@
 				993A534D1C7EED0F001F93CB /* FillShader.swift in Sources */,
 				993A53491C7EE273001F93CB /* SquareShader.swift in Sources */,
 				9901443F1C7E4E61005C81BF /* CGRect+Extensions.swift in Sources */,
+				994BFCC91CD7C31600D96156 /* Preferences.swift in Sources */,
 				99B5013B1BB0C7FB0098767C /* Watchdog.swift in Sources */,
 				999925B01CD091E9005D1C89 /* GamePresenter.swift in Sources */,
 				99CDF8561CD417C30007DC89 /* TilePickerViewController.swift in Sources */,
@@ -460,6 +475,7 @@
 				99629C091B547DE800510036 /* AppDelegate.swift in Sources */,
 				99DF9E0F1B54ED8200F58DA7 /* UIColor+Papyrus.swift in Sources */,
 				99D36F511C7E6B2B00A5ADA8 /* Drawable.swift in Sources */,
+				994BFCC41CD7B7E900D96156 /* PreferencesViewController.swift in Sources */,
 				99D36F541C7E6B2B00A5ADA8 /* CGContext+Renderer.swift in Sources */,
 				99C3D1F31C7BAF510024B932 /* GameView.swift in Sources */,
 				997D186B1BCC4EEC0050B872 /* PapyrusViewController.swift in Sources */,
