@@ -27,6 +27,7 @@ class PapyrusViewController: UIViewController, GamePresenterDelegate {
     
     var game: Game?
     var presenter = GamePresenter()
+    var lastMove: Solution?
     var gameOver: Bool = true
     var dictionary: Dawg!
     var tilePickerViewController: TilePickerViewController!
@@ -77,12 +78,12 @@ class PapyrusViewController: UIViewController, GamePresenterDelegate {
                 self.resetButton.enabled = false
                 self.submitButton.enabled = false
                 self.title = (self.game!.player is Human ? "Human " : "Computer ") + "\(self.game!.player.score)"
-                self.presenter.game = self.game!
             case .TurnEnded:
                 self.title = (self.game!.player is Human ? "Human " : "Computer ") + "\(self.game!.player.score)"
-                self.presenter.game = self.game!
             case let .Move(solution):
                 print("Played \(solution)")
+                self.lastMove = solution
+                self.presenter.updateGame(self.game!, move: solution)
             case .DrewTiles(_):
                 print("Drew new tiles")
             case .SwappedTiles:
@@ -181,7 +182,7 @@ class PapyrusViewController: UIViewController, GamePresenterDelegate {
             guard let strongSelf = self else { return }
             strongSelf.game?.shuffleRack()
             NSOperationQueue.mainQueue().addOperationWithBlock {
-                strongSelf.presenter.game = strongSelf.game
+                strongSelf.presenter.updateGame(strongSelf.game!)
             }
         }
     }
@@ -223,7 +224,7 @@ class PapyrusViewController: UIViewController, GamePresenterDelegate {
     }
     
     @IBAction func reset(sender: UIBarButtonItem) {
-        presenter.game = self.game!
+        presenter.updateGame(self.game!, move: lastMove)
     }
     
     @IBAction func submit(sender: UIBarButtonItem) {

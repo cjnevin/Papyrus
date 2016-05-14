@@ -36,13 +36,13 @@ class GamePresenter: TileViewDelegate {
     
     var delegate: GamePresenterDelegate!
     var gameView: GameView!
-    var game: Game! {
-        didSet {
-            gameView.tileViews = nil
-            gameView.drawable = BoardDrawable(board: game.board, distribution: game.bag.distribution, rect: boardRect)
-            if game.player is Computer { return }
-            gameView.tileViews = rackTiles()
-        }
+    private(set) var game: Game!
+    func updateGame(game: Game, move: Solution? = nil) {
+        self.game = game
+        gameView.tileViews = nil
+        gameView.drawable = BoardDrawable(board: game.board, distribution: game.bag.distribution, move: move, rect: boardRect)
+        if game.player is Computer { return }
+        gameView.tileViews = rackTiles()
     }
     
     func rackTiles() -> [TileView] {
