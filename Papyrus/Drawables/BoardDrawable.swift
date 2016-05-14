@@ -17,7 +17,7 @@ struct BoardDrawable: Drawable {
     
     var shader: Shader
     
-    init(board: Board, distribution: LetterDistribution, rect: CGRect) {
+    init(board: Board, distribution: LetterDistribution, move: Solution?, rect: CGRect) {
         self.rect = rect
         squareSize = CGRectGetWidth(rect) / CGFloat(board.config.size)
         shader = FillShader(color: .tileColor)
@@ -34,7 +34,8 @@ struct BoardDrawable: Drawable {
                     if board.playedBlanks.contains({ $0.x == x && $0.y == y }) == false {
                         points = distribution.letterPoints[square] ?? 0
                     }
-                    drawables.append(TileDrawable(tile: square, points: points, rect: rect, onBoard: true))
+                    let highlighted = move?.getPoints().contains({ $0.x == x && $0.y == y }) ?? false
+                    drawables.append(TileDrawable(tile: square, points: points, rect: rect, onBoard: true, highlighted: highlighted))
                 }
             }
         }

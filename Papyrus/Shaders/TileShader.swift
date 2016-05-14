@@ -14,9 +14,9 @@ struct TileShader : Shader {
     var textColor: UIColor?
     var strokeColor: UIColor?
     var strokeWidth: CGFloat?
-    init(tile: Character, points: Int, onBoard: Bool) {
+    init(tile: Character, points: Int, highlighted: Bool) {
         // Based on state of tile, render differently.
-        if onBoard {
+        if highlighted {
             fillColor = .tileIlluminatedColor
         } else {
             fillColor = .tileColor
