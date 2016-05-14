@@ -65,14 +65,47 @@
                                     <segue destination="uyG-h2-ghm" kind="embed" identifier="TilesRemainingSegue" id="VtL-F8-nCR"/>
                                 </connections>
                             </containerView>
+                            <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="2Qx-5W-WiX">
+                                <rect key="frame" x="0.0" y="0.0" width="240" height="128"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="2Qx-5W-WiX" secondAttribute="height" multiplier="520:163" id="ZmF-lF-FZn"/>
+                                    <constraint firstAttribute="width" secondItem="2Qx-5W-WiX" secondAttribute="height" multiplier="5:1" id="iKd-7G-Vhk"/>
+                                    <constraint firstAttribute="width" secondItem="2Qx-5W-WiX" secondAttribute="height" multiplier="130:23" id="poC-1V-msd"/>
+                                    <constraint firstAttribute="width" secondItem="2Qx-5W-WiX" secondAttribute="height" multiplier="520:93" id="sV5-Hn-Vz1"/>
+                                    <constraint firstAttribute="width" secondItem="2Qx-5W-WiX" secondAttribute="height" multiplier="52:9" id="xGO-OR-tcl"/>
+                                </constraints>
+                                <variation key="default">
+                                    <mask key="constraints">
+                                        <exclude reference="ZmF-lF-FZn"/>
+                                        <exclude reference="iKd-7G-Vhk"/>
+                                        <exclude reference="poC-1V-msd"/>
+                                        <exclude reference="sV5-Hn-Vz1"/>
+                                        <exclude reference="xGO-OR-tcl"/>
+                                    </mask>
+                                </variation>
+                                <variation key="heightClass=regular">
+                                    <mask key="constraints">
+                                        <exclude reference="ZmF-lF-FZn"/>
+                                        <exclude reference="iKd-7G-Vhk"/>
+                                        <include reference="poC-1V-msd"/>
+                                        <exclude reference="sV5-Hn-Vz1"/>
+                                        <exclude reference="xGO-OR-tcl"/>
+                                    </mask>
+                                </variation>
+                                <connections>
+                                    <segue destination="ZKH-ax-ixM" kind="embed" identifier="TileSwapperSegue" id="Tee-Dg-AeW"/>
+                                </connections>
+                            </containerView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="3dp-bN-fMR" firstAttribute="leading" secondItem="4aa-cn-i0z" secondAttribute="leading" id="0vf-y9-dB3"/>
                             <constraint firstItem="qJp-mA-Rzt" firstAttribute="top" secondItem="Dfu-bY-qac" secondAttribute="bottom" constant="40" id="7ql-Nn-ThH"/>
+                            <constraint firstAttribute="trailing" secondItem="2Qx-5W-WiX" secondAttribute="trailing" constant="40" id="I1I-ao-Azk"/>
                             <constraint firstAttribute="trailing" secondItem="rwX-f3-NTO" secondAttribute="trailing" constant="15" id="JFf-Hq-lvx">
                                 <variation key="heightClass=regular" constant="40"/>
                             </constraint>
+                            <constraint firstItem="2Qx-5W-WiX" firstAttribute="top" secondItem="Dfu-bY-qac" secondAttribute="bottom" constant="40" id="JjW-xO-A3g"/>
                             <constraint firstAttribute="trailing" secondItem="qJp-mA-Rzt" secondAttribute="trailing" constant="40" id="MRO-Wy-MV2"/>
                             <constraint firstItem="rwX-f3-NTO" firstAttribute="top" secondItem="Dfu-bY-qac" secondAttribute="bottom" constant="139" id="MqE-d9-AN9">
                                 <variation key="heightClass=regular" constant="40"/>
@@ -89,17 +122,22 @@
                             <constraint firstAttribute="trailingMargin" secondItem="rwX-f3-NTO" secondAttribute="trailing" constant="80" id="kAp-Vp-3l2"/>
                             <constraint firstItem="qJp-mA-Rzt" firstAttribute="leading" secondItem="4aa-cn-i0z" secondAttribute="leading" constant="40" id="nPC-LO-xa4"/>
                             <constraint firstAttribute="trailing" secondItem="3dp-bN-fMR" secondAttribute="trailing" id="qwP-aB-R8B"/>
+                            <constraint firstItem="2Qx-5W-WiX" firstAttribute="leading" secondItem="4aa-cn-i0z" secondAttribute="leading" constant="40" id="rXp-w5-HkN"/>
                         </constraints>
                         <variation key="default">
                             <mask key="subviews">
                                 <exclude reference="3dp-bN-fMR"/>
                                 <exclude reference="rwX-f3-NTO"/>
                                 <exclude reference="qJp-mA-Rzt"/>
+                                <exclude reference="2Qx-5W-WiX"/>
                             </mask>
                             <mask key="constraints">
                                 <exclude reference="0vf-y9-dB3"/>
                                 <exclude reference="Rgd-Y2-4Rx"/>
                                 <exclude reference="qwP-aB-R8B"/>
+                                <exclude reference="I1I-ao-Azk"/>
+                                <exclude reference="JjW-xO-A3g"/>
+                                <exclude reference="rXp-w5-HkN"/>
                                 <exclude reference="7ql-Nn-ThH"/>
                                 <exclude reference="MRO-Wy-MV2"/>
                                 <exclude reference="nPC-LO-xa4"/>
@@ -117,11 +155,15 @@
                                 <include reference="3dp-bN-fMR"/>
                                 <include reference="rwX-f3-NTO"/>
                                 <include reference="qJp-mA-Rzt"/>
+                                <include reference="2Qx-5W-WiX"/>
                             </mask>
                             <mask key="constraints">
                                 <include reference="0vf-y9-dB3"/>
                                 <include reference="Rgd-Y2-4Rx"/>
                                 <include reference="qwP-aB-R8B"/>
+                                <include reference="I1I-ao-Azk"/>
+                                <include reference="JjW-xO-A3g"/>
+                                <include reference="rXp-w5-HkN"/>
                                 <include reference="7ql-Nn-ThH"/>
                                 <include reference="MRO-Wy-MV2"/>
                                 <include reference="nPC-LO-xa4"/>
@@ -156,6 +198,7 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
+                        <outlet property="actionButton" destination="SSC-L5-TMp" id="Pto-pp-1kf"/>
                         <outlet property="blackoutView" destination="3dp-bN-fMR" id="fPp-RH-Fx8"/>
                         <outlet property="gameView" destination="4aa-cn-i0z" id="91a-0l-hxg"/>
                         <outlet property="resetButton" destination="buU-gN-B6e" id="bhy-Hc-Zgn"/>
@@ -163,6 +206,10 @@
                         <outlet property="submitButton" destination="F1b-Cs-4xQ" id="TE7-vG-8NA"/>
                         <outlet property="tilePickerContainerView" destination="rwX-f3-NTO" id="vhL-AF-hm2"/>
                         <outlet property="tilesRemainingContainerView" destination="qJp-mA-Rzt" id="5mU-TP-aiP"/>
+                        <outlet property="tilesSwapperContainerView" destination="2Qx-5W-WiX" id="HYD-NK-FCW"/>
+                        <outletCollection property="tileContainerViews" destination="rwX-f3-NTO" collectionClass="NSMutableArray" id="oRj-Bj-9pz"/>
+                        <outletCollection property="tileContainerViews" destination="qJp-mA-Rzt" collectionClass="NSMutableArray" id="8mc-E6-3mR"/>
+                        <outletCollection property="tileContainerViews" destination="2Qx-5W-WiX" collectionClass="NSMutableArray" id="g8J-dn-lmD"/>
                         <segue destination="Zna-CF-08Z" kind="presentation" identifier="PreferencesSegue" id="xiw-yo-utx"/>
                     </connections>
                 </viewController>
@@ -277,7 +324,12 @@
         <scene sceneID="Nu5-eG-fcQ">
             <objects>
                 <viewController id="uyG-h2-ghm" customClass="TilesRemainingViewController" customModule="Papyrus" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="ZH6-XA-HUT"/>
+                        <viewControllerLayoutGuide type="bottom" id="SM7-sb-bUj"/>
+                    </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="Veg-qV-FXg">
+                        <rect key="frame" x="0.0" y="0.0" width="240" height="128"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
@@ -285,6 +337,19 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="vc5-QB-PMJ" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="747" y="936.75"/>
+        </scene>
+        <!--Tile Swapper View Controller-->
+        <scene sceneID="Ksw-ni-mZe">
+            <objects>
+                <viewController id="ZKH-ax-ixM" customClass="TileSwapperViewController" customModule="Papyrus" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="gWE-K8-N1E">
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="rzO-J6-vxV" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="179" y="972.375"/>
         </scene>
     </scenes>
 </document>

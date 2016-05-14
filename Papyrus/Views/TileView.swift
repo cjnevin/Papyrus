@@ -43,6 +43,11 @@ class TileView: UIView {
             setNeedsDisplay()
         }
     }
+    var highlighted: Bool = false {
+        didSet {
+            setNeedsDisplay()
+        }
+    }
     
     var isBlank: Bool {
         return points == 0
@@ -76,7 +81,7 @@ class TileView: UIView {
         guard let tile = tile, context = UIGraphicsGetCurrentContext() else {
             return
         }
-        let drawable = TileDrawable(tile: tile, points: points, rect: rect, onBoard: onBoard)
+        let drawable = TileDrawable(tile: tile, points: points, rect: rect, onBoard: onBoard, highlighted: highlighted)
         drawable.draw(context)
     }
 }

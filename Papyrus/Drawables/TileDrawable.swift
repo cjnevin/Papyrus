@@ -27,7 +27,7 @@ struct TileDrawable : Drawable {
     private let onBoard: Bool
     
     init(tile: Character, points: Int, rect: CGRect, onBoard: Bool, highlighted: Bool = false, shader: Shader? = nil) {
-        self.shader = shader ?? TileShader(tile: tile, points: points, highlighted: onBoard && highlighted)
+        self.shader = shader ?? TileShader(tile: tile, points: points, highlighted: highlighted)
         self.onBoard = onBoard
         self.tile = tile
         self.rect = rect
