@@ -65,7 +65,7 @@
                                     <segue destination="uyG-h2-ghm" kind="embed" identifier="TilesRemainingSegue" id="VtL-F8-nCR"/>
                                 </connections>
                             </containerView>
-                            <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="2Qx-5W-WiX">
+                            <containerView opaque="NO" alpha="0.0" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="2Qx-5W-WiX">
                                 <rect key="frame" x="0.0" y="0.0" width="240" height="128"/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="2Qx-5W-WiX" secondAttribute="height" multiplier="520:163" id="ZmF-lF-FZn"/>
@@ -132,12 +132,13 @@
                                 <exclude reference="2Qx-5W-WiX"/>
                             </mask>
                             <mask key="constraints">
-                                <exclude reference="0vf-y9-dB3"/>
-                                <exclude reference="Rgd-Y2-4Rx"/>
-                                <exclude reference="qwP-aB-R8B"/>
+                                <exclude reference="eUE-jP-ugi"/>
                                 <exclude reference="I1I-ao-Azk"/>
                                 <exclude reference="JjW-xO-A3g"/>
                                 <exclude reference="rXp-w5-HkN"/>
+                                <exclude reference="0vf-y9-dB3"/>
+                                <exclude reference="Rgd-Y2-4Rx"/>
+                                <exclude reference="qwP-aB-R8B"/>
                                 <exclude reference="7ql-Nn-ThH"/>
                                 <exclude reference="MRO-Wy-MV2"/>
                                 <exclude reference="nPC-LO-xa4"/>
@@ -147,7 +148,6 @@
                                 <exclude reference="SpE-Ah-lnO"/>
                                 <exclude reference="XUe-rH-jX2"/>
                                 <exclude reference="kAp-Vp-3l2"/>
-                                <exclude reference="eUE-jP-ugi"/>
                             </mask>
                         </variation>
                         <variation key="heightClass=regular">
@@ -158,12 +158,13 @@
                                 <include reference="2Qx-5W-WiX"/>
                             </mask>
                             <mask key="constraints">
-                                <include reference="0vf-y9-dB3"/>
-                                <include reference="Rgd-Y2-4Rx"/>
-                                <include reference="qwP-aB-R8B"/>
+                                <include reference="eUE-jP-ugi"/>
                                 <include reference="I1I-ao-Azk"/>
                                 <include reference="JjW-xO-A3g"/>
                                 <include reference="rXp-w5-HkN"/>
+                                <include reference="0vf-y9-dB3"/>
+                                <include reference="Rgd-Y2-4Rx"/>
+                                <include reference="qwP-aB-R8B"/>
                                 <include reference="7ql-Nn-ThH"/>
                                 <include reference="MRO-Wy-MV2"/>
                                 <include reference="nPC-LO-xa4"/>
@@ -173,7 +174,6 @@
                                 <include reference="SpE-Ah-lnO"/>
                                 <exclude reference="XUe-rH-jX2"/>
                                 <exclude reference="kAp-Vp-3l2"/>
-                                <include reference="eUE-jP-ugi"/>
                             </mask>
                         </variation>
                     </view>
@@ -342,7 +342,12 @@
         <scene sceneID="Ksw-ni-mZe">
             <objects>
                 <viewController id="ZKH-ax-ixM" customClass="TileSwapperViewController" customModule="Papyrus" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="eL4-0C-SjP"/>
+                        <viewControllerLayoutGuide type="bottom" id="eHa-4w-Qo6"/>
+                    </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="gWE-K8-N1E">
+                        <rect key="frame" x="0.0" y="0.0" width="240" height="128"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>

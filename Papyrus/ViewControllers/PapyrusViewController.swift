@@ -99,13 +99,13 @@ class PapyrusViewController: UIViewController, GamePresenterDelegate {
                 self.title = (self.game!.player is Human ? "Human " : "Computer ") + "\(self.game!.player.score)"
             case .TurnEnded:
                 self.title = (self.game!.player is Human ? "Human " : "Computer ") + "\(self.game!.player.score)"
+                self.presenter.updateGame(self.game!, move: self.lastMove)
                 if self.tilesRemainingContainerView.alpha == 1.0 {
                     self.updateShownTiles()
                 }
             case let .Move(solution):
                 print("Played \(solution)")
                 self.lastMove = solution
-                self.presenter.updateGame(self.game!, move: solution)
             case .DrewTiles(_):
                 print("Drew new tiles")
             case .SwappedTiles:
