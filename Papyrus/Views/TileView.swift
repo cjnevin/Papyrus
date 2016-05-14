@@ -31,7 +31,7 @@ class TileView: UIView {
     
     var initialFrame: CGRect!
     var initialPoint: CGPoint!
-    var delegate: TileViewDelegate!
+    var delegate: TileViewDelegate?
     var tile: Character! {
         didSet {
             setNeedsDisplay()
@@ -57,7 +57,7 @@ class TileView: UIView {
         initialFrame = frame
     }
     
-    init(frame: CGRect, tile: Character, points: Int, onBoard: Bool, delegate: TileViewDelegate) {
+    init(frame: CGRect, tile: Character, points: Int, onBoard: Bool, delegate: TileViewDelegate? = nil) {
         self.delegate = delegate
         self.tile = tile
         self.points = points
@@ -119,13 +119,13 @@ extension TileView : UIGestureRecognizerDelegate {
     }
     
     func didTap(tapGesture: UITapGestureRecognizer) {
-        delegate.tapped(self)
+        delegate?.tapped(self)
     }
     
     func didPress(pressGesture: UILongPressGestureRecognizer) {
         switch pressGesture.state {
         case .Began:
-            self.delegate.pickedUp(self)
+            delegate?.pickedUp(self)
             let center = self.center
             UIView.animateWithDuration(0.1, animations: {
                 self.bounds = self.initialFrame
@@ -134,13 +134,15 @@ extension TileView : UIGestureRecognizerDelegate {
                 self.transform = CGAffineTransformMakeScale(0.9, 0.9)
             })
         case .Cancelled, .Ended, .Failed:
-            let newFrame = self.delegate.frameForDropping(self)
+            guard let newFrame = delegate?.frameForDropping(self) else {
+                return
+            }
             UIView.animateWithDuration(0.1, animations: {
                 self.transform = CGAffineTransformMakeScale(1.0, 1.0)
                 self.center = CGPoint(x: CGRectGetMidX(newFrame), y: CGRectGetMidY(newFrame))
                 self.bounds = newFrame
             }, completion: { (complete) in
-                self.delegate.dropped(self)
+                self.delegate?.dropped(self)
             })
         default:
             break

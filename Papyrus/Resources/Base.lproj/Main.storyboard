@@ -46,13 +46,34 @@
                                     <segue destination="Gzw-WM-e8k" kind="embed" identifier="TilePickerSegue" id="zIv-8e-Yjc"/>
                                 </connections>
                             </containerView>
+                            <containerView opaque="NO" alpha="0.0" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="qJp-mA-Rzt">
+                                <rect key="frame" x="0.0" y="0.0" width="240" height="128"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="qJp-mA-Rzt" secondAttribute="height" multiplier="260:149" id="sNf-e3-nzp"/>
+                                </constraints>
+                                <variation key="default">
+                                    <mask key="constraints">
+                                        <exclude reference="sNf-e3-nzp"/>
+                                    </mask>
+                                </variation>
+                                <variation key="heightClass=regular">
+                                    <mask key="constraints">
+                                        <include reference="sNf-e3-nzp"/>
+                                    </mask>
+                                </variation>
+                                <connections>
+                                    <segue destination="uyG-h2-ghm" kind="embed" identifier="TilesRemainingSegue" id="VtL-F8-nCR"/>
+                                </connections>
+                            </containerView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="3dp-bN-fMR" firstAttribute="leading" secondItem="4aa-cn-i0z" secondAttribute="leading" id="0vf-y9-dB3"/>
+                            <constraint firstItem="qJp-mA-Rzt" firstAttribute="top" secondItem="Dfu-bY-qac" secondAttribute="bottom" constant="40" id="7ql-Nn-ThH"/>
                             <constraint firstAttribute="trailing" secondItem="rwX-f3-NTO" secondAttribute="trailing" constant="15" id="JFf-Hq-lvx">
                                 <variation key="heightClass=regular" constant="40"/>
                             </constraint>
+                            <constraint firstAttribute="trailing" secondItem="qJp-mA-Rzt" secondAttribute="trailing" constant="40" id="MRO-Wy-MV2"/>
                             <constraint firstItem="rwX-f3-NTO" firstAttribute="top" secondItem="Dfu-bY-qac" secondAttribute="bottom" constant="139" id="MqE-d9-AN9">
                                 <variation key="heightClass=regular" constant="40"/>
                             </constraint>
@@ -66,42 +87,51 @@
                             </constraint>
                             <constraint firstItem="2zo-5g-MkW" firstAttribute="top" secondItem="3dp-bN-fMR" secondAttribute="bottom" id="eUE-jP-ugi"/>
                             <constraint firstAttribute="trailingMargin" secondItem="rwX-f3-NTO" secondAttribute="trailing" constant="80" id="kAp-Vp-3l2"/>
+                            <constraint firstItem="qJp-mA-Rzt" firstAttribute="leading" secondItem="4aa-cn-i0z" secondAttribute="leading" constant="40" id="nPC-LO-xa4"/>
                             <constraint firstAttribute="trailing" secondItem="3dp-bN-fMR" secondAttribute="trailing" id="qwP-aB-R8B"/>
                         </constraints>
                         <variation key="default">
                             <mask key="subviews">
                                 <exclude reference="3dp-bN-fMR"/>
                                 <exclude reference="rwX-f3-NTO"/>
+                                <exclude reference="qJp-mA-Rzt"/>
                             </mask>
                             <mask key="constraints">
-                                <exclude reference="eUE-jP-ugi"/>
                                 <exclude reference="0vf-y9-dB3"/>
                                 <exclude reference="Rgd-Y2-4Rx"/>
                                 <exclude reference="qwP-aB-R8B"/>
+                                <exclude reference="7ql-Nn-ThH"/>
+                                <exclude reference="MRO-Wy-MV2"/>
+                                <exclude reference="nPC-LO-xa4"/>
                                 <exclude reference="JFf-Hq-lvx"/>
                                 <exclude reference="MqE-d9-AN9"/>
                                 <exclude reference="Q48-oM-d1e"/>
                                 <exclude reference="SpE-Ah-lnO"/>
                                 <exclude reference="XUe-rH-jX2"/>
                                 <exclude reference="kAp-Vp-3l2"/>
+                                <exclude reference="eUE-jP-ugi"/>
                             </mask>
                         </variation>
                         <variation key="heightClass=regular">
                             <mask key="subviews">
                                 <include reference="3dp-bN-fMR"/>
                                 <include reference="rwX-f3-NTO"/>
+                                <include reference="qJp-mA-Rzt"/>
                             </mask>
                             <mask key="constraints">
-                                <include reference="eUE-jP-ugi"/>
                                 <include reference="0vf-y9-dB3"/>
                                 <include reference="Rgd-Y2-4Rx"/>
                                 <include reference="qwP-aB-R8B"/>
+                                <include reference="7ql-Nn-ThH"/>
+                                <include reference="MRO-Wy-MV2"/>
+                                <include reference="nPC-LO-xa4"/>
                                 <include reference="JFf-Hq-lvx"/>
                                 <include reference="MqE-d9-AN9"/>
                                 <include reference="Q48-oM-d1e"/>
                                 <include reference="SpE-Ah-lnO"/>
                                 <exclude reference="XUe-rH-jX2"/>
                                 <exclude reference="kAp-Vp-3l2"/>
+                                <include reference="eUE-jP-ugi"/>
                             </mask>
                         </variation>
                     </view>
@@ -132,6 +162,7 @@
                         <outlet property="searchDisplayController" destination="Q6z-gf-lv5" id="5AS-at-00a"/>
                         <outlet property="submitButton" destination="F1b-Cs-4xQ" id="TE7-vG-8NA"/>
                         <outlet property="tilePickerContainerView" destination="rwX-f3-NTO" id="vhL-AF-hm2"/>
+                        <outlet property="tilesRemainingContainerView" destination="qJp-mA-Rzt" id="5mU-TP-aiP"/>
                         <segue destination="Zna-CF-08Z" kind="presentation" identifier="PreferencesSegue" id="xiw-yo-utx"/>
                     </connections>
                 </viewController>
@@ -186,15 +217,19 @@
             <objects>
                 <tableViewController id="qFy-jp-Ovk" customClass="PreferencesViewController" customModule="Papyrus" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" id="Hv3-ka-Kjc">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <prototypes>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="Cell" textLabel="YR1-k9-QSF" style="IBUITableViewCellStyleDefault" id="1iO-mi-9Kw">
+                                <rect key="frame" x="0.0" y="92" width="600" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="1iO-mi-9Kw" id="l1R-gC-9an">
+                                    <rect key="frame" x="0.0" y="0.0" width="600" height="43.5"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Title" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="YR1-k9-QSF">
+                                            <rect key="frame" x="15" y="0.0" width="570" height="43.5"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                             <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
@@ -237,6 +272,19 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ZAK-TX-3i6" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="787" y="71.25"/>
+        </scene>
+        <!--Tiles Remaining View Controller-->
+        <scene sceneID="Nu5-eG-fcQ">
+            <objects>
+                <viewController id="uyG-h2-ghm" customClass="TilesRemainingViewController" customModule="Papyrus" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="Veg-qV-FXg">
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="vc5-QB-PMJ" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="747" y="936.75"/>
         </scene>
     </scenes>
 </document>

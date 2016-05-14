@@ -13,6 +13,7 @@ class PapyrusViewController: UIViewController, GamePresenterDelegate {
     enum SegueId: String {
         case PreferencesSegue
         case TilePickerSegue
+        case TilesRemainingSegue
     }
     
     @IBOutlet weak var gameView: GameView!
@@ -25,19 +26,29 @@ class PapyrusViewController: UIViewController, GamePresenterDelegate {
     
     var firstRun: Bool = false
     
+    var showingUnplayed: Bool = false
     var game: Game?
     var presenter = GamePresenter()
     var lastMove: Solution?
     var gameOver: Bool = true
     var dictionary: Dawg!
     var tilePickerViewController: TilePickerViewController!
+    var tilesRemainingViewController: TilesRemainingViewController!
     @IBOutlet weak var tilePickerContainerView: UIView!
+    @IBOutlet weak var tilesRemainingContainerView: UIView!
     @IBOutlet weak var blackoutView: UIView!
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         if segue.identifier == SegueId.TilePickerSegue.rawValue {
             tilePickerViewController = segue.destinationViewController as! TilePickerViewController
-            tilePickerViewController.distribution = ScrabbleDistribution()
+        } else if segue.identifier == SegueId.TilesRemainingSegue.rawValue {
+            tilesRemainingViewController = segue.destinationViewController as! TilesRemainingViewController
+            tilesRemainingViewController.completionHandler = {
+                UIView.animateWithDuration(0.25) {
+                    self.tilesRemainingContainerView.alpha = 0.0
+                    self.blackoutView.alpha = 0.0
+                }
+            }
         } else if segue.identifier == SegueId.PreferencesSegue.rawValue {
             let navigationController = segue.destinationViewController as! UINavigationController
             let preferencesController = navigationController.viewControllers.first! as! PreferencesViewController
@@ -74,12 +85,18 @@ class PapyrusViewController: UIViewController, GamePresenterDelegate {
                 self.gameOver = true
                 self.title = "Game Over"
                 print("Winner: \(winner)")
+                if self.tilesRemainingContainerView.alpha == 1.0 {
+                    self.updateShownTiles()
+                }
             case .TurnStarted:
                 self.resetButton.enabled = false
                 self.submitButton.enabled = false
                 self.title = (self.game!.player is Human ? "Human " : "Computer ") + "\(self.game!.player.score)"
             case .TurnEnded:
                 self.title = (self.game!.player is Human ? "Human " : "Computer ") + "\(self.game!.player.score)"
+                if self.tilesRemainingContainerView.alpha == 1.0 {
+                    self.updateShownTiles()
+                }
             case let .Move(solution):
                 print("Played \(solution)")
                 self.lastMove = solution
@@ -109,7 +126,7 @@ class PapyrusViewController: UIViewController, GamePresenterDelegate {
                 let difficulty = Preferences.sharedInstance.difficulty
                 players.append(Computer(difficulty: difficulty))
             }
-            players.append(Human())
+            //players.append(Human())
             let superScrabble = Preferences.sharedInstance.gameType == .SuperScrabble
             let board = Board(config: superScrabble ? SuperScrabbleBoardConfig() : ScrabbleBoardConfig())
             let bag = Bag(distribution: superScrabble ? SuperScrabbleDistribution() : ScrabbleDistribution())
@@ -126,6 +143,7 @@ class PapyrusViewController: UIViewController, GamePresenterDelegate {
     // MARK: - GamePresenterDelegate
     
     func handleBlank(tileView: TileView, presenter: GamePresenter) {
+        tilePickerViewController.prepareForPresentation(game!.bag.distribution)
         tilePickerViewController.completionHandler = { letter in
             tileView.tile = letter
             self.validate()
@@ -199,12 +217,46 @@ class PapyrusViewController: UIViewController, GamePresenterDelegate {
     }
     
     func showPreferences(sender: UIAlertAction) {
-        performSegueWithIdentifier("PreferencesSegue", sender: self)
+        performSegueWithIdentifier(SegueId.PreferencesSegue.rawValue, sender: self)
+    }
+    
+    func updateShownTiles() {
+        if showingUnplayed {
+            tilesRemainingViewController.prepareForPresentation(game!.bag, players: game!.players)
+        } else {
+            tilesRemainingViewController.prepareForPresentation(game!.bag)
+        }
+    }
+    
+    func showBagTiles(sender: UIAlertAction) {
+        showingUnplayed = false
+        updateShownTiles()
+        view.bringSubviewToFront(self.blackoutView)
+        view.bringSubviewToFront(self.tilesRemainingContainerView)
+        UIView.animateWithDuration(0.25) {
+            self.blackoutView.alpha = 0.4
+            self.tilesRemainingContainerView.alpha = 1.0
+        }
+    }
+    
+    func showUnplayedTiles(sender: UIAlertAction) {
+        showingUnplayed = true
+        updateShownTiles()
+        view.bringSubviewToFront(self.blackoutView)
+        view.bringSubviewToFront(self.tilesRemainingContainerView)
+        UIView.animateWithDuration(0.25) {
+            self.blackoutView.alpha = 0.4
+            self.tilesRemainingContainerView.alpha = 1.0
+        }
     }
     
     @IBAction func action(sender: UIBarButtonItem) {
         let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .ActionSheet)
         actionSheet.addAction(UIAlertAction(title: "Preferences", style: .Default, handler: showPreferences))
+        if game != nil {
+            actionSheet.addAction(UIAlertAction(title: "Bag Tiles", style: .Default, handler: showBagTiles))
+            actionSheet.addAction(UIAlertAction(title: "Unplayed Tiles", style: .Default, handler: showUnplayedTiles))
+        }
         if game?.player is Human && !gameOver {
             actionSheet.addAction(UIAlertAction(title: "Shuffle", style: .Default, handler: shuffle))
             actionSheet.addAction(UIAlertAction(title: "Swap", style: .Default, handler: swap))
