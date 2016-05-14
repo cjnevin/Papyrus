@@ -18,14 +18,18 @@ struct TileDistributionRenderer {
     var shapeLayer: CAShapeLayer?
     
     mutating func render(inView view: UIView, filterBlank: Bool = true, distribution: LetterDistribution, delegate: TileViewDelegate? = nil) {
+        render(inView: view, filterBlank: filterBlank, characters: distribution.letterPoints.map({$0.0}), delegate: delegate)
+    }
+    
+    mutating func render(inView view: UIView, filterBlank: Bool = true, characters: [Character], delegate: TileViewDelegate? = nil) {
         shapeLayer?.removeFromSuperlayer()
         tileViews?.forEach({ $0.removeFromSuperview() })
         
         let containerRect = CGRectInset(view.bounds, inset, inset)
         let tileSize = ceil(containerRect.size.width / CGFloat(perRow))
-        let sorted = distribution.letterPoints.sort({ $0.0 < $1.0 })
-        let tiles = filterBlank ? sorted.filter({ $0.0 != Bag.blankLetter }) : sorted
-        let lastRow = Int(tiles.count / perRow)
+        let sorted = characters.sort()
+        let tiles = filterBlank ? sorted.filter({ $0 != Bag.blankLetter }) : sorted
+        let lastRow = tiles.count <= perRow ? 0 : Int(tiles.count / perRow)
         let path = UIBezierPath()
         tileViews = tiles.enumerate().map { (index, value) -> TileView in
             let row = index > 0 ? Int(index / perRow) : 0
@@ -43,9 +47,11 @@ struct TileDistributionRenderer {
             let pathRect = CGRectInset(tileRect, -padding, -padding)
             let radii = CGSize(width: inset, height: inset)
             if row == 0 && col == 0 {
-                path.appendPath(UIBezierPath(roundedRect: pathRect, byRoundingCorners: .TopLeft, cornerRadii: radii))
+                let corners: UIRectCorner = row == lastRow ? [.BottomLeft, .TopLeft] : .TopLeft
+                path.appendPath(UIBezierPath(roundedRect: pathRect, byRoundingCorners: corners, cornerRadii: radii))
             } else if row == 0 && col == perRow - 1 {
-                path.appendPath(UIBezierPath(roundedRect: pathRect, byRoundingCorners: .TopRight, cornerRadii: radii))
+                let corners: UIRectCorner = row == lastRow ? [.BottomRight, .TopRight] : .TopRight
+                path.appendPath(UIBezierPath(roundedRect: pathRect, byRoundingCorners: corners, cornerRadii: radii))
             } else if (row == lastRow && col == 0) {
                 path.appendPath(UIBezierPath(roundedRect: pathRect, byRoundingCorners: .BottomLeft, cornerRadii: radii))
             } else if (row == lastRow - 1 && col == 0) {
@@ -55,7 +61,7 @@ struct TileDistributionRenderer {
             } else {
                 path.appendPath(UIBezierPath(rect: pathRect))
             }
-            return TileView(frame: tileRect, tile: value.0, points: 0, onBoard: false, delegate: delegate)
+            return TileView(frame: tileRect, tile: value, points: 0, onBoard: false, delegate: delegate)
         }
         
         let shape = CAShapeLayer()
