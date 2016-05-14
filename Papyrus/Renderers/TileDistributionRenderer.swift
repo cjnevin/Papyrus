@@ -1,5 +1,5 @@
 //
-//  TileDistributionPresenter.swift
+//  TileDistributionRenderer.swift
 //  Papyrus
 //
 //  Created by Chris Nevin on 14/05/2016.
@@ -9,7 +9,7 @@
 import UIKit
 import PapyrusCore
 
-struct TileDistributionPresenter {
+struct TileDistributionRenderer {
     private let inset: CGFloat = 5
     private let perRow: Int = 7
     private let padding: CGFloat = 4

@@ -11,8 +11,8 @@ import PapyrusCore
 
 class TilesRemainingViewController : UIViewController {
     
-    private var distributionPresenter = TileDistributionPresenter()
-    private var countPresenter = TilesRemainingPresenter()
+    private var distributionRenderer = TileDistributionRenderer()
+    private var remainingRenderer = TilesRemainingRenderer()
     
     var completionHandler: (() -> ())? = nil
     
@@ -27,7 +27,7 @@ class TilesRemainingViewController : UIViewController {
     }
     
     func prepareForPresentation(bag: Bag, players: [Player]? = nil) {
-        distributionPresenter.render(inView: view, filterBlank: false, distribution: bag.distribution)
-        countPresenter.render(inView: view, tileViews: distributionPresenter.tileViews, bag: bag, players: players)
+        distributionRenderer.render(inView: view, filterBlank: false, distribution: bag.distribution)
+        remainingRenderer.render(inView: view, tileViews: distributionRenderer.tileViews, bag: bag, players: players)
     }
 }

@@ -1,5 +1,5 @@
 //
-//  TilesRemainingPresenter.swift
+//  TilesRemainingRenderer.swift
 //  Papyrus
 //
 //  Created by Chris Nevin on 14/05/2016.
@@ -9,7 +9,7 @@
 import UIKit
 import PapyrusCore
 
-struct TilesRemainingPresenter {
+struct TilesRemainingRenderer {
     
     var countLabels: [UILabel]?
     var originalColor: UIColor?
