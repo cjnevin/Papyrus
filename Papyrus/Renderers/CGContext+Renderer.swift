@@ -13,11 +13,11 @@ extension CGContext : Renderer {
         CGContextMoveToPoint(self, position.x, position.y)
     }
     
-    func lineTo(position: CGPoint, color: UIColor) {
+    func lineTo(position: CGPoint, color: UIColor, width: CGFloat) {
         var r = CGFloat(0), g = CGFloat(0), b = CGFloat(0), a = CGFloat(0)
         color.getRed(&r, green: &g, blue: &b, alpha: &a)
         let context = UIGraphicsGetCurrentContext()
-        CGContextSetLineWidth(context, 0.5)
+        CGContextSetLineWidth(context, width)
         CGContextSetRGBStrokeColor(context, r, g, b, a)
         CGContextAddLineToPoint(self, position.x, position.y)
         CGContextStrokePath(context)
