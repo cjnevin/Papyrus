@@ -22,7 +22,7 @@ struct TileShader : Shader {
             fillColor = .tileColor
         }
         textColor = (points == 0 ? .grayColor() : .blackColor())
-        strokeColor = .lightGrayColor()
+        strokeColor = .tileBorderColor
         strokeWidth = 0.5
     }
 }

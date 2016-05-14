@@ -20,7 +20,7 @@ struct BoardDrawable: Drawable {
     init(board: Board, distribution: LetterDistribution, move: Solution?, rect: CGRect) {
         self.rect = rect
         squareSize = CGRectGetWidth(rect) / CGFloat(board.config.size)
-        shader = BoardShader(color: .tileColor, strokeColor: .lightGrayColor(), strokeWidth: 0.5)
+        shader = BoardShader(color: .tileColor, strokeColor: .tileBorderColor, strokeWidth: 0.5)
         range = board.config.boardRange
         var drawables = [Drawable]()
         for (y, column) in board.board.enumerate() {
@@ -65,6 +65,7 @@ struct BoardDrawable: Drawable {
     
     func draw(renderer: Renderer) {
         renderer.fillRect(rect, shader: shader)
+        renderer.strokeRect(rect, shader: shader)
         drawables.forEach({ $0.draw(renderer) })
         range.forEach { (i) -> () in
             let offset = CGFloat(i) * squareSize
