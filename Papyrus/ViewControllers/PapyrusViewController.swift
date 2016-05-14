@@ -126,7 +126,7 @@ class PapyrusViewController: UIViewController, GamePresenterDelegate {
                 let difficulty = Preferences.sharedInstance.difficulty
                 players.append(Computer(difficulty: difficulty))
             }
-            //players.append(Human())
+            players.append(Human())
             let superScrabble = Preferences.sharedInstance.gameType == .SuperScrabble
             let board = Board(config: superScrabble ? SuperScrabbleBoardConfig() : ScrabbleBoardConfig())
             let bag = Bag(distribution: superScrabble ? SuperScrabbleDistribution() : ScrabbleDistribution())
