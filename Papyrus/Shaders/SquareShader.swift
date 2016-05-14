@@ -15,6 +15,12 @@ struct SquareShader: Shader {
     var strokeColor: UIColor?
     var strokeWidth: CGFloat?
     init(x: Int, y: Int, board: Board) {
+        defer {
+            var r = CGFloat(0), g = CGFloat(0), b = CGFloat(0), a = CGFloat(0)
+            let m = CGFloat(0.7)
+            fillColor?.getRed(&r, green: &g, blue: &b, alpha: &a)
+            textColor = UIColor(red: r * m, green: g * m, blue: b * m, alpha: a)
+        }
         if x == board.config.center && y == board.config.center {
             fillColor = .centerSquareColor
             return

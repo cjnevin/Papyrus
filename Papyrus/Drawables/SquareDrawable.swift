@@ -9,13 +9,19 @@
 import UIKit
 import PapyrusCore
 
+extension UIFont {
+    static var acronymFontBig: UIFont { return .systemFontOfSize(9) }
+}
+
 struct SquareDrawable : Drawable {
     private let rect: CGRect
     var shader: Shader
+    var acronym: String?
     
-    init(rect: CGRect, shader: Shader) {
+    init(rect: CGRect, acronym: String?, shader: Shader) {
         self.rect = rect
         self.shader = shader
+        self.acronym = acronym
     }
     
     func draw(renderer: Renderer) {
@@ -24,6 +30,11 @@ struct SquareDrawable : Drawable {
         }
         if shader.strokeColor != nil {
             renderer.strokeRect(rect, shader: shader)
+        }
+        if shader.textColor != nil && acronym != nil {
+            let letterText = NSAttributedString(string: acronym!, attributes: [NSFontAttributeName: UIFont.acronymFontBig])
+            let letterRect = rect.centeredRectForSize(letterText.size())
+            renderer.drawText(letterText, rect: letterRect, shader: shader)
         }
     }
 }

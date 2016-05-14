@@ -225,6 +225,9 @@ class PapyrusViewController: UIViewController, GamePresenterDelegate {
             return
         }
         fade(out: true)
+        if letters.count == 0 {
+            return
+        }
         gameQueue.addOperationWithBlock { [weak self] in
             guard let strongSelf = self where strongSelf.game?.player != nil else { return }
             strongSelf.game!.swapTiles(letters)
@@ -236,7 +239,7 @@ class PapyrusViewController: UIViewController, GamePresenterDelegate {
             guard let strongSelf = self else { return }
             strongSelf.game?.shuffleRack()
             NSOperationQueue.mainQueue().addOperationWithBlock {
-                strongSelf.presenter.updateGame(strongSelf.game!)
+                strongSelf.presenter.updateGame(strongSelf.game!, move: strongSelf.lastMove)
             }
         }
     }

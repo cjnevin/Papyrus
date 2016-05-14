@@ -28,7 +28,28 @@ struct BoardDrawable: Drawable {
                 let point = CGPoint(x: CGFloat(x) * squareSize, y: CGFloat(y) * squareSize)
                 let rect = CGRect(origin: point, size: CGSize(width: squareSize, height: squareSize))
                 if square == board.config.empty {
-                    drawables.append(SquareDrawable(rect: rect, shader: SquareShader(x: x, y: y, board: board)))
+                    var acronym: String? = nil
+                    switch board.config.letterMultipliers[x][y] {
+                    case 2:
+                        acronym = "DL"
+                    case 3:
+                        acronym = "TL"
+                    case 4:
+                        acronym = "QL"
+                    default:
+                        break
+                    }
+                    switch board.config.wordMultipliers[x][y] {
+                    case 2:
+                        acronym = "DW"
+                    case 3:
+                        acronym = "TW"
+                    case 4:
+                        acronym = "QW"
+                    default:
+                        break
+                    }
+                    drawables.append(SquareDrawable(rect: rect, acronym: acronym, shader: SquareShader(x: x, y: y, board: board)))
                 } else {
                     var points = 0
                     if board.playedBlanks.contains({ $0.x == x && $0.y == y }) == false {
@@ -48,9 +69,9 @@ struct BoardDrawable: Drawable {
         range.forEach { (i) -> () in
             let offset = CGFloat(i) * squareSize
             renderer.moveTo(CGPoint(x: offset, y: 0))
-            renderer.lineTo(CGPoint(x: offset, y: rect.size.height))
+            renderer.lineTo(CGPoint(x: offset, y: rect.size.height), color: UIColor.lightGrayColor())
             renderer.moveTo(CGPoint(x: 0, y: offset))
-            renderer.lineTo(CGPoint(x: rect.size.width, y: offset))
+            renderer.lineTo(CGPoint(x: rect.size.width, y: offset), color: UIColor.lightGrayColor())
         }
     }
 }

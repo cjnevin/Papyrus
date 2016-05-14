@@ -14,7 +14,7 @@ protocol Renderer {
     
     /// Draws a line from the pen's current position to `position`, updating
     /// the pen position.
-    func lineTo(position: CGPoint)
+    func lineTo(position: CGPoint, color: UIColor)
     
     /// Fills a rectangle with a given `color`.
     func fillRect(rect: CGRect, color: UIColor)
