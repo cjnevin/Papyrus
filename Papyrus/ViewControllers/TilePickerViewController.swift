@@ -11,13 +11,13 @@ import PapyrusCore
 
 class TilePickerViewController : UIViewController, TileViewDelegate {
     
-    private var presenter = TileDistributionPresenter()
+    private var renderer = TileDistributionRenderer()
     
     var completionHandler: ((Character) -> ())? = nil
     
     func prepareForPresentation(distribution: LetterDistribution) {
-        presenter.render(inView: view, distribution: distribution, delegate: self)
-        presenter.tileViews?.forEach({ $0.tappable = true })
+        renderer.render(inView: view, distribution: distribution, delegate: self)
+        renderer.tileViews?.forEach({ $0.tappable = true })
     }
     
     func tapped(tileView: TileView) {
