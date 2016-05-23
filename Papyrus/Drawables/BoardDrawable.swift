@@ -9,6 +9,15 @@
 import UIKit
 import PapyrusCore
 
+private enum Acronym {
+    static let prefixes = [2: "D", 3: "T", 4: "Q"]
+    static func get(withSuffix suffix: String, multiplier: Int) -> String? {
+        guard let prefix = prefixes[multiplier] else { return nil }
+        return prefix + suffix
+    }
+}
+
+
 struct BoardDrawable: Drawable {
     private var drawables: [Drawable]!
     private let rect: CGRect
@@ -28,27 +37,10 @@ struct BoardDrawable: Drawable {
                 let point = CGPoint(x: CGFloat(x) * squareSize, y: CGFloat(y) * squareSize)
                 let rect = CGRect(origin: point, size: CGSize(width: squareSize, height: squareSize))
                 if square == board.config.empty {
-                    var acronym: String? = nil
-                    switch board.config.letterMultipliers[x][y] {
-                    case 2:
-                        acronym = "DL"
-                    case 3:
-                        acronym = "TL"
-                    case 4:
-                        acronym = "QL"
-                    default:
-                        break
-                    }
-                    switch board.config.wordMultipliers[x][y] {
-                    case 2:
-                        acronym = "DW"
-                    case 3:
-                        acronym = "TW"
-                    case 4:
-                        acronym = "QW"
-                    default:
-                        break
-                    }
+                    let acronym = (
+                        Acronym.get(withSuffix: "L", multiplier: board.config.letterMultipliers[y, x]) ??
+                            Acronym.get(withSuffix: "W", multiplier: board.config.wordMultipliers[y, x])
+                    )
                     drawables.append(SquareDrawable(rect: rect, acronym: acronym, shader: SquareShader(x: x, y: y, board: board)))
                 } else {
                     var points = 0
