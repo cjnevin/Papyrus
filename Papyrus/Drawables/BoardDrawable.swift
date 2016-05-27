@@ -38,8 +38,8 @@ struct BoardDrawable: Drawable {
                 let rect = CGRect(origin: point, size: CGSize(width: squareSize, height: squareSize))
                 if square == board.config.empty {
                     let acronym = (
-                        Acronym.get(withSuffix: "L", multiplier: board.config.letterMultipliers[y, x]) ??
-                            Acronym.get(withSuffix: "W", multiplier: board.config.wordMultipliers[y, x])
+                        Acronym.get(withSuffix: "L", multiplier: board.config.letterMultipliers[y][x]) ??
+                            Acronym.get(withSuffix: "W", multiplier: board.config.wordMultipliers[y][x])
                     )
                     drawables.append(SquareDrawable(rect: rect, acronym: acronym, shader: SquareShader(x: x, y: y, board: board)))
                 } else {

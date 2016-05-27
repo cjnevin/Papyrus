@@ -33,6 +33,9 @@ class PapyrusViewController: UIViewController, GamePresenterDelegate {
     var gameOver: Bool = true
     var dictionary: Dawg!
     
+    
+    var startTime: NSDate? = nil
+    
     var showingUnplayed: Bool = false
     var showingSwapper: Bool = false
     var tilePickerViewController: TilePickerViewController!
@@ -87,6 +90,8 @@ class PapyrusViewController: UIViewController, GamePresenterDelegate {
         NSOperationQueue.mainQueue().addOperationWithBlock {
             switch event {
             case let .Over(winner):
+                print("Time Taken: \(NSDate().timeIntervalSinceDate(self.startTime!))")
+                
                 self.gameOver = true
                 self.title = "Game Over"
                 print("Winner: \(winner)")
@@ -94,6 +99,9 @@ class PapyrusViewController: UIViewController, GamePresenterDelegate {
                     self.updateShownTiles()
                 }
             case .TurnStarted:
+                if self.startTime == nil {
+                    self.startTime = NSDate()
+                }
                 self.resetButton.enabled = false
                 self.submitButton.enabled = false
                 self.title = (self.game!.player is Human ? "Human " : "Computer ") + "\(self.game!.player.score)"
