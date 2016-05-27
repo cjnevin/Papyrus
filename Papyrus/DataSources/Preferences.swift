@@ -19,7 +19,8 @@ class Preferences {
     
     let sections = [["Game Type": ["Scrabble", "Super Scrabble"]],
                     ["Difficulty": ["Very Easy", "Easy", "Medium", "Hard"]],
-                    ["Number of Opponents": ["1", "2", "3"]]]
+                    ["Number of Opponents": ["1", "2", "3"]],
+                    ["Dictionary": ["SOWPODS", "TWL06", "Words with Friends"]]]
     var values = [Int: Int]()
     var originalValues = [Int: Int]()
     
@@ -32,7 +33,7 @@ class Preferences {
     }
     
     func load() {
-        let defaults = [0: 0, 1: 3, 2: 1]
+        let defaults = [0: 0, 1: 3, 2: 1, 3: 0]
         for (index, _) in sections.enumerate() {
             values[index] = NSUserDefaults.standardUserDefaults().integerForKey(sections[index].keys.first!) ?? defaults[index]
         }
@@ -66,5 +67,16 @@ class Preferences {
     
     var opponents: Int {
         return values[2]! + 1
+    }
+    
+    var dictionary: String {
+        switch values[3]! {
+        case 1:
+            return "twl06"
+        case 2:
+            return "wordswithfriends"
+        default:
+            return "sowpods"
+        }
     }
 }

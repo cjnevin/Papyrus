@@ -19,6 +19,7 @@
 		995DD83D1BB6213A009B409D /* twl06.bin in Resources */ = {isa = PBXBuildFile; fileRef = 995DD83B1BB6213A009B409D /* twl06.bin */; };
 		99629C091B547DE800510036 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99629C081B547DE800510036 /* AppDelegate.swift */; };
 		99629C2D1B547DE800510036 /* PapyrusUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99629C2C1B547DE800510036 /* PapyrusUITests.swift */; };
+		99778D9A1CF7E0BC0056DEB0 /* wordswithfriends.bin in Resources */ = {isa = PBXBuildFile; fileRef = 99778D991CF7E0BC0056DEB0 /* wordswithfriends.bin */; };
 		997D186B1BCC4EEC0050B872 /* PapyrusViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 997D186A1BCC4EEC0050B872 /* PapyrusViewController.swift */; };
 		997D186D1BCC570B0050B872 /* TileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 997D186C1BCC570B0050B872 /* TileView.swift */; };
 		998041D71CE73F4A0099EF4E /* TileDistributionRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 998041D61CE73F4A0099EF4E /* TileDistributionRenderer.swift */; };
@@ -98,6 +99,7 @@
 		99629C281B547DE800510036 /* PapyrusUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PapyrusUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		99629C2C1B547DE800510036 /* PapyrusUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PapyrusUITests.swift; sourceTree = "<group>"; };
 		99629C2E1B547DE800510036 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		99778D991CF7E0BC0056DEB0 /* wordswithfriends.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = wordswithfriends.bin; sourceTree = "<group>"; };
 		997D186A1BCC4EEC0050B872 /* PapyrusViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PapyrusViewController.swift; sourceTree = "<group>"; };
 		997D186C1BCC570B0050B872 /* TileView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TileView.swift; path = Papyrus/Views/TileView.swift; sourceTree = SOURCE_ROOT; };
 		998041D61CE73F4A0099EF4E /* TileDistributionRenderer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TileDistributionRenderer.swift; sourceTree = "<group>"; };
@@ -302,6 +304,7 @@
 			children = (
 				995DD83A1BB6213A009B409D /* sowpods.bin */,
 				995DD83B1BB6213A009B409D /* twl06.bin */,
+				99778D991CF7E0BC0056DEB0 /* wordswithfriends.bin */,
 			);
 			path = Dictionaries;
 			sourceTree = "<group>";
@@ -449,6 +452,7 @@
 				99FD43411BA5901E00F50DCF /* Info.plist in Resources */,
 				99FD433D1BA5901E00F50DCF /* Assets.xcassets in Resources */,
 				99FD433F1BA5901E00F50DCF /* Main.storyboard in Resources */,
+				99778D9A1CF7E0BC0056DEB0 /* wordswithfriends.bin in Resources */,
 				995DD83C1BB6213A009B409D /* sowpods.bin in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

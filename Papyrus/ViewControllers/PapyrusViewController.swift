@@ -129,7 +129,7 @@ class PapyrusViewController: UIViewController, GamePresenterDelegate {
         title = "Starting..."
         if dictionary == nil {
             gameQueue.addOperationWithBlock { [weak self] in
-                self?.dictionary = Dawg.load(NSBundle.mainBundle().pathForResource("sowpods", ofType: "bin")!)!
+                self?.dictionary = Dawg.load(NSBundle.mainBundle().pathForResource(Preferences.sharedInstance.dictionary, ofType: "bin")!)!
             }
         }
         gameQueue.addOperationWithBlock { [weak self] in
@@ -139,7 +139,7 @@ class PapyrusViewController: UIViewController, GamePresenterDelegate {
                 let difficulty = Preferences.sharedInstance.difficulty
                 players.append(Computer(difficulty: difficulty))
             }
-            players.append(Human())
+            //players.append(Human())
             let superScrabble = Preferences.sharedInstance.gameType == .SuperScrabble
             let board = Board(config: superScrabble ? SuperScrabbleBoardConfig() : ScrabbleBoardConfig())
             let bag = Bag(distribution: superScrabble ? SuperScrabbleDistribution() : ScrabbleDistribution())
