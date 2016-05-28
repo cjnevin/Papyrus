@@ -19,6 +19,7 @@
 		995DD83D1BB6213A009B409D /* twl06.bin in Resources */ = {isa = PBXBuildFile; fileRef = 995DD83B1BB6213A009B409D /* twl06.bin */; };
 		99629C091B547DE800510036 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99629C081B547DE800510036 /* AppDelegate.swift */; };
 		99629C2D1B547DE800510036 /* PapyrusUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99629C2C1B547DE800510036 /* PapyrusUITests.swift */; };
+		9975A2AF1CF8C9DE003D315F /* wordswithfriends_anagrams.bin in Resources */ = {isa = PBXBuildFile; fileRef = 9975A2AE1CF8C9DE003D315F /* wordswithfriends_anagrams.bin */; };
 		99778D9A1CF7E0BC0056DEB0 /* wordswithfriends.bin in Resources */ = {isa = PBXBuildFile; fileRef = 99778D991CF7E0BC0056DEB0 /* wordswithfriends.bin */; };
 		997D186B1BCC4EEC0050B872 /* PapyrusViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 997D186A1BCC4EEC0050B872 /* PapyrusViewController.swift */; };
 		997D186D1BCC570B0050B872 /* TileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 997D186C1BCC570B0050B872 /* TileView.swift */; };
@@ -28,6 +29,8 @@
 		998041E41CE79B510099EF4E /* BoardShader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 998041E31CE79B510099EF4E /* BoardShader.swift */; };
 		999925B01CD091E9005D1C89 /* GamePresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 999925AF1CD091E9005D1C89 /* GamePresenter.swift */; };
 		99B5013B1BB0C7FB0098767C /* Watchdog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99B5013A1BB0C7FB0098767C /* Watchdog.swift */; };
+		99B861D31CF8CC7C00A9E041 /* sowpods_anagrams.bin in Resources */ = {isa = PBXBuildFile; fileRef = 99B861D11CF8CC7C00A9E041 /* sowpods_anagrams.bin */; };
+		99B861D41CF8CC7C00A9E041 /* twl06_anagrams.bin in Resources */ = {isa = PBXBuildFile; fileRef = 99B861D21CF8CC7C00A9E041 /* twl06_anagrams.bin */; };
 		99C3D1F31C7BAF510024B932 /* GameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99C3D1F21C7BAF510024B932 /* GameView.swift */; };
 		99CDF8561CD417C30007DC89 /* TilePickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99CDF8551CD417C30007DC89 /* TilePickerViewController.swift */; };
 		99D36F501C7E6B2B00A5ADA8 /* BoardDrawable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99D36F491C7E6B2B00A5ADA8 /* BoardDrawable.swift */; };
@@ -99,6 +102,7 @@
 		99629C281B547DE800510036 /* PapyrusUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PapyrusUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		99629C2C1B547DE800510036 /* PapyrusUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PapyrusUITests.swift; sourceTree = "<group>"; };
 		99629C2E1B547DE800510036 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		9975A2AE1CF8C9DE003D315F /* wordswithfriends_anagrams.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = wordswithfriends_anagrams.bin; sourceTree = "<group>"; };
 		99778D991CF7E0BC0056DEB0 /* wordswithfriends.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = wordswithfriends.bin; sourceTree = "<group>"; };
 		997D186A1BCC4EEC0050B872 /* PapyrusViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PapyrusViewController.swift; sourceTree = "<group>"; };
 		997D186C1BCC570B0050B872 /* TileView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TileView.swift; path = Papyrus/Views/TileView.swift; sourceTree = SOURCE_ROOT; };
@@ -108,6 +112,8 @@
 		998041E31CE79B510099EF4E /* BoardShader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BoardShader.swift; sourceTree = "<group>"; };
 		999925AF1CD091E9005D1C89 /* GamePresenter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GamePresenter.swift; sourceTree = "<group>"; };
 		99B5013A1BB0C7FB0098767C /* Watchdog.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Watchdog.swift; sourceTree = "<group>"; };
+		99B861D11CF8CC7C00A9E041 /* sowpods_anagrams.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = sowpods_anagrams.bin; sourceTree = "<group>"; };
+		99B861D21CF8CC7C00A9E041 /* twl06_anagrams.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = twl06_anagrams.bin; sourceTree = "<group>"; };
 		99C3D1F21C7BAF510024B932 /* GameView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameView.swift; sourceTree = "<group>"; };
 		99CDF8551CD417C30007DC89 /* TilePickerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TilePickerViewController.swift; sourceTree = "<group>"; };
 		99D36F491C7E6B2B00A5ADA8 /* BoardDrawable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BoardDrawable.swift; sourceTree = "<group>"; };
@@ -303,8 +309,11 @@
 			isa = PBXGroup;
 			children = (
 				995DD83A1BB6213A009B409D /* sowpods.bin */,
+				99B861D11CF8CC7C00A9E041 /* sowpods_anagrams.bin */,
 				995DD83B1BB6213A009B409D /* twl06.bin */,
+				99B861D21CF8CC7C00A9E041 /* twl06_anagrams.bin */,
 				99778D991CF7E0BC0056DEB0 /* wordswithfriends.bin */,
+				9975A2AE1CF8C9DE003D315F /* wordswithfriends_anagrams.bin */,
 			);
 			path = Dictionaries;
 			sourceTree = "<group>";
@@ -450,10 +459,13 @@
 				995DD83D1BB6213A009B409D /* twl06.bin in Resources */,
 				99FD433E1BA5901E00F50DCF /* LaunchScreen.storyboard in Resources */,
 				99FD43411BA5901E00F50DCF /* Info.plist in Resources */,
+				99B861D41CF8CC7C00A9E041 /* twl06_anagrams.bin in Resources */,
+				9975A2AF1CF8C9DE003D315F /* wordswithfriends_anagrams.bin in Resources */,
 				99FD433D1BA5901E00F50DCF /* Assets.xcassets in Resources */,
 				99FD433F1BA5901E00F50DCF /* Main.storyboard in Resources */,
 				99778D9A1CF7E0BC0056DEB0 /* wordswithfriends.bin in Resources */,
 				995DD83C1BB6213A009B409D /* sowpods.bin in Resources */,
+				99B861D31CF8CC7C00A9E041 /* sowpods_anagrams.bin in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

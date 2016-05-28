@@ -32,6 +32,7 @@ class PapyrusViewController: UIViewController, GamePresenterDelegate {
     var lastMove: Solution?
     var gameOver: Bool = true
     var dictionary: Dawg!
+    var anagramDictionary: AnagramDictionary!
     
     
     var startTime: NSDate? = nil
@@ -91,7 +92,7 @@ class PapyrusViewController: UIViewController, GamePresenterDelegate {
             switch event {
             case let .Over(winner):
                 print("Time Taken: \(NSDate().timeIntervalSinceDate(self.startTime!))")
-                
+                self.startTime = nil
                 self.gameOver = true
                 self.title = "Game Over"
                 print("Winner: \(winner)")
@@ -130,6 +131,9 @@ class PapyrusViewController: UIViewController, GamePresenterDelegate {
         if dictionary == nil {
             gameQueue.addOperationWithBlock { [weak self] in
                 self?.dictionary = Dawg.load(NSBundle.mainBundle().pathForResource(Preferences.sharedInstance.dictionary, ofType: "bin")!)!
+
+                let path = NSBundle.mainBundle().pathForResource(Preferences.sharedInstance.dictionary + "_anagrams", ofType: "bin")!
+                self?.anagramDictionary = AnagramDictionary.deserialize(NSData(contentsOfFile: path)!)
             }
         }
         gameQueue.addOperationWithBlock { [weak self] in
@@ -139,11 +143,11 @@ class PapyrusViewController: UIViewController, GamePresenterDelegate {
                 let difficulty = Preferences.sharedInstance.difficulty
                 players.append(Computer(difficulty: difficulty))
             }
-            //players.append(Human())
+            players.append(Human())
             let superScrabble = Preferences.sharedInstance.gameType == .SuperScrabble
             let board = Board(config: superScrabble ? SuperScrabbleBoardConfig() : ScrabbleBoardConfig())
             let bag = Bag(distribution: superScrabble ? SuperScrabbleDistribution() : ScrabbleDistribution())
-            strongSelf.game = Game.newGame(strongSelf.dictionary, board: board, bag: bag, players: players, eventHandler: strongSelf.handleEvent)
+            strongSelf.game = Game.newGame(strongSelf.anagramDictionary, dictionary: strongSelf.dictionary, board: board, bag: bag, players: players, eventHandler: strongSelf.handleEvent)
             NSOperationQueue.mainQueue().addOperationWithBlock {
                 strongSelf.title = "Started"
                 strongSelf.gameQueue.addOperationWithBlock {
