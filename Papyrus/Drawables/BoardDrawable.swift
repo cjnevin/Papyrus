@@ -47,7 +47,7 @@ struct BoardDrawable: Drawable {
                     if board.playedBlanks.contains({ $0.x == x && $0.y == y }) == false {
                         points = distribution.letterPoints[square] ?? 0
                     }
-                    let highlighted = move?.getPoints().contains({ $0.x == x && $0.y == y }) ?? false
+                    let highlighted = move?.getPositions().contains({ $0.x == x && $0.y == y }) ?? false
                     drawables.append(TileDrawable(tile: square, points: points, rect: rect, onBoard: true, highlighted: highlighted))
                 }
             }
