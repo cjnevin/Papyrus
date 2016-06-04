@@ -4,6 +4,7 @@
 Scrabble game written in Swift implementing the PapyrusCore for the game logic.
 
 Features:
+- Ability to calculate a hint
 - Ability to see the current state of the bag
 - Ability to see the currently unplayed tiles
 - AI supports four levels of difficulty
@@ -18,4 +19,3 @@ Features:
 
 Outstanding ToDo's:
 - Lookahead to reduce time spent waiting between turns.
-- Ability to calculate a hint?
