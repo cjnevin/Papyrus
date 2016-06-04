@@ -263,6 +263,25 @@ class PapyrusViewController: UIViewController, GamePresenterDelegate {
         }
     }
     
+    func hint(sender: UIAlertAction) {
+        gameQueue.addOperationWithBlock { [weak self] in
+            guard let strongSelf = self else { return }
+            strongSelf.game?.getHint() { solution in
+                NSOperationQueue.mainQueue().addOperationWithBlock {
+                    var message = ""
+                    if let solution = solution {
+                        message = "\((solution.horizontal ? "horizontal" : "vertical")) word '\(solution.word.uppercaseString)' can be placed \(solution.y + 1) down and \(solution.x + 1) across for a total score of \(solution.score)"
+                    } else {
+                        message = "Could not find any solutions, perhaps skip or swap letters?"
+                    }
+                    let alert = UIAlertController(title: "Hint", message: message, preferredStyle: .Alert)
+                    alert.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
+                    self?.presentViewController(alert, animated: true, completion: nil)
+                }
+            }
+        }
+    }
+    
     func restart(sender: UIAlertAction) {
         newGame()
     }
@@ -303,6 +322,7 @@ class PapyrusViewController: UIViewController, GamePresenterDelegate {
             actionSheet.addAction(UIAlertAction(title: "Swap All Tiles", style: .Default, handler: swapAll))
             actionSheet.addAction(UIAlertAction(title: "Swap Tiles", style: .Default, handler: swap))
             actionSheet.addAction(UIAlertAction(title: "Skip", style: .Default, handler: skip))
+            actionSheet.addAction(UIAlertAction(title: "Hint", style: .Default, handler: hint))
         }
         actionSheet.addAction(UIAlertAction(title: gameOver ? "New Game" : "Restart", style: .Destructive, handler: restart))
         actionSheet.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: nil))
