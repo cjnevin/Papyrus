@@ -31,9 +31,7 @@ class PapyrusViewController: UIViewController, GamePresenterDelegate {
     var presenter = GamePresenter()
     var lastMove: Solution?
     var gameOver: Bool = true
-    var dictionary: Dawg!
-    var anagramDictionary: AnagramDictionary!
-    
+    var lookup: Lookup!
     
     var startTime: NSDate? = nil
     
@@ -100,6 +98,7 @@ class PapyrusViewController: UIViewController, GamePresenterDelegate {
                     self.updateShownTiles()
                 }
             case .TurnStarted:
+                self.presenter.updateGame(self.game!, move: self.lastMove)
                 if self.startTime == nil {
                     self.startTime = NSDate()
                 }
@@ -115,10 +114,10 @@ class PapyrusViewController: UIViewController, GamePresenterDelegate {
             case let .Move(solution):
                 print("Played \(solution)")
                 self.lastMove = solution
-            case .DrewTiles(_):
-                print("Drew new tiles")
+            case let .DrewTiles(letters):
+                print("Drew Tiles \(letters)")
             case .SwappedTiles:
-                print("Swapped tiles")
+                print("Swapped Tiles")
             }
         }
     }
@@ -128,26 +127,26 @@ class PapyrusViewController: UIViewController, GamePresenterDelegate {
         resetButton.enabled = false
         gameOver = false
         title = "Starting..."
-        if dictionary == nil {
+        
+        if lookup == nil {
             gameQueue.addOperationWithBlock { [weak self] in
-                self?.dictionary = Dawg.load(NSBundle.mainBundle().pathForResource(Preferences.sharedInstance.dictionary, ofType: "bin")!)!
-
-                let path = NSBundle.mainBundle().pathForResource(Preferences.sharedInstance.dictionary + "_anagrams", ofType: "bin")!
-                self?.anagramDictionary = AnagramDictionary.deserialize(NSData(contentsOfFile: path)!)
+                self?.lookup = Lookup(dictionaryFilename: Preferences.sharedInstance.dictionary,
+                            anagramFilename: Preferences.sharedInstance.dictionary + "_anagrams")!
             }
         }
+        
         gameQueue.addOperationWithBlock { [weak self] in
             guard let strongSelf = self else { return }
-            var players = [Player]()
-            for _ in 0..<Preferences.sharedInstance.opponents {
-                let difficulty = Preferences.sharedInstance.difficulty
-                players.append(Computer(difficulty: difficulty))
-            }
-            players.append(Human())
-            let superScrabble = Preferences.sharedInstance.gameType == .SuperScrabble
-            let board = Board(config: superScrabble ? SuperScrabbleBoardConfig() : ScrabbleBoardConfig())
-            let bag = Bag(distribution: superScrabble ? SuperScrabbleDistribution() : ScrabbleDistribution())
-            strongSelf.game = Game.newGame(strongSelf.anagramDictionary, dictionary: strongSelf.dictionary, board: board, bag: bag, players: players, eventHandler: strongSelf.handleEvent)
+            
+            let prefs = Preferences.sharedInstance
+            let players = (0...prefs.opponents).map({ i -> Player in i == 0 ? Human() : Computer(difficulty: prefs.difficulty) }).shuffled()
+
+            strongSelf.game = Game.newGame(
+                Preferences.sharedInstance.gameType,
+                lookup: strongSelf.lookup,
+                players: players,
+                eventHandler: strongSelf.handleEvent)
+            
             NSOperationQueue.mainQueue().addOperationWithBlock {
                 strongSelf.title = "Started"
                 strongSelf.gameQueue.addOperationWithBlock {

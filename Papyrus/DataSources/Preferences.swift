@@ -9,11 +9,6 @@
 import Foundation
 import PapyrusCore
 
-enum GameType: Int {
-    case Scrabble
-    case SuperScrabble
-}
-
 class Preferences {
     static let sharedInstance = Preferences()
     
@@ -62,7 +57,7 @@ class Preferences {
     }
     
     var gameType: GameType {
-        return GameType(rawValue: values[0]!)!
+        return values[0] == 0 ? .Scrabble : .SuperScrabble
     }
     
     var opponents: Int {
