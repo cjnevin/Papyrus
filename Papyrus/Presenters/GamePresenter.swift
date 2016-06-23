@@ -28,7 +28,7 @@ class GamePresenter: TileViewDelegate {
     
     private let tileSpacing = CGFloat(5)
     private var tileRackMax: CGFloat {
-        return CGFloat(game.rackAmount)
+        return CGFloat(Game.rackAmount)
     }
     private var tileWidth: CGFloat {
         return (CGRectGetWidth(boardRect) - (tileSpacing * tileRackMax) - tileSpacing) / tileRackMax
