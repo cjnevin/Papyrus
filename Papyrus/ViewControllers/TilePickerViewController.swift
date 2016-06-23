@@ -15,8 +15,8 @@ class TilePickerViewController : UIViewController, TileViewDelegate {
     
     var completionHandler: ((Character) -> ())? = nil
     
-    func prepareForPresentation(distribution: LetterDistribution) {
-        renderer.render(inView: view, distribution: distribution, delegate: self)
+    func prepareForPresentation(bagType: Bag.Type) {
+        renderer.render(inView: view, characters: bagType.letterPoints.map({ $0.0 }), delegate: self)
         renderer.tileViews?.forEach({ $0.tappable = true })
     }
     

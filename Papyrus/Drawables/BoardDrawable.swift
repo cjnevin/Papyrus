@@ -26,26 +26,26 @@ struct BoardDrawable: Drawable {
     
     var shader: Shader
     
-    init(board: Board, distribution: LetterDistribution, move: Solution?, rect: CGRect) {
+    init(board: Board, letterPoints: [Character: Int], move: Solution?, rect: CGRect) {
         self.rect = rect
-        squareSize = CGRectGetWidth(rect) / CGFloat(board.config.size)
+        squareSize = CGRectGetWidth(rect) / CGFloat(board.size)
         shader = BoardShader(color: .tileColor, strokeColor: .tileBorderColor, strokeWidth: 0.5)
-        range = board.config.boardRange
+        range = board.boardRange
         var drawables = [Drawable]()
-        for (y, column) in board.board.enumerate() {
+        for (y, column) in board.layout.enumerate() {
             for (x, square) in column.enumerate() {
                 let point = CGPoint(x: CGFloat(x) * squareSize, y: CGFloat(y) * squareSize)
                 let rect = CGRect(origin: point, size: CGSize(width: squareSize, height: squareSize))
-                if square == board.config.empty {
+                if square == board.empty {
                     let acronym = (
-                        Acronym.get(withSuffix: "L", multiplier: board.config.letterMultipliers[y][x]) ??
-                            Acronym.get(withSuffix: "W", multiplier: board.config.wordMultipliers[y][x])
+                        Acronym.get(withSuffix: "L", multiplier: board.letterMultipliers[y][x]) ??
+                            Acronym.get(withSuffix: "W", multiplier: board.wordMultipliers[y][x])
                     )
                     drawables.append(SquareDrawable(rect: rect, acronym: acronym, shader: SquareShader(x: x, y: y, board: board)))
                 } else {
                     var points = 0
-                    if board.playedBlanks.contains({ $0.x == x && $0.y == y }) == false {
-                        points = distribution.letterPoints[square] ?? 0
+                    if board.blanks.contains({ $0.x == x && $0.y == y }) == false {
+                        points = letterPoints[square] ?? 0
                     }
                     let highlighted = move?.getPositions().contains({ $0.x == x && $0.y == y }) ?? false
                     drawables.append(TileDrawable(tile: square, points: points, rect: rect, onBoard: true, highlighted: highlighted))

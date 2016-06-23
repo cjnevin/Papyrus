@@ -182,7 +182,7 @@ class PapyrusViewController: UIViewController, GamePresenterDelegate {
     }
     
     func handleBlank(tileView: TileView, presenter: GamePresenter) {
-        tilePickerViewController.prepareForPresentation(game!.bag.distribution)
+        tilePickerViewController.prepareForPresentation(game!.bag.dynamicType)
         tilePickerViewController.completionHandler = { letter in
             tileView.tile = letter
             self.validate()

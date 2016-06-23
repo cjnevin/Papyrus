@@ -21,7 +21,7 @@ struct TilesRemainingRenderer {
             let char = tileView.tile
             var count = bag.remaining.filter({ $0 == char }).count
             players?.forEach({ player in
-                count += player.rack.filter({ $0.letter == char || ($0.isBlank == true && char == Bag.blankLetter) }).count
+                count += player.rack.filter({ $0.letter == char || ($0.isBlank == true && char == Game.blankLetter) }).count
             })
             let countLabel = UILabel(frame: CGRect(x: tileView.frame.origin.x + tileView.frame.size.width - 15, y: tileView.frame.origin.y + tileView.frame.size.height - 15, width: 20, height: 20))
             countLabel.text = "\(count)"

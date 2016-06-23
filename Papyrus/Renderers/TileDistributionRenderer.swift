@@ -17,10 +17,6 @@ struct TileDistributionRenderer {
     var tileViews: [TileView]?
     var shapeLayer: CAShapeLayer?
     
-    mutating func render(inView view: UIView, filterBlank: Bool = true, distribution: LetterDistribution, delegate: TileViewDelegate? = nil) {
-        render(inView: view, filterBlank: filterBlank, characters: distribution.letterPoints.map({$0.0}), delegate: delegate)
-    }
-    
     mutating func render(inView view: UIView, filterBlank: Bool = true, characters: [Character], delegate: TileViewDelegate? = nil) {
         shapeLayer?.removeFromSuperlayer()
         tileViews?.forEach({ $0.removeFromSuperview() })
@@ -28,7 +24,7 @@ struct TileDistributionRenderer {
         let containerRect = CGRectInset(view.bounds, inset, inset)
         let tileSize = ceil(containerRect.size.width / CGFloat(perRow))
         let sorted = characters.sort()
-        let tiles = filterBlank ? sorted.filter({ $0 != Bag.blankLetter }) : sorted
+        let tiles = filterBlank ? sorted.filter({ $0 != Game.blankLetter }) : sorted
         let lastRow = tiles.count <= perRow ? 0 : Int(tiles.count / perRow)
         let path = UIBezierPath()
         tileViews = tiles.enumerate().map { (index, value) -> TileView in

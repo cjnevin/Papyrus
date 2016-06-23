@@ -23,7 +23,7 @@ class GamePresenter: TileViewDelegate {
         return rect
     }
     private var squareWidth: CGFloat {
-        return CGRectGetWidth(boardRect) / CGFloat(game.board.config.size)
+        return CGRectGetWidth(boardRect) / CGFloat(game.board.size)
     }
     
     private let tileSpacing = CGFloat(5)
@@ -40,7 +40,7 @@ class GamePresenter: TileViewDelegate {
     func updateGame(game: Game, move: Solution? = nil) {
         self.game = game
         gameView.tileViews = nil
-        gameView.drawable = BoardDrawable(board: game.board, distribution: game.bag.distribution, move: move, rect: boardRect)
+        gameView.drawable = BoardDrawable(board: game.board, letterPoints: game.bag.dynamicType.letterPoints, move: move, rect: boardRect)
         if game.player is Computer { return }
         gameView.tileViews = rackTiles()
     }
@@ -51,7 +51,8 @@ class GamePresenter: TileViewDelegate {
         return game.player.rack.enumerate().map ({ (index, tile) in
             let x = tileSpacing + ((tileSpacing + width) * CGFloat(index))
             let tileRect = CGRect(x: x, y: y, width: width, height: width)
-            let tileView = TileView(frame: tileRect, tile: tile.letter, points: tile.isBlank ? 0 : game.bag.distribution.letterPoints[tile.letter] ?? 0, onBoard: false, delegate: self)
+            let points = tile.isBlank ? 0 : game.bag.dynamicType.letterPoints[tile.letter] ?? 0
+            let tileView = TileView(frame: tileRect, tile: tile.letter, points: points, onBoard: false, delegate: self)
             tileView.draggable = true
             return tileView
         })
@@ -76,11 +77,11 @@ class GamePresenter: TileViewDelegate {
         let squareSize = squareWidth
         let placed = placedTiles()
         var suitable = [Square]()
-        for (y, column) in game.board.board.enumerate() {
+        for (y, column) in game.board.layout.enumerate() {
             for (x, square) in column.enumerate() {
                 let point = CGPoint(x: CGFloat(x) * squareSize, y: CGFloat(y) * squareSize)
                 let rect = CGRect(origin: point, size: CGSize(width: squareSize, height: squareSize))
-                if square == game.board.config.empty && placed.filter({ $0.x == x && $0.y == y }).count == 0 {
+                if square == game.board.empty && placed.filter({ $0.x == x && $0.y == y }).count == 0 {
                     suitable.append((x, y, rect))
                 }
             }
@@ -123,10 +124,10 @@ class GamePresenter: TileViewDelegate {
     
     func dropped(tileView: TileView) {
         delegate.handlePlacement(self)
-        if tileView.tile == Bag.blankLetter && tileView.onBoard {
+        if tileView.tile == Game.blankLetter && tileView.onBoard {
             delegate.handleBlank(tileView, presenter: self)
         } else if tileView.isBlank && !tileView.onBoard {
-            tileView.tile = Bag.blankLetter
+            tileView.tile = Game.blankLetter
         }
     }
 }

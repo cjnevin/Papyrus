@@ -21,11 +21,11 @@ struct SquareShader: Shader {
             fillColor?.getRed(&r, green: &g, blue: &b, alpha: &a)
             textColor = UIColor(red: r * m, green: g * m, blue: b * m, alpha: a)
         }
-        if x == board.config.center && y == board.config.center {
+        if board.isCenterAt(x, y) {
             fillColor = .centerSquareColor
             return
         }
-        switch board.config.letterMultipliers[y][x] {
+        switch board.letterMultipliers[y][x] {
         case 2:
             fillColor = .doubleLetterSquareColor
         case 3:
@@ -33,7 +33,7 @@ struct SquareShader: Shader {
         case 4:
             fillColor = .quadrupleLetterSquareColor
         default:
-            switch board.config.wordMultipliers[y][x] {
+            switch board.wordMultipliers[y][x] {
             case 2:
                 fillColor = .doubleWordSquareColor
             case 3:
