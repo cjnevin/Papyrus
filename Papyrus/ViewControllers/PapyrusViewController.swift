@@ -31,7 +31,7 @@ class PapyrusViewController: UIViewController, GamePresenterDelegate {
     var presenter = GamePresenter()
     var lastMove: Solution?
     var gameOver: Bool = true
-    var lookup: Lookup!
+    var dictionary: AnagramDictionary!
     
     var startTime: NSDate? = nil
     
@@ -128,10 +128,9 @@ class PapyrusViewController: UIViewController, GamePresenterDelegate {
         gameOver = false
         title = "Starting..."
         
-        if lookup == nil {
+        if dictionary == nil {
             gameQueue.addOperationWithBlock { [weak self] in
-                self?.lookup = Lookup(dictionaryFilename: Preferences.sharedInstance.dictionary,
-                            anagramFilename: Preferences.sharedInstance.dictionary + "_anagrams")!
+                self?.dictionary = AnagramDictionary(filename: Preferences.sharedInstance.dictionary)!
             }
         }
         
@@ -143,7 +142,7 @@ class PapyrusViewController: UIViewController, GamePresenterDelegate {
 
             strongSelf.game = Game.newGame(
                 Preferences.sharedInstance.gameType,
-                lookup: strongSelf.lookup,
+                dictionary: strongSelf.dictionary,
                 players: players,
                 eventHandler: strongSelf.handleEvent)
             

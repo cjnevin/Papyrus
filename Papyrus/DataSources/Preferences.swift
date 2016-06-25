@@ -67,11 +67,11 @@ class Preferences {
     var dictionary: String {
         switch values[3]! {
         case 1:
-            return "twl06"
+            return "twl06_anagrams"
         case 2:
-            return "wordswithfriends"
+            return "wordswithfriends_anagrams"
         default:
-            return "sowpods"
+            return "sowpods_anagrams"
         }
     }
 }

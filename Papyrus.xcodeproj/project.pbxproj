@@ -17,12 +17,9 @@
 		993A534D1C7EED0F001F93CB /* FillShader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 993A534C1C7EED0F001F93CB /* FillShader.swift */; };
 		994BFCC41CD7B7E900D96156 /* PreferencesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 994BFCC31CD7B7E900D96156 /* PreferencesViewController.swift */; };
 		994BFCC91CD7C31600D96156 /* Preferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = 994BFCC81CD7C31600D96156 /* Preferences.swift */; };
-		995DD83C1BB6213A009B409D /* sowpods.bin in Resources */ = {isa = PBXBuildFile; fileRef = 995DD83A1BB6213A009B409D /* sowpods.bin */; };
-		995DD83D1BB6213A009B409D /* twl06.bin in Resources */ = {isa = PBXBuildFile; fileRef = 995DD83B1BB6213A009B409D /* twl06.bin */; };
 		99629C091B547DE800510036 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99629C081B547DE800510036 /* AppDelegate.swift */; };
 		99629C2D1B547DE800510036 /* PapyrusUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99629C2C1B547DE800510036 /* PapyrusUITests.swift */; };
 		9975A2AF1CF8C9DE003D315F /* wordswithfriends_anagrams.bin in Resources */ = {isa = PBXBuildFile; fileRef = 9975A2AE1CF8C9DE003D315F /* wordswithfriends_anagrams.bin */; };
-		99778D9A1CF7E0BC0056DEB0 /* wordswithfriends.bin in Resources */ = {isa = PBXBuildFile; fileRef = 99778D991CF7E0BC0056DEB0 /* wordswithfriends.bin */; };
 		997D186B1BCC4EEC0050B872 /* PapyrusViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 997D186A1BCC4EEC0050B872 /* PapyrusViewController.swift */; };
 		997D186D1BCC570B0050B872 /* TileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 997D186C1BCC570B0050B872 /* TileView.swift */; };
 		998041D71CE73F4A0099EF4E /* TileDistributionRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 998041D61CE73F4A0099EF4E /* TileDistributionRenderer.swift */; };
@@ -97,8 +94,6 @@
 		993A534C1C7EED0F001F93CB /* FillShader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FillShader.swift; sourceTree = "<group>"; };
 		994BFCC31CD7B7E900D96156 /* PreferencesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PreferencesViewController.swift; sourceTree = "<group>"; };
 		994BFCC81CD7C31600D96156 /* Preferences.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Preferences.swift; sourceTree = "<group>"; };
-		995DD83A1BB6213A009B409D /* sowpods.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = sowpods.bin; sourceTree = "<group>"; };
-		995DD83B1BB6213A009B409D /* twl06.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = twl06.bin; sourceTree = "<group>"; };
 		99629C051B547DE800510036 /* Papyrus.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Papyrus.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		99629C081B547DE800510036 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		99629C1D1B547DE800510036 /* PapyrusTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PapyrusTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -107,7 +102,6 @@
 		99629C2C1B547DE800510036 /* PapyrusUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PapyrusUITests.swift; sourceTree = "<group>"; };
 		99629C2E1B547DE800510036 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		9975A2AE1CF8C9DE003D315F /* wordswithfriends_anagrams.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = wordswithfriends_anagrams.bin; sourceTree = "<group>"; };
-		99778D991CF7E0BC0056DEB0 /* wordswithfriends.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = wordswithfriends.bin; sourceTree = "<group>"; };
 		997D186A1BCC4EEC0050B872 /* PapyrusViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PapyrusViewController.swift; sourceTree = "<group>"; };
 		997D186C1BCC570B0050B872 /* TileView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TileView.swift; path = Papyrus/Views/TileView.swift; sourceTree = SOURCE_ROOT; };
 		998041D61CE73F4A0099EF4E /* TileDistributionRenderer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TileDistributionRenderer.swift; sourceTree = "<group>"; };
@@ -314,11 +308,8 @@
 		99FD433A1BA5901E00F50DCF /* Dictionaries */ = {
 			isa = PBXGroup;
 			children = (
-				995DD83A1BB6213A009B409D /* sowpods.bin */,
 				99B861D11CF8CC7C00A9E041 /* sowpods_anagrams.bin */,
-				995DD83B1BB6213A009B409D /* twl06.bin */,
 				99B861D21CF8CC7C00A9E041 /* twl06_anagrams.bin */,
-				99778D991CF7E0BC0056DEB0 /* wordswithfriends.bin */,
 				9975A2AE1CF8C9DE003D315F /* wordswithfriends_anagrams.bin */,
 			);
 			path = Dictionaries;
@@ -462,15 +453,12 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				995DD83D1BB6213A009B409D /* twl06.bin in Resources */,
 				99FD433E1BA5901E00F50DCF /* LaunchScreen.storyboard in Resources */,
 				99FD43411BA5901E00F50DCF /* Info.plist in Resources */,
 				99B861D41CF8CC7C00A9E041 /* twl06_anagrams.bin in Resources */,
 				9975A2AF1CF8C9DE003D315F /* wordswithfriends_anagrams.bin in Resources */,
 				99FD433D1BA5901E00F50DCF /* Assets.xcassets in Resources */,
 				99FD433F1BA5901E00F50DCF /* Main.storyboard in Resources */,
-				99778D9A1CF7E0BC0056DEB0 /* wordswithfriends.bin in Resources */,
-				995DD83C1BB6213A009B409D /* sowpods.bin in Resources */,
 				99B861D31CF8CC7C00A9E041 /* sowpods_anagrams.bin in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
