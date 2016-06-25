@@ -42,6 +42,9 @@ struct BoardDrawable: Drawable {
                             Acronym.get(withSuffix: "W", multiplier: board.wordMultipliers[y][x])
                     )
                     drawables.append(SquareDrawable(rect: rect, acronym: acronym, shader: SquareShader(x: x, y: y, board: board)))
+                    if board.isCenterAt(x, y) {
+                        drawables.append(StarDrawable(rect: rect, shader: StarShader(color: .squareStarColor, strokeColor: .tileBorderColor, strokeWidth: 0.5)))
+                    }
                 } else {
                     var points = 0
                     if board.blanks.contains({ $0.x == x && $0.y == y }) == false {

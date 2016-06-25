@@ -12,7 +12,7 @@ import PapyrusCore
 class Preferences {
     static let sharedInstance = Preferences()
     
-    let sections = [["Game Type": ["Scrabble", "Super Scrabble"]],
+    let sections = [["Game Type": ["Scrabble", "Super Scrabble", "Words with Friends"]],
                     ["Difficulty": ["Very Easy", "Easy", "Medium", "Hard"]],
                     ["Number of Opponents": ["1", "2", "3"]],
                     ["Dictionary": ["SOWPODS", "TWL06", "Words with Friends"]]]
@@ -57,7 +57,7 @@ class Preferences {
     }
     
     var gameType: GameType {
-        return values[0] == 0 ? .Scrabble : .SuperScrabble
+        return GameType(rawValue: values[0]!)!
     }
     
     var opponents: Int {

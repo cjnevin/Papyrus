@@ -23,4 +23,6 @@ extension UIColor {
     class var tileColor: UIColor { return UIColor(red: 240/255, green: 240/255, blue: 200/255, alpha: 1) }
     class var tileBorderColor: UIColor { return UIColor(red: 100/255, green: 100/255, blue: 80/255, alpha: 1) }
     class var tileIlluminatedColor: UIColor { return UIColor.whiteColor() }
+    
+    class var squareStarColor: UIColor { return UIColor.whiteColor() }
 }

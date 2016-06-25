@@ -35,6 +35,15 @@ extension CGContext : Renderer {
         path.stroke()
     }
     
+    func drawPath(path: CGPath, color: UIColor, lineColor: UIColor, lineWidth: CGFloat = 1.0, rect: CGRect) {
+        lineColor.setStroke()
+        color.setFill()
+        let bezierPath = UIBezierPath(CGPath: path)
+        bezierPath.fill()
+        bezierPath.lineWidth = lineWidth
+        bezierPath.stroke()
+    }
+    
     func drawText(text: NSAttributedString, rect: CGRect) {
         text.drawInRect(rect)
     }

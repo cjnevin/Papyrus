@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		9901443F1C7E4E61005C81BF /* CGRect+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9901443E1C7E4E61005C81BF /* CGRect+Extensions.swift */; };
+		99139C091D1F12430033E114 /* StarShader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99139C081D1F12430033E114 /* StarShader.swift */; };
+		99139C0C1D1F12770033E114 /* StarDrawable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99139C0B1D1F12770033E114 /* StarDrawable.swift */; };
 		991BC8F81CE71F55000D4C6B /* TilesRemainingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 991BC8F71CE71F55000D4C6B /* TilesRemainingViewController.swift */; };
 		993A53481C7EE273001F93CB /* Shader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 993A53461C7EE273001F93CB /* Shader.swift */; };
 		993A53491C7EE273001F93CB /* SquareShader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 993A53471C7EE273001F93CB /* SquareShader.swift */; };
@@ -86,6 +88,8 @@
 
 /* Begin PBXFileReference section */
 		9901443E1C7E4E61005C81BF /* CGRect+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CGRect+Extensions.swift"; sourceTree = "<group>"; };
+		99139C081D1F12430033E114 /* StarShader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StarShader.swift; sourceTree = "<group>"; };
+		99139C0B1D1F12770033E114 /* StarDrawable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StarDrawable.swift; sourceTree = "<group>"; };
 		991BC8F71CE71F55000D4C6B /* TilesRemainingViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TilesRemainingViewController.swift; sourceTree = "<group>"; };
 		993A53461C7EE273001F93CB /* Shader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Shader.swift; sourceTree = "<group>"; };
 		993A53471C7EE273001F93CB /* SquareShader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SquareShader.swift; sourceTree = "<group>"; };
@@ -162,6 +166,7 @@
 				993A534C1C7EED0F001F93CB /* FillShader.swift */,
 				998041E31CE79B510099EF4E /* BoardShader.swift */,
 				993A53471C7EE273001F93CB /* SquareShader.swift */,
+				99139C081D1F12430033E114 /* StarShader.swift */,
 				993A534A1C7EE338001F93CB /* TileShader.swift */,
 			);
 			path = Shaders;
@@ -268,6 +273,7 @@
 				99D36F4A1C7E6B2B00A5ADA8 /* Drawable.swift */,
 				99D36F491C7E6B2B00A5ADA8 /* BoardDrawable.swift */,
 				99D36F4B1C7E6B2B00A5ADA8 /* SquareDrawable.swift */,
+				99139C0B1D1F12770033E114 /* StarDrawable.swift */,
 				99D36F4C1C7E6B2B00A5ADA8 /* TileDrawable.swift */,
 			);
 			path = Drawables;
@@ -503,6 +509,7 @@
 				9901443F1C7E4E61005C81BF /* CGRect+Extensions.swift in Sources */,
 				994BFCC91CD7C31600D96156 /* Preferences.swift in Sources */,
 				998041DF1CE741480099EF4E /* TileSwapperViewController.swift in Sources */,
+				99139C0C1D1F12770033E114 /* StarDrawable.swift in Sources */,
 				99B5013B1BB0C7FB0098767C /* Watchdog.swift in Sources */,
 				999925B01CD091E9005D1C89 /* GamePresenter.swift in Sources */,
 				99CDF8561CD417C30007DC89 /* TilePickerViewController.swift in Sources */,
@@ -515,6 +522,7 @@
 				991BC8F81CE71F55000D4C6B /* TilesRemainingViewController.swift in Sources */,
 				99C3D1F31C7BAF510024B932 /* GameView.swift in Sources */,
 				997D186B1BCC4EEC0050B872 /* PapyrusViewController.swift in Sources */,
+				99139C091D1F12430033E114 /* StarShader.swift in Sources */,
 				99D36F531C7E6B2B00A5ADA8 /* TileDrawable.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -24,6 +24,9 @@ protocol Renderer {
     
     /// Draws `text` in a given rectangle.
     func drawText(text: NSAttributedString, rect: CGRect)
+    
+    /// Draw path in a given rectangle.
+    func drawPath(path: CGPath, color: UIColor, lineColor: UIColor, lineWidth: CGFloat, rect: CGRect)
 }
 
 
