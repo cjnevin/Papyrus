@@ -14,6 +14,8 @@ Features:
 - Shuffling tiles
 - Skipping your turn
 - Support for Super Scrabble
+- Support for Wordfeud
+- Support for Words With Friends
 - Support for multiple computer players (up to 3)
 - Swapping all tiles
 - Swapping individual tiles
