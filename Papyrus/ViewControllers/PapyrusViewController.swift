@@ -95,10 +95,18 @@ class PapyrusViewController: UIViewController, GamePresenterDelegate {
                 self.startTime = nil
                 self.gameOver = true
                 self.title = "Game Over"
-                print("Winner: \(winner)")
                 if self.tilesRemainingContainerView.alpha == 1.0 {
                     self.updateShownTiles()
                 }
+                guard let winner = winner, game = self.game,
+                    (index, player) = game.players.enumerate().filter({ $1.id == winner.id }).first,
+                    bestMove = player.solves.sort({ $0.score > $1.score }).first else {
+                    return
+                }
+                let message = "The winning score was \(player.score). Their best word was \(bestMove.word.uppercaseString) scoring \(bestMove.score) points!"
+                let alertController = UIAlertController(title: "Player \(index + 1) won!", message: message, preferredStyle: .Alert)
+                alertController.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
+                self.presentViewController(alertController, animated: true, completion: nil)
             case .TurnStarted:
                 self.presenter.updateGame(self.game!, move: self.lastMove)
                 if self.startTime == nil {
