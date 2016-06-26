@@ -29,7 +29,7 @@ struct BoardDrawable: Drawable {
     init(board: Board, letterPoints: [Character: Int], move: Solution?, rect: CGRect) {
         self.rect = rect
         squareSize = CGRectGetWidth(rect) / CGFloat(board.size)
-        shader = BoardShader(color: .tileColor, strokeColor: .tileBorderColor, strokeWidth: 0.5)
+        shader = BoardShader(color: Color.Tile.Default, strokeColor: Color.Tile.Border, strokeWidth: 0.5)
         range = board.boardRange
         var drawables = [Drawable]()
         for (y, column) in board.layout.enumerate() {
@@ -43,7 +43,7 @@ struct BoardDrawable: Drawable {
                     )
                     drawables.append(SquareDrawable(rect: rect, acronym: acronym, shader: SquareShader(x: x, y: y, board: board)))
                     if board.isCenterAt(x, y) {
-                        drawables.append(StarDrawable(rect: rect, shader: StarShader(color: .squareStarColor, strokeColor: .tileBorderColor, strokeWidth: 0.5)))
+                        drawables.append(StarDrawable(rect: rect, shader: StarShader(color: Color.Square.Star, strokeColor: Color.Tile.Border, strokeWidth: 0.5)))
                     }
                 } else {
                     var points = 0

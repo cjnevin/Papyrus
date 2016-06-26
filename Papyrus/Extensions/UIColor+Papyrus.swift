@@ -8,21 +8,62 @@
 
 import UIKit
 
+private func rgba(r: CGFloat, _ g: CGFloat, _ b: CGFloat, _ a: CGFloat = 1.0) -> UIColor {
+    return UIColor(red: r, green: g, blue: b, alpha: a)
+}
+
+private func irgba(r: Int, _ g: Int, _ b: Int, _ a: CGFloat = 1.0) -> UIColor {
+    let m: CGFloat = 255
+    return rgba(CGFloat(r) / m, CGFloat(g) / m, CGFloat(b) / m, a)
+}
+
+enum Color {
+    enum Square {
+        private static let wordMultiplierColors: [Multiplier: UIColor] = [
+            .Double: irgba(255, 182, 193),
+            .Triple: irgba(205, 92, 92, 0.8),
+            .Quadruple: irgba(65, 225, 65, 0.6)]
+        private static let letterMultiplierColors: [Multiplier: UIColor] = [
+            .Double: irgba(173, 216, 230),
+            .Triple: irgba(65, 105, 225, 0.6),
+            .Quadruple: irgba(205, 92, 205, 0.8)]
+        
+        private enum Multiplier: Int {
+            case Double = 2
+            case Triple
+            case Quadruple
+            
+            var letterColor: UIColor? {
+                return letterMultiplierColors[self]
+            }
+            
+            var wordColor: UIColor? {
+                return wordMultiplierColors[self]
+            }
+        }
+        
+        static let Default = irgba(255, 255, 235, 0.8)
+        static let Center = irgba(170, 100, 170)
+        static let Star = Center.multiplyChannels()
+        
+        static func color(forLetterMultiplier letterMultiplier: Int, wordMultiplier: Int) -> UIColor {
+            return (
+                Multiplier(rawValue: letterMultiplier)?.letterColor ??
+                Multiplier(rawValue: wordMultiplier)?.wordColor ??
+                Default)
+        }
+    }
+    enum Tile {
+        static let Border = irgba(100, 100, 80)
+        static let Default = irgba(240, 240, 200)
+        static let Illuminated = UIColor.whiteColor()
+    }
+}
+
 extension UIColor {
-    class var centerSquareColor: UIColor { return UIColor(red: 170/255, green: 100/255, blue: 170/255, alpha: 1) }
-    class var doubleLetterSquareColor: UIColor { return UIColor(red: 173/255, green: 216/255, blue: 230/255, alpha: 1) }
-    class var tripleLetterSquareColor: UIColor { return UIColor(red: 65/255, green: 105/255, blue: 225/255, alpha: 0.6) }
-    class var quadrupleLetterSquareColor: UIColor { return UIColor(red: 205/255, green: 92/255, blue: 205/255, alpha: 0.8) }
-    
-    class var doubleWordSquareColor: UIColor { return UIColor(red: 1, green: 182/255, blue: 193/255, alpha: 1) }
-    class var tripleWordSquareColor: UIColor { return UIColor(red: 205/255, green: 92/255, blue: 92/255, alpha: 0.8) }
-    class var quadrupleWordSquareColor: UIColor { return UIColor(red: 65/255, green: 225/255, blue: 65/255, alpha: 0.6) }
-    
-    class var squareColor: UIColor { return UIColor(red: 245/255, green: 245/255, blue: 220/255, alpha: 1) }
-    class var squareBorderColor: UIColor { return UIColor(red: 140/255, green: 140/255, blue: 120/255, alpha: 1) }
-    class var tileColor: UIColor { return UIColor(red: 240/255, green: 240/255, blue: 200/255, alpha: 1) }
-    class var tileBorderColor: UIColor { return UIColor(red: 100/255, green: 100/255, blue: 80/255, alpha: 1) }
-    class var tileIlluminatedColor: UIColor { return UIColor.whiteColor() }
-    
-    class var squareStarColor: UIColor { return UIColor.whiteColor() }
+    func multiplyChannels(m: CGFloat = 0.7) -> UIColor {
+        var r = CGFloat(0), g = CGFloat(0), b = CGFloat(0), a = CGFloat(0)
+        getRed(&r, green: &g, blue: &b, alpha: &a)
+        return UIColor(red: r * m, green: g * m, blue: b * m, alpha: a)
+    }
 }

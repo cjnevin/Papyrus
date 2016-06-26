@@ -17,12 +17,12 @@ struct TileShader : Shader {
     init(tile: Character, points: Int, highlighted: Bool) {
         // Based on state of tile, render differently.
         if highlighted {
-            fillColor = .tileIlluminatedColor
+            fillColor = Color.Tile.Illuminated
         } else {
-            fillColor = .tileColor
+            fillColor = Color.Tile.Default
         }
         textColor = (points == 0 ? .grayColor() : .blackColor())
-        strokeColor = .tileBorderColor
+        strokeColor = Color.Tile.Border
         strokeWidth = 0.5
     }
 }
