@@ -87,40 +87,54 @@ class PapyrusViewController: UIViewController, GamePresenterDelegate {
         }
     }
     
+    func gameOver(winner: Player?) {
+        print("Time Taken: \(NSDate().timeIntervalSinceDate(startTime!))")
+        startTime = nil
+        gameOver = true
+        title = "Game Over"
+        if tilesRemainingContainerView.alpha == 1.0 {
+            updateShownTiles()
+        }
+        guard let winner = winner, game = game,
+            (index, player) = game.players.enumerate().filter({ $1.id == winner.id }).first,
+            bestMove = player.solves.sort({ $0.score > $1.score }).first else {
+                return
+        }
+        let message = "The winning score was \(player.score).\nTheir best word was \(bestMove.word.uppercaseString) scoring \(bestMove.score) points!"
+        let alertController = UIAlertController(title: "Player \(index + 1) won!", message: message, preferredStyle: .Alert)
+        alertController.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
+        presentViewController(alertController, animated: true, completion: nil)
+    }
+   
+    func turnUpdated() {
+        guard let game = game else { return }
+        presenter.updateGame(game, move: lastMove)
+        title = (game.player is Human ? "Human " : "Computer ") + "\(game.player.score)"
+    }
+    
+    func turnStarted() {
+        turnUpdated()
+        startTime = startTime ?? NSDate()
+        resetButton.enabled = false
+        submitButton.enabled = false
+    }
+    
+    func turnEnded() {
+        turnUpdated()
+        if tilesRemainingContainerView.alpha == 1.0 {
+            updateShownTiles()
+        }
+    }
+    
     func handleEvent(event: GameEvent) {
         NSOperationQueue.mainQueue().addOperationWithBlock {
             switch event {
             case let .Over(winner):
-                print("Time Taken: \(NSDate().timeIntervalSinceDate(self.startTime!))")
-                self.startTime = nil
-                self.gameOver = true
-                self.title = "Game Over"
-                if self.tilesRemainingContainerView.alpha == 1.0 {
-                    self.updateShownTiles()
-                }
-                guard let winner = winner, game = self.game,
-                    (index, player) = game.players.enumerate().filter({ $1.id == winner.id }).first,
-                    bestMove = player.solves.sort({ $0.score > $1.score }).first else {
-                    return
-                }
-                let message = "The winning score was \(player.score). Their best word was \(bestMove.word.uppercaseString) scoring \(bestMove.score) points!"
-                let alertController = UIAlertController(title: "Player \(index + 1) won!", message: message, preferredStyle: .Alert)
-                alertController.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
-                self.presentViewController(alertController, animated: true, completion: nil)
+                self.gameOver(winner)
             case .TurnStarted:
-                self.presenter.updateGame(self.game!, move: self.lastMove)
-                if self.startTime == nil {
-                    self.startTime = NSDate()
-                }
-                self.resetButton.enabled = false
-                self.submitButton.enabled = false
-                self.title = (self.game!.player is Human ? "Human " : "Computer ") + "\(self.game!.player.score)"
+                self.turnStarted()
             case .TurnEnded:
-                self.title = (self.game!.player is Human ? "Human " : "Computer ") + "\(self.game!.player.score)"
-                self.presenter.updateGame(self.game!, move: self.lastMove)
-                if self.tilesRemainingContainerView.alpha == 1.0 {
-                    self.updateShownTiles()
-                }
+                self.turnEnded()
             case let .Move(solution):
                 print("Played \(solution)")
                 self.lastMove = solution
@@ -148,7 +162,7 @@ class PapyrusViewController: UIViewController, GamePresenterDelegate {
             guard let strongSelf = self else { return }
             
             let prefs = Preferences.sharedInstance
-            let players = (0...prefs.opponents).map({ i -> Player in i == 0 ? Human() : Computer(difficulty: prefs.difficulty) }).shuffled()
+            let players = (1...prefs.opponents).map({ i -> Player in i == 0 ? Human() : Computer(difficulty: prefs.difficulty) }).shuffled()
 
             strongSelf.game = Game.newGame(
                 Preferences.sharedInstance.gameType,
