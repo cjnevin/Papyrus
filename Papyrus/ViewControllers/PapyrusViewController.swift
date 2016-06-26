@@ -109,7 +109,8 @@ class PapyrusViewController: UIViewController, GamePresenterDelegate {
     func turnUpdated() {
         guard let game = game else { return }
         presenter.updateGame(game, move: lastMove)
-        title = (game.player is Human ? "Human " : "Computer ") + "\(game.player.score)"
+        guard let (index, player) = game.players.enumerate().filter({ $1.id == game.player.id }).first else { return }
+        title = "Player \(index + 1) (\(player.score))"
     }
     
     func turnStarted() {
@@ -158,12 +159,23 @@ class PapyrusViewController: UIViewController, GamePresenterDelegate {
             }
         }
         
+        func makePlayers(count: Int, f: () -> (Player)) -> [Player] {
+            return (0..<count).map({ _ in f() })
+        }
+        
         gameQueue.addOperationWithBlock { [weak self] in
             guard let strongSelf = self else { return }
             
             let prefs = Preferences.sharedInstance
-            let players = (1...prefs.opponents).map({ i -> Player in i == 0 ? Human() : Computer(difficulty: prefs.difficulty) }).shuffled()
-
+            
+            print(prefs.opponents)
+            print(prefs.humans)
+            
+            let players = (makePlayers(prefs.opponents, f: { Computer(difficulty: prefs.difficulty) }) +
+                makePlayers(prefs.humans, f: { Human() })).shuffled()
+            
+            assert(players.count > 0)
+            
             strongSelf.game = Game.newGame(
                 Preferences.sharedInstance.gameType,
                 dictionary: strongSelf.dictionary,

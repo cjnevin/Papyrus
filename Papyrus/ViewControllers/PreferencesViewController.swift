@@ -23,9 +23,19 @@ class PreferencesViewController : UITableViewController {
     }
     
     func save(sender: UIAlertAction) {
-        Preferences.sharedInstance.save()
-        saveHandler()
-        dismissViewControllerAnimated(true, completion: nil)
+        do {
+            try Preferences.sharedInstance.save()
+            saveHandler()
+            dismissViewControllerAnimated(true, completion: nil)
+        } catch let err as PreferenceError {
+            if err == PreferenceError.InsufficientPlayers {
+                let alert = UIAlertController(title: "Insufficient Players", message: "Please specify at least 2 players.", preferredStyle: .Alert)
+                alert.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
+                presentViewController(alert, animated: true, completion: nil)
+            }
+        } catch {
+            assert(false)
+        }
     }
     
     @IBAction func done(sender: UIBarButtonItem) {

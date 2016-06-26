@@ -9,12 +9,17 @@
 import Foundation
 import PapyrusCore
 
+enum PreferenceError : ErrorType {
+    case InsufficientPlayers
+}
+
 class Preferences {
     static let sharedInstance = Preferences()
     
     let sections = [["Game Type": ["Scrabble", "Super Scrabble", "Wordfeud", "Words with Friends"]],
                     ["Difficulty": ["Very Easy", "Easy", "Medium", "Hard"]],
-                    ["Number of Opponents": ["1", "2", "3"]],
+                    ["AI Players": ["0", "1", "2", "3", "4"]],
+                    ["Human Players": ["0", "1", "2", "3", "4"]],
                     ["Dictionary": ["SOWPODS", "TWL06", "Words with Friends"]]]
     var values = [Int: Int]()
     var originalValues = [Int: Int]()
@@ -28,14 +33,21 @@ class Preferences {
     }
     
     func load() {
-        let defaults = [0: 0, 1: 3, 2: 1, 3: 0]
+        let defaults = [0: 0, 1: 3, 2: 1, 3: 1, 4: 0]
         for (index, _) in sections.enumerate() {
-            values[index] = NSUserDefaults.standardUserDefaults().integerForKey(sections[index].keys.first!) ?? defaults[index]
+            if let value = NSUserDefaults.standardUserDefaults().objectForKey(sections[index].keys.first!) as? Int {
+                values[index] = value
+            } else {
+                values[index] = defaults[index]
+            }
         }
         originalValues = values
     }
     
-    func save() {
+    func save() throws {
+        if values[2]! + values[3]! < 2 {
+            throw PreferenceError.InsufficientPlayers
+        }
         for (index, _) in sections.enumerate() {
             NSUserDefaults.standardUserDefaults().setInteger(values[index]!, forKey: sections[index].keys.first!)
         }
@@ -61,11 +73,15 @@ class Preferences {
     }
     
     var opponents: Int {
-        return values[2]! + 1
+        return values[2]!
+    }
+    
+    var humans: Int {
+        return values[3]!
     }
     
     var dictionary: String {
-        switch values[3]! {
+        switch values[4]! {
         case 1:
             return "twl06_anagrams"
         case 2:
