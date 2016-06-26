@@ -153,7 +153,7 @@
 		998041DE1CE741480099EF4E /* TileSwapperViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TileSwapperViewController.swift; sourceTree = "<group>"; };
 		998041E31CE79B510099EF4E /* BoardShader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BoardShader.swift; sourceTree = "<group>"; };
 		999925AF1CD091E9005D1C89 /* GamePresenter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GamePresenter.swift; sourceTree = "<group>"; };
-		99B5013A1BB0C7FB0098767C /* Watchdog.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Watchdog.swift; sourceTree = "<group>"; };
+		99B5013A1BB0C7FB0098767C /* Watchdog.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Watchdog.swift; path = ../Papyrus/Watchdog.swift; sourceTree = "<group>"; };
 		99B861D11CF8CC7C00A9E041 /* sowpods_anagrams.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = sowpods_anagrams.bin; sourceTree = "<group>"; };
 		99B861D21CF8CC7C00A9E041 /* twl06_anagrams.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = twl06_anagrams.bin; sourceTree = "<group>"; };
 		99C3D1F21C7BAF510024B932 /* GameView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameView.swift; sourceTree = "<group>"; };
@@ -203,6 +203,7 @@
 				99127A7E1D1FBFBF009DCF7A /* AnagramDictionary.xcodeproj */,
 				991AE4561D1FC214001C98E4 /* Lookup.xcodeproj */,
 				99FD43561BA59BF900F50DCF /* PapyrusCore.xcodeproj */,
+				99B5013A1BB0C7FB0098767C /* Watchdog.swift */,
 			);
 			name = Libraries;
 			path = AnagramDictionary;
@@ -271,16 +272,15 @@
 			isa = PBXGroup;
 			children = (
 				99629C081B547DE800510036 /* AppDelegate.swift */,
-				99B5013A1BB0C7FB0098767C /* Watchdog.swift */,
 				994BFCC71CD7C30E00D96156 /* DataSources */,
 				99D36F481C7E6B2B00A5ADA8 /* Drawables */,
-				99127A391D1FBE4B009DCF7A /* Libraries */,
 				99D36F4D1C7E6B2B00A5ADA8 /* Renderers */,
 				993A53451C7EE273001F93CB /* Shaders */,
 				99629C581B547E8200510036 /* ViewControllers */,
 				999925AE1CD091E9005D1C89 /* Presenters */,
 				99629C5A1B547E8200510036 /* Views */,
 				99DF9E0D1B54ED7300F58DA7 /* Extensions */,
+				99127A391D1FBE4B009DCF7A /* Libraries */,
 				99FD43341BA5901E00F50DCF /* Resources */,
 			);
 			path = Papyrus;
