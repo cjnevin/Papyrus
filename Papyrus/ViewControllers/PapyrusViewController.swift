@@ -7,6 +7,8 @@
 //
 
 import UIKit
+import AnagramDictionary
+import Lookup
 import PapyrusCore
 
 class PapyrusViewController: UIViewController, GamePresenterDelegate {
@@ -31,7 +33,7 @@ class PapyrusViewController: UIViewController, GamePresenterDelegate {
     var presenter = GamePresenter()
     var lastMove: Solution?
     var gameOver: Bool = true
-    var dictionary: AnagramDictionary!
+    var dictionary: Lookup!
     
     var startTime: NSDate? = nil
     
@@ -138,7 +140,7 @@ class PapyrusViewController: UIViewController, GamePresenterDelegate {
             guard let strongSelf = self else { return }
             
             let prefs = Preferences.sharedInstance
-            let players = (0...prefs.opponents).map({ i -> Player in i == 0 ? Human() : Computer(difficulty: prefs.difficulty) }).shuffled()
+            let players = (1...prefs.opponents).map({ i -> Player in i == 0 ? Human() : Computer(difficulty: prefs.difficulty) }).shuffled()
 
             strongSelf.game = Game.newGame(
                 Preferences.sharedInstance.gameType,
