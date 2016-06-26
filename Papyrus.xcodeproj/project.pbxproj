@@ -60,13 +60,6 @@
 			remoteGlobalIDString = 99127A631D1FBEFD009DCF7A;
 			remoteInfo = AnagramDictionaryTests;
 		};
-		99127A871D1FBFDD009DCF7A /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 99127A7E1D1FBFBF009DCF7A /* AnagramDictionary.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = 99127A581D1FBEFD009DCF7A;
-			remoteInfo = AnagramDictionary;
-		};
 		991AE45C1D1FC214001C98E4 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 991AE4561D1FC214001C98E4 /* Lookup.xcodeproj */;
@@ -81,7 +74,14 @@
 			remoteGlobalIDString = 99127A9D1D1FC082009DCF7A;
 			remoteInfo = LookupTests;
 		};
-		991AE4611D1FC247001C98E4 /* PBXContainerItemProxy */ = {
+		991AE47D1D1FC7D8001C98E4 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 99127A7E1D1FBFBF009DCF7A /* AnagramDictionary.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 99127A581D1FBEFD009DCF7A;
+			remoteInfo = AnagramDictionary;
+		};
+		991AE47F1D1FC7DA001C98E4 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 991AE4561D1FC214001C98E4 /* Lookup.xcodeproj */;
 			proxyType = 1;
@@ -411,8 +411,8 @@
 			buildRules = (
 			);
 			dependencies = (
-				991AE4621D1FC247001C98E4 /* PBXTargetDependency */,
-				99127A881D1FBFDD009DCF7A /* PBXTargetDependency */,
+				991AE4801D1FC7DA001C98E4 /* PBXTargetDependency */,
+				991AE47E1D1FC7D8001C98E4 /* PBXTargetDependency */,
 				99FD43601BA59C0800F50DCF /* PBXTargetDependency */,
 			);
 			name = Papyrus;
@@ -644,15 +644,15 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		99127A881D1FBFDD009DCF7A /* PBXTargetDependency */ = {
+		991AE47E1D1FC7D8001C98E4 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = AnagramDictionary;
-			targetProxy = 99127A871D1FBFDD009DCF7A /* PBXContainerItemProxy */;
+			targetProxy = 991AE47D1D1FC7D8001C98E4 /* PBXContainerItemProxy */;
 		};
-		991AE4621D1FC247001C98E4 /* PBXTargetDependency */ = {
+		991AE4801D1FC7DA001C98E4 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = Lookup;
-			targetProxy = 991AE4611D1FC247001C98E4 /* PBXContainerItemProxy */;
+			targetProxy = 991AE47F1D1FC7DA001C98E4 /* PBXContainerItemProxy */;
 		};
 		99629C1F1B547DE800510036 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
