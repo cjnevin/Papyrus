@@ -176,8 +176,8 @@ class PapyrusViewController: UIViewController, GamePresenterDelegate {
             
             assert(players.count > 0)
             
-            strongSelf.game = Game.newGame(
-                Preferences.sharedInstance.gameType,
+            strongSelf.game = Game(
+                gameType: Preferences.sharedInstance.gameType,
                 dictionary: strongSelf.dictionary,
                 players: players,
                 eventHandler: strongSelf.handleEvent)
@@ -194,25 +194,24 @@ class PapyrusViewController: UIViewController, GamePresenterDelegate {
     // MARK: - GamePresenterDelegate
     
     func fade(out out: Bool, allExcept: UIView? = nil) {
-        if !out {
-            navigationItem.setLeftBarButtonItems(nil, animated: true)
-            if allExcept == tilesSwapperContainerView {
-                let swapButton = UIBarButtonItem(title: "Swap", style: .Done, target: self, action: #selector(doSwap))
-                navigationItem.setRightBarButtonItem(swapButton, animated: true)
-            } else {
-                navigationItem.setRightBarButtonItem(nil, animated: true)
+        defer {
+            UIView.animateWithDuration(0.25) {
+                self.blackoutView.alpha = out ? 0.0 : 0.4
+                self.tileContainerViews.forEach({ $0.alpha = (out == false && $0 == allExcept) ? 1.0 : 0.0 })
             }
-            view.bringSubviewToFront(self.blackoutView)
-            if let fadeInView = allExcept {
-                view.bringSubviewToFront(fadeInView)
-            }
-        } else {
+        }
+        
+        guard out else {
             navigationItem.setLeftBarButtonItems([actionButton, resetButton], animated: true)
             navigationItem.setRightBarButtonItem(submitButton, animated: true)
+            return
         }
-        UIView.animateWithDuration(0.25) {
-            self.blackoutView.alpha = out ? 0.0 : 0.4
-            self.tileContainerViews.forEach({ $0.alpha = (out == false && $0 == allExcept) ? 1.0 : 0.0 })
+        
+        navigationItem.setLeftBarButtonItems(nil, animated: true)
+        navigationItem.setRightBarButtonItem(allExcept == tilesSwapperContainerView ? UIBarButtonItem(title: "Swap", style: .Done, target: self, action: #selector(doSwap)) : nil, animated: true)
+        view.bringSubviewToFront(self.blackoutView)
+        if let fadeInView = allExcept {
+            view.bringSubviewToFront(fadeInView)
         }
     }
     
