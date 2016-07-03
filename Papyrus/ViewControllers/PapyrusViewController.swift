@@ -8,7 +8,6 @@
 
 import UIKit
 import AnagramDictionary
-import Lookup
 import PapyrusCore
 
 class PapyrusViewController: UIViewController, GamePresenterDelegate {
@@ -237,7 +236,7 @@ class PapyrusViewController: UIViewController, GamePresenterDelegate {
             let blanks = presenter.blankTiles()
             resetButton.isEnabled = placed.count > 0
             
-            let result = game.validate(placed, blanks: blanks)
+            let result = game.validate(points: placed, blanks: blanks)
             switch result {
             case let .valid(solution):
                 submitButton.isEnabled = true
@@ -256,7 +255,7 @@ class PapyrusViewController: UIViewController, GamePresenterDelegate {
     func swapAll(_ sender: UIAlertAction) {
         gameQueue.addOperation { [weak self] in
             guard let strongSelf = self where strongSelf.game?.player != nil else { return }
-            let _ = strongSelf.game!.swapTiles(strongSelf.game!.player.rack.map({ $0.letter }))
+            let _ = strongSelf.game!.swap(tiles: strongSelf.game!.player.rack.map({ $0.letter }))
         }
     }
     
@@ -275,7 +274,7 @@ class PapyrusViewController: UIViewController, GamePresenterDelegate {
         }
         gameQueue.addOperation { [weak self] in
             guard let strongSelf = self where strongSelf.game?.player != nil else { return }
-            let _ = strongSelf.game!.swapTiles(letters)
+            let _ = strongSelf.game!.swap(tiles: letters)
         }
     }
     
@@ -365,7 +364,7 @@ class PapyrusViewController: UIViewController, GamePresenterDelegate {
     
     private func play(_ solution: Solution) {
         gameQueue.addOperation { [weak self] in
-            self?.game?.play(solution)
+            self?.game?.play(solution: solution)
             self?.game?.nextTurn()
         }
     }

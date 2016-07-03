@@ -17,6 +17,7 @@
 		993A534D1C7EED0F001F93CB /* FillShader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 993A534C1C7EED0F001F93CB /* FillShader.swift */; };
 		994BFCC41CD7B7E900D96156 /* PreferencesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 994BFCC31CD7B7E900D96156 /* PreferencesViewController.swift */; };
 		994BFCC91CD7C31600D96156 /* Preferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = 994BFCC81CD7C31600D96156 /* Preferences.swift */; };
+		9951B58B1D294187007FD0EC /* AnagramDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9951B58A1D294187007FD0EC /* AnagramDictionary.swift */; };
 		99629C091B547DE800510036 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99629C081B547DE800510036 /* AppDelegate.swift */; };
 		99629C2D1B547DE800510036 /* PapyrusUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99629C2C1B547DE800510036 /* PapyrusUITests.swift */; };
 		9975A2AF1CF8C9DE003D315F /* wordswithfriends_anagrams.bin in Resources */ = {isa = PBXBuildFile; fileRef = 9975A2AE1CF8C9DE003D315F /* wordswithfriends_anagrams.bin */; };
@@ -42,45 +43,9 @@
 		99FD433D1BA5901E00F50DCF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 99FD43351BA5901E00F50DCF /* Assets.xcassets */; };
 		99FD433E1BA5901E00F50DCF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 99FD43361BA5901E00F50DCF /* LaunchScreen.storyboard */; };
 		99FD433F1BA5901E00F50DCF /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 99FD43381BA5901E00F50DCF /* Main.storyboard */; };
-		99FD43411BA5901E00F50DCF /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 99FD433C1BA5901E00F50DCF /* Info.plist */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		99127A831D1FBFBF009DCF7A /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 99127A7E1D1FBFBF009DCF7A /* AnagramDictionary.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 99127A591D1FBEFD009DCF7A;
-			remoteInfo = AnagramDictionary;
-		};
-		99127A851D1FBFBF009DCF7A /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 99127A7E1D1FBFBF009DCF7A /* AnagramDictionary.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 99127A631D1FBEFD009DCF7A;
-			remoteInfo = AnagramDictionaryTests;
-		};
-		991AE45C1D1FC214001C98E4 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 991AE4561D1FC214001C98E4 /* Lookup.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 99127A931D1FC082009DCF7A;
-			remoteInfo = Lookup;
-		};
-		991AE45E1D1FC214001C98E4 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 991AE4561D1FC214001C98E4 /* Lookup.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 99127A9D1D1FC082009DCF7A;
-			remoteInfo = LookupTests;
-		};
-		991AE47D1D1FC7D8001C98E4 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 99127A7E1D1FBFBF009DCF7A /* AnagramDictionary.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = 99127A581D1FBEFD009DCF7A;
-			remoteInfo = AnagramDictionary;
-		};
 		99629C1E1B547DE800510036 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 99629BFD1B547DE800510036 /* Project object */;
@@ -120,10 +85,8 @@
 
 /* Begin PBXFileReference section */
 		9901443E1C7E4E61005C81BF /* CGRect+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CGRect+Extensions.swift"; sourceTree = "<group>"; };
-		99127A7E1D1FBFBF009DCF7A /* AnagramDictionary.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = AnagramDictionary.xcodeproj; sourceTree = "<group>"; };
 		99139C081D1F12430033E114 /* StarShader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StarShader.swift; sourceTree = "<group>"; };
 		99139C0B1D1F12770033E114 /* StarDrawable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StarDrawable.swift; sourceTree = "<group>"; };
-		991AE4561D1FC214001C98E4 /* Lookup.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Lookup.xcodeproj; path = Lookup/Lookup.xcodeproj; sourceTree = SOURCE_ROOT; };
 		991BC8F71CE71F55000D4C6B /* TilesRemainingViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TilesRemainingViewController.swift; sourceTree = "<group>"; };
 		993A53461C7EE273001F93CB /* Shader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Shader.swift; sourceTree = "<group>"; };
 		993A53471C7EE273001F93CB /* SquareShader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SquareShader.swift; sourceTree = "<group>"; };
@@ -131,6 +94,7 @@
 		993A534C1C7EED0F001F93CB /* FillShader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FillShader.swift; sourceTree = "<group>"; };
 		994BFCC31CD7B7E900D96156 /* PreferencesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PreferencesViewController.swift; sourceTree = "<group>"; };
 		994BFCC81CD7C31600D96156 /* Preferences.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Preferences.swift; sourceTree = "<group>"; };
+		9951B58A1D294187007FD0EC /* AnagramDictionary.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnagramDictionary.swift; sourceTree = "<group>"; };
 		99629C051B547DE800510036 /* Papyrus.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Papyrus.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		99629C081B547DE800510036 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		99629C1D1B547DE800510036 /* PapyrusTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PapyrusTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -193,32 +157,12 @@
 		99127A391D1FBE4B009DCF7A /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
-				99127A7E1D1FBFBF009DCF7A /* AnagramDictionary.xcodeproj */,
-				991AE4561D1FC214001C98E4 /* Lookup.xcodeproj */,
 				99FD43561BA59BF900F50DCF /* PapyrusCore.xcodeproj */,
 				99B5013A1BB0C7FB0098767C /* Watchdog.swift */,
 			);
 			name = Libraries;
 			path = AnagramDictionary;
 			sourceTree = SOURCE_ROOT;
-		};
-		99127A7F1D1FBFBF009DCF7A /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				99127A841D1FBFBF009DCF7A /* AnagramDictionary.framework */,
-				99127A861D1FBFBF009DCF7A /* AnagramDictionaryTests.xctest */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
-		991AE4571D1FC214001C98E4 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				991AE45D1D1FC214001C98E4 /* Lookup.framework */,
-				991AE45F1D1FC214001C98E4 /* LookupTests.xctest */,
-			);
-			name = Products;
-			sourceTree = "<group>";
 		};
 		993A53451C7EE273001F93CB /* Shaders */ = {
 			isa = PBXGroup;
@@ -236,6 +180,7 @@
 		994BFCC71CD7C30E00D96156 /* DataSources */ = {
 			isa = PBXGroup;
 			children = (
+				9951B58A1D294187007FD0EC /* AnagramDictionary.swift */,
 				994BFCC81CD7C31600D96156 /* Preferences.swift */,
 			);
 			path = DataSources;
@@ -404,7 +349,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				991AE47E1D1FC7D8001C98E4 /* PBXTargetDependency */,
 				99FD43601BA59C0800F50DCF /* PBXTargetDependency */,
 			);
 			name = Papyrus;
@@ -456,7 +400,7 @@
 			attributes = {
 				LastSwiftMigration = 0710;
 				LastSwiftUpdateCheck = 0710;
-				LastUpgradeCheck = 0700;
+				LastUpgradeCheck = 0800;
 				ORGANIZATIONNAME = CJNevin;
 				TargetAttributes = {
 					99629C041B547DE800510036 = {
@@ -489,14 +433,6 @@
 			projectDirPath = "";
 			projectReferences = (
 				{
-					ProductGroup = 99127A7F1D1FBFBF009DCF7A /* Products */;
-					ProjectRef = 99127A7E1D1FBFBF009DCF7A /* AnagramDictionary.xcodeproj */;
-				},
-				{
-					ProductGroup = 991AE4571D1FC214001C98E4 /* Products */;
-					ProjectRef = 991AE4561D1FC214001C98E4 /* Lookup.xcodeproj */;
-				},
-				{
 					ProductGroup = 99FD43571BA59BF900F50DCF /* Products */;
 					ProjectRef = 99FD43561BA59BF900F50DCF /* PapyrusCore.xcodeproj */;
 				},
@@ -511,34 +447,6 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
-		99127A841D1FBFBF009DCF7A /* AnagramDictionary.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = AnagramDictionary.framework;
-			remoteRef = 99127A831D1FBFBF009DCF7A /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		99127A861D1FBFBF009DCF7A /* AnagramDictionaryTests.xctest */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.cfbundle;
-			path = AnagramDictionaryTests.xctest;
-			remoteRef = 99127A851D1FBFBF009DCF7A /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		991AE45D1D1FC214001C98E4 /* Lookup.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = Lookup.framework;
-			remoteRef = 991AE45C1D1FC214001C98E4 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		991AE45F1D1FC214001C98E4 /* LookupTests.xctest */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.cfbundle;
-			path = LookupTests.xctest;
-			remoteRef = 991AE45E1D1FC214001C98E4 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
 		99FD435C1BA59BF900F50DCF /* PapyrusCore.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
@@ -561,7 +469,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				99FD433E1BA5901E00F50DCF /* LaunchScreen.storyboard in Resources */,
-				99FD43411BA5901E00F50DCF /* Info.plist in Resources */,
 				99B861D41CF8CC7C00A9E041 /* twl06_anagrams.bin in Resources */,
 				9975A2AF1CF8C9DE003D315F /* wordswithfriends_anagrams.bin in Resources */,
 				99FD433D1BA5901E00F50DCF /* Assets.xcassets in Resources */,
@@ -598,6 +505,7 @@
 				997D186D1BCC570B0050B872 /* TileView.swift in Sources */,
 				99D36F521C7E6B2B00A5ADA8 /* SquareDrawable.swift in Sources */,
 				993A534D1C7EED0F001F93CB /* FillShader.swift in Sources */,
+				9951B58B1D294187007FD0EC /* AnagramDictionary.swift in Sources */,
 				998041E41CE79B510099EF4E /* BoardShader.swift in Sources */,
 				998041D71CE73F4A0099EF4E /* TileDistributionRenderer.swift in Sources */,
 				993A53491C7EE273001F93CB /* SquareShader.swift in Sources */,
@@ -640,11 +548,6 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		991AE47E1D1FC7D8001C98E4 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = AnagramDictionary;
-			targetProxy = 991AE47D1D1FC7D8001C98E4 /* PBXContainerItemProxy */;
-		};
 		99629C1F1B547DE800510036 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 99629C041B547DE800510036 /* Papyrus */;
@@ -789,6 +692,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.cjnevin.Papyrus;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = 1;
 			};
@@ -841,6 +745,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.cjnevin.PapyrusUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				SWIFT_VERSION = 3.0;
 				TEST_TARGET_NAME = Papyrus;
 				USES_XCTRUNNER = YES;
