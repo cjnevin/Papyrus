@@ -127,7 +127,6 @@ class PapyrusViewController: UIViewController, GamePresenterDelegate {
             updateShownTiles()
         }
         _ = game?.save(toFile: lastGameFileURL)
-        print(lastGameFileURL.path)
     }
     
     func handleEvent(_ event: GameEvent) {
