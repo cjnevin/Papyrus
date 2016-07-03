@@ -82,7 +82,7 @@ class TileView: UIView {
             return
         }
         let drawable = TileDrawable(tile: tile, points: points, rect: rect, onBoard: onBoard, highlighted: highlighted)
-        drawable.draw(context)
+        drawable.draw(renderer: context)
     }
 }
 

@@ -9,11 +9,11 @@
 import UIKit
 
 extension CGContext : Renderer {
-    func moveTo(_ position: CGPoint) {
+    func move(to position: CGPoint) {
         self.moveTo(x: position.x, y: position.y)
     }
     
-    func lineTo(_ position: CGPoint, color: UIColor, width: CGFloat) {
+    func line(to position: CGPoint, color: UIColor, width: CGFloat) {
         var r = CGFloat(0), g = CGFloat(0), b = CGFloat(0), a = CGFloat(0)
         color.getRed(&r, green: &g, blue: &b, alpha: &a)
         let context = UIGraphicsGetCurrentContext()
@@ -23,19 +23,19 @@ extension CGContext : Renderer {
         context?.strokePath()
     }
     
-    func fillRect(_ rect: CGRect, color: UIColor) {
+    func fill(rect: CGRect, color: UIColor) {
         color.set()
         UIBezierPath(rect: rect).fill()
     }
     
-    func strokeRect(_ rect: CGRect, color: UIColor, width: CGFloat = 1.0) {
+    func stroke(rect: CGRect, color: UIColor, width: CGFloat = 1.0) {
         color.setStroke()
         let path = UIBezierPath(rect: rect)
         path.lineWidth = width
         path.stroke()
     }
     
-    func drawPath(_ path: CGPath, color: UIColor, lineColor: UIColor, lineWidth: CGFloat = 1.0, rect: CGRect) {
+    func draw(path: CGPath, color: UIColor, lineColor: UIColor, lineWidth: CGFloat = 1.0, rect: CGRect) {
         lineColor.setStroke()
         color.setFill()
         let bezierPath = UIBezierPath(cgPath: path)
@@ -44,7 +44,7 @@ extension CGContext : Renderer {
         bezierPath.stroke()
     }
     
-    func drawText(_ text: AttributedString, rect: CGRect) {
+    func draw(text: AttributedString, rect: CGRect) {
         text.draw(in: rect)
     }
 }

@@ -28,12 +28,12 @@ struct BoardDrawable: Drawable {
     
     init(board: Board, letterPoints: [Character: Int], move: Solution?, rect: CGRect) {
         self.rect = rect
-        squareSize = CGRectGetWidth(rect) / CGFloat(board.size)
+        squareSize = rect.width / CGFloat(board.size)
         shader = BoardShader(color: Color.Tile.Default, strokeColor: Color.Tile.Border, strokeWidth: 0.5)
         range = board.boardRange
         var drawables = [Drawable]()
-        for (y, column) in board.layout.enumerate() {
-            for (x, square) in column.enumerate() {
+        for (y, column) in board.layout.enumerated() {
+            for (x, square) in column.enumerated() {
                 let point = CGPoint(x: CGFloat(x) * squareSize, y: CGFloat(y) * squareSize)
                 let rect = CGRect(origin: point, size: CGSize(width: squareSize, height: squareSize))
                 if square == board.empty {
@@ -58,16 +58,16 @@ struct BoardDrawable: Drawable {
         self.drawables = drawables
     }
     
-    func draw(_ renderer: Renderer) {
-        renderer.fillRect(rect: rect, color: shader)
-        renderer.strokeRect(rect, shader: shader)
-        drawables.forEach({ $0.draw(renderer) })
+    func draw(renderer: Renderer) {
+        renderer.fill(rect: rect, shader: shader)
+        renderer.stroke(rect: rect, shader: shader)
+        drawables.forEach({ $0.draw(renderer: renderer) })
         range.forEach { (i) -> () in
             let offset = CGFloat(i) * squareSize
-            renderer.moveTo(CGPoint(x: offset, y: 0))
-            renderer.lineTo(CGPoint(x: offset, y: rect.size.height), shader: shader)
-            renderer.moveTo(CGPoint(x: 0, y: offset))
-            renderer.lineTo(CGPoint(x: rect.size.width, y: offset), shader: shader)
+            renderer.move(to: CGPoint(x: offset, y: 0))
+            renderer.line(to: CGPoint(x: offset, y: rect.size.height), shader: shader)
+            renderer.move(to: CGPoint(x: 0, y: offset))
+            renderer.line(to: CGPoint(x: rect.size.width, y: offset), shader: shader)
         }
     }
 }

@@ -26,7 +26,7 @@ struct TilesRemainingRenderer {
             let countLabel = UILabel(frame: CGRect(x: tileView.frame.origin.x + tileView.frame.size.width - 15, y: tileView.frame.origin.y + tileView.frame.size.height - 15, width: 20, height: 20))
             countLabel.text = "\(count)"
             countLabel.font = .boldSystemFont(ofSize: 10)
-            countLabel.textColor = count == 0 ? .redColor() : .blackColor()
+            countLabel.textColor = count == 0 ? .red() : .black()
             countLabel.textAlignment = .center
             countLabel.backgroundColor = .white()
             countLabel.clipsToBounds = true

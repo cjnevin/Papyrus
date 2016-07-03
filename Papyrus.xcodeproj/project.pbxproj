@@ -470,6 +470,7 @@
 					99629C041B547DE800510036 = {
 						CreatedOnToolsVersion = 7.0;
 						LastSwiftMigration = 0800;
+						ProvisioningStyle = Manual;
 					};
 					99629C1C1B547DE800510036 = {
 						CreatedOnToolsVersion = 7.0;
@@ -781,6 +782,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_OPTIMIZATION_LEVEL = fast;
 				INFOPLIST_FILE = "$(SRCROOT)/Papyrus/Resources/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -795,6 +797,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = "$(SRCROOT)/Papyrus/Resources/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.cjnevin.Papyrus;

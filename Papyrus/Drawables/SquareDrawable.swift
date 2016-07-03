@@ -24,17 +24,17 @@ struct SquareDrawable : Drawable {
         self.acronym = acronym
     }
     
-    func draw(_ renderer: Renderer) {
+    func draw(renderer: Renderer) {
         if shader.fillColor != nil {
-            renderer.fillRect(rect: rect, color: shader)
+            renderer.fill(rect: rect, shader: shader)
         }
         if shader.strokeColor != nil {
-            renderer.strokeRect(rect, shader: shader)
+            renderer.stroke(rect: rect, shader: shader)
         }
         if shader.textColor != nil && acronym != nil {
             let letterText = AttributedString(string: acronym!, attributes: [NSFontAttributeName: UIFont.acronymFontBig])
             let letterRect = rect.centeredRectForSize(letterText.size())
-            renderer.drawText(letterText, rect: letterRect, shader: shader)
+            renderer.draw(text: letterText, rect: letterRect, shader: shader)
         }
     }
 }

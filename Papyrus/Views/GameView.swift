@@ -28,7 +28,7 @@ class GameView: UIView {
             return
         }
         context.saveGState()
-        drawable?.draw(context)
+        drawable?.draw(renderer: context)
         let blackColor = UIColor.black().cgColor
         context.setStrokeColor(blackColor)
         context.setLineWidth(0.5)

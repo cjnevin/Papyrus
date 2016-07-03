@@ -96,20 +96,20 @@ class PapyrusViewController: UIViewController, GamePresenterDelegate {
             updateShownTiles()
         }
         guard let winner = winner, game = game,
-            (index, player) = game.players.enumerate().filter({ $1.id == winner.id }).first,
-            bestMove = player.solves.sort({ $0.score > $1.score }).first else {
+            (index, player) = game.players.enumerated().filter({ $1.id == winner.id }).first,
+            bestMove = player.solves.sorted(isOrderedBefore: { $0.score > $1.score }).first else {
                 return
         }
-        let message = "The winning score was \(player.score).\nTheir best word was \(bestMove.word.uppercaseString) scoring \(bestMove.score) points!"
-        let alertController = UIAlertController(title: "Player \(index + 1) won!", message: message, preferredStyle: .Alert)
-        alertController.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
-        presentViewController(alertController, animated: true, completion: nil)
+        let message = "The winning score was \(player.score).\nTheir best word was \(bestMove.word.uppercased()) scoring \(bestMove.score) points!"
+        let alertController = UIAlertController(title: "Player \(index + 1) won!", message: message, preferredStyle: .alert)
+        alertController.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
+        present(alertController, animated: true, completion: nil)
     }
    
     func turnUpdated() {
         guard let game = game else { return }
         presenter.updateGame(game, move: lastMove)
-        guard let (index, player) = game.players.enumerate().filter({ $1.id == game.player.id }).first else { return }
+        guard let (index, player) = game.players.enumerated().filter({ $1.id == game.player.id }).first else { return }
         title = "Player \(index + 1) (\(player.score))"
     }
     
@@ -130,18 +130,18 @@ class PapyrusViewController: UIViewController, GamePresenterDelegate {
     func handleEvent(_ event: GameEvent) {
         OperationQueue.main().addOperation {
             switch event {
-            case let .Over(winner):
+            case let .over(winner):
                 self.gameOver(winner)
-            case .TurnStarted:
+            case .turnStarted:
                 self.turnStarted()
-            case .TurnEnded:
+            case .turnEnded:
                 self.turnEnded()
-            case let .Move(solution):
+            case let .move(solution):
                 print("Played \(solution)")
                 self.lastMove = solution
-            case let .DrewTiles(letters):
+            case let .drewTiles(letters):
                 print("Drew Tiles \(letters)")
-            case .SwappedTiles:
+            case .swappedTiles:
                 print("Swapped Tiles")
             }
         }
@@ -154,7 +154,7 @@ class PapyrusViewController: UIViewController, GamePresenterDelegate {
         title = "Starting..."
         
         if dictionary == nil {
-            gameQueue.addOperationWithBlock { [weak self] in
+            gameQueue.addOperation { [weak self] in
                 self?.dictionary = AnagramDictionary(filename: Preferences.sharedInstance.dictionary)!
             }
         }
@@ -184,7 +184,7 @@ class PapyrusViewController: UIViewController, GamePresenterDelegate {
             
             OperationQueue.main().addOperation {
                 strongSelf.title = "Started"
-                strongSelf.gameQueue.addOperationWithBlock {
+                strongSelf.gameQueue.addOperation {
                     strongSelf.game?.start()
                 }
             }
@@ -219,14 +219,14 @@ class PapyrusViewController: UIViewController, GamePresenterDelegate {
         tilePickerViewController.prepareForPresentation(game!.bag.dynamicType)
         tilePickerViewController.completionHandler = { letter in
             tileView.tile = letter
-            self.validate()
+            let _ = self.validate()
             self.fade(out: true)
         }
         fade(out: false, allExcept: tilePickerContainerView)
     }
     
     func handlePlacement(_ presenter: GamePresenter) {
-        validate()
+        let _ = validate()
     }
     
     func validate() -> Solution? {
@@ -239,7 +239,7 @@ class PapyrusViewController: UIViewController, GamePresenterDelegate {
             
             let result = game.validate(placed, blanks: blanks)
             switch result {
-            case let .Valid(solution):
+            case let .valid(solution):
                 submitButton.isEnabled = true
                 print(solution)
                 return solution
@@ -256,7 +256,7 @@ class PapyrusViewController: UIViewController, GamePresenterDelegate {
     func swapAll(_ sender: UIAlertAction) {
         gameQueue.addOperation { [weak self] in
             guard let strongSelf = self where strongSelf.game?.player != nil else { return }
-            strongSelf.game!.swapTiles(strongSelf.game!.player.rack.map({ $0.letter }))
+            let _ = strongSelf.game!.swapTiles(strongSelf.game!.player.rack.map({ $0.letter }))
         }
     }
     
@@ -275,7 +275,7 @@ class PapyrusViewController: UIViewController, GamePresenterDelegate {
         }
         gameQueue.addOperation { [weak self] in
             guard let strongSelf = self where strongSelf.game?.player != nil else { return }
-            strongSelf.game!.swapTiles(letters)
+            let _ = strongSelf.game!.swapTiles(letters)
         }
     }
     
@@ -283,7 +283,7 @@ class PapyrusViewController: UIViewController, GamePresenterDelegate {
         gameQueue.addOperation { [weak self] in
             guard let strongSelf = self else { return }
             strongSelf.game?.shuffleRack()
-            OperationQueue.main().addOperationWithBlock {
+            OperationQueue.main().addOperation {
                 strongSelf.presenter.updateGame(strongSelf.game!, move: strongSelf.lastMove)
             }
         }
@@ -300,16 +300,16 @@ class PapyrusViewController: UIViewController, GamePresenterDelegate {
         gameQueue.addOperation { [weak self] in
             guard let strongSelf = self else { return }
             strongSelf.game?.getHint() { solution in
-                OperationQueue.mainQueue().addOperationWithBlock {
+                OperationQueue.main().addOperation {
                     var message = ""
                     if let solution = solution {
-                        message = "\((solution.horizontal ? "horizontal" : "vertical")) word '\(solution.word.uppercaseString)' can be placed \(solution.y + 1) down and \(solution.x + 1) across for a total score of \(solution.score)"
+                        message = "\((solution.horizontal ? "horizontal" : "vertical")) word '\(solution.word.uppercased())' can be placed \(solution.y + 1) down and \(solution.x + 1) across for a total score of \(solution.score)"
                     } else {
                         message = "Could not find any solutions, perhaps skip or swap letters?"
                     }
-                    let alert = UIAlertController(title: "Hint", message: message, preferredStyle: .Alert)
-                    alert.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
-                    self?.presentViewController(alert, animated: true, completion: nil)
+                    let alert = UIAlertController(title: "Hint", message: message, preferredStyle: .alert)
+                    alert.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
+                    self?.present(alert, animated: true, completion: nil)
                 }
             }
         }
@@ -357,7 +357,7 @@ class PapyrusViewController: UIViewController, GamePresenterDelegate {
             actionSheet.addAction(UIAlertAction(title: "Skip", style: .default, handler: skip))
             actionSheet.addAction(UIAlertAction(title: "Hint", style: .default, handler: hint))
         }
-        actionSheet.addAction(UIAlertAction(title: gameOver ? "New Game" : "Restart", style: .Destructive, handler: restart))
+        actionSheet.addAction(UIAlertAction(title: gameOver ? "New Game" : "Restart", style: .destructive, handler: restart))
         actionSheet.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
         present(actionSheet, animated: true, completion: nil)
     }

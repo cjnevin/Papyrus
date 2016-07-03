@@ -17,11 +17,11 @@ struct StarDrawable : Drawable {
         self.shader = shader
     }
     
-    func draw(_ renderer: Renderer) {
+    func draw(renderer: Renderer) {
         guard let fillColor = shader.fillColor, lineColor = shader.strokeColor, lineWidth = shader.strokeWidth else {
             return
         }
-        renderer.drawPath(createStarPath(rect.insetBy(dx: 5, dy: 5)), color: fillColor, lineColor: lineColor, lineWidth: lineWidth, rect: rect)
+        renderer.draw(path: createStarPath(rect.insetBy(dx: 5, dy: 5)), color: fillColor, lineColor: lineColor, lineWidth: lineWidth, rect: rect)
     }
     
     func createStarPath(_ rect: CGRect) -> CGPath {

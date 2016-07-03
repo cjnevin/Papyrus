@@ -58,13 +58,13 @@ class Preferences {
     var difficulty: Difficulty {
         switch values[1]! {
         case 0:
-            return .VeryEasy
+            return .veryEasy
         case 1:
-            return .Easy
+            return .easy
         case 2:
-            return .Medium
+            return .medium
         default:
-            return .Hard
+            return .hard
         }
     }
     

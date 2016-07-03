@@ -23,7 +23,7 @@ class GamePresenter: TileViewDelegate {
         return rect
     }
     private var squareWidth: CGFloat {
-        return CGRectGetWidth(boardRect) / CGFloat(game.board.size)
+        return boardRect.width / CGFloat(game.board.size)
     }
     
     private let tileSpacing = CGFloat(5)
@@ -31,7 +31,7 @@ class GamePresenter: TileViewDelegate {
         return CGFloat(Game.rackAmount)
     }
     private var tileWidth: CGFloat {
-        return (CGRectGetWidth(boardRect) - (tileSpacing * tileRackMax) - tileSpacing) / tileRackMax
+        return (boardRect.width - (tileSpacing * tileRackMax) - tileSpacing) / tileRackMax
     }
     
     var delegate: GamePresenterDelegate!
@@ -46,9 +46,9 @@ class GamePresenter: TileViewDelegate {
     }
     
     func rackTiles() -> [TileView] {
-        let y = CGRectGetWidth(boardRect) + tileSpacing
+        let y = boardRect.width + tileSpacing
         let width = tileWidth
-        return game.player.rack.enumerate().map ({ (index, tile) in
+        return game.player.rack.enumerated().map ({ (index, tile) in
             let x = tileSpacing + ((tileSpacing + width) * CGFloat(index))
             let tileRect = CGRect(x: x, y: y, width: width, height: width)
             let points = tile.isBlank ? 0 : game.bag.dynamicType.letterPoints[tile.letter] ?? 0
@@ -77,8 +77,8 @@ class GamePresenter: TileViewDelegate {
         let squareSize = squareWidth
         let placed = placedTiles()
         var suitable = [Square]()
-        for (y, column) in game.board.layout.enumerate() {
-            for (x, square) in column.enumerate() {
+        for (y, column) in game.board.layout.enumerated() {
+            for (x, square) in column.enumerated() {
                 let point = CGPoint(x: CGFloat(x) * squareSize, y: CGFloat(y) * squareSize)
                 let rect = CGRect(origin: point, size: CGSize(width: squareSize, height: squareSize))
                 if square == game.board.empty && placed.filter({ $0.x == x && $0.y == y }).count == 0 {
@@ -89,11 +89,12 @@ class GamePresenter: TileViewDelegate {
         return suitable
     }
     
-    func bestIntersection(_ forRect: CGRect) -> (x: Int, y: Int, rect: CGRect, intersection: CGRect)? {
-        return suitableSquares.flatMap({ (x, y, squareRect) -> (x: Int, y: Int, rect: CGRect, intersection: CGRect)? in
-            let intersection = CGRectIntersection(squareRect, forRect)
+    typealias Intersection = (x: Int, y: Int, rect: CGRect, intersection: CGRect)
+    func bestIntersection(forRect rect: CGRect) -> Intersection? {
+        return suitableSquares.flatMap({ (x, y, squareRect) -> Intersection? in
+            let intersection = squareRect.intersection(rect)
             return intersection.widthPlusHeight > 0 ? (x, y, squareRect, intersection) : nil
-        }).sort({ (lhs, rhs) in
+        }).sorted(isOrderedBefore: { (lhs, rhs) in
             return lhs.intersection.widthPlusHeight < rhs.intersection.widthPlusHeight
         }).last
     }
@@ -110,8 +111,8 @@ class GamePresenter: TileViewDelegate {
     }
     
     func frameForDropping(_ tileView: TileView) -> CGRect {
-        if CGRectIntersectsRect(tileView.frame, boardRect) {
-            if let intersection = bestIntersection(tileView.frame) {
+        if tileView.frame.intersects(boardRect) {
+            if let intersection = bestIntersection(forRect: tileView.frame) {
                 tileView.onBoard = true
                 tileView.x = intersection.x
                 tileView.y = intersection.y
