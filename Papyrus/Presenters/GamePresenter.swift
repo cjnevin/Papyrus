@@ -11,11 +11,6 @@ import PapyrusCore
 
 typealias PlacedTile = [(x: Int, y: Int, letter: Character)]
 
-protocol GamePresenterDelegate {
-    func handlePlacement(_ presenter: GamePresenter)
-    func handleBlank(_ tileView: TileView, presenter: GamePresenter)
-}
-
 class GamePresenter: TileViewDelegate {
     private var boardRect: CGRect {
         var rect = gameView.bounds
@@ -34,8 +29,10 @@ class GamePresenter: TileViewDelegate {
         return (boardRect.width - (tileSpacing * tileRackMax) - tileSpacing) / tileRackMax
     }
     
-    var delegate: GamePresenterDelegate!
     var gameView: GameView!
+    var onBlank: ((tileView: TileView) -> ())!
+    var onPlacement: (() -> ())!
+    
     private(set) var game: Game!
     func updateGame(_ game: Game) {
         self.game = game
@@ -108,7 +105,7 @@ class GamePresenter: TileViewDelegate {
         tileView.x = nil
         tileView.y = nil
         tileView.onBoard = false
-        delegate.handlePlacement(self)
+        onPlacement()
     }
     
     func frameForDropping(_ tileView: TileView) -> CGRect {
@@ -125,9 +122,9 @@ class GamePresenter: TileViewDelegate {
     }
     
     func dropped(_ tileView: TileView) {
-        delegate.handlePlacement(self)
+        onPlacement()
         if tileView.tile == Game.blankLetter && tileView.onBoard {
-            delegate.handleBlank(tileView, presenter: self)
+            onBlank(tileView: tileView)
         } else if tileView.isBlank && !tileView.onBoard {
             tileView.tile = Game.blankLetter
         }
