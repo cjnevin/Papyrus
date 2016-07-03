@@ -81,13 +81,6 @@
 			remoteGlobalIDString = 99127A581D1FBEFD009DCF7A;
 			remoteInfo = AnagramDictionary;
 		};
-		991AE47F1D1FC7DA001C98E4 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 991AE4561D1FC214001C98E4 /* Lookup.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = 99127A921D1FC082009DCF7A;
-			remoteInfo = Lookup;
-		};
 		99629C1E1B547DE800510036 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 99629BFD1B547DE800510036 /* Project object */;
@@ -411,7 +404,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				991AE4801D1FC7DA001C98E4 /* PBXTargetDependency */,
 				991AE47E1D1FC7D8001C98E4 /* PBXTargetDependency */,
 				99FD43601BA59C0800F50DCF /* PBXTargetDependency */,
 			);
@@ -652,11 +644,6 @@
 			isa = PBXTargetDependency;
 			name = AnagramDictionary;
 			targetProxy = 991AE47D1D1FC7D8001C98E4 /* PBXContainerItemProxy */;
-		};
-		991AE4801D1FC7DA001C98E4 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = Lookup;
-			targetProxy = 991AE47F1D1FC7DA001C98E4 /* PBXContainerItemProxy */;
 		};
 		99629C1F1B547DE800510036 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;

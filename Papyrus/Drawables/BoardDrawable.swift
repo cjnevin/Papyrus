@@ -42,7 +42,7 @@ struct BoardDrawable: Drawable {
                             Acronym.get(withSuffix: "W", multiplier: board.wordMultipliers[y][x])
                     )
                     drawables.append(SquareDrawable(rect: rect, acronym: acronym, shader: SquareShader(x: x, y: y, board: board)))
-                    if board.isCenterAt(x, y) {
+                    if board.isCenter(atX: x, y: y) {
                         drawables.append(StarDrawable(rect: rect, shader: StarShader(color: Color.Square.Star, strokeColor: Color.Tile.Border, strokeWidth: 0.5)))
                     }
                 } else {

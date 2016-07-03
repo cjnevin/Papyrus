@@ -18,7 +18,7 @@ struct SquareShader: Shader {
         defer {
             textColor = fillColor?.multiplyChannels()
         }
-        if board.isCenterAt(x, y) {
+        if board.isCenter(atX: x, y: y) {
             fillColor = Color.Square.Center
             return
         }
