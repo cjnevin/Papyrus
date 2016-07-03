@@ -23,17 +23,12 @@ class PapyrusViewController: UIViewController, GamePresenterDelegate {
     @IBOutlet var resetButton: UIBarButtonItem!
     @IBOutlet var actionButton: UIBarButtonItem!
 
-    let lastGameFileURL = URL(fileURLWithPath: NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).first! + "/lastGame.json")
-    
-    let gameQueue = OperationQueue()
+    let gameManager = GameManager.sharedInstance
     
     let watchdog = Watchdog(threshold: 0.2)
     
     var firstRun: Bool = false
-    var game: Game?
     var presenter = GamePresenter()
-    var gameOver: Bool = true
-    var dictionary: Lookup!
     
     var startTime: Date? = nil
     
@@ -49,21 +44,24 @@ class PapyrusViewController: UIViewController, GamePresenterDelegate {
     @IBOutlet weak var blackoutView: UIView!
     
     override func prepare(for segue: UIStoryboardSegue, sender: AnyObject?) {
-        if segue.identifier == SegueId.TilePickerSegue.rawValue {
-            tilePickerViewController = segue.destinationViewController as! TilePickerViewController
-        } else if segue.identifier == SegueId.TileSwapperSegue.rawValue {
-            tileSwapperViewController = segue.destinationViewController as! TileSwapperViewController
-        } else if segue.identifier == SegueId.TilesRemainingSegue.rawValue {
-            tilesRemainingViewController = segue.destinationViewController as! TilesRemainingViewController
-            tilesRemainingViewController.completionHandler = {
-                self.fade(out: true)
-            }
-        } else if segue.identifier == SegueId.PreferencesSegue.rawValue {
-            let navigationController = segue.destinationViewController as! UINavigationController
-            let preferencesController = navigationController.viewControllers.first! as! PreferencesViewController
-            preferencesController.saveHandler = {
-                self.newGame()
-            }
+        guard let id = segue.identifier, segueId = SegueId(rawValue: id) else {
+            return
+        }
+        func getController<T>(_ controller: UIViewController? = nil) -> T {
+            return (controller ?? segue.destinationViewController) as! T
+        }
+        switch segueId {
+        case .TilePickerSegue:
+            tilePickerViewController = getController()
+        case .TileSwapperSegue:
+            tileSwapperViewController = getController()
+        case .TilesRemainingSegue:
+            tilesRemainingViewController = getController()
+            tilesRemainingViewController.completionHandler = { [weak self] in self?.fade(out: true) }
+        case .PreferencesSegue:
+            let navigationController: UINavigationController = getController()
+            let preferencesController: PreferencesViewController = getController(navigationController.viewControllers.first!)
+            preferencesController.saveHandler = { [weak self] in self?.newGame() }
         }
     }
     
@@ -73,124 +71,97 @@ class PapyrusViewController: UIViewController, GamePresenterDelegate {
         presenter.gameView = gameView
         presenter.delegate = self
         
-        gameQueue.maxConcurrentOperationCount = 1
-
         title = "Papyrus"
     }
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         if !firstRun {
-            newGame()
-            
+            prepareGame()
             firstRun = true
+        }
+    }
+    
+    func enableButtons(submit: Bool = false, reset: Bool = false) {
+        submitButton.isEnabled = submit
+        resetButton.isEnabled = reset
+    }
+    
+    func updatePresenter() {
+        guard let game = gameManager.game else {
+            return
+        }
+        presenter.updateGame(game)
+    }
+    
+    func prepareGame() {
+        enableButtons()
+        title = "Starting..."
+        
+        // Try to restore a cached game first
+        gameManager.restoreGame(eventHandler: handleEvent) { [weak self] success in
+            guard let strongSelf = self else { return }
+            if !success {
+                // If unsuccessful, create a new game
+                strongSelf.newGame()
+            }
+        }
+    }
+    
+    func newGame() {
+        enableButtons()
+        title = "Starting..."
+        gameManager.newGame(eventHandler: handleEvent) { [weak self] in
+            self?.title = "Started"
+            self?.gameManager.start()
         }
     }
     
     func gameOver(with winner: Player?) {
         print("Time Taken: \(Date().timeIntervalSince(startTime!))")
         startTime = nil
-        gameOver = true
         title = "Game Over"
         if tilesRemainingContainerView.alpha == 1.0 {
             updateShownTiles()
         }
-        _ = try? FileManager.default().removeItem(at: lastGameFileURL)
-        guard let winner = winner, game = game,
-            (index, player) = game.players.enumerated().filter({ $1.id == winner.id }).first,
-            bestMove = player.solves.sorted(isOrderedBefore: { $0.score > $1.score }).first else {
+        guard let winner = winner,
+            playerIndex = gameManager.index(of: winner),
+            bestMove = winner.solves.sorted(isOrderedBefore: { $0.score > $1.score }).first else {
                 return
         }
-        let message = "The winning score was \(player.score).\nTheir best word was \(bestMove.word.uppercased()) scoring \(bestMove.score) points!"
-        let alertController = UIAlertController(title: "Player \(index + 1) won!", message: message, preferredStyle: .alert)
+        let message = "The winning score was \(winner.score).\nTheir best word was \(bestMove.word.uppercased()) scoring \(bestMove.score) points!"
+        let alertController = UIAlertController(title: "Player \(playerIndex + 1) won!", message: message, preferredStyle: .alert)
         alertController.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
         present(alertController, animated: true, completion: nil)
     }
    
-    func turnUpdated() {
-        guard let game = game else { return }
-        presenter.updateGame(game)
-        guard let (index, player) = game.players.enumerated().filter({ $1.id == game.player.id }).first else { return }
-        title = "Player \(index + 1) (\(player.score))"
-    }
-    
-    func turnStarted() {
-        turnUpdated()
-        startTime = startTime ?? Date()
-        resetButton.isEnabled = false
-        submitButton.isEnabled = false
-    }
-    
-    func turnEnded() {
-        turnUpdated()
-        if tilesRemainingContainerView.alpha == 1.0 {
-            updateShownTiles()
-        }
-        _ = game?.save(toFile: lastGameFileURL)
-    }
-    
     func handleEvent(_ event: GameEvent) {
-        DispatchQueue.main.async() {
-            switch event {
-            case let .over(_, winner):
-                self.gameOver(with: winner)
-            case .turnBegan(_):
-                self.turnStarted()
-            case .turnEnded(_):
-                self.turnEnded()
-            case let .move(_, solution):
-                print("Played \(solution)")
-            case let .drewTiles(_, letters):
-                print("Drew Tiles \(letters)")
-            case .swappedTiles(_):
-                print("Swapped Tiles")
-            }
-        }
-    }
-    
-    func newGame() {
-        submitButton.isEnabled = false
-        resetButton.isEnabled = false
-        gameOver = false
-        title = "Starting..."
-        
-        if dictionary == nil {
-            gameQueue.addOperation { [weak self] in
-                self?.dictionary = AnagramDictionary(filename: Preferences.sharedInstance.dictionary)!
-            }
+        func turnUpdated() {
+            guard let player = gameManager.game?.player, playerIndex = gameManager.index(of: player) else { return }
+            title = "Player \(playerIndex + 1) (\(player.score))"
         }
         
-        func makePlayers(_ count: Int, f: () -> (Player)) -> [Player] {
-            return (0..<count).map({ _ in f() })
-        }
-        
-        gameQueue.addOperation { [weak self] in
-            guard let strongSelf = self else { return }
-            
-            // Restore first
-            strongSelf.game = Game(fromFile: strongSelf.lastGameFileURL, dictionary: strongSelf.dictionary, eventHandler: strongSelf.handleEvent)
-            
-            // Not possible, create new game
-            if strongSelf.game == nil {
-                let prefs = Preferences.sharedInstance
-                let players = (makePlayers(prefs.opponents, f: { Computer(difficulty: prefs.difficulty) }) +
-                    makePlayers(prefs.humans, f: { Human() })).shuffled()
-                
-                assert(players.count > 0)
-                
-                strongSelf.game = Game(
-                    gameType: Preferences.sharedInstance.gameType,
-                    dictionary: strongSelf.dictionary,
-                    players: players,
-                    eventHandler: strongSelf.handleEvent)
+        switch event {
+        case let .over(_, winner):
+            updatePresenter()
+            enableButtons()
+            gameOver(with: winner)
+        case .turnBegan(_):
+            turnUpdated()
+            enableButtons()
+            startTime = startTime ?? Date()
+        case .turnEnded(_):
+            updatePresenter()
+            turnUpdated()
+            if tilesRemainingContainerView.alpha == 1.0 {
+                updateShownTiles()
             }
-            
-            DispatchQueue.main.async() {
-                strongSelf.title = "Started"
-                strongSelf.gameQueue.addOperation {
-                    strongSelf.game?.start()
-                }
-            }
+        case let .move(_, solution):
+            print("Played \(solution)")
+        case let .drewTiles(_, letters):
+            print("Drew Tiles \(letters)")
+        case .swappedTiles(_):
+            print("Swapped Tiles")
         }
     }
     
@@ -204,7 +175,7 @@ class PapyrusViewController: UIViewController, GamePresenterDelegate {
             }
         }
         
-        guard out else {
+        guard !out else {
             navigationItem.setLeftBarButtonItems([actionButton, resetButton], animated: true)
             navigationItem.setRightBarButton(submitButton, animated: true)
             return
@@ -219,119 +190,37 @@ class PapyrusViewController: UIViewController, GamePresenterDelegate {
     }
     
     func handleBlank(_ tileView: TileView, presenter: GamePresenter) {
-        tilePickerViewController.prepareForPresentation(game!.bag.dynamicType)
+        guard let bagType = gameManager.game?.bag.dynamicType else {
+            return
+        }
+        tilePickerViewController.prepareForPresentation(bagType)
         tilePickerViewController.completionHandler = { letter in
             tileView.tile = letter
-            _ = self.validate()
+            self.validate()
             self.fade(out: true)
         }
         fade(out: false, allExcept: tilePickerContainerView)
     }
     
     func handlePlacement(_ presenter: GamePresenter) {
-        _ = validate()
+        validate()
     }
     
-    func validate() -> Solution? {
-        submitButton.isEnabled = false
-        guard let game = game where gameOver == false else { return nil }
-        if game.player is Human {
-            let placed = presenter.placedTiles()
-            let blanks = presenter.blankTiles()
-            resetButton.isEnabled = placed.count > 0
-            
-            let result = game.validate(points: placed, blanks: blanks)
-            switch result {
-            case let .valid(solution):
-                submitButton.isEnabled = true
-                print(solution)
-                return solution
-            default:
-                break
-            }
-            print(result)
-        }
-        return nil
-    }
-    
-    // MARK: - Buttons
-    
-    func swapAll(_ sender: UIAlertAction) {
-        gameQueue.addOperation { [weak self] in
-            guard let strongSelf = self where strongSelf.game?.player != nil else { return }
-            _ = strongSelf.game!.swap(tiles: strongSelf.game!.player.rack.map({ $0.letter }))
+    func validate() {
+        enableButtons(reset: gameManager.game?.player is Human && presenter.placedTiles().count > 0)
+        gameManager.validate(tiles: presenter.placedTiles(), blanks: presenter.blankTiles()) { [weak self] (solution) in
+            self?.enableButtons(submit: solution != nil)
         }
     }
-    
-    func swap(_ sender: UIAlertAction) {
-        tileSwapperViewController.prepareForPresentation(game!.player.rack)
-        fade(out: false, allExcept: tilesSwapperContainerView)
-    }
-    
-    func doSwap(_ sender: UIBarButtonItem) {
-        guard let letters = tileSwapperViewController.toSwap() else {
-            return
-        }
-        fade(out: true)
-        if letters.count == 0 {
-            return
-        }
-        gameQueue.addOperation { [weak self] in
-            guard let strongSelf = self where strongSelf.game?.player != nil else { return }
-            _ = strongSelf.game!.swap(tiles: letters)
-        }
-    }
-    
-    func shuffle(_ sender: UIAlertAction) {
-        gameQueue.addOperation { [weak self] in
-            guard let strongSelf = self else { return }
-            strongSelf.game?.shuffleRack()
-            DispatchQueue.main.async() {
-                strongSelf.presenter.updateGame(strongSelf.game!)
-            }
-        }
-    }
-    
-    func skip(_ sender: UIAlertAction) {
-        gameQueue.addOperation { [weak self] in
-            guard let strongSelf = self else { return }
-            strongSelf.game?.skip()
-        }
-    }
-    
-    func hint(_ sender: UIAlertAction) {
-        gameQueue.addOperation { [weak self] in
-            guard let strongSelf = self else { return }
-            strongSelf.game?.getHint() { solution in
-                DispatchQueue.main.async() {
-                    var message = ""
-                    if let solution = solution {
-                        message = "\((solution.horizontal ? "horizontal" : "vertical")) word '\(solution.word.uppercased())' can be placed \(solution.y + 1) down and \(solution.x + 1) across for a total score of \(solution.score)"
-                    } else {
-                        message = "Could not find any solutions, perhaps skip or swap letters?"
-                    }
-                    let alert = UIAlertController(title: "Hint", message: message, preferredStyle: .alert)
-                    alert.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
-                    self?.present(alert, animated: true, completion: nil)
-                }
-            }
-        }
-    }
-    
-    func restart(_ sender: UIAlertAction) {
-        newGame()
-    }
-    
-    func showPreferences(_ sender: UIAlertAction) {
-        performSegue(withIdentifier: SegueId.PreferencesSegue.rawValue, sender: self)
-    }
+}
+
+// MARK:- Buttons
+
+extension PapyrusViewController {
     
     func updateShownTiles() {
-        if showingUnplayed {
-            tilesRemainingViewController.prepareForPresentation(game!.bag, players: game!.players)
-        } else {
-            tilesRemainingViewController.prepareForPresentation(game!.bag)
-        }
+        guard let game = gameManager.game else { return }
+        tilesRemainingViewController.prepareForPresentation(game.bag, players: showingUnplayed ? game.players : nil)
     }
     
     func showBagTiles(_ sender: UIAlertAction) {
@@ -349,38 +238,81 @@ class PapyrusViewController: UIViewController, GamePresenterDelegate {
     @IBAction func action(_ sender: UIBarButtonItem) {
         let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         actionSheet.addAction(UIAlertAction(title: "Preferences", style: .default, handler: showPreferences))
-        if game != nil {
+        if gameManager.game != nil {
             actionSheet.addAction(UIAlertAction(title: "Bag Tiles", style: .default, handler: showBagTiles))
             actionSheet.addAction(UIAlertAction(title: "Unplayed Tiles", style: .default, handler: showUnplayedTiles))
         }
-        if game?.player is Human && !gameOver {
+        if gameManager.game?.player is Human && !gameManager.gameOver {
             actionSheet.addAction(UIAlertAction(title: "Shuffle", style: .default, handler: shuffle))
-            actionSheet.addAction(UIAlertAction(title: "Swap All Tiles", style: .default, handler: swapAll))
-            actionSheet.addAction(UIAlertAction(title: "Swap Tiles", style: .default, handler: swap))
+            if gameManager.game?.canSwap == true {
+                actionSheet.addAction(UIAlertAction(title: "Swap All Tiles", style: .default, handler: swapAll))
+                actionSheet.addAction(UIAlertAction(title: "Swap Tiles", style: .default, handler: swap))
+            }
             actionSheet.addAction(UIAlertAction(title: "Skip", style: .default, handler: skip))
             actionSheet.addAction(UIAlertAction(title: "Hint", style: .default, handler: hint))
         }
-        actionSheet.addAction(UIAlertAction(title: gameOver ? "New Game" : "Restart", style: .destructive, handler: restart))
+        actionSheet.addAction(UIAlertAction(title: gameManager.gameOver ? "New Game" : "Restart", style: .destructive, handler: restart))
         actionSheet.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
         present(actionSheet, animated: true, completion: nil)
     }
     
-    
-    private func play(solution: Solution) {
-        gameQueue.addOperation { [weak self] in
-            self?.game?.play(solution: solution)
-            self?.game?.nextTurn()
-        }
-    }
-    
     @IBAction func reset(_ sender: UIBarButtonItem) {
-        presenter.updateGame(game!)
+        updatePresenter()
     }
     
     @IBAction func submit(_ sender: UIBarButtonItem) {
-        guard let solution = validate() else {
-            return
+        gameManager.validate(tiles: presenter.placedTiles(), blanks: presenter.blankTiles()) { [weak self] (solution) in
+            guard let solution = solution else { return }
+            self?.gameManager.play(solution: solution)
         }
-        play(solution: solution)
+    }
+
+    func swapAll(_ sender: UIAlertAction) {
+        gameManager.swapAll()
+    }
+    
+    func swap(_ sender: UIAlertAction) {
+        guard let rack = gameManager.game?.player.rack else { return }
+        tileSwapperViewController.prepareForPresentation(rack)
+        fade(out: false, allExcept: tilesSwapperContainerView)
+    }
+    
+    func doSwap(_ sender: UIBarButtonItem) {
+        guard let letters = tileSwapperViewController.toSwap() else { return }
+        fade(out: true)
+        gameManager.swap(tiles: letters)
+    }
+    
+    func shuffle(_ sender: UIAlertAction) {
+        gameManager.shuffle { [weak self] in
+            self?.updatePresenter()
+        }
+    }
+    
+    func skip(_ sender: UIAlertAction) {
+        gameManager.skip()
+    }
+    
+    func hint(_ sender: UIAlertAction) {
+        gameManager.hint { [weak self] (solution) in
+            guard let strongSelf = self else { return }
+            var message = ""
+            if let solution = solution {
+                message = "\((solution.horizontal ? "horizontal" : "vertical")) word '\(solution.word.uppercased())' can be placed \(solution.y + 1) down and \(solution.x + 1) across for a total score of \(solution.score)"
+            } else {
+                message = "Could not find any solutions, perhaps skip or swap letters?"
+            }
+            let alert = UIAlertController(title: "Hint", message: message, preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
+            strongSelf.present(alert, animated: true, completion: nil)
+        }
+    }
+    
+    func restart(_ sender: UIAlertAction) {
+        newGame()
+    }
+    
+    func showPreferences(_ sender: UIAlertAction) {
+        performSegue(withIdentifier: SegueId.PreferencesSegue.rawValue, sender: self)
     }
 }

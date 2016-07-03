@@ -18,6 +18,7 @@
 		994BFCC41CD7B7E900D96156 /* PreferencesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 994BFCC31CD7B7E900D96156 /* PreferencesViewController.swift */; };
 		994BFCC91CD7C31600D96156 /* Preferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = 994BFCC81CD7C31600D96156 /* Preferences.swift */; };
 		9951B58B1D294187007FD0EC /* AnagramDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9951B58A1D294187007FD0EC /* AnagramDictionary.swift */; };
+		9951B59A1D29B202007FD0EC /* GameManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9951B5991D29B202007FD0EC /* GameManager.swift */; };
 		99629C091B547DE800510036 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99629C081B547DE800510036 /* AppDelegate.swift */; };
 		99629C2D1B547DE800510036 /* PapyrusUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99629C2C1B547DE800510036 /* PapyrusUITests.swift */; };
 		9975A2AF1CF8C9DE003D315F /* wordswithfriends_anagrams.bin in Resources */ = {isa = PBXBuildFile; fileRef = 9975A2AE1CF8C9DE003D315F /* wordswithfriends_anagrams.bin */; };
@@ -95,6 +96,7 @@
 		994BFCC31CD7B7E900D96156 /* PreferencesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PreferencesViewController.swift; sourceTree = "<group>"; };
 		994BFCC81CD7C31600D96156 /* Preferences.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Preferences.swift; sourceTree = "<group>"; };
 		9951B58A1D294187007FD0EC /* AnagramDictionary.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnagramDictionary.swift; sourceTree = "<group>"; };
+		9951B5991D29B202007FD0EC /* GameManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameManager.swift; sourceTree = "<group>"; };
 		99629C051B547DE800510036 /* Papyrus.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Papyrus.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		99629C081B547DE800510036 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		99629C1D1B547DE800510036 /* PapyrusTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PapyrusTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -181,6 +183,7 @@
 			isa = PBXGroup;
 			children = (
 				9951B58A1D294187007FD0EC /* AnagramDictionary.swift */,
+				9951B5991D29B202007FD0EC /* GameManager.swift */,
 				994BFCC81CD7C31600D96156 /* Preferences.swift */,
 			);
 			path = DataSources;
@@ -517,6 +520,7 @@
 				999925B01CD091E9005D1C89 /* GamePresenter.swift in Sources */,
 				99CDF8561CD417C30007DC89 /* TilePickerViewController.swift in Sources */,
 				99D36F551C7E6B2B00A5ADA8 /* Renderer.swift in Sources */,
+				9951B59A1D29B202007FD0EC /* GameManager.swift in Sources */,
 				99629C091B547DE800510036 /* AppDelegate.swift in Sources */,
 				99DF9E0F1B54ED8200F58DA7 /* UIColor+Papyrus.swift in Sources */,
 				99D36F511C7E6B2B00A5ADA8 /* Drawable.swift in Sources */,
