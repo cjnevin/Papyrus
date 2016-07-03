@@ -86,7 +86,7 @@ class PapyrusViewController: UIViewController, GamePresenterDelegate {
         }
     }
     
-    func gameOver(_ winner: Player?) {
+    func gameOver(with winner: Player?) {
         print("Time Taken: \(Date().timeIntervalSince(startTime!))")
         startTime = nil
         gameOver = true
@@ -127,10 +127,10 @@ class PapyrusViewController: UIViewController, GamePresenterDelegate {
     }
     
     func handleEvent(_ event: GameEvent) {
-        OperationQueue.main().addOperation {
+        DispatchQueue.main.async() {
             switch event {
             case let .over(winner):
-                self.gameOver(winner)
+                self.gameOver(with: winner)
             case .turnStarted:
                 self.turnStarted()
             case .turnEnded:
@@ -166,10 +166,6 @@ class PapyrusViewController: UIViewController, GamePresenterDelegate {
             guard let strongSelf = self else { return }
             
             let prefs = Preferences.sharedInstance
-            
-            print(prefs.opponents)
-            print(prefs.humans)
-            
             let players = (makePlayers(prefs.opponents, f: { Computer(difficulty: prefs.difficulty) }) +
                 makePlayers(prefs.humans, f: { Human() })).shuffled()
             
@@ -181,7 +177,7 @@ class PapyrusViewController: UIViewController, GamePresenterDelegate {
                 players: players,
                 eventHandler: strongSelf.handleEvent)
             
-            OperationQueue.main().addOperation {
+            DispatchQueue.main.async() {
                 strongSelf.title = "Started"
                 strongSelf.gameQueue.addOperation {
                     strongSelf.game?.start()
@@ -282,7 +278,7 @@ class PapyrusViewController: UIViewController, GamePresenterDelegate {
         gameQueue.addOperation { [weak self] in
             guard let strongSelf = self else { return }
             strongSelf.game?.shuffleRack()
-            OperationQueue.main().addOperation {
+            DispatchQueue.main.async() {
                 strongSelf.presenter.updateGame(strongSelf.game!, move: strongSelf.lastMove)
             }
         }
@@ -299,7 +295,7 @@ class PapyrusViewController: UIViewController, GamePresenterDelegate {
         gameQueue.addOperation { [weak self] in
             guard let strongSelf = self else { return }
             strongSelf.game?.getHint() { solution in
-                OperationQueue.main().addOperation {
+                DispatchQueue.main.async() {
                     var message = ""
                     if let solution = solution {
                         message = "\((solution.horizontal ? "horizontal" : "vertical")) word '\(solution.word.uppercased())' can be placed \(solution.y + 1) down and \(solution.x + 1) across for a total score of \(solution.score)"
@@ -362,7 +358,7 @@ class PapyrusViewController: UIViewController, GamePresenterDelegate {
     }
     
     
-    private func play(_ solution: Solution) {
+    private func play(solution: Solution) {
         gameQueue.addOperation { [weak self] in
             self?.game?.play(solution: solution)
             self?.game?.nextTurn()
@@ -377,6 +373,6 @@ class PapyrusViewController: UIViewController, GamePresenterDelegate {
         guard let solution = validate() else {
             return
         }
-        play(solution)
+        play(solution: solution)
     }
 }
