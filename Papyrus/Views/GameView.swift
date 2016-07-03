@@ -23,17 +23,17 @@ class GameView: UIView {
         }
     }
     
-    override func drawRect(rect: CGRect) {
+    override func draw(_ rect: CGRect) {
         guard let context = UIGraphicsGetCurrentContext() else {
             return
         }
-        CGContextSaveGState(context)
+        context.saveGState()
         drawable?.draw(context)
-        let blackColor = UIColor.blackColor().CGColor
-        CGContextSetStrokeColorWithColor(context, blackColor)
-        CGContextSetLineWidth(context, 0.5)
-        CGContextStrokePath(context)
-        CGContextRestoreGState(context)
+        let blackColor = UIColor.black().cgColor
+        context.setStrokeColor(blackColor)
+        context.setLineWidth(0.5)
+        context.strokePath()
+        context.restoreGState()
     }
     
 }

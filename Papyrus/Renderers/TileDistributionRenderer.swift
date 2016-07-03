@@ -21,9 +21,9 @@ struct TileDistributionRenderer {
         shapeLayer?.removeFromSuperlayer()
         tileViews?.forEach({ $0.removeFromSuperview() })
         
-        let containerRect = CGRectInset(view.bounds, inset, inset)
+        let containerRect = view.bounds.insetBy(dx: inset, dy: inset)
         let tileSize = ceil(containerRect.size.width / CGFloat(perRow))
-        let sorted = characters.sort()
+        let sorted = characters.sorted()
         let tiles = filterBlank ? sorted.filter({ $0 != Game.blankLetter }) : sorted
         let lastRow = tiles.count <= perRow ? 0 : Int(tiles.count / perRow)
         let path = UIBezierPath()
@@ -61,13 +61,13 @@ struct TileDistributionRenderer {
         }
         
         let shape = CAShapeLayer()
-        shape.path = path.CGPath
-        shape.fillColor = UIColor.whiteColor().colorWithAlphaComponent(0.6).CGColor
+        shape.path = path.cgPath
+        shape.fillColor = UIColor.white().withAlphaComponent(0.6).cgColor
         shape.shadowOffset = CGSize(width: 1, height: 1)
-        shape.shadowColor = UIColor.blackColor().CGColor
+        shape.shadowColor = UIColor.black().cgColor
         shape.shadowOpacity = 0.3
         shape.shadowRadius = 4
-        view.backgroundColor = .clearColor()
+        view.backgroundColor = .clear()
         view.layer.addSublayer(shape)
         shapeLayer = shape
         

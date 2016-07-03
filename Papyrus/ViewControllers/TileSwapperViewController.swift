@@ -13,7 +13,7 @@ class TileSwapperViewController : UIViewController, TileViewDelegate {
     
     private var renderer = TileDistributionRenderer()
     
-    func prepareForPresentation(rack: [RackTile]) {
+    func prepareForPresentation(_ rack: [RackTile]) {
         renderer.render(inView: view, filterBlank: false, characters: rack.map({$0.letter}), delegate: self)
         renderer.tileViews?.forEach({ $0.tappable = true; $0.onBoard = true })
     }
@@ -22,14 +22,14 @@ class TileSwapperViewController : UIViewController, TileViewDelegate {
         return renderer.tileViews?.filter({ $0.highlighted }).map({ $0.tile })
     }
     
-    func tapped(tileView: TileView) {
+    func tapped(_ tileView: TileView) {
         tileView.highlighted = !tileView.highlighted
         // Use onBoard to indicate selection
         tileView.onBoard = !tileView.highlighted
     }
     
-    func pickedUp(tileView: TileView) { }
-    func frameForDropping(tileView: TileView) -> CGRect { return .zero }
-    func dropped(tileView: TileView) { }
+    func pickedUp(_ tileView: TileView) { }
+    func frameForDropping(_ tileView: TileView) -> CGRect { return .zero }
+    func dropped(_ tileView: TileView) { }
     
 }

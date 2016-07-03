@@ -21,7 +21,7 @@ struct TileDrawable : Drawable {
     private let rect: CGRect
     private let tile: Character
     private var letter: String {
-        return String(tile).uppercaseString
+        return String(tile).uppercased()
     }
     private let points: String
     private let onBoard: Bool
@@ -34,16 +34,16 @@ struct TileDrawable : Drawable {
         self.points = points > 0 ? "\(points)" : ""
     }
     
-    func draw(renderer: Renderer) {
-        renderer.fillRect(rect, shader: shader)
+    func draw(_ renderer: Renderer) {
+        renderer.fillRect(rect: rect, color: shader)
         renderer.strokeRect(rect, shader: shader)
         
         let letterFont = onBoard ? UIFont.tileLetterFontSmall : UIFont.tileLetterFontBig
-        let letterText = NSAttributedString(string: letter, attributes: [NSFontAttributeName: letterFont])
+        let letterText = AttributedString(string: letter, attributes: [NSFontAttributeName: letterFont])
         let letterRect = rect.centeredRectForSize(letterText.size())
         renderer.drawText(letterText, rect: letterRect, shader: shader)
         
-        let pointsText = NSAttributedString(string: points, attributes: [NSFontAttributeName: UIFont.pointsFont])
+        let pointsText = AttributedString(string: points, attributes: [NSFontAttributeName: UIFont.pointsFont])
         let pointsRect = CGRectInset(rect, 2, 1).innerRectForSize(pointsText.size(),
             verticalAlignment: .Bottom, horizontalAlignment: .Right)
         renderer.drawText(pointsText, rect: pointsRect, shader: shader)

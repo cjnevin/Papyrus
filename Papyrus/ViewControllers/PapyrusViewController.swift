@@ -24,7 +24,7 @@ class PapyrusViewController: UIViewController, GamePresenterDelegate {
     @IBOutlet var resetButton: UIBarButtonItem!
     @IBOutlet var actionButton: UIBarButtonItem!
 
-    let gameQueue = NSOperationQueue()
+    let gameQueue = OperationQueue()
     
     let watchdog = Watchdog(threshold: 0.2)
     
@@ -35,7 +35,7 @@ class PapyrusViewController: UIViewController, GamePresenterDelegate {
     var gameOver: Bool = true
     var dictionary: Lookup!
     
-    var startTime: NSDate? = nil
+    var startTime: Date? = nil
     
     var showingUnplayed: Bool = false
     var showingSwapper: Bool = false
@@ -48,7 +48,7 @@ class PapyrusViewController: UIViewController, GamePresenterDelegate {
     @IBOutlet weak var tilesSwapperContainerView: UIView!
     @IBOutlet weak var blackoutView: UIView!
     
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+    override func prepare(for segue: UIStoryboardSegue, sender: AnyObject?) {
         if segue.identifier == SegueId.TilePickerSegue.rawValue {
             tilePickerViewController = segue.destinationViewController as! TilePickerViewController
         } else if segue.identifier == SegueId.TileSwapperSegue.rawValue {
@@ -87,8 +87,8 @@ class PapyrusViewController: UIViewController, GamePresenterDelegate {
         }
     }
     
-    func gameOver(winner: Player?) {
-        print("Time Taken: \(NSDate().timeIntervalSinceDate(startTime!))")
+    func gameOver(_ winner: Player?) {
+        print("Time Taken: \(Date().timeIntervalSince(startTime!))")
         startTime = nil
         gameOver = true
         title = "Game Over"
@@ -115,9 +115,9 @@ class PapyrusViewController: UIViewController, GamePresenterDelegate {
     
     func turnStarted() {
         turnUpdated()
-        startTime = startTime ?? NSDate()
-        resetButton.enabled = false
-        submitButton.enabled = false
+        startTime = startTime ?? Date()
+        resetButton.isEnabled = false
+        submitButton.isEnabled = false
     }
     
     func turnEnded() {
@@ -127,8 +127,8 @@ class PapyrusViewController: UIViewController, GamePresenterDelegate {
         }
     }
     
-    func handleEvent(event: GameEvent) {
-        NSOperationQueue.mainQueue().addOperationWithBlock {
+    func handleEvent(_ event: GameEvent) {
+        OperationQueue.main().addOperation {
             switch event {
             case let .Over(winner):
                 self.gameOver(winner)
@@ -148,8 +148,8 @@ class PapyrusViewController: UIViewController, GamePresenterDelegate {
     }
     
     func newGame() {
-        submitButton.enabled = false
-        resetButton.enabled = false
+        submitButton.isEnabled = false
+        resetButton.isEnabled = false
         gameOver = false
         title = "Starting..."
         
@@ -159,11 +159,11 @@ class PapyrusViewController: UIViewController, GamePresenterDelegate {
             }
         }
         
-        func makePlayers(count: Int, f: () -> (Player)) -> [Player] {
+        func makePlayers(_ count: Int, f: () -> (Player)) -> [Player] {
             return (0..<count).map({ _ in f() })
         }
         
-        gameQueue.addOperationWithBlock { [weak self] in
+        gameQueue.addOperation { [weak self] in
             guard let strongSelf = self else { return }
             
             let prefs = Preferences.sharedInstance
@@ -182,7 +182,7 @@ class PapyrusViewController: UIViewController, GamePresenterDelegate {
                 players: players,
                 eventHandler: strongSelf.handleEvent)
             
-            NSOperationQueue.mainQueue().addOperationWithBlock {
+            OperationQueue.main().addOperation {
                 strongSelf.title = "Started"
                 strongSelf.gameQueue.addOperationWithBlock {
                     strongSelf.game?.start()
@@ -193,9 +193,9 @@ class PapyrusViewController: UIViewController, GamePresenterDelegate {
     
     // MARK: - GamePresenterDelegate
     
-    func fade(out out: Bool, allExcept: UIView? = nil) {
+    func fade(out: Bool, allExcept: UIView? = nil) {
         defer {
-            UIView.animateWithDuration(0.25) {
+            UIView.animate(withDuration: 0.25) {
                 self.blackoutView.alpha = out ? 0.0 : 0.4
                 self.tileContainerViews.forEach({ $0.alpha = (out == false && $0 == allExcept) ? 1.0 : 0.0 })
             }
@@ -203,19 +203,19 @@ class PapyrusViewController: UIViewController, GamePresenterDelegate {
         
         guard out else {
             navigationItem.setLeftBarButtonItems([actionButton, resetButton], animated: true)
-            navigationItem.setRightBarButtonItem(submitButton, animated: true)
+            navigationItem.setRightBarButton(submitButton, animated: true)
             return
         }
         
         navigationItem.setLeftBarButtonItems(nil, animated: true)
-        navigationItem.setRightBarButtonItem(allExcept == tilesSwapperContainerView ? UIBarButtonItem(title: "Swap", style: .Done, target: self, action: #selector(doSwap)) : nil, animated: true)
-        view.bringSubviewToFront(self.blackoutView)
+        navigationItem.setRightBarButton(allExcept == tilesSwapperContainerView ? UIBarButtonItem(title: "Swap", style: .done, target: self, action: #selector(doSwap)) : nil, animated: true)
+        view.bringSubview(toFront: self.blackoutView)
         if let fadeInView = allExcept {
-            view.bringSubviewToFront(fadeInView)
+            view.bringSubview(toFront: fadeInView)
         }
     }
     
-    func handleBlank(tileView: TileView, presenter: GamePresenter) {
+    func handleBlank(_ tileView: TileView, presenter: GamePresenter) {
         tilePickerViewController.prepareForPresentation(game!.bag.dynamicType)
         tilePickerViewController.completionHandler = { letter in
             tileView.tile = letter
@@ -225,22 +225,22 @@ class PapyrusViewController: UIViewController, GamePresenterDelegate {
         fade(out: false, allExcept: tilePickerContainerView)
     }
     
-    func handlePlacement(presenter: GamePresenter) {
+    func handlePlacement(_ presenter: GamePresenter) {
         validate()
     }
     
     func validate() -> Solution? {
-        submitButton.enabled = false
+        submitButton.isEnabled = false
         guard let game = game where gameOver == false else { return nil }
         if game.player is Human {
             let placed = presenter.placedTiles()
             let blanks = presenter.blankTiles()
-            resetButton.enabled = placed.count > 0
+            resetButton.isEnabled = placed.count > 0
             
             let result = game.validate(placed, blanks: blanks)
             switch result {
             case let .Valid(solution):
-                submitButton.enabled = true
+                submitButton.isEnabled = true
                 print(solution)
                 return solution
             default:
@@ -253,19 +253,19 @@ class PapyrusViewController: UIViewController, GamePresenterDelegate {
     
     // MARK: - Buttons
     
-    func swapAll(sender: UIAlertAction) {
-        gameQueue.addOperationWithBlock { [weak self] in
+    func swapAll(_ sender: UIAlertAction) {
+        gameQueue.addOperation { [weak self] in
             guard let strongSelf = self where strongSelf.game?.player != nil else { return }
             strongSelf.game!.swapTiles(strongSelf.game!.player.rack.map({ $0.letter }))
         }
     }
     
-    func swap(sender: UIAlertAction) {
+    func swap(_ sender: UIAlertAction) {
         tileSwapperViewController.prepareForPresentation(game!.player.rack)
         fade(out: false, allExcept: tilesSwapperContainerView)
     }
     
-    func doSwap(sender: UIBarButtonItem) {
+    func doSwap(_ sender: UIBarButtonItem) {
         guard let letters = tileSwapperViewController.toSwap() else {
             return
         }
@@ -273,34 +273,34 @@ class PapyrusViewController: UIViewController, GamePresenterDelegate {
         if letters.count == 0 {
             return
         }
-        gameQueue.addOperationWithBlock { [weak self] in
+        gameQueue.addOperation { [weak self] in
             guard let strongSelf = self where strongSelf.game?.player != nil else { return }
             strongSelf.game!.swapTiles(letters)
         }
     }
     
-    func shuffle(sender: UIAlertAction) {
-        gameQueue.addOperationWithBlock { [weak self] in
+    func shuffle(_ sender: UIAlertAction) {
+        gameQueue.addOperation { [weak self] in
             guard let strongSelf = self else { return }
             strongSelf.game?.shuffleRack()
-            NSOperationQueue.mainQueue().addOperationWithBlock {
+            OperationQueue.main().addOperationWithBlock {
                 strongSelf.presenter.updateGame(strongSelf.game!, move: strongSelf.lastMove)
             }
         }
     }
     
-    func skip(sender: UIAlertAction) {
-        gameQueue.addOperationWithBlock { [weak self] in
+    func skip(_ sender: UIAlertAction) {
+        gameQueue.addOperation { [weak self] in
             guard let strongSelf = self else { return }
             strongSelf.game?.skip()
         }
     }
     
-    func hint(sender: UIAlertAction) {
-        gameQueue.addOperationWithBlock { [weak self] in
+    func hint(_ sender: UIAlertAction) {
+        gameQueue.addOperation { [weak self] in
             guard let strongSelf = self else { return }
             strongSelf.game?.getHint() { solution in
-                NSOperationQueue.mainQueue().addOperationWithBlock {
+                OperationQueue.mainQueue().addOperationWithBlock {
                     var message = ""
                     if let solution = solution {
                         message = "\((solution.horizontal ? "horizontal" : "vertical")) word '\(solution.word.uppercaseString)' can be placed \(solution.y + 1) down and \(solution.x + 1) across for a total score of \(solution.score)"
@@ -315,12 +315,12 @@ class PapyrusViewController: UIViewController, GamePresenterDelegate {
         }
     }
     
-    func restart(sender: UIAlertAction) {
+    func restart(_ sender: UIAlertAction) {
         newGame()
     }
     
-    func showPreferences(sender: UIAlertAction) {
-        performSegueWithIdentifier(SegueId.PreferencesSegue.rawValue, sender: self)
+    func showPreferences(_ sender: UIAlertAction) {
+        performSegue(withIdentifier: SegueId.PreferencesSegue.rawValue, sender: self)
     }
     
     func updateShownTiles() {
@@ -331,50 +331,50 @@ class PapyrusViewController: UIViewController, GamePresenterDelegate {
         }
     }
     
-    func showBagTiles(sender: UIAlertAction) {
+    func showBagTiles(_ sender: UIAlertAction) {
         showingUnplayed = false
         updateShownTiles()
         fade(out: false, allExcept: tilesRemainingContainerView)
     }
     
-    func showUnplayedTiles(sender: UIAlertAction) {
+    func showUnplayedTiles(_ sender: UIAlertAction) {
         showingUnplayed = true
         updateShownTiles()
         fade(out: false, allExcept: tilesRemainingContainerView)
     }
     
-    @IBAction func action(sender: UIBarButtonItem) {
-        let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .ActionSheet)
-        actionSheet.addAction(UIAlertAction(title: "Preferences", style: .Default, handler: showPreferences))
+    @IBAction func action(_ sender: UIBarButtonItem) {
+        let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        actionSheet.addAction(UIAlertAction(title: "Preferences", style: .default, handler: showPreferences))
         if game != nil {
-            actionSheet.addAction(UIAlertAction(title: "Bag Tiles", style: .Default, handler: showBagTiles))
-            actionSheet.addAction(UIAlertAction(title: "Unplayed Tiles", style: .Default, handler: showUnplayedTiles))
+            actionSheet.addAction(UIAlertAction(title: "Bag Tiles", style: .default, handler: showBagTiles))
+            actionSheet.addAction(UIAlertAction(title: "Unplayed Tiles", style: .default, handler: showUnplayedTiles))
         }
         if game?.player is Human && !gameOver {
-            actionSheet.addAction(UIAlertAction(title: "Shuffle", style: .Default, handler: shuffle))
-            actionSheet.addAction(UIAlertAction(title: "Swap All Tiles", style: .Default, handler: swapAll))
-            actionSheet.addAction(UIAlertAction(title: "Swap Tiles", style: .Default, handler: swap))
-            actionSheet.addAction(UIAlertAction(title: "Skip", style: .Default, handler: skip))
-            actionSheet.addAction(UIAlertAction(title: "Hint", style: .Default, handler: hint))
+            actionSheet.addAction(UIAlertAction(title: "Shuffle", style: .default, handler: shuffle))
+            actionSheet.addAction(UIAlertAction(title: "Swap All Tiles", style: .default, handler: swapAll))
+            actionSheet.addAction(UIAlertAction(title: "Swap Tiles", style: .default, handler: swap))
+            actionSheet.addAction(UIAlertAction(title: "Skip", style: .default, handler: skip))
+            actionSheet.addAction(UIAlertAction(title: "Hint", style: .default, handler: hint))
         }
         actionSheet.addAction(UIAlertAction(title: gameOver ? "New Game" : "Restart", style: .Destructive, handler: restart))
-        actionSheet.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: nil))
-        presentViewController(actionSheet, animated: true, completion: nil)
+        actionSheet.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        present(actionSheet, animated: true, completion: nil)
     }
     
     
-    private func play(solution: Solution) {
-        gameQueue.addOperationWithBlock { [weak self] in
+    private func play(_ solution: Solution) {
+        gameQueue.addOperation { [weak self] in
             self?.game?.play(solution)
             self?.game?.nextTurn()
         }
     }
     
-    @IBAction func reset(sender: UIBarButtonItem) {
+    @IBAction func reset(_ sender: UIBarButtonItem) {
         presenter.updateGame(self.game!, move: lastMove)
     }
     
-    @IBAction func submit(sender: UIBarButtonItem) {
+    @IBAction func submit(_ sender: UIBarButtonItem) {
         guard let solution = validate() else {
             return
         }

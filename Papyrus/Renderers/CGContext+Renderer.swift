@@ -9,42 +9,42 @@
 import UIKit
 
 extension CGContext : Renderer {
-    func moveTo(position: CGPoint) {
-        CGContextMoveToPoint(self, position.x, position.y)
+    func moveTo(_ position: CGPoint) {
+        self.moveTo(x: position.x, y: position.y)
     }
     
-    func lineTo(position: CGPoint, color: UIColor, width: CGFloat) {
+    func lineTo(_ position: CGPoint, color: UIColor, width: CGFloat) {
         var r = CGFloat(0), g = CGFloat(0), b = CGFloat(0), a = CGFloat(0)
         color.getRed(&r, green: &g, blue: &b, alpha: &a)
         let context = UIGraphicsGetCurrentContext()
-        CGContextSetLineWidth(context, width)
-        CGContextSetRGBStrokeColor(context, r, g, b, a)
-        CGContextAddLineToPoint(self, position.x, position.y)
-        CGContextStrokePath(context)
+        context?.setLineWidth(width)
+        context?.setStrokeColor(red: r, green: g, blue: b, alpha: a)
+        self.addLineTo(x: position.x, y: position.y)
+        context?.strokePath()
     }
     
-    func fillRect(rect: CGRect, color: UIColor) {
+    func fillRect(_ rect: CGRect, color: UIColor) {
         color.set()
         UIBezierPath(rect: rect).fill()
     }
     
-    func strokeRect(rect: CGRect, color: UIColor, width: CGFloat = 1.0) {
+    func strokeRect(_ rect: CGRect, color: UIColor, width: CGFloat = 1.0) {
         color.setStroke()
         let path = UIBezierPath(rect: rect)
         path.lineWidth = width
         path.stroke()
     }
     
-    func drawPath(path: CGPath, color: UIColor, lineColor: UIColor, lineWidth: CGFloat = 1.0, rect: CGRect) {
+    func drawPath(_ path: CGPath, color: UIColor, lineColor: UIColor, lineWidth: CGFloat = 1.0, rect: CGRect) {
         lineColor.setStroke()
         color.setFill()
-        let bezierPath = UIBezierPath(CGPath: path)
+        let bezierPath = UIBezierPath(cgPath: path)
         bezierPath.fill()
         bezierPath.lineWidth = lineWidth
         bezierPath.stroke()
     }
     
-    func drawText(text: NSAttributedString, rect: CGRect) {
-        text.drawInRect(rect)
+    func drawText(_ text: AttributedString, rect: CGRect) {
+        text.draw(in: rect)
     }
 }

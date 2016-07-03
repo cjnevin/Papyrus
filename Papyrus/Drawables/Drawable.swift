@@ -13,5 +13,5 @@ protocol Drawable {
     var shader: Shader { get set }
     
     /// Issues drawing commands to `renderer` to represent `self`.
-    func draw(renderer: Renderer)
+    func draw(_ renderer: Renderer)
 }

@@ -10,7 +10,7 @@ import UIKit
 import PapyrusCore
 
 extension UIFont {
-    static var acronymFontBig: UIFont { return .systemFontOfSize(9) }
+    static var acronymFontBig: UIFont { return .systemFont(ofSize: 9) }
 }
 
 struct SquareDrawable : Drawable {
@@ -24,15 +24,15 @@ struct SquareDrawable : Drawable {
         self.acronym = acronym
     }
     
-    func draw(renderer: Renderer) {
+    func draw(_ renderer: Renderer) {
         if shader.fillColor != nil {
-            renderer.fillRect(rect, shader: shader)
+            renderer.fillRect(rect: rect, color: shader)
         }
         if shader.strokeColor != nil {
             renderer.strokeRect(rect, shader: shader)
         }
         if shader.textColor != nil && acronym != nil {
-            let letterText = NSAttributedString(string: acronym!, attributes: [NSFontAttributeName: UIFont.acronymFontBig])
+            let letterText = AttributedString(string: acronym!, attributes: [NSFontAttributeName: UIFont.acronymFontBig])
             let letterRect = rect.centeredRectForSize(letterText.size())
             renderer.drawText(letterText, rect: letterRect, shader: shader)
         }

@@ -12,8 +12,8 @@ import PapyrusCore
 typealias PlacedTile = [(x: Int, y: Int, letter: Character)]
 
 protocol GamePresenterDelegate {
-    func handlePlacement(presenter: GamePresenter)
-    func handleBlank(tileView: TileView, presenter: GamePresenter)
+    func handlePlacement(_ presenter: GamePresenter)
+    func handleBlank(_ tileView: TileView, presenter: GamePresenter)
 }
 
 class GamePresenter: TileViewDelegate {
@@ -37,7 +37,7 @@ class GamePresenter: TileViewDelegate {
     var delegate: GamePresenterDelegate!
     var gameView: GameView!
     private(set) var game: Game!
-    func updateGame(game: Game, move: Solution? = nil) {
+    func updateGame(_ game: Game, move: Solution? = nil) {
         self.game = game
         gameView.tileViews = nil
         gameView.drawable = BoardDrawable(board: game.board, letterPoints: game.bag.dynamicType.letterPoints, move: move, rect: boardRect)
@@ -89,7 +89,7 @@ class GamePresenter: TileViewDelegate {
         return suitable
     }
     
-    func bestIntersection(forRect: CGRect) -> (x: Int, y: Int, rect: CGRect, intersection: CGRect)? {
+    func bestIntersection(_ forRect: CGRect) -> (x: Int, y: Int, rect: CGRect, intersection: CGRect)? {
         return suitableSquares.flatMap({ (x, y, squareRect) -> (x: Int, y: Int, rect: CGRect, intersection: CGRect)? in
             let intersection = CGRectIntersection(squareRect, forRect)
             return intersection.widthPlusHeight > 0 ? (x, y, squareRect, intersection) : nil
@@ -98,18 +98,18 @@ class GamePresenter: TileViewDelegate {
         }).last
     }
     
-    func tapped(tileView: TileView) {
+    func tapped(_ tileView: TileView) {
         
     }
     
-    func pickedUp(tileView: TileView) {
+    func pickedUp(_ tileView: TileView) {
         tileView.x = nil
         tileView.y = nil
         tileView.onBoard = false
         delegate.handlePlacement(self)
     }
     
-    func frameForDropping(tileView: TileView) -> CGRect {
+    func frameForDropping(_ tileView: TileView) -> CGRect {
         if CGRectIntersectsRect(tileView.frame, boardRect) {
             if let intersection = bestIntersection(tileView.frame) {
                 tileView.onBoard = true
@@ -122,7 +122,7 @@ class GamePresenter: TileViewDelegate {
         return tileView.initialFrame
     }
     
-    func dropped(tileView: TileView) {
+    func dropped(_ tileView: TileView) {
         delegate.handlePlacement(self)
         if tileView.tile == Game.blankLetter && tileView.onBoard {
             delegate.handleBlank(tileView, presenter: self)

@@ -9,8 +9,8 @@
 import Foundation
 import PapyrusCore
 
-enum PreferenceError : ErrorType {
-    case InsufficientPlayers
+enum PreferenceError : ErrorProtocol {
+    case insufficientPlayers
 }
 
 class Preferences {
@@ -34,8 +34,8 @@ class Preferences {
     
     func load() {
         let defaults = [0: 0, 1: 3, 2: 1, 3: 1, 4: 0]
-        for (index, _) in sections.enumerate() {
-            if let value = NSUserDefaults.standardUserDefaults().objectForKey(sections[index].keys.first!) as? Int {
+        for (index, _) in sections.enumerated() {
+            if let value = UserDefaults.standard().object(forKey: sections[index].keys.first!) as? Int {
                 values[index] = value
             } else {
                 values[index] = defaults[index]
@@ -46,12 +46,12 @@ class Preferences {
     
     func save() throws {
         if values[2]! + values[3]! < 2 {
-            throw PreferenceError.InsufficientPlayers
+            throw PreferenceError.insufficientPlayers
         }
-        for (index, _) in sections.enumerate() {
-            NSUserDefaults.standardUserDefaults().setInteger(values[index]!, forKey: sections[index].keys.first!)
+        for (index, _) in sections.enumerated() {
+            UserDefaults.standard().set(values[index]!, forKey: sections[index].keys.first!)
         }
-        NSUserDefaults.standardUserDefaults().synchronize()
+        UserDefaults.standard().synchronize()
         originalValues = values
     }
     

@@ -22,7 +22,7 @@ struct BoardDrawable: Drawable {
     private var drawables: [Drawable]!
     private let rect: CGRect
     private let squareSize: CGFloat
-    private let range: Range<Int>
+    private let range: CountableRange<Int>
     
     var shader: Shader
     
@@ -58,8 +58,8 @@ struct BoardDrawable: Drawable {
         self.drawables = drawables
     }
     
-    func draw(renderer: Renderer) {
-        renderer.fillRect(rect, shader: shader)
+    func draw(_ renderer: Renderer) {
+        renderer.fillRect(rect: rect, color: shader)
         renderer.strokeRect(rect, shader: shader)
         drawables.forEach({ $0.draw(renderer) })
         range.forEach { (i) -> () in

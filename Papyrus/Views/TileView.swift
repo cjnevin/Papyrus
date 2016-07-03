@@ -10,10 +10,10 @@ import UIKit
 import PapyrusCore
 
 protocol TileViewDelegate {
-    func pickedUp(tileView: TileView)
-    func frameForDropping(tileView: TileView) -> CGRect
-    func dropped(tileView: TileView)
-    func tapped(tileView: TileView)
+    func pickedUp(_ tileView: TileView)
+    func frameForDropping(_ tileView: TileView) -> CGRect
+    func dropped(_ tileView: TileView)
+    func tapped(_ tileView: TileView)
 }
 
 class TileView: UIView {
@@ -74,10 +74,10 @@ class TileView: UIView {
 
     override func didMoveToSuperview() {
         super.didMoveToSuperview()
-        contentMode = .Redraw
+        contentMode = .redraw
     }
     
-    override func drawRect(rect: CGRect) {
+    override func draw(_ rect: CGRect) {
         guard let tile = tile, context = UIGraphicsGetCurrentContext() else {
             return
         }
@@ -114,37 +114,37 @@ extension TileView : UIGestureRecognizerDelegate {
         gestureRecognizers?.forEach { if $0 is UITapGestureRecognizer { removeGestureRecognizer($0) } }
     }
     
-    func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWithGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
         return gestureRecognizers?.contains(gestureRecognizer) == true &&
             gestureRecognizers?.contains(otherGestureRecognizer) == true
     }
     
-    func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldReceiveTouch touch: UITouch) -> Bool {
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
         return true
     }
     
-    func didTap(tapGesture: UITapGestureRecognizer) {
+    func didTap(_ tapGesture: UITapGestureRecognizer) {
         delegate?.tapped(self)
     }
     
-    func didPress(pressGesture: UILongPressGestureRecognizer) {
+    func didPress(_ pressGesture: UILongPressGestureRecognizer) {
         switch pressGesture.state {
-        case .Began:
+        case .began:
             delegate?.pickedUp(self)
             let center = self.center
-            UIView.animateWithDuration(0.1, animations: {
+            UIView.animate(withDuration: 0.1, animations: {
                 self.bounds = self.initialFrame
                 self.center = center
-                self.superview?.bringSubviewToFront(self)
-                self.transform = CGAffineTransformMakeScale(0.9, 0.9)
+                self.superview?.bringSubview(toFront: self)
+                self.transform = CGAffineTransform(scaleX: 0.9, y: 0.9)
             })
-        case .Cancelled, .Ended, .Failed:
+        case .cancelled, .ended, .failed:
             guard let newFrame = delegate?.frameForDropping(self) else {
                 return
             }
-            UIView.animateWithDuration(0.1, animations: {
-                self.transform = CGAffineTransformMakeScale(1.0, 1.0)
-                self.center = CGPoint(x: CGRectGetMidX(newFrame), y: CGRectGetMidY(newFrame))
+            UIView.animate(withDuration: 0.1, animations: {
+                self.transform = CGAffineTransform(scaleX: 1.0, y: 1.0)
+                self.center = CGPoint(x: newFrame.midX, y: newFrame.midY)
                 self.bounds = newFrame
             }, completion: { (complete) in
                 self.delegate?.dropped(self)
@@ -154,9 +154,9 @@ extension TileView : UIGestureRecognizerDelegate {
         }
     }
     
-    func didPan(panGesture: UIPanGestureRecognizer) {
-        let translation = panGesture.translationInView(superview)
-        center = CGPointMake(center.x + translation.x, center.y + translation.y)
-        panGesture.setTranslation(CGPointZero, inView: superview)
+    func didPan(_ panGesture: UIPanGestureRecognizer) {
+        let translation = panGesture.translation(in: superview)
+        center = CGPoint(x: center.x + translation.x, y: center.y + translation.y)
+        panGesture.setTranslation(CGPoint.zero, in: superview)
     }
 }
