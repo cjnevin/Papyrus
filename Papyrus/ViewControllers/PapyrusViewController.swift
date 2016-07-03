@@ -238,18 +238,20 @@ extension PapyrusViewController {
     @IBAction func action(_ sender: UIBarButtonItem) {
         let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         actionSheet.addAction(UIAlertAction(title: "Preferences", style: .default, handler: showPreferences))
-        if gameManager.game != nil {
-            actionSheet.addAction(UIAlertAction(title: "Bag Tiles", style: .default, handler: showBagTiles))
-            actionSheet.addAction(UIAlertAction(title: "Unplayed Tiles", style: .default, handler: showUnplayedTiles))
-        }
-        if gameManager.game?.player is Human && !gameManager.gameOver {
-            actionSheet.addAction(UIAlertAction(title: "Shuffle", style: .default, handler: shuffle))
-            if gameManager.game?.canSwap == true {
-                actionSheet.addAction(UIAlertAction(title: "Swap All Tiles", style: .default, handler: swapAll))
-                actionSheet.addAction(UIAlertAction(title: "Swap Tiles", style: .default, handler: swap))
+        if !gameManager.gameOver {
+            if gameManager.game != nil {
+                actionSheet.addAction(UIAlertAction(title: "Bag Tiles", style: .default, handler: showBagTiles))
+                actionSheet.addAction(UIAlertAction(title: "Unplayed Tiles", style: .default, handler: showUnplayedTiles))
             }
-            actionSheet.addAction(UIAlertAction(title: "Skip", style: .default, handler: skip))
-            actionSheet.addAction(UIAlertAction(title: "Hint", style: .default, handler: hint))
+            if gameManager.game?.player is Human {
+                actionSheet.addAction(UIAlertAction(title: "Shuffle", style: .default, handler: shuffle))
+                if gameManager.game?.canSwap == true {
+                    actionSheet.addAction(UIAlertAction(title: "Swap All Tiles", style: .default, handler: swapAll))
+                    actionSheet.addAction(UIAlertAction(title: "Swap Tiles", style: .default, handler: swap))
+                }
+                actionSheet.addAction(UIAlertAction(title: "Skip", style: .default, handler: skip))
+                actionSheet.addAction(UIAlertAction(title: "Hint", style: .default, handler: hint))
+            }
         }
         actionSheet.addAction(UIAlertAction(title: gameManager.gameOver ? "New Game" : "Restart", style: .destructive, handler: restart))
         actionSheet.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
