@@ -27,6 +27,10 @@ class GameManager {
     
     init() {
         gameQueue.maxConcurrentOperationCount = 1
+        prepareDictionary()
+    }
+    
+    private func prepareDictionary() {
         if GameManager.dictionary == nil {
             gameQueue.addOperation {
                 GameManager.dictionary = AnagramDictionary(filename: Preferences.sharedInstance.dictionary)

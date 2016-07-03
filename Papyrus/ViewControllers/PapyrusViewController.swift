@@ -101,10 +101,12 @@ class PapyrusViewController: UIViewController, GamePresenterDelegate {
         // Try to restore a cached game first
         gameManager.restoreGame(eventHandler: handleEvent) { [weak self] success in
             guard let strongSelf = self else { return }
-            if !success {
+            guard success else {
                 // If unsuccessful, create a new game
                 strongSelf.newGame()
+                return
             }
+            strongSelf.gameManager.start()
         }
     }
     
