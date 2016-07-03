@@ -23,6 +23,8 @@ class PapyrusViewController: UIViewController, GamePresenterDelegate {
     @IBOutlet var resetButton: UIBarButtonItem!
     @IBOutlet var actionButton: UIBarButtonItem!
 
+    let lastGameFileURL = URL(fileURLWithPath: NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).first! + "/lastGame.json")
+    
     let gameQueue = OperationQueue()
     
     let watchdog = Watchdog(threshold: 0.2)
@@ -30,7 +32,6 @@ class PapyrusViewController: UIViewController, GamePresenterDelegate {
     var firstRun: Bool = false
     var game: Game?
     var presenter = GamePresenter()
-    var lastMove: Solution?
     var gameOver: Bool = true
     var dictionary: Lookup!
     
@@ -94,6 +95,7 @@ class PapyrusViewController: UIViewController, GamePresenterDelegate {
         if tilesRemainingContainerView.alpha == 1.0 {
             updateShownTiles()
         }
+        _ = try? FileManager.default().removeItem(at: lastGameFileURL)
         guard let winner = winner, game = game,
             (index, player) = game.players.enumerated().filter({ $1.id == winner.id }).first,
             bestMove = player.solves.sorted(isOrderedBefore: { $0.score > $1.score }).first else {
@@ -107,7 +109,7 @@ class PapyrusViewController: UIViewController, GamePresenterDelegate {
    
     func turnUpdated() {
         guard let game = game else { return }
-        presenter.updateGame(game, move: lastMove)
+        presenter.updateGame(game)
         guard let (index, player) = game.players.enumerated().filter({ $1.id == game.player.id }).first else { return }
         title = "Player \(index + 1) (\(player.score))"
     }
@@ -124,23 +126,24 @@ class PapyrusViewController: UIViewController, GamePresenterDelegate {
         if tilesRemainingContainerView.alpha == 1.0 {
             updateShownTiles()
         }
+        _ = game?.save(toFile: lastGameFileURL)
+        print(lastGameFileURL.path)
     }
     
     func handleEvent(_ event: GameEvent) {
         DispatchQueue.main.async() {
             switch event {
-            case let .over(winner):
+            case let .over(_, winner):
                 self.gameOver(with: winner)
-            case .turnStarted:
+            case .turnBegan(_):
                 self.turnStarted()
-            case .turnEnded:
+            case .turnEnded(_):
                 self.turnEnded()
-            case let .move(solution):
+            case let .move(_, solution):
                 print("Played \(solution)")
-                self.lastMove = solution
-            case let .drewTiles(letters):
+            case let .drewTiles(_, letters):
                 print("Drew Tiles \(letters)")
-            case .swappedTiles:
+            case .swappedTiles(_):
                 print("Swapped Tiles")
             }
         }
@@ -165,17 +168,23 @@ class PapyrusViewController: UIViewController, GamePresenterDelegate {
         gameQueue.addOperation { [weak self] in
             guard let strongSelf = self else { return }
             
-            let prefs = Preferences.sharedInstance
-            let players = (makePlayers(prefs.opponents, f: { Computer(difficulty: prefs.difficulty) }) +
-                makePlayers(prefs.humans, f: { Human() })).shuffled()
+            // Restore first
+            strongSelf.game = Game(fromFile: strongSelf.lastGameFileURL, dictionary: strongSelf.dictionary, eventHandler: strongSelf.handleEvent)
             
-            assert(players.count > 0)
-            
-            strongSelf.game = Game(
-                gameType: Preferences.sharedInstance.gameType,
-                dictionary: strongSelf.dictionary,
-                players: players,
-                eventHandler: strongSelf.handleEvent)
+            // Not possible, create new game
+            if strongSelf.game == nil {
+                let prefs = Preferences.sharedInstance
+                let players = (makePlayers(prefs.opponents, f: { Computer(difficulty: prefs.difficulty) }) +
+                    makePlayers(prefs.humans, f: { Human() })).shuffled()
+                
+                assert(players.count > 0)
+                
+                strongSelf.game = Game(
+                    gameType: Preferences.sharedInstance.gameType,
+                    dictionary: strongSelf.dictionary,
+                    players: players,
+                    eventHandler: strongSelf.handleEvent)
+            }
             
             DispatchQueue.main.async() {
                 strongSelf.title = "Started"
@@ -214,14 +223,14 @@ class PapyrusViewController: UIViewController, GamePresenterDelegate {
         tilePickerViewController.prepareForPresentation(game!.bag.dynamicType)
         tilePickerViewController.completionHandler = { letter in
             tileView.tile = letter
-            let _ = self.validate()
+            _ = self.validate()
             self.fade(out: true)
         }
         fade(out: false, allExcept: tilePickerContainerView)
     }
     
     func handlePlacement(_ presenter: GamePresenter) {
-        let _ = validate()
+        _ = validate()
     }
     
     func validate() -> Solution? {
@@ -251,7 +260,7 @@ class PapyrusViewController: UIViewController, GamePresenterDelegate {
     func swapAll(_ sender: UIAlertAction) {
         gameQueue.addOperation { [weak self] in
             guard let strongSelf = self where strongSelf.game?.player != nil else { return }
-            let _ = strongSelf.game!.swap(tiles: strongSelf.game!.player.rack.map({ $0.letter }))
+            _ = strongSelf.game!.swap(tiles: strongSelf.game!.player.rack.map({ $0.letter }))
         }
     }
     
@@ -270,7 +279,7 @@ class PapyrusViewController: UIViewController, GamePresenterDelegate {
         }
         gameQueue.addOperation { [weak self] in
             guard let strongSelf = self where strongSelf.game?.player != nil else { return }
-            let _ = strongSelf.game!.swap(tiles: letters)
+            _ = strongSelf.game!.swap(tiles: letters)
         }
     }
     
@@ -279,7 +288,7 @@ class PapyrusViewController: UIViewController, GamePresenterDelegate {
             guard let strongSelf = self else { return }
             strongSelf.game?.shuffleRack()
             DispatchQueue.main.async() {
-                strongSelf.presenter.updateGame(strongSelf.game!, move: strongSelf.lastMove)
+                strongSelf.presenter.updateGame(strongSelf.game!)
             }
         }
     }
@@ -366,7 +375,7 @@ class PapyrusViewController: UIViewController, GamePresenterDelegate {
     }
     
     @IBAction func reset(_ sender: UIBarButtonItem) {
-        presenter.updateGame(self.game!, move: lastMove)
+        presenter.updateGame(game!)
     }
     
     @IBAction func submit(_ sender: UIBarButtonItem) {

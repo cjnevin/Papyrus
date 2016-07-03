@@ -37,8 +37,9 @@ class GamePresenter: TileViewDelegate {
     var delegate: GamePresenterDelegate!
     var gameView: GameView!
     private(set) var game: Game!
-    func updateGame(_ game: Game, move: Solution? = nil) {
+    func updateGame(_ game: Game) {
         self.game = game
+        let move = game.lastMove
         gameView.tileViews = nil
         gameView.drawable = BoardDrawable(board: game.board, letterPoints: game.bag.dynamicType.letterPoints, move: move, rect: boardRect)
         if game.player is Computer { return }
