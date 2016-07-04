@@ -11,8 +11,9 @@ import PapyrusCore
 
 extension UIFont {
     static var tileLetterFontBig: UIFont { return .systemFont(ofSize: 20) }
-    static var tileLetterFontSmall: UIFont { return .systemFont(ofSize: 12) }
-    static var pointsFont: UIFont { return .systemFont(ofSize: 8) }
+    static var tileLetterFontSmall: UIFont { return .systemFont(ofSize: 11) }
+    static var pointsFontBig: UIFont { return .systemFont(ofSize: 10) }
+    static var pointsFontSmall: UIFont { return .systemFont(ofSize: 6) }
 }
 
 struct TileDrawable : Drawable {
@@ -43,8 +44,9 @@ struct TileDrawable : Drawable {
         let letterRect = rect.centeredRectForSize(letterText.size())
         renderer.draw(text: letterText, rect: letterRect, shader: shader)
         
-        let pointsText = AttributedString(string: points, attributes: [NSFontAttributeName: UIFont.pointsFont])
-        let pointsRect = rect.insetBy(dx: 2, dy: 1).innerRectForSize(pointsText.size(),
+        let pointsFont = onBoard ? UIFont.pointsFontSmall : UIFont.pointsFontBig
+        let pointsText = AttributedString(string: points, attributes: [NSFontAttributeName: pointsFont])
+        let pointsRect = rect.insetBy(dx: onBoard ? 1 : 2, dy: 1).innerRectForSize(pointsText.size(),
             verticalAlignment: .bottom, horizontalAlignment: .right)
         renderer.draw(text: pointsText, rect: pointsRect, shader: shader)
     }
