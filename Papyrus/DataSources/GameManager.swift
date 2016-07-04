@@ -23,7 +23,6 @@ class GameManager {
     
     private(set) var game: Game?
     private(set) var eventHandler: EventHandler?
-    private(set) var gameOver: Bool = true
     
     init() {
         gameQueue.maxConcurrentOperationCount = 1
@@ -50,7 +49,6 @@ class GameManager {
         call { [weak self] in
             switch event {
             case .over(_, _):
-                self?.gameOver = true
                 self?.clearCache()
             case .turnEnded(_):
                 self?.saveCache()
@@ -62,7 +60,6 @@ class GameManager {
     }
     
     func restoreGame(eventHandler handler: EventHandler, completion: (success: Bool) -> ()) {
-        gameOver = true
         eventHandler = handler
         gameQueue.addOperation { [weak self] in
             guard let strongSelf = self, dictionary = GameManager.dictionary else {
@@ -70,9 +67,6 @@ class GameManager {
                 return
             }
             strongSelf.game = Game(from: strongSelf.cacheURL, dictionary: dictionary, eventHandler: strongSelf.wrappedEventHandler)
-            if strongSelf.game != nil {
-                strongSelf.gameOver = false
-            }
             call(onMain: { [weak strongSelf] in completion(success: strongSelf?.game != nil) })
         }
     }
@@ -97,8 +91,7 @@ class GameManager {
                 gameType: prefs.gameType,
                 dictionary: dictionary,
                 players: players, eventHandler: strongSelf.wrappedEventHandler)
-            strongSelf.gameOver = false
-            
+        
             call(onMain: completion)
         }
     }
@@ -107,7 +100,6 @@ class GameManager {
         gameQueue.cancelAllOperations()
         game?.stop()
         gameQueue.waitUntilAllOperationsAreFinished()
-        gameOver = true
         eventHandler = nil
         game = nil
     }
@@ -166,7 +158,7 @@ class GameManager {
     func validate(tiles: [(x: Int, y: Int, letter: Character)],
                   blanks: [(x: Int, y: Int)],
                   completion: (solution: Solution?) -> ()) {
-        guard !gameOver && game?.player is Human else {
+        guard game?.ended == false && game?.player is Human else {
             completion(solution: nil)
             return
         }

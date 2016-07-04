@@ -254,11 +254,9 @@ extension PapyrusViewController {
     @IBAction func action(_ sender: UIBarButtonItem) {
         let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         actionSheet.addAction(UIAlertAction(title: "Preferences", style: .default, handler: showPreferences))
-        if !gameManager.gameOver {
-            if gameManager.game != nil {
-                actionSheet.addAction(UIAlertAction(title: "Bag Tiles", style: .default, handler: showBagTiles))
-                actionSheet.addAction(UIAlertAction(title: "Unplayed Tiles", style: .default, handler: showUnplayedTiles))
-            }
+        if gameManager.game?.ended == false {
+            actionSheet.addAction(UIAlertAction(title: "Bag Tiles", style: .default, handler: showBagTiles))
+            actionSheet.addAction(UIAlertAction(title: "Unplayed Tiles", style: .default, handler: showUnplayedTiles))
             if gameManager.game?.player is Human {
                 actionSheet.addAction(UIAlertAction(title: "Shuffle", style: .default, handler: shuffle))
                 if gameManager.game?.canSwap == true {
@@ -269,7 +267,7 @@ extension PapyrusViewController {
                 actionSheet.addAction(UIAlertAction(title: "Hint", style: .default, handler: hint))
             }
         }
-        actionSheet.addAction(UIAlertAction(title: gameManager.gameOver ? "New Game" : "Restart", style: .destructive, handler: restart))
+        actionSheet.addAction(UIAlertAction(title: gameManager.game?.ended == true ? "New Game" : "Restart", style: .destructive, handler: restart))
         actionSheet.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
         present(actionSheet, animated: true, completion: nil)
     }

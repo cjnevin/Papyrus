@@ -37,7 +37,7 @@ class ScorePresenter: Presenter {
                 return "AI \(index + 1)"
             }
         }
-        let players = game.players.map({ (name: name(of: $0)!, score: $0.score, myTurn: $0.id == game.player.id) })
+        let players = game.players.map({ (name: name(of: $0)!, score: $0.score, myTurn: game.ended == false && $0.id == game.player.id) })
         view.subviews.filter({ $0 is ScoresView }).forEach({ $0.removeFromSuperview() })
         let scoresView = ScoresView(frame: layout.rect)
         scoresView.backgroundColor = UIColor.white()
