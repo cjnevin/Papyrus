@@ -105,6 +105,8 @@ class GameManager {
     
     func endGame() {
         gameQueue.cancelAllOperations()
+        game?.stop()
+        gameQueue.waitUntilAllOperationsAreFinished()
         gameOver = true
         eventHandler = nil
         game = nil

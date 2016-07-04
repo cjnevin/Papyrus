@@ -18,6 +18,8 @@ private func irgba(_ r: Int, _ g: Int, _ b: Int, _ a: CGFloat = 1.0) -> UIColor 
 }
 
 enum Color {
+    static let bestScore = irgba(10, 150, 10)
+    
     enum Square {
         private static let wordMultiplierColors: [Multiplier: UIColor] = [
             .double: irgba(255, 182, 193),

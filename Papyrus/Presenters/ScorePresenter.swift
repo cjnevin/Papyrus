@@ -31,13 +31,16 @@ class ScorePresenter: Presenter {
     
     func refresh(in view: GameView, with game: Game) {
         func name(of player: Player) -> String? {
-            guard let playerIndex = game.index(of: player) else {
-                return nil
+            if player is Human {
+                let index = game.players.filter({ $0 is Human }).index(where: { $0.id == player.id }) ?? 0
+                return "Human \(index + 1)"
+            } else {
+                let index = game.players.filter({ $0 is Computer }).index(where: { $0.id == player.id }) ?? 0
+                return "AI \(index + 1)"
             }
-            return "Player \(playerIndex + 1)"
         }
         view.removeScoreLabels()
-        view.addScoreLabels(for: game.players.map({ (name(of: $0)!, $0.score) }), layout: layout)
+        view.addScoreLabels(for: game.players.map({ (name(of: $0)!, $0.score, $0.id == game.player.id) }), layout: layout)
     }
 }
 
@@ -46,7 +49,7 @@ private extension GameView {
         subviews.filter({ $0 is ScorePresenter.Label }).forEach({ $0.removeFromSuperview() })
     }
     
-    func addScoreLabels(for players: [(name: String, score: Int)], layout: ScoreLayout) {
+    func addScoreLabels(for players: [(name: String, score: Int, myTurn: Bool)], layout: ScoreLayout) {
         let rows = CGFloat(players.count > 6 ? 4 : players.count > 4 ? 3 : 2)
         let columns = ceil(CGFloat(players.count) / rows)
         let rect = layout.insetRect
@@ -63,7 +66,8 @@ private extension GameView {
             let label = ScorePresenter.Label(frame: playerRect)
             label.text = element.name + " (\(element.score))"
             label.textAlignment = .center
-            label.font = UIFont.systemFont(ofSize: 13, weight: element.score > 0 && element.score == highScore ? UIFontWeightBold : UIFontWeightLight)
+            label.textColor = element.score > 0 && element.score == highScore ? Color.bestScore : UIColor.black()
+            label.font = UIFont.systemFont(ofSize: 13, weight: element.myTurn ? UIFontWeightSemibold : UIFontWeightLight)
             addSubview(label)
         }
     }
