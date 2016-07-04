@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10116" systemVersion="15D21" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="Jkl-8b-dRO">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11129.15" systemVersion="15F34" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="Jkl-8b-dRO">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11103.10"/>
         <capability name="Alignment constraints with different attributes" minToolsVersion="5.1"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="Navigation items with more than one left or right bar item" minToolsVersion="7.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
         <!--Papyrus-->
@@ -17,15 +18,13 @@
                         <viewControllerLayoutGuide type="bottom" id="2zo-5g-MkW"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="4aa-cn-i0z" customClass="GameView" customModule="Papyrus" customModuleProvider="target">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="536"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view alpha="0.0" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="3dp-bN-fMR">
-                                <rect key="frame" x="0.0" y="0.0" width="240" height="128"/>
-                                <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                                <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             </view>
                             <containerView opaque="NO" alpha="0.0" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="rwX-f3-NTO">
-                                <rect key="frame" x="0.0" y="0.0" width="240" height="128"/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="rwX-f3-NTO" secondAttribute="height" multiplier="4:3" id="a7w-Vx-wjf"/>
                                     <constraint firstAttribute="width" secondItem="rwX-f3-NTO" secondAttribute="height" multiplier="260:149" id="dXb-US-5P4"/>
@@ -43,11 +42,10 @@
                                     </mask>
                                 </variation>
                                 <connections>
-                                    <segue destination="Gzw-WM-e8k" kind="embed" identifier="TilePickerSegue" id="zIv-8e-Yjc"/>
+                                    <segue destination="Gzw-WM-e8k" kind="embed" identifier="tilePicker" id="zIv-8e-Yjc"/>
                                 </connections>
                             </containerView>
                             <containerView opaque="NO" alpha="0.0" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="qJp-mA-Rzt">
-                                <rect key="frame" x="0.0" y="0.0" width="240" height="128"/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="qJp-mA-Rzt" secondAttribute="height" multiplier="260:149" id="sNf-e3-nzp"/>
                                 </constraints>
@@ -62,11 +60,10 @@
                                     </mask>
                                 </variation>
                                 <connections>
-                                    <segue destination="uyG-h2-ghm" kind="embed" identifier="TilesRemainingSegue" id="VtL-F8-nCR"/>
+                                    <segue destination="uyG-h2-ghm" kind="embed" identifier="tilesRemaining" id="VtL-F8-nCR"/>
                                 </connections>
                             </containerView>
                             <containerView opaque="NO" alpha="0.0" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="2Qx-5W-WiX">
-                                <rect key="frame" x="0.0" y="0.0" width="240" height="128"/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="2Qx-5W-WiX" secondAttribute="height" multiplier="520:163" id="ZmF-lF-FZn"/>
                                     <constraint firstAttribute="width" secondItem="2Qx-5W-WiX" secondAttribute="height" multiplier="5:1" id="iKd-7G-Vhk"/>
@@ -93,11 +90,11 @@
                                     </mask>
                                 </variation>
                                 <connections>
-                                    <segue destination="ZKH-ax-ixM" kind="embed" identifier="TileSwapperSegue" id="Tee-Dg-AeW"/>
+                                    <segue destination="ZKH-ax-ixM" kind="embed" identifier="tileSwapper" id="Tee-Dg-AeW"/>
                                 </connections>
                             </containerView>
                         </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="3dp-bN-fMR" firstAttribute="leading" secondItem="4aa-cn-i0z" secondAttribute="leading" id="0vf-y9-dB3"/>
                             <constraint firstItem="qJp-mA-Rzt" firstAttribute="top" secondItem="Dfu-bY-qac" secondAttribute="bottom" constant="40" id="7ql-Nn-ThH"/>
@@ -177,7 +174,7 @@
                             </mask>
                         </variation>
                     </view>
-                    <extendedEdge key="edgesForExtendedLayout"/>
+                    <extendedEdge key="edgesForExtendedLayout" top="YES"/>
                     <navigationItem key="navigationItem" title="Papyrus" id="ePs-hW-a3W">
                         <leftBarButtonItems>
                             <barButtonItem systemItem="action" id="SSC-L5-TMp">
@@ -210,7 +207,7 @@
                         <outletCollection property="tileContainerViews" destination="rwX-f3-NTO" collectionClass="NSMutableArray" id="oRj-Bj-9pz"/>
                         <outletCollection property="tileContainerViews" destination="qJp-mA-Rzt" collectionClass="NSMutableArray" id="8mc-E6-3mR"/>
                         <outletCollection property="tileContainerViews" destination="2Qx-5W-WiX" collectionClass="NSMutableArray" id="g8J-dn-lmD"/>
-                        <segue destination="Zna-CF-08Z" kind="presentation" identifier="PreferencesSegue" id="xiw-yo-utx"/>
+                        <segue destination="Zna-CF-08Z" kind="presentation" identifier="preferences" id="xiw-yo-utx"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="eiI-7D-yMl" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -239,7 +236,7 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="zN2-OL-bsH" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-603" y="395"/>
+            <point key="canvasLocation" x="-702" y="394"/>
         </scene>
         <!--Tile Picker View Controller-->
         <scene sceneID="6wS-yY-DbJ">
@@ -250,9 +247,9 @@
                         <viewControllerLayoutGuide type="bottom" id="CCq-7q-59Z"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="o5a-Jq-bs7">
-                        <rect key="frame" x="0.0" y="0.0" width="240" height="128"/>
+                        <rect key="frame" x="0.0" y="0.0" width="295" height="169"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     </view>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="XUv-w2-cTD" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -264,19 +261,19 @@
             <objects>
                 <tableViewController id="qFy-jp-Ovk" customClass="PreferencesViewController" customModule="Papyrus" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" id="Hv3-ka-Kjc">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <prototypes>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="Cell" textLabel="YR1-k9-QSF" style="IBUITableViewCellStyleDefault" id="1iO-mi-9Kw">
-                                <rect key="frame" x="0.0" y="92" width="600" height="44"/>
+                                <frame key="frameInset" minY="92" width="375" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="1iO-mi-9Kw" id="l1R-gC-9an">
-                                    <rect key="frame" x="0.0" y="0.0" width="600" height="43.5"/>
+                                    <frame key="frameInset" width="375" height="43.5"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Title" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="YR1-k9-QSF">
-                                            <rect key="frame" x="15" y="0.0" width="570" height="43.5"/>
+                                            <frame key="frameInset" minX="15" width="345" height="43.5"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                             <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
@@ -329,9 +326,9 @@
                         <viewControllerLayoutGuide type="bottom" id="SM7-sb-bUj"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="Veg-qV-FXg">
-                        <rect key="frame" x="0.0" y="0.0" width="240" height="128"/>
+                        <rect key="frame" x="0.0" y="0.0" width="295" height="169"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     </view>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="vc5-QB-PMJ" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -347,9 +344,9 @@
                         <viewControllerLayoutGuide type="bottom" id="eHa-4w-Qo6"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="gWE-K8-N1E">
-                        <rect key="frame" x="0.0" y="0.0" width="240" height="128"/>
+                        <rect key="frame" x="0.0" y="0.0" width="295" height="52"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     </view>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="rzO-J6-vxV" userLabel="First Responder" sceneMemberID="firstResponder"/>

@@ -11,15 +11,15 @@ import PapyrusCore
 
 class PapyrusViewController: UIViewController {
     enum SegueId: String {
-        case PreferencesSegue
-        case TilePickerSegue
-        case TilesRemainingSegue
-        case TileSwapperSegue
+        case preferences
+        case tilePicker
+        case tilesRemaining
+        case tileSwapper
     }
     
     let watchdog = Watchdog(threshold: 0.2)
     let gameManager = GameManager.sharedInstance
-    let presenter = GamePresenter()
+    var presenter: GamePresenter?
     var firstRun: Bool = false
     
     var showingUnplayed: Bool = false
@@ -47,14 +47,14 @@ class PapyrusViewController: UIViewController {
             return (controller ?? segue.destinationViewController) as! T
         }
         switch segueId {
-        case .TilePickerSegue:
+        case .tilePicker:
             tilePickerViewController = getController()
-        case .TileSwapperSegue:
+        case .tileSwapper:
             tileSwapperViewController = getController()
-        case .TilesRemainingSegue:
+        case .tilesRemaining:
             tilesRemainingViewController = getController()
             tilesRemainingViewController.completionHandler = { [weak self] in self?.fade(out: true) }
-        case .PreferencesSegue:
+        case .preferences:
             let navigationController: UINavigationController = getController()
             let preferencesController: PreferencesViewController = getController(navigationController.viewControllers.first!)
             preferencesController.saveHandler = { [weak self] in self?.newGame() }
@@ -64,9 +64,23 @@ class PapyrusViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        presenter.gameView = gameView
-        presenter.onPlacement = validate
-        presenter.onBlank = handleBlank
+        let offset = UIApplication.shared().statusBarFrame.height + (navigationController?.navigationBar.frame.height ?? 0)
+        var boardRect = gameView.bounds
+        boardRect.origin.x = 8
+        boardRect.size.width = boardRect.width - (boardRect.origin.x * 2)
+        boardRect.size.height = boardRect.width
+        boardRect.origin.y = (gameView.bounds.height - boardRect.height + offset) * 0.5
+        let boardPresenter = BoardPresenter(rect: boardRect, onPlacement: validate, onBlank: handleBlank)
+        
+        var rackRect = gameView.bounds
+        rackRect.size.height = RackPresenter.calculateHeight(forRect: gameView.frame)
+        rackRect.origin.y = gameView.bounds.height - rackRect.height
+        let rackPresenter = RackPresenter(rect: rackRect, delegate: boardPresenter)
+        
+        let scoreLayout = ScoreLayout(rect: CGRect(origin: CGPoint(x: 0, y: offset), size: CGSize(width: gameView.bounds.width, height: 80)))
+        let scorePresenter = ScorePresenter(layout: scoreLayout)
+        
+        presenter = GamePresenter(board: boardPresenter, rack: rackPresenter, score: scorePresenter)
         
         title = "Papyrus"
     }
@@ -103,7 +117,7 @@ class PapyrusViewController: UIViewController {
     
     func updatePresenter() {
         guard let game = gameManager.game else { return }
-        presenter.updateGame(game)
+        presenter?.refresh(in: gameView, with: game)
     }
 }
 
@@ -141,7 +155,7 @@ extension PapyrusViewController {
             updateShownTiles()
         }
         guard let winner = winner,
-            playerIndex = gameManager.index(of: winner),
+            playerIndex = gameManager.game?.index(of: winner),
             bestMove = winner.solves.sorted(isOrderedBefore: { $0.score > $1.score }).first else {
                 return
         }
@@ -153,8 +167,12 @@ extension PapyrusViewController {
     
     func handleEvent(_ event: GameEvent) {
         func turnUpdated() {
-            guard let player = gameManager.game?.player, playerIndex = gameManager.index(of: player) else { return }
-            title = "Player \(playerIndex + 1) (\(player.score))"
+            guard let player = gameManager.game?.player else { return }
+            if player is Human {
+                title = "Your Turn"
+            } else {
+                title = "Thinking..."
+            }
         }
         
         switch event {
@@ -163,6 +181,7 @@ extension PapyrusViewController {
             enableButtons()
             gameOver(with: winner)
         case .turnBegan(_):
+            updatePresenter()
             turnUpdated()
             enableButtons()
         case .turnEnded(_):
@@ -198,8 +217,11 @@ extension PapyrusViewController {
     }
     
     func validate() {
-        enableButtons(reset: gameManager.game?.player is Human && presenter.placedTiles().count > 0)
-        gameManager.validate(tiles: presenter.placedTiles(), blanks: presenter.blankTiles()) { [weak self] (solution) in
+        guard let tiles = presenter?.board.tiles, blanks = presenter?.board.blanks else {
+            return
+        }
+        enableButtons(reset: gameManager.game?.player is Human && tiles.count > 0)
+        gameManager.validate(tiles: tiles, blanks: blanks) { [weak self] (solution) in
             self?.enableButtons(submit: solution != nil)
         }
     }
@@ -258,7 +280,10 @@ extension PapyrusViewController {
     }
     
     @IBAction func submit(_ sender: UIBarButtonItem) {
-        gameManager.validate(tiles: presenter.placedTiles(), blanks: presenter.blankTiles()) { [weak self] (solution) in
+        guard let tiles = presenter?.board.tiles, blanks = presenter?.board.blanks else {
+            return
+        }
+        gameManager.validate(tiles: tiles, blanks: blanks) { [weak self] (solution) in
             guard let solution = solution else { return }
             self?.gameManager.play(solution: solution)
         }
@@ -310,6 +335,6 @@ extension PapyrusViewController {
     }
     
     func showPreferences(_ sender: UIAlertAction) {
-        performSegue(withIdentifier: SegueId.PreferencesSegue.rawValue, sender: self)
+        performSegue(withIdentifier: SegueId.preferences.rawValue, sender: self)
     }
 }

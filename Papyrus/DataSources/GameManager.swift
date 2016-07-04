@@ -38,10 +38,6 @@ class GameManager {
         }
     }
     
-    func index(of player: Player) -> Int? {
-        return game?.players.enumerated().filter({ $1.id == player.id }).first?.offset
-    }
-    
     func clearCache() {
         _ = try? FileManager.default().removeItem(at: cacheURL)
     }
@@ -84,7 +80,6 @@ class GameManager {
     func newGame(eventHandler handler: EventHandler, completion: Completion) {
         endGame()
         clearCache()
-        gameOver = true
         eventHandler = handler
         gameQueue.addOperation { [weak self] in
             guard let strongSelf = self, dictionary = GameManager.dictionary else {
@@ -110,10 +105,9 @@ class GameManager {
     
     func endGame() {
         gameQueue.cancelAllOperations()
-        game?.stop()
+        gameOver = true
         eventHandler = nil
         game = nil
-        gameOver = true
     }
     
     func hint(completion: (solution: Solution?) -> ()) {

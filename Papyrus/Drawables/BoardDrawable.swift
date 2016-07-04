@@ -26,6 +26,10 @@ struct BoardDrawable: Drawable {
     
     var shader: Shader
     
+    private func rectPoint(x: CGFloat, y: CGFloat) -> CGPoint {
+        return CGPoint(x: rect.origin.x + x, y: rect.origin.y + y)
+    }
+    
     init(board: Board, letterPoints: [Character: Int], move: Solution?, rect: CGRect) {
         self.rect = rect
         squareSize = rect.width / CGFloat(board.size)
@@ -34,7 +38,7 @@ struct BoardDrawable: Drawable {
         var drawables = [Drawable]()
         for (y, column) in board.layout.enumerated() {
             for (x, square) in column.enumerated() {
-                let point = CGPoint(x: CGFloat(x) * squareSize, y: CGFloat(y) * squareSize)
+                let point = rectPoint(x: CGFloat(x) * squareSize, y: CGFloat(y) * squareSize)
                 let rect = CGRect(origin: point, size: CGSize(width: squareSize, height: squareSize))
                 if square == board.empty {
                     let acronym = (
@@ -64,10 +68,10 @@ struct BoardDrawable: Drawable {
         drawables.forEach({ $0.draw(renderer: renderer) })
         range.forEach { (i) -> () in
             let offset = CGFloat(i) * squareSize
-            renderer.move(to: CGPoint(x: offset, y: 0))
-            renderer.line(to: CGPoint(x: offset, y: rect.size.height), shader: shader)
-            renderer.move(to: CGPoint(x: 0, y: offset))
-            renderer.line(to: CGPoint(x: rect.size.width, y: offset), shader: shader)
+            renderer.move(to: rectPoint(x: offset, y: 0))
+            renderer.line(to: rectPoint(x: offset, y: rect.size.height), shader: shader)
+            renderer.move(to: rectPoint(x: 0, y: offset))
+            renderer.line(to: rectPoint(x: rect.size.width, y: offset), shader: shader)
         }
     }
 }

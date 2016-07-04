@@ -29,6 +29,10 @@ class TileView: UIView {
         }
     }
     
+    var isPlaced: Bool {
+        return x != nil && y != nil
+    }
+    
     var initialFrame: CGRect!
     var initialPoint: CGPoint!
     var delegate: TileViewDelegate?
