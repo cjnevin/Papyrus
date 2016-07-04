@@ -52,8 +52,10 @@ struct BoardDrawable: Drawable {
                     }
                 } else {
                     var points = 0
-                    if board.blanks.contains({ $0.x == x && $0.y == y }) == false {
-                        points = letterPoints[square] ?? 0
+                    if !(board is SuperScrabbleBoard) {
+                        if board.blanks.contains({ $0.x == x && $0.y == y }) == false {
+                            points = letterPoints[square] ?? 0
+                        }
                     }
                     let highlighted = move?.getPositions().contains({ $0.x == x && $0.y == y }) ?? false
                     drawables.append(TileDrawable(tile: square, points: points, rect: rect, onBoard: true, highlighted: highlighted))
