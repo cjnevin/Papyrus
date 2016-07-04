@@ -4,7 +4,7 @@
 
 Scrabble game written in Swift 3 (beta 1) implementing the PapyrusCore for the game logic.
 
-![Scrabble](https://github.com/ChrisAU/Papyrus/tree/swift-3.0/Papyrus/Screenshots/1.png)
+![Scrabble](https://github.com/ChrisAU/Papyrus/blob/swift-3.0/Papyrus/Screenshots/1.png?raw=true)
 
 Features:
 - Ability to calculate a hint
