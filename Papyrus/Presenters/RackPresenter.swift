@@ -42,17 +42,22 @@ class RackPresenter: Presenter {
     }
     
     func refresh(in view: GameView, with game: Game) {
-        view.tileViews = game.player is Computer ? nil : tiles(for: game.player.rack, letterPoints: game.bag.dynamicType.letterPoints)
+        var rack = game.player.rack
+        if game.player is Computer {
+            rack = rack.map({ _ in RackTile(" ", true) })
+        }
+        view.tileViews = tiles(for: rack, letterPoints: game.bag.dynamicType.letterPoints, draggable: game.player is Human)
     }
     
-    func tiles(for rack: [RackTile], letterPoints: [Character: Int]) -> [TileView] {
+    func tiles(for rack: [RackTile], letterPoints: [Character: Int], draggable: Bool) -> [TileView] {
         let width = RackPresenter.calculateTileWidth(forRect: rect, layout: layout)
         return rack.enumerated().map ({ (index, tile) in
+            // TODO: Offset centred based on count using maximum (defined in layout)
             let x = layout.inset + ((layout.spacing + width) * CGFloat(index))
             let tileRect = CGRect(origin: rackPoint(x: x, y: 0), size: CGSize(width: width, height: width))
             let points = tile.isBlank ? 0 : letterPoints[tile.letter] ?? 0
-            let tileView = TileView(frame: tileRect, tile: tile.letter, points: points, onBoard: false, delegate: delegate)
-            tileView.draggable = true
+            let tileView = TileView(frame: tileRect, tile: tile.letter, points: points, onBoard: false, delegate: draggable ? delegate : nil)
+            tileView.draggable = draggable
             return tileView
         })
     }
