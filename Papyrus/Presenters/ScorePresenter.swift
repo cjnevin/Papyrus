@@ -14,16 +14,14 @@ struct ScoreLayout {
     let insets: UIEdgeInsets = defaultEdgeInsets
     let rect: CGRect
     var insetRect: CGRect {
-        return CGRect(x: rect.origin.x + insets.left,
-                      y: rect.origin.y + insets.top,
+        return CGRect(x: insets.left,
+                      y: insets.top,
                       width: rect.width - insets.left - insets.right,
                       height: rect.height - insets.bottom - insets.top)
     }
 }
 
 class ScorePresenter: Presenter {
-    private class Label: UILabel { }
-    
     private let layout: ScoreLayout
     init(layout: ScoreLayout) {
         self.layout = layout
@@ -39,36 +37,11 @@ class ScorePresenter: Presenter {
                 return "AI \(index + 1)"
             }
         }
-        view.removeScoreLabels()
-        view.addScoreLabels(for: game.players.map({ (name(of: $0)!, $0.score, $0.id == game.player.id) }), layout: layout)
-    }
-}
-
-private extension GameView {
-    func removeScoreLabels() {
-        subviews.filter({ $0 is ScorePresenter.Label }).forEach({ $0.removeFromSuperview() })
-    }
-    
-    func addScoreLabels(for players: [(name: String, score: Int, myTurn: Bool)], layout: ScoreLayout) {
-        let rows = CGFloat(players.count > 6 ? 4 : players.count > 4 ? 3 : 2)
-        let columns = ceil(CGFloat(players.count) / rows)
-        let rect = layout.insetRect
-        let columnWidth = rect.width / columns
-        let rowHeight = rect.height / rows
-        let highScore = players.map({$0.score}).max()
-        for (index, element) in players.enumerated() {
-            let column = ceil(CGFloat(index + 1) / rows) - 1
-            let row = CGFloat(index % Int(rows))
-            let playerRect = CGRect(x: rect.origin.x + column * columnWidth,
-                                    y: rect.origin.y + row * rowHeight,
-                                    width: columnWidth,
-                                    height: rowHeight)
-            let label = ScorePresenter.Label(frame: playerRect)
-            label.text = element.name + " (\(element.score))"
-            label.textAlignment = .center
-            label.textColor = element.score > 0 && element.score == highScore ? Color.bestScore : UIColor.black()
-            label.font = UIFont.systemFont(ofSize: 13, weight: element.myTurn ? UIFontWeightSemibold : UIFontWeightLight)
-            addSubview(label)
-        }
+        let players = game.players.map({ (name: name(of: $0)!, score: $0.score, myTurn: $0.id == game.player.id) })
+        view.subviews.filter({ $0 is ScoresView }).forEach({ $0.removeFromSuperview() })
+        let scoresView = ScoresView(frame: layout.rect)
+        scoresView.backgroundColor = UIColor.white()
+        view.addSubview(scoresView)
+        scoresView.drawable = ScoresDrawable(for: players, rect: layout.insetRect)
     }
 }

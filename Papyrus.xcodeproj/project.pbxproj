@@ -15,6 +15,9 @@
 		991E21131D2AEB2200A5058F /* BoardPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 991E21121D2AEB2200A5058F /* BoardPresenter.swift */; };
 		991E21151D2AEF8D00A5058F /* Presenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 991E21141D2AEF8D00A5058F /* Presenter.swift */; };
 		991E21171D2AF2BA00A5058F /* ScorePresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 991E21161D2AF2BA00A5058F /* ScorePresenter.swift */; };
+		991E21191D2B17F300A5058F /* ScoreDrawable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 991E21181D2B17F300A5058F /* ScoreDrawable.swift */; };
+		991E211B1D2B18EC00A5058F /* ScoreShader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 991E211A1D2B18EC00A5058F /* ScoreShader.swift */; };
+		991E211D1D2B1B0A00A5058F /* ScoresDrawable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 991E211C1D2B1B0A00A5058F /* ScoresDrawable.swift */; };
 		993A53481C7EE273001F93CB /* Shader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 993A53461C7EE273001F93CB /* Shader.swift */; };
 		993A53491C7EE273001F93CB /* SquareShader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 993A53471C7EE273001F93CB /* SquareShader.swift */; };
 		993A534B1C7EE338001F93CB /* TileShader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 993A534A1C7EE338001F93CB /* TileShader.swift */; };
@@ -34,6 +37,7 @@
 		998041E41CE79B510099EF4E /* BoardShader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 998041E31CE79B510099EF4E /* BoardShader.swift */; };
 		999925B01CD091E9005D1C89 /* GamePresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 999925AF1CD091E9005D1C89 /* GamePresenter.swift */; };
 		99B5013B1BB0C7FB0098767C /* Watchdog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99B5013A1BB0C7FB0098767C /* Watchdog.swift */; };
+		99B67B071D2B224900BD051A /* ScoresView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99B67B061D2B224900BD051A /* ScoresView.swift */; };
 		99B861D31CF8CC7C00A9E041 /* sowpods_anagrams.bin in Resources */ = {isa = PBXBuildFile; fileRef = 99B861D11CF8CC7C00A9E041 /* sowpods_anagrams.bin */; };
 		99B861D41CF8CC7C00A9E041 /* twl06_anagrams.bin in Resources */ = {isa = PBXBuildFile; fileRef = 99B861D21CF8CC7C00A9E041 /* twl06_anagrams.bin */; };
 		99C3D1F31C7BAF510024B932 /* GameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99C3D1F21C7BAF510024B932 /* GameView.swift */; };
@@ -97,6 +101,9 @@
 		991E21121D2AEB2200A5058F /* BoardPresenter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BoardPresenter.swift; sourceTree = "<group>"; };
 		991E21141D2AEF8D00A5058F /* Presenter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Presenter.swift; sourceTree = "<group>"; };
 		991E21161D2AF2BA00A5058F /* ScorePresenter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScorePresenter.swift; sourceTree = "<group>"; };
+		991E21181D2B17F300A5058F /* ScoreDrawable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScoreDrawable.swift; sourceTree = "<group>"; };
+		991E211A1D2B18EC00A5058F /* ScoreShader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScoreShader.swift; sourceTree = "<group>"; };
+		991E211C1D2B1B0A00A5058F /* ScoresDrawable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScoresDrawable.swift; sourceTree = "<group>"; };
 		993A53461C7EE273001F93CB /* Shader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Shader.swift; sourceTree = "<group>"; };
 		993A53471C7EE273001F93CB /* SquareShader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SquareShader.swift; sourceTree = "<group>"; };
 		993A534A1C7EE338001F93CB /* TileShader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TileShader.swift; sourceTree = "<group>"; };
@@ -121,6 +128,7 @@
 		998041E31CE79B510099EF4E /* BoardShader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BoardShader.swift; sourceTree = "<group>"; };
 		999925AF1CD091E9005D1C89 /* GamePresenter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GamePresenter.swift; sourceTree = "<group>"; };
 		99B5013A1BB0C7FB0098767C /* Watchdog.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Watchdog.swift; path = ../Papyrus/Watchdog.swift; sourceTree = "<group>"; };
+		99B67B061D2B224900BD051A /* ScoresView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScoresView.swift; sourceTree = "<group>"; };
 		99B861D11CF8CC7C00A9E041 /* sowpods_anagrams.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = sowpods_anagrams.bin; sourceTree = "<group>"; };
 		99B861D21CF8CC7C00A9E041 /* twl06_anagrams.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = twl06_anagrams.bin; sourceTree = "<group>"; };
 		99C3D1F21C7BAF510024B932 /* GameView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameView.swift; sourceTree = "<group>"; };
@@ -180,6 +188,7 @@
 				993A53461C7EE273001F93CB /* Shader.swift */,
 				993A534C1C7EED0F001F93CB /* FillShader.swift */,
 				998041E31CE79B510099EF4E /* BoardShader.swift */,
+				991E211A1D2B18EC00A5058F /* ScoreShader.swift */,
 				993A53471C7EE273001F93CB /* SquareShader.swift */,
 				99139C081D1F12430033E114 /* StarShader.swift */,
 				993A534A1C7EE338001F93CB /* TileShader.swift */,
@@ -269,6 +278,7 @@
 			isa = PBXGroup;
 			children = (
 				99C3D1F21C7BAF510024B932 /* GameView.swift */,
+				99B67B061D2B224900BD051A /* ScoresView.swift */,
 				997D186C1BCC570B0050B872 /* TileView.swift */,
 			);
 			name = Views;
@@ -292,6 +302,8 @@
 			children = (
 				99D36F4A1C7E6B2B00A5ADA8 /* Drawable.swift */,
 				99D36F491C7E6B2B00A5ADA8 /* BoardDrawable.swift */,
+				991E21181D2B17F300A5058F /* ScoreDrawable.swift */,
+				991E211C1D2B1B0A00A5058F /* ScoresDrawable.swift */,
 				99D36F4B1C7E6B2B00A5ADA8 /* SquareDrawable.swift */,
 				99139C0B1D1F12770033E114 /* StarDrawable.swift */,
 				99D36F4C1C7E6B2B00A5ADA8 /* TileDrawable.swift */,
@@ -523,15 +535,18 @@
 				993A534D1C7EED0F001F93CB /* FillShader.swift in Sources */,
 				9951B58B1D294187007FD0EC /* AnagramDictionary.swift in Sources */,
 				998041E41CE79B510099EF4E /* BoardShader.swift in Sources */,
+				991E211D1D2B1B0A00A5058F /* ScoresDrawable.swift in Sources */,
 				998041D71CE73F4A0099EF4E /* TileDistributionRenderer.swift in Sources */,
 				993A53491C7EE273001F93CB /* SquareShader.swift in Sources */,
 				991E21151D2AEF8D00A5058F /* Presenter.swift in Sources */,
 				9901443F1C7E4E61005C81BF /* CGRect+Extensions.swift in Sources */,
+				99B67B071D2B224900BD051A /* ScoresView.swift in Sources */,
 				994BFCC91CD7C31600D96156 /* Preferences.swift in Sources */,
 				998041DF1CE741480099EF4E /* TileSwapperViewController.swift in Sources */,
 				991E21131D2AEB2200A5058F /* BoardPresenter.swift in Sources */,
 				99139C0C1D1F12770033E114 /* StarDrawable.swift in Sources */,
 				99B5013B1BB0C7FB0098767C /* Watchdog.swift in Sources */,
+				991E211B1D2B18EC00A5058F /* ScoreShader.swift in Sources */,
 				999925B01CD091E9005D1C89 /* GamePresenter.swift in Sources */,
 				99CDF8561CD417C30007DC89 /* TilePickerViewController.swift in Sources */,
 				99D36F551C7E6B2B00A5ADA8 /* Renderer.swift in Sources */,
@@ -542,6 +557,7 @@
 				994BFCC41CD7B7E900D96156 /* PreferencesViewController.swift in Sources */,
 				99D36F541C7E6B2B00A5ADA8 /* CGContext+Renderer.swift in Sources */,
 				991BC8F81CE71F55000D4C6B /* TilesRemainingViewController.swift in Sources */,
+				991E21191D2B17F300A5058F /* ScoreDrawable.swift in Sources */,
 				99C3D1F31C7BAF510024B932 /* GameView.swift in Sources */,
 				997D186B1BCC4EEC0050B872 /* PapyrusViewController.swift in Sources */,
 				991E21171D2AF2BA00A5058F /* ScorePresenter.swift in Sources */,
