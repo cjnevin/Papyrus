@@ -64,6 +64,8 @@ class PapyrusViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        title = "Learning..."
+        
         let offset = UIApplication.shared().statusBarFrame.height + (navigationController?.navigationBar.frame.height ?? 0)
         var boardRect = gameView.bounds
         boardRect.origin.x = 8
@@ -81,8 +83,6 @@ class PapyrusViewController: UIViewController {
         let scorePresenter = ScorePresenter(layout: scoreLayout)
         
         presenter = GamePresenter(board: boardPresenter, rack: rackPresenter, score: scorePresenter)
-        
-        title = "Papyrus"
     }
     
     override func viewDidLayoutSubviews() {
@@ -126,7 +126,6 @@ class PapyrusViewController: UIViewController {
 extension PapyrusViewController {
     func prepareGame() {
         enableButtons()
-        title = "Starting..."
         
         // Try to restore a cached game first
         gameManager.restoreGame(eventHandler: handleEvent) { [weak self] success in
@@ -136,15 +135,15 @@ extension PapyrusViewController {
                 strongSelf.newGame()
                 return
             }
+            strongSelf.title = "Starting..."
             strongSelf.gameManager.start()
         }
     }
     
     func newGame() {
         enableButtons()
-        title = "Starting..."
         gameManager.newGame(eventHandler: handleEvent) { [weak self] in
-            self?.title = "Started"
+            self?.title = "Starting..."
             self?.gameManager.start()
         }
     }

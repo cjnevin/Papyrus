@@ -41,12 +41,13 @@ struct BoardDrawable: Drawable {
                 let point = rectPoint(x: CGFloat(x) * squareSize, y: CGFloat(y) * squareSize)
                 let rect = CGRect(origin: point, size: CGSize(width: squareSize, height: squareSize))
                 if square == board.empty {
-                    let acronym = (
+                    let isCenter = board.isCenter(atX: x, y: y)
+                    let acronym = isCenter ? "" : (
                         Acronym.get(withSuffix: "L", multiplier: board.letterMultipliers[y][x]) ??
                             Acronym.get(withSuffix: "W", multiplier: board.wordMultipliers[y][x])
                     )
                     drawables.append(SquareDrawable(rect: rect, acronym: acronym, shader: SquareShader(x: x, y: y, board: board)))
-                    if board.isCenter(atX: x, y: y) {
+                    if isCenter {
                         drawables.append(StarDrawable(rect: rect, shader: StarShader(color: Color.Square.Star, strokeColor: Color.Tile.Border, strokeWidth: 0.5)))
                     }
                 } else {
