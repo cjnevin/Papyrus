@@ -1,6 +1,6 @@
 # Papyrus
 
-![](https://reposs.herokuapp.com/?path=ChrisAU/Papyrus/tree/swift-3.0&style=flat)
+![](https://reposs.herokuapp.com/?path=ChrisAU/Papyrus&style=flat)
 
 Scrabble game written in Swift 3 (beta 1) implementing the PapyrusCore for the game logic.
 
