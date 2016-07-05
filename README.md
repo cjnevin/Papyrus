@@ -11,6 +11,7 @@ Features:
 - Ability to see the current state of the bag
 - Ability to see the currently unplayed tiles
 - AI supports four levels of difficulty
+- Definitions will appear as words are played
 - Picking blank tiles
 - Reset currently dropped tiles to rack
 - Shuffling tiles
