@@ -16,7 +16,7 @@ struct RackLayout {
 }
 let defaultRackLayout = RackLayout(spacing: 4, inset: 8, maximum: CGFloat(Game.rackAmount))
 
-class RackPresenter: Presenter {
+struct RackPresenter: Presenter {
     private static func calculateTileWidth(forRect rect: CGRect, layout: RackLayout = defaultRackLayout) -> CGFloat {
         let insetWidth = rect.width - layout.inset * 2
         let spacersWidth = layout.spacing * (layout.maximum - 1)

@@ -8,6 +8,7 @@
 
 import UIKit
 import PapyrusCore
+import WordplaysLookup
 
 class PapyrusViewController: UIViewController {
     enum SegueId: String {
@@ -21,6 +22,8 @@ class PapyrusViewController: UIViewController {
     let gameManager = GameManager.sharedInstance
     var presenter: GamePresenter?
     var firstRun: Bool = false
+    
+    var definitionLabel: UILabel!
     
     var showingUnplayed: Bool = false
     var showingSwapper: Bool = false
@@ -66,21 +69,34 @@ class PapyrusViewController: UIViewController {
         
         title = "Learning..."
         
-        let offset = UIApplication.shared().statusBarFrame.height + (navigationController?.navigationBar.frame.height ?? 0)
-        var boardRect = gameView.bounds
-        boardRect.origin.x = 8
-        boardRect.size.width = boardRect.width - (boardRect.origin.x * 2)
-        boardRect.size.height = boardRect.width
-        boardRect.origin.y = (gameView.bounds.height - boardRect.height + offset) * 0.5
-        let boardPresenter = BoardPresenter(rect: boardRect, onPlacement: validate, onBlank: handleBlank)
+        let padding = CGFloat(8)
         
         var rackRect = gameView.bounds
         rackRect.size.height = RackPresenter.calculateHeight(forRect: gameView.frame)
         rackRect.origin.y = gameView.bounds.height - rackRect.height
+        
+        var boardRect = gameView.bounds
+        boardRect.origin.x = padding
+        boardRect.size.width = boardRect.width - (boardRect.origin.x * 2)
+        boardRect.size.height = boardRect.width
+        boardRect.origin.y = rackRect.origin.y - boardRect.height
+        
+        let boardPresenter = BoardPresenter(rect: boardRect, onPlacement: validate, onBlank: handleBlank)
         let rackPresenter = RackPresenter(rect: rackRect, delegate: boardPresenter)
         
-        let scoreLayout = ScoreLayout(rect: CGRect(origin: CGPoint(x: 0, y: offset), size: CGSize(width: gameView.bounds.width, height: 80)))
+        let offset = UIApplication.shared().statusBarFrame.height + (navigationController?.navigationBar.frame.height ?? 0)
+        let scoreRect = CGRect(origin: CGPoint(x: 0, y: offset), size: CGSize(width: gameView.bounds.width, height: 80))
+        let scoreLayout = ScoreLayout(rect: scoreRect)
         let scorePresenter = ScorePresenter(layout: scoreLayout)
+        
+        definitionLabel = UILabel(frame: CGRect(x: padding,
+                                                y: scoreRect.origin.y + scoreRect.height,
+                                                width: gameView.bounds.width - (padding * 2),
+                                                height: boardRect.origin.y - (scoreRect.origin.y + scoreRect.height)))
+        definitionLabel.numberOfLines = 4
+        definitionLabel.textAlignment = .center
+        definitionLabel.font = UIFont.systemFont(ofSize: 12, weight: UIFontWeightLight)
+        view.addSubview(definitionLabel)
         
         presenter = GamePresenter(board: boardPresenter, rack: rackPresenter, score: scorePresenter)
     }
@@ -158,10 +174,25 @@ extension PapyrusViewController {
             bestMove = winner.solves.sorted(isOrderedBefore: { $0.score > $1.score }).first else {
                 return
         }
+        define(word: bestMove.word)
         let message = "The winning score was \(winner.score).\nTheir best word was \(bestMove.word.uppercased()) scoring \(bestMove.score) points!"
         let alertController = UIAlertController(title: "Player \(playerIndex + 1) won!", message: message, preferredStyle: .alert)
         alertController.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
         present(alertController, animated: true, completion: nil)
+    }
+    
+    func define(word: String, prefix: String? = nil) {
+        WordplaysLookup.find(word: word) { [weak self] definition in
+            guard let definition = definition else {
+                return
+            }
+            print(definition)
+            if definition.substring(to: word.endIndex) != word {
+                self?.definitionLabel.text = word + " -- " + definition
+            } else {
+                self?.definitionLabel.text = definition
+            }
+        }
     }
     
     func handleEvent(_ event: GameEvent) {
@@ -190,7 +221,7 @@ extension PapyrusViewController {
                 updateShownTiles()
             }
         case let .move(_, solution):
-            print("Played \(solution)")
+            define(word: solution.word)
         case let .drewTiles(_, letters):
             print("Drew Tiles \(letters)")
         case .swappedTiles(_):

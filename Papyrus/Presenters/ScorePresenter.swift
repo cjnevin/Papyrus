@@ -21,7 +21,7 @@ struct ScoreLayout {
     }
 }
 
-class ScorePresenter: Presenter {
+struct ScorePresenter: Presenter {
     private let layout: ScoreLayout
     init(layout: ScoreLayout) {
         self.layout = layout

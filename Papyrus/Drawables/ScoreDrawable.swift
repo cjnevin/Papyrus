@@ -6,8 +6,7 @@
 //  Copyright © 2016 CJNevin. All rights reserved.
 //
 
-import Foundation
-import PapyrusCore
+import UIKit
 
 struct ScoreDrawable : Drawable {
     var shader: Shader

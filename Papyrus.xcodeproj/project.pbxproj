@@ -36,12 +36,12 @@
 		998041DF1CE741480099EF4E /* TileSwapperViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 998041DE1CE741480099EF4E /* TileSwapperViewController.swift */; };
 		998041E41CE79B510099EF4E /* BoardShader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 998041E31CE79B510099EF4E /* BoardShader.swift */; };
 		999925B01CD091E9005D1C89 /* GamePresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 999925AF1CD091E9005D1C89 /* GamePresenter.swift */; };
-		99B5013B1BB0C7FB0098767C /* Watchdog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99B5013A1BB0C7FB0098767C /* Watchdog.swift */; };
 		99B67B071D2B224900BD051A /* ScoresView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99B67B061D2B224900BD051A /* ScoresView.swift */; };
 		99B861D31CF8CC7C00A9E041 /* sowpods_anagrams.bin in Resources */ = {isa = PBXBuildFile; fileRef = 99B861D11CF8CC7C00A9E041 /* sowpods_anagrams.bin */; };
 		99B861D41CF8CC7C00A9E041 /* twl06_anagrams.bin in Resources */ = {isa = PBXBuildFile; fileRef = 99B861D21CF8CC7C00A9E041 /* twl06_anagrams.bin */; };
 		99C3D1F31C7BAF510024B932 /* GameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99C3D1F21C7BAF510024B932 /* GameView.swift */; };
 		99CDF8561CD417C30007DC89 /* TilePickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99CDF8551CD417C30007DC89 /* TilePickerViewController.swift */; };
+		99D316F01D2C407500BC4476 /* Watchdog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99D316EF1D2C407500BC4476 /* Watchdog.swift */; };
 		99D36F501C7E6B2B00A5ADA8 /* BoardDrawable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99D36F491C7E6B2B00A5ADA8 /* BoardDrawable.swift */; };
 		99D36F511C7E6B2B00A5ADA8 /* Drawable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99D36F4A1C7E6B2B00A5ADA8 /* Drawable.swift */; };
 		99D36F521C7E6B2B00A5ADA8 /* SquareDrawable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99D36F4B1C7E6B2B00A5ADA8 /* SquareDrawable.swift */; };
@@ -68,6 +68,27 @@
 			proxyType = 1;
 			remoteGlobalIDString = 99629C041B547DE800510036;
 			remoteInfo = Papyrus;
+		};
+		99D316F61D2C43BF00BC4476 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 99D316F11D2C43BF00BC4476 /* WordplaysLookup.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 99D316D21D2C3ABC00BC4476;
+			remoteInfo = WordplaysLookup;
+		};
+		99D316F81D2C43BF00BC4476 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 99D316F11D2C43BF00BC4476 /* WordplaysLookup.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 99D316DC1D2C3ABC00BC4476;
+			remoteInfo = WordplaysLookupTests;
+		};
+		99D316FA1D2C43C700BC4476 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 99D316F11D2C43BF00BC4476 /* WordplaysLookup.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 99D316D11D2C3ABC00BC4476;
+			remoteInfo = WordplaysLookup;
 		};
 		99FD435B1BA59BF900F50DCF /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -127,12 +148,13 @@
 		998041DE1CE741480099EF4E /* TileSwapperViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TileSwapperViewController.swift; sourceTree = "<group>"; };
 		998041E31CE79B510099EF4E /* BoardShader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BoardShader.swift; sourceTree = "<group>"; };
 		999925AF1CD091E9005D1C89 /* GamePresenter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GamePresenter.swift; sourceTree = "<group>"; };
-		99B5013A1BB0C7FB0098767C /* Watchdog.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Watchdog.swift; path = ../Papyrus/Watchdog.swift; sourceTree = "<group>"; };
 		99B67B061D2B224900BD051A /* ScoresView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScoresView.swift; sourceTree = "<group>"; };
 		99B861D11CF8CC7C00A9E041 /* sowpods_anagrams.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = sowpods_anagrams.bin; sourceTree = "<group>"; };
 		99B861D21CF8CC7C00A9E041 /* twl06_anagrams.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = twl06_anagrams.bin; sourceTree = "<group>"; };
 		99C3D1F21C7BAF510024B932 /* GameView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameView.swift; sourceTree = "<group>"; };
 		99CDF8551CD417C30007DC89 /* TilePickerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TilePickerViewController.swift; sourceTree = "<group>"; };
+		99D316EF1D2C407500BC4476 /* Watchdog.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Watchdog.swift; path = Papyrus/Watchdog.swift; sourceTree = SOURCE_ROOT; };
+		99D316F11D2C43BF00BC4476 /* WordplaysLookup.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = WordplaysLookup.xcodeproj; path = WordplaysLookup/WordplaysLookup.xcodeproj; sourceTree = SOURCE_ROOT; };
 		99D36F491C7E6B2B00A5ADA8 /* BoardDrawable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BoardDrawable.swift; sourceTree = "<group>"; };
 		99D36F4A1C7E6B2B00A5ADA8 /* Drawable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Drawable.swift; sourceTree = "<group>"; };
 		99D36F4B1C7E6B2B00A5ADA8 /* SquareDrawable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SquareDrawable.swift; sourceTree = "<group>"; };
@@ -176,7 +198,8 @@
 			isa = PBXGroup;
 			children = (
 				99FD43561BA59BF900F50DCF /* PapyrusCore.xcodeproj */,
-				99B5013A1BB0C7FB0098767C /* Watchdog.swift */,
+				99D316F11D2C43BF00BC4476 /* WordplaysLookup.xcodeproj */,
+				99D316EF1D2C407500BC4476 /* Watchdog.swift */,
 			);
 			name = Libraries;
 			path = AnagramDictionary;
@@ -289,12 +312,21 @@
 			isa = PBXGroup;
 			children = (
 				991E21141D2AEF8D00A5058F /* Presenter.swift */,
-				999925AF1CD091E9005D1C89 /* GamePresenter.swift */,
 				991E21121D2AEB2200A5058F /* BoardPresenter.swift */,
+				999925AF1CD091E9005D1C89 /* GamePresenter.swift */,
 				991E210F1D2AE82700A5058F /* RackPresenter.swift */,
 				991E21161D2AF2BA00A5058F /* ScorePresenter.swift */,
 			);
 			path = Presenters;
+			sourceTree = "<group>";
+		};
+		99D316F21D2C43BF00BC4476 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				99D316F71D2C43BF00BC4476 /* WordplaysLookup.framework */,
+				99D316F91D2C43BF00BC4476 /* WordplaysLookupTests.xctest */,
+			);
+			name = Products;
 			sourceTree = "<group>";
 		};
 		99D36F481C7E6B2B00A5ADA8 /* Drawables */ = {
@@ -376,6 +408,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				99D316FB1D2C43C700BC4476 /* PBXTargetDependency */,
 				99FD43601BA59C0800F50DCF /* PBXTargetDependency */,
 			);
 			name = Papyrus;
@@ -463,6 +496,10 @@
 					ProductGroup = 99FD43571BA59BF900F50DCF /* Products */;
 					ProjectRef = 99FD43561BA59BF900F50DCF /* PapyrusCore.xcodeproj */;
 				},
+				{
+					ProductGroup = 99D316F21D2C43BF00BC4476 /* Products */;
+					ProjectRef = 99D316F11D2C43BF00BC4476 /* WordplaysLookup.xcodeproj */;
+				},
 			);
 			projectRoot = "";
 			targets = (
@@ -474,6 +511,20 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
+		99D316F71D2C43BF00BC4476 /* WordplaysLookup.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = WordplaysLookup.framework;
+			remoteRef = 99D316F61D2C43BF00BC4476 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		99D316F91D2C43BF00BC4476 /* WordplaysLookupTests.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = WordplaysLookupTests.xctest;
+			remoteRef = 99D316F81D2C43BF00BC4476 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		99FD435C1BA59BF900F50DCF /* PapyrusCore.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
@@ -529,6 +580,7 @@
 				993A534B1C7EE338001F93CB /* TileShader.swift in Sources */,
 				993A53481C7EE273001F93CB /* Shader.swift in Sources */,
 				99D36F501C7E6B2B00A5ADA8 /* BoardDrawable.swift in Sources */,
+				99D316F01D2C407500BC4476 /* Watchdog.swift in Sources */,
 				998041D91CE73F4F0099EF4E /* TilesRemainingRenderer.swift in Sources */,
 				997D186D1BCC570B0050B872 /* TileView.swift in Sources */,
 				99D36F521C7E6B2B00A5ADA8 /* SquareDrawable.swift in Sources */,
@@ -545,7 +597,6 @@
 				998041DF1CE741480099EF4E /* TileSwapperViewController.swift in Sources */,
 				991E21131D2AEB2200A5058F /* BoardPresenter.swift in Sources */,
 				99139C0C1D1F12770033E114 /* StarDrawable.swift in Sources */,
-				99B5013B1BB0C7FB0098767C /* Watchdog.swift in Sources */,
 				991E211B1D2B18EC00A5058F /* ScoreShader.swift in Sources */,
 				999925B01CD091E9005D1C89 /* GamePresenter.swift in Sources */,
 				99CDF8561CD417C30007DC89 /* TilePickerViewController.swift in Sources */,
@@ -593,6 +644,11 @@
 			isa = PBXTargetDependency;
 			target = 99629C041B547DE800510036 /* Papyrus */;
 			targetProxy = 99629C291B547DE800510036 /* PBXContainerItemProxy */;
+		};
+		99D316FB1D2C43C700BC4476 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = WordplaysLookup;
+			targetProxy = 99D316FA1D2C43C700BC4476 /* PBXContainerItemProxy */;
 		};
 		99FD43601BA59C0800F50DCF /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;

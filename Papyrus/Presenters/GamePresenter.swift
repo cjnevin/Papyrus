@@ -9,7 +9,7 @@
 import Foundation
 import PapyrusCore
 
-class GamePresenter: Presenter {
+struct GamePresenter: Presenter {
     private let presenters: [Presenter]
     let board: BoardPresenter
     let rack: RackPresenter
