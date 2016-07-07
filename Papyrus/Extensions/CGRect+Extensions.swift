@@ -40,4 +40,15 @@ extension CGRect {
         return innerRectForSize(size, verticalAlignment: .center,
             horizontalAlignment: .center)
     }
+    
+    var presentationRect: CGRect {
+        var rect = self.integral
+        if rect.size.width.truncatingRemainder(dividingBy: 2) != 0 {
+            rect.size.width -= 1
+        }
+        if rect.size.height.truncatingRemainder(dividingBy: 2) != 0 {
+            rect.size.height -= 1
+        }
+        return rect
+    }
 }

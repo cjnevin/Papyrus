@@ -29,10 +29,10 @@ class BoardPresenter: Presenter {
     private var board: Board?
     private var gameView: GameView?
     private let rect: CGRect
-    private let onBlank: (tileView: TileView) -> ()
-    private let onPlacement: () -> ()
+    private let onBlank: ((tileView: TileView) -> ())?
+    private let onPlacement: (() -> ())?
     
-    init(rect: CGRect, onPlacement: () -> (), onBlank: (tileView: TileView) -> ()) {
+    init(rect: CGRect, onPlacement: (() -> ())? = nil, onBlank: ((tileView: TileView) -> ())? = nil) {
         self.rect = rect
         self.onBlank = onBlank
         self.onPlacement = onPlacement
@@ -44,6 +44,11 @@ class BoardPresenter: Presenter {
         self.gameView = view
         
         view.drawable = BoardDrawable(board: game.board, letterPoints: game.bag.dynamicType.letterPoints, move: game.lastMove, rect: rect)
+    }
+    
+    func refresh(in view: BoardView, with board: Board) {
+        self.board = board
+        view.drawable = BoardDrawable(board: board, rect: rect)
     }
 
     /// - returns: Tuples containing square and rect for empty squares.
@@ -82,7 +87,7 @@ extension BoardPresenter: TileViewDelegate {
         tileView.x = nil
         tileView.y = nil
         tileView.onBoard = false
-        onPlacement()
+        onPlacement?()
     }
     
     func frameForDropping(_ tileView: TileView) -> CGRect {
@@ -99,9 +104,9 @@ extension BoardPresenter: TileViewDelegate {
     }
     
     func dropped(_ tileView: TileView) {
-        onPlacement()
+        onPlacement?()
         if tileView.tile == Game.blankLetter && tileView.onBoard {
-            onBlank(tileView: tileView)
+            onBlank?(tileView: tileView)
         } else if tileView.isBlank && !tileView.onBoard {
             tileView.tile = Game.blankLetter
         }

@@ -19,6 +19,8 @@ class PreferencesViewController : UITableViewController {
         title = "Preferences"
         tableView.dataSource = dataSource
         tableView.delegate = dataSource
+        tableView.register(loadable: BoardCell.self)
+        tableView.register(loadable: SliderCell.self)
         tableView.reloadData()
     }
     
@@ -51,30 +53,79 @@ class PreferencesViewController : UITableViewController {
 }
 
 class PreferencesDataSource : NSObject, UITableViewDataSource, UITableViewDelegate {
+    func value(for section: Int) -> Int {
+        return Preferences.sharedInstance.values[section]!
+    }
+    
+    func setValue(for section: Int, value: Int) {
+        Preferences.sharedInstance.values[section] = value
+    }
+    
+    func setValue(to indexPath: IndexPath) {
+        setValue(for: indexPath.section, value: indexPath.row)
+    }
+    
+    func section(at index: Int) -> [String: [String]] {
+        return Preferences.sharedInstance.sections[index]
+    }
     
     func numberOfSections(in tableView: UITableView) -> Int {
         return Preferences.sharedInstance.sections.count
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        let rows = Preferences.sharedInstance.sections[section].values.first!.count
+        if section < 4 {
+            return 1
+        }
+        let rows = self.section(at: section).values.first!.count
         return rows
     }
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return Preferences.sharedInstance.sections[section].keys.first!
+        return self.section(at: section).keys.first!
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        if indexPath.section == 0 {
+            return tableView.bounds.width
+        } else if indexPath.section < 4 {
+            return 80
+        }
+        return 44
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        if indexPath.section == 0 {
+            let cell: BoardCell = tableView.dequeueCell(at: indexPath)
+            cell.configure(index: value(for: indexPath.section))
+            return cell
+        } else if indexPath.section < 4 {
+            let cell: SliderCell = tableView.dequeueCell(at: indexPath)
+            cell.configure(index: value(for: indexPath.section),
+                           values: section(at: indexPath.section).values.first!,
+                           onChange: { [weak self] newIndex in
+                            self?.setValue(for: indexPath.section, value: newIndex)
+                })
+            return cell
+        }
         let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
-        cell.textLabel?.text = Array(Preferences.sharedInstance.sections[(indexPath as NSIndexPath).section].values.first!)[(indexPath as NSIndexPath).row]
-        cell.accessoryType = Preferences.sharedInstance.values[(indexPath as NSIndexPath).section] == (indexPath as NSIndexPath).row ? .checkmark : .none
+        cell.textLabel?.text = Array(section(at: indexPath.section).values.first!)[indexPath.row]
+        cell.accessoryType = value(for: indexPath.section) == indexPath.row ? .checkmark : .none
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        Preferences.sharedInstance.values[(indexPath as NSIndexPath).section] = (indexPath as NSIndexPath).row
-        tableView.reloadSections(IndexSet(integer: (indexPath as NSIndexPath).section), with: .fade)
+        if let cell: BoardCell = tableView.cell(at: indexPath) where indexPath.section == 0 {
+            cell.nextBoard()
+            setValue(for: indexPath.section, value: cell.gameTypeIndex)
+            tableView.deselectRow(at: indexPath, animated: true)
+            return
+        }
+        if indexPath.section < 4 {
+            return
+        }
+        setValue(to: indexPath)
+        tableView.reloadSections(IndexSet(integer: indexPath.section), with: .fade)
     }
     
 }

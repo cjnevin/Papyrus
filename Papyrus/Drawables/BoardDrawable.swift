@@ -30,9 +30,9 @@ struct BoardDrawable: Drawable {
         return CGPoint(x: rect.origin.x + x, y: rect.origin.y + y)
     }
     
-    init(board: Board, letterPoints: [Character: Int], move: Solution?, rect: CGRect) {
-        self.rect = rect
-        squareSize = rect.width / CGFloat(board.size)
+    init(board: Board, letterPoints: [Character: Int]? = nil, move: Solution? = nil, rect: CGRect) {
+        self.rect = rect.presentationRect
+        squareSize = self.rect.width / CGFloat(board.size)
         shader = BoardShader(color: Color.Tile.Default, strokeColor: Color.Tile.Border, strokeWidth: 0.5)
         range = board.boardRange
         var drawables = [Drawable]()
@@ -54,7 +54,7 @@ struct BoardDrawable: Drawable {
                     var points = 0
                     if !(board is SuperScrabbleBoard) {
                         if board.blanks.contains({ $0.x == x && $0.y == y }) == false {
-                            points = letterPoints[square] ?? 0
+                            points = letterPoints?[square] ?? 0
                         }
                     }
                     let highlighted = move?.getPositions().contains({ $0.x == x && $0.y == y }) ?? false

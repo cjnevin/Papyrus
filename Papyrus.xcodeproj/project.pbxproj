@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		9901443F1C7E4E61005C81BF /* CGRect+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9901443E1C7E4E61005C81BF /* CGRect+Extensions.swift */; };
+		990EA09E1D2EF7D0003C1ECE /* SliderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 990EA09D1D2EF7D0003C1ECE /* SliderCell.swift */; };
+		990EA0A21D2EF7DA003C1ECE /* SliderCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 990EA0A11D2EF7DA003C1ECE /* SliderCell.xib */; };
 		99139C091D1F12430033E114 /* StarShader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99139C081D1F12430033E114 /* StarShader.swift */; };
 		99139C0C1D1F12770033E114 /* StarDrawable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99139C0B1D1F12770033E114 /* StarDrawable.swift */; };
 		991BC8F81CE71F55000D4C6B /* TilesRemainingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 991BC8F71CE71F55000D4C6B /* TilesRemainingViewController.swift */; };
@@ -26,6 +28,10 @@
 		994BFCC91CD7C31600D96156 /* Preferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = 994BFCC81CD7C31600D96156 /* Preferences.swift */; };
 		9951B58B1D294187007FD0EC /* AnagramDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9951B58A1D294187007FD0EC /* AnagramDictionary.swift */; };
 		9951B59A1D29B202007FD0EC /* GameManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9951B5991D29B202007FD0EC /* GameManager.swift */; };
+		9953DCF51D2EDA9000B0B367 /* BoardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9953DCF41D2EDA9000B0B367 /* BoardView.swift */; };
+		9953DCF91D2EDC5200B0B367 /* BoardCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9953DCF81D2EDC5200B0B367 /* BoardCell.swift */; };
+		9953DCFB1D2EDF4100B0B367 /* BoardCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9953DCFA1D2EDF4100B0B367 /* BoardCell.xib */; };
+		9953DD001D2EE26500B0B367 /* NibLoadable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9953DCFF1D2EE26500B0B367 /* NibLoadable.swift */; };
 		99629C091B547DE800510036 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99629C081B547DE800510036 /* AppDelegate.swift */; };
 		99629C2D1B547DE800510036 /* PapyrusUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99629C2C1B547DE800510036 /* PapyrusUITests.swift */; };
 		9975A2AF1CF8C9DE003D315F /* wordswithfriends_anagrams.bin in Resources */ = {isa = PBXBuildFile; fileRef = 9975A2AE1CF8C9DE003D315F /* wordswithfriends_anagrams.bin */; };
@@ -115,6 +121,8 @@
 
 /* Begin PBXFileReference section */
 		9901443E1C7E4E61005C81BF /* CGRect+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CGRect+Extensions.swift"; sourceTree = "<group>"; };
+		990EA09D1D2EF7D0003C1ECE /* SliderCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SliderCell.swift; sourceTree = "<group>"; };
+		990EA0A11D2EF7DA003C1ECE /* SliderCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SliderCell.xib; sourceTree = "<group>"; };
 		99139C081D1F12430033E114 /* StarShader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StarShader.swift; sourceTree = "<group>"; };
 		99139C0B1D1F12770033E114 /* StarDrawable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StarDrawable.swift; sourceTree = "<group>"; };
 		991BC8F71CE71F55000D4C6B /* TilesRemainingViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TilesRemainingViewController.swift; sourceTree = "<group>"; };
@@ -133,6 +141,10 @@
 		994BFCC81CD7C31600D96156 /* Preferences.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Preferences.swift; sourceTree = "<group>"; };
 		9951B58A1D294187007FD0EC /* AnagramDictionary.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnagramDictionary.swift; sourceTree = "<group>"; };
 		9951B5991D29B202007FD0EC /* GameManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameManager.swift; sourceTree = "<group>"; };
+		9953DCF41D2EDA9000B0B367 /* BoardView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BoardView.swift; sourceTree = "<group>"; };
+		9953DCF81D2EDC5200B0B367 /* BoardCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BoardCell.swift; sourceTree = "<group>"; };
+		9953DCFA1D2EDF4100B0B367 /* BoardCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = BoardCell.xib; sourceTree = "<group>"; };
+		9953DCFF1D2EE26500B0B367 /* NibLoadable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NibLoadable.swift; sourceTree = "<group>"; };
 		99629C051B547DE800510036 /* Papyrus.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Papyrus.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		99629C081B547DE800510036 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		99629C1D1B547DE800510036 /* PapyrusTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PapyrusTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -229,6 +241,14 @@
 			path = DataSources;
 			sourceTree = "<group>";
 		};
+		9953DCFE1D2EE26500B0B367 /* Protocols */ = {
+			isa = PBXGroup;
+			children = (
+				9953DCFF1D2EE26500B0B367 /* NibLoadable.swift */,
+			);
+			path = Protocols;
+			sourceTree = "<group>";
+		};
 		99629BFC1B547DE800510036 = {
 			isa = PBXGroup;
 			children = (
@@ -260,6 +280,7 @@
 				99629C581B547E8200510036 /* ViewControllers */,
 				999925AE1CD091E9005D1C89 /* Presenters */,
 				99629C5A1B547E8200510036 /* Views */,
+				9953DCFE1D2EE26500B0B367 /* Protocols */,
 				99DF9E0D1B54ED7300F58DA7 /* Extensions */,
 				99127A391D1FBE4B009DCF7A /* Libraries */,
 				99FD43341BA5901E00F50DCF /* Resources */,
@@ -300,6 +321,11 @@
 		99629C5A1B547E8200510036 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				9953DCF81D2EDC5200B0B367 /* BoardCell.swift */,
+				9953DCFA1D2EDF4100B0B367 /* BoardCell.xib */,
+				9953DCF41D2EDA9000B0B367 /* BoardView.swift */,
+				990EA09D1D2EF7D0003C1ECE /* SliderCell.swift */,
+				990EA0A11D2EF7DA003C1ECE /* SliderCell.xib */,
 				99C3D1F21C7BAF510024B932 /* GameView.swift */,
 				99B67B061D2B224900BD051A /* ScoresView.swift */,
 				997D186C1BCC570B0050B872 /* TileView.swift */,
@@ -548,7 +574,9 @@
 			files = (
 				99FD433E1BA5901E00F50DCF /* LaunchScreen.storyboard in Resources */,
 				99B861D41CF8CC7C00A9E041 /* twl06_anagrams.bin in Resources */,
+				990EA0A21D2EF7DA003C1ECE /* SliderCell.xib in Resources */,
 				9975A2AF1CF8C9DE003D315F /* wordswithfriends_anagrams.bin in Resources */,
+				9953DCFB1D2EDF4100B0B367 /* BoardCell.xib in Resources */,
 				99FD433D1BA5901E00F50DCF /* Assets.xcassets in Resources */,
 				99FD433F1BA5901E00F50DCF /* Main.storyboard in Resources */,
 				99B861D31CF8CC7C00A9E041 /* sowpods_anagrams.bin in Resources */,
@@ -586,16 +614,20 @@
 				99D36F521C7E6B2B00A5ADA8 /* SquareDrawable.swift in Sources */,
 				993A534D1C7EED0F001F93CB /* FillShader.swift in Sources */,
 				9951B58B1D294187007FD0EC /* AnagramDictionary.swift in Sources */,
+				9953DCF91D2EDC5200B0B367 /* BoardCell.swift in Sources */,
 				998041E41CE79B510099EF4E /* BoardShader.swift in Sources */,
 				991E211D1D2B1B0A00A5058F /* ScoresDrawable.swift in Sources */,
 				998041D71CE73F4A0099EF4E /* TileDistributionRenderer.swift in Sources */,
 				993A53491C7EE273001F93CB /* SquareShader.swift in Sources */,
 				991E21151D2AEF8D00A5058F /* Presenter.swift in Sources */,
+				9953DCF51D2EDA9000B0B367 /* BoardView.swift in Sources */,
 				9901443F1C7E4E61005C81BF /* CGRect+Extensions.swift in Sources */,
 				99B67B071D2B224900BD051A /* ScoresView.swift in Sources */,
 				994BFCC91CD7C31600D96156 /* Preferences.swift in Sources */,
 				998041DF1CE741480099EF4E /* TileSwapperViewController.swift in Sources */,
 				991E21131D2AEB2200A5058F /* BoardPresenter.swift in Sources */,
+				990EA09E1D2EF7D0003C1ECE /* SliderCell.swift in Sources */,
+				9953DD001D2EE26500B0B367 /* NibLoadable.swift in Sources */,
 				99139C0C1D1F12770033E114 /* StarDrawable.swift in Sources */,
 				991E211B1D2B18EC00A5058F /* ScoreShader.swift in Sources */,
 				999925B01CD091E9005D1C89 /* GamePresenter.swift in Sources */,

@@ -16,11 +16,11 @@ enum PreferenceError : ErrorProtocol {
 class Preferences {
     static let sharedInstance = Preferences()
     
-    let sections = [["Game Type": ["Scrabble", "Super Scrabble", "Wordfeud", "Words with Friends"]],
+    let sections = [["Board": ["", "", "", ""]],
                     ["Difficulty": ["Very Easy", "Easy", "Medium", "Hard"]],
                     ["AI Players": ["0", "1", "2", "3", "4"]],
                     ["Human Players": ["0", "1", "2", "3", "4"]],
-                    ["Dictionary": ["SOWPODS", "TWL06", "Words with Friends"]]]
+                    ["Dictionary": ["SOWPODS", "TWL06", "WWF"]]]
     var values = [Int: Int]()
     var originalValues = [Int: Int]()
     
