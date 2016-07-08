@@ -11,7 +11,6 @@ import PapyrusCore
 import WordplaysLookup
 
 class PapyrusViewController: UIViewController {
-    let watchdog = Watchdog(threshold: 0.2)
     let gameManager = GameManager.sharedInstance
     var presenter: GamePresenter?
     var firstRun: Bool = false
@@ -67,7 +66,7 @@ class PapyrusViewController: UIViewController {
         boardRect.size.height = boardRect.width
         boardRect.origin.y = rackRect.origin.y - boardRect.height
         
-        let boardPresenter = BoardPresenter(rect: boardRect, onPlacement: validate, onBlank: handleBlank)
+        let boardPresenter = BoardPresenter(rect: boardRect, onPlacement: validate, onBlank: handle)
         let rackPresenter = RackPresenter(rect: rackRect, delegate: boardPresenter)
         
         let offset = UIApplication.shared().statusBarFrame.height + (navigationController?.navigationBar.frame.height ?? 0)
@@ -131,7 +130,7 @@ extension PapyrusViewController {
         resetButton.isEnabled = false
         
         // Try to restore a cached game first
-        gameManager.restoreGame(eventHandler: handleEvent) { [weak self] success in
+        gameManager.restoreGame(eventHandler: process) { [weak self] success in
             guard let strongSelf = self else { return }
             guard success else {
                 // If unsuccessful, create a new game
@@ -147,7 +146,7 @@ extension PapyrusViewController {
         submitButton.isEnabled = false
         resetButton.isEnabled = false
         
-        gameManager.newGame(eventHandler: handleEvent) { [weak self] in
+        gameManager.newGame(eventHandler: process) { [weak self] in
             self?.title = "Starting..."
             self?.gameManager.start()
         }
@@ -163,14 +162,13 @@ extension PapyrusViewController {
             bestMove = winner.solves.sorted(isOrderedBefore: { $0.score > $1.score }).first else {
                 return
         }
-        define(word: bestMove.word)
         let message = "The winning score was \(winner.score).\nTheir best word was \(bestMove.word.uppercased()) scoring \(bestMove.score) points!"
         let alertController = UIAlertController(title: "Player \(playerIndex + 1) won!", message: message, preferredStyle: .alert)
         alertController.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
         present(alertController, animated: true, completion: nil)
     }
     
-    func define(word: String, prefix: String? = nil) {
+    func definition(for word: String, prefix: String? = nil) {
         WordplaysLookup.find(word: word) { [weak self] definition in
             guard let definition = definition else {
                 return
@@ -184,7 +182,7 @@ extension PapyrusViewController {
         }
     }
     
-    func handleEvent(_ event: GameEvent) {
+    func process(event: GameEvent) {
         func turnUpdated() {
             guard let player = gameManager.game?.player else { return }
             if player is Human {
@@ -214,7 +212,7 @@ extension PapyrusViewController {
                 updateShownTiles()
             }
         case let .move(_, solution):
-            define(word: solution.word)
+            definition(for: solution.word)
         case let .drewTiles(_, letters):
             print("Drew Tiles \(letters)")
         case .swappedTiles(_):
@@ -226,7 +224,7 @@ extension PapyrusViewController {
 
 // MARK: GamePresenter
 extension PapyrusViewController {
-    func handleBlank(_ tileView: TileView) {
+    func handle(blank tileView: TileView) {
         guard let bagType = gameManager.game?.bag.dynamicType else {
             return
         }
@@ -304,16 +302,6 @@ extension PapyrusViewController {
             self?.gameManager.play(solution: solution)
         }
     }
-
-    func swapAll(_ sender: UIAlertAction) {
-        gameManager.swapAll()
-    }
-    
-    func swap(_ sender: UIAlertAction) {
-        guard let rack = gameManager.game?.player.rack else { return }
-        tileSwapperViewController.prepareForPresentation(rack)
-        fade(out: false, allExcept: tilesSwapperContainerView)
-    }
     
     func doSwap(_ sender: UIBarButtonItem) {
         guard let letters = tileSwapperViewController.toSwap() else { return }
@@ -321,15 +309,6 @@ extension PapyrusViewController {
         gameManager.swap(tiles: letters)
     }
     
-    func shuffle(_ sender: UIAlertAction) {
-        gameManager.shuffle { [weak self] in
-            self?.updatePresenter()
-        }
-    }
-    
-    func skip(_ sender: UIAlertAction) {
-        gameManager.skip()
-    }
     
     func hint(_ sender: UIAlertAction) {
         gameManager.hint { [weak self] (solution) in
@@ -352,5 +331,25 @@ extension PapyrusViewController {
     
     func showPreferences(_ sender: UIAlertAction) {
         performSegue(withIdentifier: PreferencesNavigationController.segueIdentifier, sender: self)
+    }
+    
+    func shuffle(_ sender: UIAlertAction) {
+        gameManager.shuffle { [weak self] in
+            self?.updatePresenter()
+        }
+    }
+    
+    func skip(_ sender: UIAlertAction) {
+        gameManager.skip()
+    }
+    
+    func swap(_ sender: UIAlertAction) {
+        guard let rack = gameManager.game?.player.rack else { return }
+        tileSwapperViewController.prepareForPresentation(rack)
+        fade(out: false, allExcept: tilesSwapperContainerView)
+    }
+    
+    func swapAll(_ sender: UIAlertAction) {
+        gameManager.swapAll()
     }
 }

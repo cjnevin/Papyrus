@@ -49,7 +49,6 @@
 		99B861D41CF8CC7C00A9E041 /* twl06_anagrams.bin in Resources */ = {isa = PBXBuildFile; fileRef = 99B861D21CF8CC7C00A9E041 /* twl06_anagrams.bin */; };
 		99C3D1F31C7BAF510024B932 /* GameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99C3D1F21C7BAF510024B932 /* GameView.swift */; };
 		99CDF8561CD417C30007DC89 /* TilePickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99CDF8551CD417C30007DC89 /* TilePickerViewController.swift */; };
-		99D316F01D2C407500BC4476 /* Watchdog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99D316EF1D2C407500BC4476 /* Watchdog.swift */; };
 		99D36F501C7E6B2B00A5ADA8 /* BoardDrawable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99D36F491C7E6B2B00A5ADA8 /* BoardDrawable.swift */; };
 		99D36F511C7E6B2B00A5ADA8 /* Drawable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99D36F4A1C7E6B2B00A5ADA8 /* Drawable.swift */; };
 		99D36F521C7E6B2B00A5ADA8 /* SquareDrawable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99D36F4B1C7E6B2B00A5ADA8 /* SquareDrawable.swift */; };
@@ -169,7 +168,6 @@
 		99B861D21CF8CC7C00A9E041 /* twl06_anagrams.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = twl06_anagrams.bin; sourceTree = "<group>"; };
 		99C3D1F21C7BAF510024B932 /* GameView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameView.swift; sourceTree = "<group>"; };
 		99CDF8551CD417C30007DC89 /* TilePickerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TilePickerViewController.swift; sourceTree = "<group>"; };
-		99D316EF1D2C407500BC4476 /* Watchdog.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Watchdog.swift; path = Papyrus/Watchdog.swift; sourceTree = SOURCE_ROOT; };
 		99D316F11D2C43BF00BC4476 /* WordplaysLookup.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = WordplaysLookup.xcodeproj; path = WordplaysLookup/WordplaysLookup.xcodeproj; sourceTree = SOURCE_ROOT; };
 		99D36F491C7E6B2B00A5ADA8 /* BoardDrawable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BoardDrawable.swift; sourceTree = "<group>"; };
 		99D36F4A1C7E6B2B00A5ADA8 /* Drawable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Drawable.swift; sourceTree = "<group>"; };
@@ -226,7 +224,6 @@
 			children = (
 				99FD43561BA59BF900F50DCF /* PapyrusCore.xcodeproj */,
 				99D316F11D2C43BF00BC4476 /* WordplaysLookup.xcodeproj */,
-				99D316EF1D2C407500BC4476 /* Watchdog.swift */,
 			);
 			name = Libraries;
 			path = AnagramDictionary;
@@ -622,7 +619,6 @@
 				993A534B1C7EE338001F93CB /* TileShader.swift in Sources */,
 				993A53481C7EE273001F93CB /* Shader.swift in Sources */,
 				99D36F501C7E6B2B00A5ADA8 /* BoardDrawable.swift in Sources */,
-				99D316F01D2C407500BC4476 /* Watchdog.swift in Sources */,
 				998041D91CE73F4F0099EF4E /* TilesRemainingRenderer.swift in Sources */,
 				997D186D1BCC570B0050B872 /* TileView.swift in Sources */,
 				99D36F521C7E6B2B00A5ADA8 /* SquareDrawable.swift in Sources */,
