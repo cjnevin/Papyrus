@@ -11,13 +11,6 @@ import PapyrusCore
 import WordplaysLookup
 
 class PapyrusViewController: UIViewController {
-    enum SegueId: String {
-        case preferences
-        case tilePicker
-        case tilesRemaining
-        case tileSwapper
-    }
-    
     let watchdog = Watchdog(threshold: 0.2)
     let gameManager = GameManager.sharedInstance
     var presenter: GamePresenter?
@@ -26,7 +19,6 @@ class PapyrusViewController: UIViewController {
     var definitionLabel: UILabel!
     
     var showingUnplayed: Bool = false
-    var showingSwapper: Bool = false
     var tilePickerViewController: TilePickerViewController!
     var tileSwapperViewController: TileSwapperViewController!
     var tilesRemainingViewController: TilesRemainingViewController!
@@ -43,24 +35,15 @@ class PapyrusViewController: UIViewController {
     @IBOutlet var actionButton: UIBarButtonItem!
     
     override func prepare(for segue: UIStoryboardSegue, sender: AnyObject?) {
-        guard let id = segue.identifier, segueId = SegueId(rawValue: id) else {
-            return
-        }
-        func getController<T>(_ controller: UIViewController? = nil) -> T {
-            return (controller ?? segue.destinationViewController) as! T
-        }
-        switch segueId {
-        case .tilePicker:
-            tilePickerViewController = getController()
-        case .tileSwapper:
-            tileSwapperViewController = getController()
-        case .tilesRemaining:
-            tilesRemainingViewController = getController()
+        if let viewController: TilePickerViewController = segue.inferredDestinationViewController() {
+            tilePickerViewController = viewController
+        } else if let viewController: TileSwapperViewController = segue.inferredDestinationViewController() {
+            tileSwapperViewController = viewController
+        } else if let viewController: TilesRemainingViewController = segue.inferredDestinationViewController() {
+            tilesRemainingViewController = viewController
             tilesRemainingViewController.completionHandler = { [weak self] in self?.fade(out: true) }
-        case .preferences:
-            let navigationController: UINavigationController = getController()
-            let preferencesController: PreferencesViewController = getController(navigationController.viewControllers.first!)
-            preferencesController.saveHandler = { [weak self] in self?.newGame() }
+        } else if let navigationController: PreferencesNavigationController = segue.inferredDestinationViewController() {
+            navigationController.preferencesViewController.saveHandler = { [weak self] in self?.newGame() }
         }
     }
     
@@ -70,6 +53,9 @@ class PapyrusViewController: UIViewController {
         title = "Learning..."
         
         let padding = CGFloat(8)
+        
+        // TODO: Double tap rack could restore all tiles
+        // TODO: Make presenters UIViews, we can then create them in UIStoryboard
         
         var rackRect = gameView.bounds
         rackRect.size.height = RackPresenter.calculateHeight(forRect: gameView.frame)
@@ -363,6 +349,6 @@ extension PapyrusViewController {
     }
     
     func showPreferences(_ sender: UIAlertAction) {
-        performSegue(withIdentifier: SegueId.preferences.rawValue, sender: self)
+        performSegue(withIdentifier: PreferencesViewController.segueIdentifier, sender: self)
     }
 }

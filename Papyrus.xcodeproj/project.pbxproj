@@ -32,8 +32,10 @@
 		9953DCF91D2EDC5200B0B367 /* BoardCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9953DCF81D2EDC5200B0B367 /* BoardCell.swift */; };
 		9953DCFB1D2EDF4100B0B367 /* BoardCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9953DCFA1D2EDF4100B0B367 /* BoardCell.xib */; };
 		9953DD001D2EE26500B0B367 /* NibLoadable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9953DCFF1D2EE26500B0B367 /* NibLoadable.swift */; };
+		995B8B181D30493F0093EFB0 /* UIStoryboardSegue+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 995B8B171D30493F0093EFB0 /* UIStoryboardSegue+Extensions.swift */; };
 		99629C091B547DE800510036 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99629C081B547DE800510036 /* AppDelegate.swift */; };
 		99629C2D1B547DE800510036 /* PapyrusUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99629C2C1B547DE800510036 /* PapyrusUITests.swift */; };
+		9972BA281D304BE0004DEAE8 /* PreferencesNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9972BA271D304BE0004DEAE8 /* PreferencesNavigationController.swift */; };
 		9975A2AF1CF8C9DE003D315F /* wordswithfriends_anagrams.bin in Resources */ = {isa = PBXBuildFile; fileRef = 9975A2AE1CF8C9DE003D315F /* wordswithfriends_anagrams.bin */; };
 		997D186B1BCC4EEC0050B872 /* PapyrusViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 997D186A1BCC4EEC0050B872 /* PapyrusViewController.swift */; };
 		997D186D1BCC570B0050B872 /* TileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 997D186C1BCC570B0050B872 /* TileView.swift */; };
@@ -145,6 +147,7 @@
 		9953DCF81D2EDC5200B0B367 /* BoardCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BoardCell.swift; sourceTree = "<group>"; };
 		9953DCFA1D2EDF4100B0B367 /* BoardCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = BoardCell.xib; sourceTree = "<group>"; };
 		9953DCFF1D2EE26500B0B367 /* NibLoadable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NibLoadable.swift; sourceTree = "<group>"; };
+		995B8B171D30493F0093EFB0 /* UIStoryboardSegue+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIStoryboardSegue+Extensions.swift"; sourceTree = "<group>"; };
 		99629C051B547DE800510036 /* Papyrus.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Papyrus.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		99629C081B547DE800510036 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		99629C1D1B547DE800510036 /* PapyrusTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PapyrusTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -152,6 +155,7 @@
 		99629C281B547DE800510036 /* PapyrusUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PapyrusUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		99629C2C1B547DE800510036 /* PapyrusUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PapyrusUITests.swift; sourceTree = "<group>"; };
 		99629C2E1B547DE800510036 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		9972BA271D304BE0004DEAE8 /* PreferencesNavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PreferencesNavigationController.swift; sourceTree = "<group>"; };
 		9975A2AE1CF8C9DE003D315F /* wordswithfriends_anagrams.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = wordswithfriends_anagrams.bin; sourceTree = "<group>"; };
 		997D186A1BCC4EEC0050B872 /* PapyrusViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PapyrusViewController.swift; sourceTree = "<group>"; };
 		997D186C1BCC570B0050B872 /* TileView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TileView.swift; path = Papyrus/Views/TileView.swift; sourceTree = SOURCE_ROOT; };
@@ -309,6 +313,7 @@
 			isa = PBXGroup;
 			children = (
 				997D186A1BCC4EEC0050B872 /* PapyrusViewController.swift */,
+				9972BA271D304BE0004DEAE8 /* PreferencesNavigationController.swift */,
 				994BFCC31CD7B7E900D96156 /* PreferencesViewController.swift */,
 				99CDF8551CD417C30007DC89 /* TilePickerViewController.swift */,
 				998041DE1CE741480099EF4E /* TileSwapperViewController.swift */,
@@ -385,6 +390,7 @@
 			children = (
 				9901443E1C7E4E61005C81BF /* CGRect+Extensions.swift */,
 				99DF9E0E1B54ED8200F58DA7 /* UIColor+Papyrus.swift */,
+				995B8B171D30493F0093EFB0 /* UIStoryboardSegue+Extensions.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -628,6 +634,7 @@
 				991E21131D2AEB2200A5058F /* BoardPresenter.swift in Sources */,
 				990EA09E1D2EF7D0003C1ECE /* SliderCell.swift in Sources */,
 				9953DD001D2EE26500B0B367 /* NibLoadable.swift in Sources */,
+				995B8B181D30493F0093EFB0 /* UIStoryboardSegue+Extensions.swift in Sources */,
 				99139C0C1D1F12770033E114 /* StarDrawable.swift in Sources */,
 				991E211B1D2B18EC00A5058F /* ScoreShader.swift in Sources */,
 				999925B01CD091E9005D1C89 /* GamePresenter.swift in Sources */,
@@ -641,6 +648,7 @@
 				99D36F541C7E6B2B00A5ADA8 /* CGContext+Renderer.swift in Sources */,
 				991BC8F81CE71F55000D4C6B /* TilesRemainingViewController.swift in Sources */,
 				991E21191D2B17F300A5058F /* ScoreDrawable.swift in Sources */,
+				9972BA281D304BE0004DEAE8 /* PreferencesNavigationController.swift in Sources */,
 				99C3D1F31C7BAF510024B932 /* GameView.swift in Sources */,
 				997D186B1BCC4EEC0050B872 /* PapyrusViewController.swift in Sources */,
 				991E21171D2AF2BA00A5058F /* ScorePresenter.swift in Sources */,

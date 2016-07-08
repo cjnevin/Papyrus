@@ -42,7 +42,7 @@
                                     </mask>
                                 </variation>
                                 <connections>
-                                    <segue destination="Gzw-WM-e8k" kind="embed" identifier="tilePicker" id="zIv-8e-Yjc"/>
+                                    <segue destination="Gzw-WM-e8k" kind="embed" identifier="TilePickerViewControllerSegue" id="zIv-8e-Yjc"/>
                                 </connections>
                             </containerView>
                             <containerView opaque="NO" alpha="0.0" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="qJp-mA-Rzt">
@@ -60,7 +60,7 @@
                                     </mask>
                                 </variation>
                                 <connections>
-                                    <segue destination="uyG-h2-ghm" kind="embed" identifier="tilesRemaining" id="VtL-F8-nCR"/>
+                                    <segue destination="uyG-h2-ghm" kind="embed" identifier="TilesRemainingViewControllerSegue" id="VtL-F8-nCR"/>
                                 </connections>
                             </containerView>
                             <containerView opaque="NO" alpha="0.0" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="2Qx-5W-WiX">
@@ -90,7 +90,7 @@
                                     </mask>
                                 </variation>
                                 <connections>
-                                    <segue destination="ZKH-ax-ixM" kind="embed" identifier="tileSwapper" id="Tee-Dg-AeW"/>
+                                    <segue destination="ZKH-ax-ixM" kind="embed" identifier="TileSwapperViewControllerSegue" id="Tee-Dg-AeW"/>
                                 </connections>
                             </containerView>
                         </subviews>
@@ -129,10 +129,10 @@
                                 <exclude reference="2Qx-5W-WiX"/>
                             </mask>
                             <mask key="constraints">
-                                <exclude reference="eUE-jP-ugi"/>
                                 <exclude reference="I1I-ao-Azk"/>
                                 <exclude reference="JjW-xO-A3g"/>
                                 <exclude reference="rXp-w5-HkN"/>
+                                <exclude reference="eUE-jP-ugi"/>
                                 <exclude reference="0vf-y9-dB3"/>
                                 <exclude reference="Rgd-Y2-4Rx"/>
                                 <exclude reference="qwP-aB-R8B"/>
@@ -155,10 +155,10 @@
                                 <include reference="2Qx-5W-WiX"/>
                             </mask>
                             <mask key="constraints">
-                                <include reference="eUE-jP-ugi"/>
                                 <include reference="I1I-ao-Azk"/>
                                 <include reference="JjW-xO-A3g"/>
                                 <include reference="rXp-w5-HkN"/>
+                                <include reference="eUE-jP-ugi"/>
                                 <include reference="0vf-y9-dB3"/>
                                 <include reference="Rgd-Y2-4Rx"/>
                                 <include reference="qwP-aB-R8B"/>
@@ -207,7 +207,7 @@
                         <outletCollection property="tileContainerViews" destination="rwX-f3-NTO" collectionClass="NSMutableArray" id="oRj-Bj-9pz"/>
                         <outletCollection property="tileContainerViews" destination="qJp-mA-Rzt" collectionClass="NSMutableArray" id="8mc-E6-3mR"/>
                         <outletCollection property="tileContainerViews" destination="2Qx-5W-WiX" collectionClass="NSMutableArray" id="g8J-dn-lmD"/>
-                        <segue destination="Zna-CF-08Z" kind="presentation" identifier="preferences" id="xiw-yo-utx"/>
+                        <segue destination="Zna-CF-08Z" kind="presentation" identifier="PreferencesNavigationControllerSegue" id="xiw-yo-utx"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="eiI-7D-yMl" userLabel="First Responder" sceneMemberID="firstResponder"/>
