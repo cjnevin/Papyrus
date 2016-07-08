@@ -127,7 +127,8 @@ class PapyrusViewController: UIViewController {
 // MARK: GameEvents
 extension PapyrusViewController {
     func prepareGame() {
-        enableButtons()
+        submitButton.isEnabled = false
+        resetButton.isEnabled = false
         
         // Try to restore a cached game first
         gameManager.restoreGame(eventHandler: handleEvent) { [weak self] success in
@@ -143,7 +144,9 @@ extension PapyrusViewController {
     }
     
     func newGame() {
-        enableButtons()
+        submitButton.isEnabled = false
+        resetButton.isEnabled = false
+        
         gameManager.newGame(eventHandler: handleEvent) { [weak self] in
             self?.title = "Starting..."
             self?.gameManager.start()
@@ -194,15 +197,19 @@ extension PapyrusViewController {
         switch event {
         case let .over(_, winner):
             updatePresenter()
-            enableButtons()
+            submitButton.isEnabled = false
+            resetButton.isEnabled = false
             gameOver(with: winner)
         case .turnBegan(_):
             updatePresenter()
             turnUpdated()
-            enableButtons()
+            submitButton.isEnabled = false
+            resetButton.isEnabled = false
         case .turnEnded(_):
             updatePresenter()
             turnUpdated()
+            submitButton.isEnabled = false
+            resetButton.isEnabled = false
             if tilesRemainingContainerView.alpha == 1.0 {
                 updateShownTiles()
             }
@@ -236,9 +243,9 @@ extension PapyrusViewController {
         guard let tiles = presenter?.board.tiles, blanks = presenter?.board.blanks else {
             return
         }
-        enableButtons(reset: gameManager.game?.player is Human && tiles.count > 0)
+        resetButton.isEnabled = gameManager.game?.player is Human && tiles.count > 0
         gameManager.validate(tiles: tiles, blanks: blanks) { [weak self] (solution) in
-            self?.enableButtons(submit: solution != nil)
+            self?.submitButton.isEnabled = solution != nil
         }
     }
 }
@@ -246,11 +253,6 @@ extension PapyrusViewController {
 
 // MARK: Buttons
 extension PapyrusViewController {
-    func enableButtons(submit: Bool = false, reset: Bool = false) {
-        submitButton.isEnabled = submit
-        resetButton.isEnabled = reset
-    }
-    
     func updateShownTiles() {
         guard let game = gameManager.game else { return }
         tilesRemainingViewController.prepareForPresentation(game.bag, players: showingUnplayed ? game.players : nil)
@@ -349,6 +351,6 @@ extension PapyrusViewController {
     }
     
     func showPreferences(_ sender: UIAlertAction) {
-        performSegue(withIdentifier: PreferencesViewController.segueIdentifier, sender: self)
+        performSegue(withIdentifier: PreferencesNavigationController.segueIdentifier, sender: self)
     }
 }

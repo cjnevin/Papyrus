@@ -51,9 +51,14 @@ struct RackPresenter: Presenter {
     
     func tiles(for rack: [RackTile], letterPoints: [Character: Int], draggable: Bool) -> [TileView] {
         let width = RackPresenter.calculateTileWidth(forRect: rect, layout: layout)
+        var inset = layout.inset
+        if CGFloat(rack.count) < layout.maximum {
+            // Offset centred regardless of amount of tiles in rack
+            let amount = layout.maximum - CGFloat(rack.count)
+            inset += ((layout.spacing + width) * amount) / 2
+        }
         return rack.enumerated().map ({ (index, tile) in
-            // TODO: Offset centred based on count using maximum (defined in layout)
-            let x = layout.inset + ((layout.spacing + width) * CGFloat(index))
+            let x = inset + ((layout.spacing + width) * CGFloat(index))
             let tileRect = CGRect(origin: rackPoint(x: x, y: 0), size: CGSize(width: width, height: width))
             let points = tile.isBlank ? 0 : letterPoints[tile.letter] ?? 0
             let tileView = TileView(frame: tileRect, tile: tile.letter, points: points, onBoard: false, delegate: draggable ? delegate : nil)

@@ -210,6 +210,17 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		990648E41D3052360024409D /* Cells */ = {
+			isa = PBXGroup;
+			children = (
+				9953DCF81D2EDC5200B0B367 /* BoardCell.swift */,
+				9953DCFA1D2EDF4100B0B367 /* BoardCell.xib */,
+				990EA09D1D2EF7D0003C1ECE /* SliderCell.swift */,
+				990EA0A11D2EF7DA003C1ECE /* SliderCell.xib */,
+			);
+			name = Cells;
+			sourceTree = "<group>";
+		};
 		99127A391D1FBE4B009DCF7A /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
@@ -326,11 +337,8 @@
 		99629C5A1B547E8200510036 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				9953DCF81D2EDC5200B0B367 /* BoardCell.swift */,
-				9953DCFA1D2EDF4100B0B367 /* BoardCell.xib */,
+				990648E41D3052360024409D /* Cells */,
 				9953DCF41D2EDA9000B0B367 /* BoardView.swift */,
-				990EA09D1D2EF7D0003C1ECE /* SliderCell.swift */,
-				990EA0A11D2EF7DA003C1ECE /* SliderCell.xib */,
 				99C3D1F21C7BAF510024B932 /* GameView.swift */,
 				99B67B061D2B224900BD051A /* ScoresView.swift */,
 				997D186C1BCC570B0050B872 /* TileView.swift */,

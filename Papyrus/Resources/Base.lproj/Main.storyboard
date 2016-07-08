@@ -301,10 +301,10 @@
             </objects>
             <point key="canvasLocation" x="1530" y="71.25"/>
         </scene>
-        <!--Navigation Controller-->
+        <!--Preferences Navigation Controller-->
         <scene sceneID="kSg-MM-89h">
             <objects>
-                <navigationController id="Zna-CF-08Z" sceneMemberID="viewController">
+                <navigationController id="Zna-CF-08Z" customClass="PreferencesNavigationController" customModule="Papyrus" customModuleProvider="target" sceneMemberID="viewController">
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="65h-lH-z0N">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
