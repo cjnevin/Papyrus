@@ -15,8 +15,6 @@ class PapyrusViewController: UIViewController {
     var presenter: GamePresenter?
     var firstRun: Bool = false
     
-    var definitionLabel: UILabel!
-    
     var showingUnplayed: Bool = false
     var tilePickerViewController: TilePickerViewController!
     var tileSwapperViewController: TileSwapperViewController!
@@ -50,42 +48,12 @@ class PapyrusViewController: UIViewController {
         super.viewDidLoad()
         
         title = "Learning..."
-        
-        let padding = CGFloat(8)
-        
-        // TODO: Double tap rack could restore all tiles
-        // TODO: Make presenters UIViews, we can then create them in UIStoryboard
-        
-        var rackRect = gameView.bounds
-        rackRect.size.height = RackPresenter.calculateHeight(forRect: gameView.frame)
-        rackRect.origin.y = gameView.bounds.height - rackRect.height
-        
-        let edge = gameView.bounds.width - (padding * 2)
-        let boardRect = CGRect(x: padding, y: rackRect.origin.y - edge, width: edge, height: edge).presentationRect
-        
-        let boardPresenter = BoardPresenter(rect: boardRect, onPlacement: validate, onBlank: handle)
-        let rackPresenter = RackPresenter(rect: rackRect, delegate: boardPresenter)
-        
-        let offset = UIApplication.shared().statusBarFrame.height + (navigationController?.navigationBar.frame.height ?? 0)
-        let scoreRect = CGRect(origin: CGPoint(x: 0, y: offset), size: CGSize(width: gameView.bounds.width, height: 80))
-        let scoreLayout = ScoreLayout(rect: scoreRect)
-        let scorePresenter = ScorePresenter(layout: scoreLayout)
-        
-        definitionLabel = UILabel(frame: CGRect(x: padding,
-                                                y: scoreRect.origin.y + scoreRect.height,
-                                                width: gameView.bounds.width - (padding * 2),
-                                                height: boardRect.origin.y - (scoreRect.origin.y + scoreRect.height)))
-        definitionLabel.numberOfLines = 4
-        definitionLabel.textAlignment = .center
-        definitionLabel.font = UIFont.systemFont(ofSize: 12, weight: UIFontWeightLight)
-        view.addSubview(definitionLabel)
-        
-        presenter = GamePresenter(board: boardPresenter, rack: rackPresenter, score: scorePresenter)
     }
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         if !firstRun {
+            presenter = GamePresenter(view: gameView, onPlacement: validate, onBlank: handle)
             prepareGame()
             firstRun = true
         }
@@ -135,6 +103,9 @@ extension PapyrusViewController {
                 return
             }
             strongSelf.title = "Starting..."
+            if let word = strongSelf.gameManager.game?.lastMove?.word {
+                strongSelf.definition(for: word)
+            }
             strongSelf.gameManager.start()
         }
     }
@@ -172,9 +143,9 @@ extension PapyrusViewController {
             }
             print(definition)
             if definition.substring(to: word.endIndex) != word {
-                self?.definitionLabel.text = word + " -- " + definition
+                self?.presenter?.definitionLabel.text = word + " -- " + definition
             } else {
-                self?.definitionLabel.text = definition
+                self?.presenter?.definitionLabel.text = definition
             }
         }
     }
@@ -235,7 +206,7 @@ extension PapyrusViewController {
     }
     
     func validate() {
-        guard let tiles = presenter?.board.tiles, blanks = presenter?.board.blanks else {
+        guard let tiles = presenter?.boardPresenter.tiles, blanks = presenter?.boardPresenter.blanks else {
             return
         }
         resetButton.isEnabled = gameManager.game?.player is Human && tiles.count > 0
@@ -291,7 +262,7 @@ extension PapyrusViewController {
     }
     
     @IBAction func submit(_ sender: UIBarButtonItem) {
-        guard let tiles = presenter?.board.tiles, blanks = presenter?.board.blanks else {
+        guard let tiles = presenter?.boardPresenter.tiles, blanks = presenter?.boardPresenter.blanks else {
             return
         }
         gameManager.validate(tiles: tiles, blanks: blanks) { [weak self] (solution) in

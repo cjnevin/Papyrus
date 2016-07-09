@@ -17,10 +17,13 @@
                         <viewControllerLayoutGuide type="top" id="Dfu-bY-qac"/>
                         <viewControllerLayoutGuide type="bottom" id="2zo-5g-MkW"/>
                     </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="4aa-cn-i0z" customClass="GameView" customModule="Papyrus" customModuleProvider="target">
+                    <view key="view" contentMode="scaleToFill" id="4aa-cn-i0z">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Y4a-ff-hHx" customClass="GameView" customModule="Papyrus" customModuleProvider="target">
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            </view>
                             <view alpha="0.0" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="3dp-bN-fMR">
                                 <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             </view>
@@ -102,6 +105,7 @@
                             <constraint firstAttribute="trailing" secondItem="rwX-f3-NTO" secondAttribute="trailing" constant="15" id="JFf-Hq-lvx">
                                 <variation key="heightClass=regular" constant="40"/>
                             </constraint>
+                            <constraint firstItem="Y4a-ff-hHx" firstAttribute="leading" secondItem="4aa-cn-i0z" secondAttribute="leading" id="Jc2-Jt-7Vm"/>
                             <constraint firstItem="2Qx-5W-WiX" firstAttribute="top" secondItem="Dfu-bY-qac" secondAttribute="bottom" constant="40" id="JjW-xO-A3g"/>
                             <constraint firstAttribute="trailing" secondItem="qJp-mA-Rzt" secondAttribute="trailing" constant="40" id="MRO-Wy-MV2"/>
                             <constraint firstItem="rwX-f3-NTO" firstAttribute="top" secondItem="Dfu-bY-qac" secondAttribute="bottom" constant="139" id="MqE-d9-AN9">
@@ -116,10 +120,13 @@
                                 <variation key="heightClass=regular" constant="-80"/>
                             </constraint>
                             <constraint firstItem="2zo-5g-MkW" firstAttribute="top" secondItem="3dp-bN-fMR" secondAttribute="bottom" id="eUE-jP-ugi"/>
+                            <constraint firstItem="2zo-5g-MkW" firstAttribute="top" secondItem="Y4a-ff-hHx" secondAttribute="bottom" id="f2M-SL-Kya"/>
+                            <constraint firstAttribute="trailing" secondItem="Y4a-ff-hHx" secondAttribute="trailing" id="go2-af-xxz"/>
                             <constraint firstAttribute="trailingMargin" secondItem="rwX-f3-NTO" secondAttribute="trailing" constant="80" id="kAp-Vp-3l2"/>
                             <constraint firstItem="qJp-mA-Rzt" firstAttribute="leading" secondItem="4aa-cn-i0z" secondAttribute="leading" constant="40" id="nPC-LO-xa4"/>
                             <constraint firstAttribute="trailing" secondItem="3dp-bN-fMR" secondAttribute="trailing" id="qwP-aB-R8B"/>
                             <constraint firstItem="2Qx-5W-WiX" firstAttribute="leading" secondItem="4aa-cn-i0z" secondAttribute="leading" constant="40" id="rXp-w5-HkN"/>
+                            <constraint firstItem="Y4a-ff-hHx" firstAttribute="top" secondItem="Dfu-bY-qac" secondAttribute="bottom" id="sae-Hc-XX5"/>
                         </constraints>
                         <variation key="default">
                             <mask key="subviews">
@@ -129,13 +136,12 @@
                                 <exclude reference="2Qx-5W-WiX"/>
                             </mask>
                             <mask key="constraints">
-                                <exclude reference="I1I-ao-Azk"/>
-                                <exclude reference="JjW-xO-A3g"/>
-                                <exclude reference="rXp-w5-HkN"/>
-                                <exclude reference="eUE-jP-ugi"/>
                                 <exclude reference="0vf-y9-dB3"/>
                                 <exclude reference="Rgd-Y2-4Rx"/>
                                 <exclude reference="qwP-aB-R8B"/>
+                                <exclude reference="I1I-ao-Azk"/>
+                                <exclude reference="JjW-xO-A3g"/>
+                                <exclude reference="rXp-w5-HkN"/>
                                 <exclude reference="7ql-Nn-ThH"/>
                                 <exclude reference="MRO-Wy-MV2"/>
                                 <exclude reference="nPC-LO-xa4"/>
@@ -145,6 +151,7 @@
                                 <exclude reference="SpE-Ah-lnO"/>
                                 <exclude reference="XUe-rH-jX2"/>
                                 <exclude reference="kAp-Vp-3l2"/>
+                                <exclude reference="eUE-jP-ugi"/>
                             </mask>
                         </variation>
                         <variation key="heightClass=regular">
@@ -155,13 +162,12 @@
                                 <include reference="2Qx-5W-WiX"/>
                             </mask>
                             <mask key="constraints">
-                                <include reference="I1I-ao-Azk"/>
-                                <include reference="JjW-xO-A3g"/>
-                                <include reference="rXp-w5-HkN"/>
-                                <include reference="eUE-jP-ugi"/>
                                 <include reference="0vf-y9-dB3"/>
                                 <include reference="Rgd-Y2-4Rx"/>
                                 <include reference="qwP-aB-R8B"/>
+                                <include reference="I1I-ao-Azk"/>
+                                <include reference="JjW-xO-A3g"/>
+                                <include reference="rXp-w5-HkN"/>
                                 <include reference="7ql-Nn-ThH"/>
                                 <include reference="MRO-Wy-MV2"/>
                                 <include reference="nPC-LO-xa4"/>
@@ -171,6 +177,7 @@
                                 <include reference="SpE-Ah-lnO"/>
                                 <exclude reference="XUe-rH-jX2"/>
                                 <exclude reference="kAp-Vp-3l2"/>
+                                <include reference="eUE-jP-ugi"/>
                             </mask>
                         </variation>
                     </view>
@@ -197,7 +204,7 @@
                     <connections>
                         <outlet property="actionButton" destination="SSC-L5-TMp" id="Pto-pp-1kf"/>
                         <outlet property="blackoutView" destination="3dp-bN-fMR" id="fPp-RH-Fx8"/>
-                        <outlet property="gameView" destination="4aa-cn-i0z" id="91a-0l-hxg"/>
+                        <outlet property="gameView" destination="Y4a-ff-hHx" id="JFK-70-L5x"/>
                         <outlet property="resetButton" destination="buU-gN-B6e" id="bhy-Hc-Zgn"/>
                         <outlet property="searchDisplayController" destination="Q6z-gf-lv5" id="5AS-at-00a"/>
                         <outlet property="submitButton" destination="F1b-Cs-4xQ" id="TE7-vG-8NA"/>
@@ -220,7 +227,7 @@
                     </connections>
                 </searchDisplayController>
             </objects>
-            <point key="canvasLocation" x="71" y="394.5"/>
+            <point key="canvasLocation" x="69.599999999999994" y="394.45277361319341"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="joD-sy-QiM">
