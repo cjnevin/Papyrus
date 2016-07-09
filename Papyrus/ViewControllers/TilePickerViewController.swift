@@ -20,12 +20,19 @@ class TilePickerViewController : UIViewController, TileViewDelegate {
         renderer.tileViews?.forEach({ $0.tappable = true })
     }
     
-    func tapped(_ tileView: TileView) {
+    func tapped(tileView: TileView) {
         completionHandler?(tileView.tile)
     }
     
-    func pickedUp(_ tileView: TileView) { }
-    func frameForDropping(_ tileView: TileView) -> CGRect { return .zero }
-    func dropped(_ tileView: TileView) { }
+    func dropRect(for tileView: TileView) -> CGRect {
+        fatalError()
+    }
     
+    func dropped(tileView: TileView) {
+        fatalError()
+    }
+    
+    func lifted(tileView: TileView) {
+        fatalError()
+    }
 }

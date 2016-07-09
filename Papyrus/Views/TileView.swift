@@ -10,10 +10,10 @@ import UIKit
 import PapyrusCore
 
 protocol TileViewDelegate {
-    func pickedUp(_ tileView: TileView)
-    func frameForDropping(_ tileView: TileView) -> CGRect
-    func dropped(_ tileView: TileView)
-    func tapped(_ tileView: TileView)
+    func dropRect(for tileView: TileView) -> CGRect
+    func dropped(tileView: TileView)
+    func lifted(tileView: TileView)
+    func tapped(tileView: TileView)
 }
 
 class TileView: UIView {
@@ -113,7 +113,7 @@ extension TileView: Pressable {
         let animationDuration: TimeInterval = 0.1
         switch gesture.state {
         case .began:
-            delegate?.pickedUp(self)
+            delegate?.lifted(tileView: self)
             let center = self.center
             UIView.animate(withDuration: animationDuration, animations: {
                 self.bounds = self.initialFrame
@@ -122,7 +122,7 @@ extension TileView: Pressable {
                 self.transform = CGAffineTransform(scaleX: shrunkScale, y: shrunkScale)
             })
         case .cancelled, .ended, .failed:
-            guard let newFrame = delegate?.frameForDropping(self) else {
+            guard let newFrame = delegate?.dropRect(for: self) else {
                 return
             }
             UIView.animate(withDuration: animationDuration, animations: {
@@ -130,7 +130,7 @@ extension TileView: Pressable {
                 self.center = CGPoint(x: newFrame.midX, y: newFrame.midY)
                 self.bounds = newFrame
                 }, completion: { (complete) in
-                    self.delegate?.dropped(self)
+                    self.delegate?.dropped(tileView: self)
             })
         default:
             break
@@ -140,7 +140,7 @@ extension TileView: Pressable {
 
 extension TileView: Tappable {
     func tapped(with gesture: UITapGestureRecognizer) {
-        delegate?.tapped(self)
+        delegate?.tapped(tileView: self)
     }
 }
 

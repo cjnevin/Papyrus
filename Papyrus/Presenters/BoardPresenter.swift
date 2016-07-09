@@ -81,16 +81,7 @@ class BoardPresenter: Presenter {
 }
 
 extension BoardPresenter: TileViewDelegate {
-    func tapped(_ tileView: TileView) { }
-    
-    func pickedUp(_ tileView: TileView) {
-        tileView.x = nil
-        tileView.y = nil
-        tileView.onBoard = false
-        onPlacement?()
-    }
-    
-    func frameForDropping(_ tileView: TileView) -> CGRect {
+    func dropRect(for tileView: TileView) -> CGRect {
         if tileView.frame.intersects(rect) {
             if let intersection = bestIntersection(forRect: tileView.frame) {
                 tileView.onBoard = true
@@ -103,12 +94,23 @@ extension BoardPresenter: TileViewDelegate {
         return tileView.initialFrame
     }
     
-    func dropped(_ tileView: TileView) {
+    func dropped(tileView: TileView) {
         onPlacement?()
         if tileView.tile == Game.blankLetter && tileView.onBoard {
             onBlank?(tileView: tileView)
         } else if tileView.isBlank && !tileView.onBoard {
             tileView.tile = Game.blankLetter
         }
+    }
+    
+    func lifted(tileView: TileView) {
+        tileView.x = nil
+        tileView.y = nil
+        tileView.onBoard = false
+        onPlacement?()
+    }
+    
+    func tapped(tileView: TileView) {
+        fatalError()
     }
 }

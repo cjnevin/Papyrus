@@ -22,14 +22,21 @@ class TileSwapperViewController : UIViewController, TileViewDelegate {
         return renderer.tileViews?.filter({ $0.highlighted }).map({ $0.tile })
     }
     
-    func tapped(_ tileView: TileView) {
+    func tapped(tileView: TileView) {
         tileView.highlighted = !tileView.highlighted
         // Use onBoard to indicate selection
         tileView.onBoard = !tileView.highlighted
     }
     
-    func pickedUp(_ tileView: TileView) { }
-    func frameForDropping(_ tileView: TileView) -> CGRect { return .zero }
-    func dropped(_ tileView: TileView) { }
+    func dropRect(for tileView: TileView) -> CGRect {
+        fatalError()
+    }
     
+    func dropped(tileView: TileView) {
+        fatalError()
+    }
+    
+    func lifted(tileView: TileView) {
+        fatalError()
+    }
 }
