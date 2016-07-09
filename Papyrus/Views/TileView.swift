@@ -17,6 +17,8 @@ protocol TileViewDelegate {
 }
 
 class TileView: UIView {
+    private var velocity = CGPoint.zero
+    
     var draggable: Bool = false {
         didSet {
             if draggable {
@@ -77,9 +79,9 @@ class TileView: UIView {
         self.tile = tile
         self.points = points
         self.onBoard = onBoard
-        super.init(frame: frame)
+        super.init(frame: frame.presentationRect.insetBy(dx: 1, dy: 1))
         initialPoint = center
-        initialFrame = frame
+        initialFrame = self.frame
     }
 
     override func didMoveToSuperview() {
@@ -100,9 +102,12 @@ class TileView: UIView {
 
 extension TileView: Movable {
     func moved(with gesture: UIPanGestureRecognizer) {
-        let translation = gesture.translation(in: superview)
-        center = CGPoint(x: center.x + translation.x, y: center.y + translation.y)
-        gesture.setTranslation(CGPoint.zero, in: superview)
+        if gesture.state == .changed {
+            velocity = gesture.velocity(in: superview)
+            let translation = gesture.translation(in: superview)
+            center = CGPoint(x: center.x + translation.x, y: center.y + translation.y)
+            gesture.setTranslation(CGPoint.zero, in: superview)
+        }
     }
 }
 
@@ -110,28 +115,30 @@ extension TileView: Pressable {
     func pressed(with gesture: UILongPressGestureRecognizer) {
         let shrunkScale: CGFloat = 0.9
         let normalScale: CGFloat = 1.0
-        let animationDuration: TimeInterval = 0.1
+        let animationDuration: TimeInterval = 0.15
         switch gesture.state {
         case .began:
             delegate?.lifted(tileView: self)
             let center = self.center
-            UIView.animate(withDuration: animationDuration, animations: {
+            UIView.animate(withDuration: animationDuration) {
                 self.bounds = self.initialFrame
                 self.center = center
                 self.superview?.bringSubview(toFront: self)
                 self.transform = CGAffineTransform(scaleX: shrunkScale, y: shrunkScale)
-            })
+            }
         case .cancelled, .ended, .failed:
             guard let newFrame = delegate?.dropRect(for: self) else {
                 return
             }
-            UIView.animate(withDuration: animationDuration, animations: {
-                self.transform = CGAffineTransform(scaleX: normalScale, y: normalScale)
-                self.center = CGPoint(x: newFrame.midX, y: newFrame.midY)
-                self.bounds = newFrame
-                }, completion: { (complete) in
-                    self.delegate?.dropped(tileView: self)
-            })
+            func animations() {
+                transform = CGAffineTransform(scaleX: normalScale, y: normalScale)
+                center = CGPoint(x: newFrame.midX, y: newFrame.midY)
+                bounds = newFrame
+            }
+            func completion(_: Bool) {
+                delegate?.dropped(tileView: self)
+            }
+            UIView.animate(withDuration: animationDuration, animations: animations, completion: completion)
         default:
             break
         }
@@ -148,9 +155,5 @@ extension TileView: UIGestureRecognizerDelegate {
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
         return gestureRecognizers?.contains(gestureRecognizer) == true &&
             gestureRecognizers?.contains(otherGestureRecognizer) == true
-    }
-    
-    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
-        return true
     }
 }

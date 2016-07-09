@@ -47,7 +47,6 @@
 		998041DF1CE741480099EF4E /* TileSwapperViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 998041DE1CE741480099EF4E /* TileSwapperViewController.swift */; };
 		998041E41CE79B510099EF4E /* BoardShader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 998041E31CE79B510099EF4E /* BoardShader.swift */; };
 		999925B01CD091E9005D1C89 /* GamePresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 999925AF1CD091E9005D1C89 /* GamePresenter.swift */; };
-		99B67B071D2B224900BD051A /* ScoresView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99B67B061D2B224900BD051A /* ScoresView.swift */; };
 		99B861D31CF8CC7C00A9E041 /* sowpods_anagrams.bin in Resources */ = {isa = PBXBuildFile; fileRef = 99B861D11CF8CC7C00A9E041 /* sowpods_anagrams.bin */; };
 		99B861D41CF8CC7C00A9E041 /* twl06_anagrams.bin in Resources */ = {isa = PBXBuildFile; fileRef = 99B861D21CF8CC7C00A9E041 /* twl06_anagrams.bin */; };
 		99C3D1F31C7BAF510024B932 /* GameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99C3D1F21C7BAF510024B932 /* GameView.swift */; };
@@ -169,7 +168,6 @@
 		998041DE1CE741480099EF4E /* TileSwapperViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TileSwapperViewController.swift; sourceTree = "<group>"; };
 		998041E31CE79B510099EF4E /* BoardShader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BoardShader.swift; sourceTree = "<group>"; };
 		999925AF1CD091E9005D1C89 /* GamePresenter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GamePresenter.swift; sourceTree = "<group>"; };
-		99B67B061D2B224900BD051A /* ScoresView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScoresView.swift; sourceTree = "<group>"; };
 		99B861D11CF8CC7C00A9E041 /* sowpods_anagrams.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = sowpods_anagrams.bin; sourceTree = "<group>"; };
 		99B861D21CF8CC7C00A9E041 /* twl06_anagrams.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = twl06_anagrams.bin; sourceTree = "<group>"; };
 		99C3D1F21C7BAF510024B932 /* GameView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameView.swift; sourceTree = "<group>"; };
@@ -346,7 +344,6 @@
 				990648E41D3052360024409D /* Cells */,
 				9953DCF41D2EDA9000B0B367 /* BoardView.swift */,
 				99C3D1F21C7BAF510024B932 /* GameView.swift */,
-				99B67B061D2B224900BD051A /* ScoresView.swift */,
 				997D186C1BCC570B0050B872 /* TileView.swift */,
 			);
 			name = Views;
@@ -641,7 +638,6 @@
 				991E21151D2AEF8D00A5058F /* Presenter.swift in Sources */,
 				9953DCF51D2EDA9000B0B367 /* BoardView.swift in Sources */,
 				9901443F1C7E4E61005C81BF /* CGRect+Extensions.swift in Sources */,
-				99B67B071D2B224900BD051A /* ScoresView.swift in Sources */,
 				994BFCC91CD7C31600D96156 /* Preferences.swift in Sources */,
 				998041DF1CE741480099EF4E /* TileSwapperViewController.swift in Sources */,
 				991E21131D2AEB2200A5058F /* BoardPresenter.swift in Sources */,

@@ -16,6 +16,13 @@ struct RackLayout {
 }
 let defaultRackLayout = RackLayout(spacing: 4, inset: 8, maximum: CGFloat(Game.rackAmount))
 
+struct RackedTile {
+    let tile: Character
+    let points: Int
+    let rect: CGRect
+    let movable: Bool
+}
+
 struct RackPresenter: Presenter {
     private static func calculateTileWidth(forRect rect: CGRect, layout: RackLayout = defaultRackLayout) -> CGFloat {
         let insetWidth = rect.width - layout.inset * 2
@@ -33,11 +40,9 @@ struct RackPresenter: Presenter {
     
     private let rect: CGRect
     private let layout: RackLayout
-    private let delegate: TileViewDelegate
     
-    init(rect: CGRect, layout: RackLayout = defaultRackLayout, delegate: TileViewDelegate) {
+    init(rect: CGRect, layout: RackLayout = defaultRackLayout) {
         self.rect = rect
-        self.delegate = delegate
         self.layout = layout
     }
     
@@ -46,10 +51,10 @@ struct RackPresenter: Presenter {
         if game.player is Computer {
             rack = rack.map({ _ in RackTile(" ", true) })
         }
-        view.tileViews = tiles(for: rack, letterPoints: game.bag.dynamicType.letterPoints, draggable: game.player is Human)
+        view.rackedTiles = tiles(for: rack, letterPoints: game.bag.dynamicType.letterPoints, movable: game.player is Human)
     }
     
-    func tiles(for rack: [RackTile], letterPoints: [Character: Int], draggable: Bool) -> [TileView] {
+    func tiles(for rack: [RackTile], letterPoints: [Character: Int], movable: Bool) -> [RackedTile] {
         let width = RackPresenter.calculateTileWidth(forRect: rect, layout: layout)
         var inset = layout.inset
         if CGFloat(rack.count) < layout.maximum {
@@ -61,9 +66,7 @@ struct RackPresenter: Presenter {
             let x = inset + ((layout.spacing + width) * CGFloat(index))
             let tileRect = CGRect(origin: rackPoint(x: x, y: 0), size: CGSize(width: width, height: width))
             let points = tile.isBlank ? 0 : letterPoints[tile.letter] ?? 0
-            let tileView = TileView(frame: tileRect, tile: tile.letter, points: points, onBoard: false, delegate: draggable ? delegate : nil)
-            tileView.draggable = draggable
-            return tileView
+            return RackedTile(tile: tile.letter, points: points, rect: tileRect, movable: movable)
         })
     }
 }

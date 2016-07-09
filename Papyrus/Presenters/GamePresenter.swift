@@ -18,7 +18,7 @@ struct GamePresenter: Presenter {
     let scorePresenter: ScorePresenter
     let definitionLabel: UILabel
     
-    init(view: GameView, onPlacement: () -> (), onBlank: (tileView: TileView) -> ()) {
+    init(view: GameView) {
         let width = view.bounds.width
         
         let rackHeight = RackPresenter.calculateHeight(forRect: view.bounds)
@@ -26,8 +26,8 @@ struct GamePresenter: Presenter {
         
         let edge = width - (padding * 2)
         let boardRect = CGRect(x: padding, y: rackRect.origin.y - edge, width: edge, height: edge).presentationRect
-        boardPresenter = BoardPresenter(rect: boardRect, onPlacement: onPlacement, onBlank: onBlank)
-        rackPresenter = RackPresenter(rect: rackRect, delegate: boardPresenter)
+        boardPresenter = BoardPresenter(rect: boardRect)
+        rackPresenter = RackPresenter(rect: rackRect)
         
         let scoreRect = CGRect(origin: CGPoint(x: 0, y: padding), size: CGSize(width: width, height: scoreHeight))
         scorePresenter = ScorePresenter(layout: ScoreLayout(rect: scoreRect))

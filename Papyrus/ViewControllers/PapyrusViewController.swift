@@ -53,7 +53,9 @@ class PapyrusViewController: UIViewController {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         if !firstRun {
-            presenter = GamePresenter(view: gameView, onPlacement: validate, onBlank: handle)
+            gameView.onPlacement = validate
+            gameView.onBlank = handle
+            presenter = GamePresenter(view: gameView)
             prepareGame()
             firstRun = true
         }
@@ -206,7 +208,7 @@ extension PapyrusViewController {
     }
     
     func validate() {
-        guard let tiles = presenter?.boardPresenter.tiles, blanks = presenter?.boardPresenter.blanks else {
+        guard let tiles = gameView?.placedTiles, blanks = gameView?.blanks else {
             return
         }
         resetButton.isEnabled = gameManager.game?.player is Human && tiles.count > 0
@@ -262,7 +264,7 @@ extension PapyrusViewController {
     }
     
     @IBAction func submit(_ sender: UIBarButtonItem) {
-        guard let tiles = presenter?.boardPresenter.tiles, blanks = presenter?.boardPresenter.blanks else {
+        guard let tiles = gameView?.placedTiles, blanks = gameView?.blanks else {
             return
         }
         gameManager.validate(tiles: tiles, blanks: blanks) { [weak self] (solution) in

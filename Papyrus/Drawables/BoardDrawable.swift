@@ -19,8 +19,9 @@ private enum Acronym {
 
 
 struct BoardDrawable: Drawable {
+    let rect: CGRect
+    let board: Board
     private var drawables: [Drawable]!
-    private let rect: CGRect
     private let squareSize: CGFloat
     private let range: CountableRange<Int>
     
@@ -32,6 +33,7 @@ struct BoardDrawable: Drawable {
     
     init(board: Board, letterPoints: [Character: Int]? = nil, move: Solution? = nil, rect: CGRect) {
         self.rect = rect.presentationRect
+        self.board = board
         squareSize = self.rect.width / CGFloat(board.size)
         shader = BoardShader(color: Color.Tile.Default, strokeColor: Color.Tile.Border, strokeWidth: 0.5)
         range = board.boardRange
