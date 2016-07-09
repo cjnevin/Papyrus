@@ -53,8 +53,7 @@ class PapyrusViewController: UIViewController {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         if !firstRun {
-            gameView.onPlacement = validate
-            gameView.onBlank = handle
+            gameView.tileViewDelegate = self
             presenter = GamePresenter(view: gameView)
             prepareGame()
             firstRun = true
@@ -321,5 +320,55 @@ extension PapyrusViewController {
     
     func swapAll(_ sender: UIAlertAction) {
         gameManager.swapAll()
+    }
+}
+
+extension PapyrusViewController: TileViewDelegate {
+    func dropRect(for tileView: TileView) -> CGRect {
+        if let rect = gameView?.boardDrawable?.rect where tileView.frame.intersects(rect) {
+            if let intersection = gameView?.bestIntersection(forRect: tileView.frame) {
+                tileView.onBoard = true
+                tileView.x = intersection.x
+                tileView.y = intersection.y
+                return intersection.rect
+            }
+        }
+        // Fallback, return current frame
+        return tileView.initialFrame
+    }
+    
+    func rearrange(tileView: TileView) -> Bool {
+        if let intersected = gameView?.tileViews?.filter({ $0 != tileView && $0.frame.intersects(tileView.frame) }),
+            closest = intersected.min(isOrderedBefore: { abs($0.center.x - tileView.center.x) < abs($1.center.x - tileView.center.x) }),
+            closestIndex = gameView?.tileViews?.index(of: closest),
+            tileIndex = gameView?.tileViews?.index(of: tileView),
+            startIndex = gameView?.tileViews?.startIndex {
+            let current = startIndex.distance(to: tileIndex)
+            var new = current + tileIndex.distance(to: closestIndex)
+            gameManager.game?.moveRackTile(from: current, to: new)
+            updatePresenter()
+            return true
+        }
+        return false
+    }
+        
+    func dropped(tileView: TileView) {
+        validate()
+        if tileView.tile == Game.blankLetter && tileView.onBoard {
+            handle(blank: tileView)
+        } else if tileView.isBlank && !tileView.onBoard {
+            tileView.tile = Game.blankLetter
+        }
+    }
+    
+    func lifted(tileView: TileView) {
+        tileView.x = nil
+        tileView.y = nil
+        tileView.onBoard = false
+        validate()
+    }
+    
+    func tapped(tileView: TileView) {
+        fatalError()
     }
 }

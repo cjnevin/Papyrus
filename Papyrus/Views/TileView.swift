@@ -13,6 +13,7 @@ protocol TileViewDelegate {
     func dropRect(for tileView: TileView) -> CGRect
     func dropped(tileView: TileView)
     func lifted(tileView: TileView)
+    func rearrange(tileView: TileView) -> Bool
     func tapped(tileView: TileView)
 }
 
@@ -112,9 +113,15 @@ extension TileView: Movable {
 }
 
 extension TileView: Pressable {
+    func move(to newFrame: CGRect) {
+        let normalScale: CGFloat = 1.0
+        transform = CGAffineTransform(scaleX: normalScale, y: normalScale)
+        center = CGPoint(x: newFrame.midX, y: newFrame.midY)
+        bounds = newFrame
+    }
+    
     func pressed(with gesture: UILongPressGestureRecognizer) {
         let shrunkScale: CGFloat = 0.9
-        let normalScale: CGFloat = 1.0
         let animationDuration: TimeInterval = 0.15
         switch gesture.state {
         case .began:
@@ -130,15 +137,15 @@ extension TileView: Pressable {
             guard let newFrame = delegate?.dropRect(for: self) else {
                 return
             }
-            func animations() {
-                transform = CGAffineTransform(scaleX: normalScale, y: normalScale)
-                center = CGPoint(x: newFrame.midX, y: newFrame.midY)
-                bounds = newFrame
+            // Let parent handle the animation of this tile moving to a new position
+            if newFrame.equalTo(initialFrame) && delegate?.rearrange(tileView: self) == true {
+                return
             }
-            func completion(_: Bool) {
-                delegate?.dropped(tileView: self)
-            }
-            UIView.animate(withDuration: animationDuration, animations: animations, completion: completion)
+            UIView.animate(withDuration: animationDuration, animations: {
+                self.move(to: newFrame)
+            }, completion: { _ in
+                self.delegate?.dropped(tileView: self)
+            })
         default:
             break
         }

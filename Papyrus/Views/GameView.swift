@@ -15,8 +15,7 @@ typealias Square = (x: Int, y: Int, rect: CGRect)
 typealias Intersection = (x: Int, y: Int, rect: CGRect, intersection: CGRect)
 
 class GameView: UIView {
-    var onBlank: ((tileView: TileView) -> ())?
-    var onPlacement: (() -> ())?
+    var tileViewDelegate: TileViewDelegate!
     
     var blanks: BlankSquares {
         return tileViews?.flatMap({ $0.isPlaced && $0.isBlank ? ($0.x!, $0.y!) : nil }) ?? []
@@ -41,7 +40,7 @@ class GameView: UIView {
     var rackedTiles: [RackedTile]? {
         didSet {
             func tileView(for tile: RackedTile) -> TileView {
-                let view = TileView(frame: tile.rect, tile: tile.tile, points: tile.points, onBoard: false, delegate: tile.movable ? self : nil)
+                let view = TileView(frame: tile.rect, tile: tile.tile, points: tile.points, onBoard: false, delegate: tile.movable ? tileViewDelegate : nil)
                 view.draggable = tile.movable
                 return view
             }
@@ -49,7 +48,7 @@ class GameView: UIView {
         }
     }
     
-    private var tileViews: [TileView]? {
+    var tileViews: [TileView]? {
         willSet {
             tileViews?.forEach { $0.removeFromSuperview() }
         }
@@ -99,40 +98,5 @@ class GameView: UIView {
         }).sorted(isOrderedBefore: { (lhs, rhs) in
             return lhs.intersection.widthPlusHeight < rhs.intersection.widthPlusHeight
         }).last
-    }
-}
-
-extension GameView: TileViewDelegate {
-    func dropRect(for tileView: TileView) -> CGRect {
-        if let rect = boardDrawable?.rect where tileView.frame.intersects(rect) {
-            if let intersection = bestIntersection(forRect: tileView.frame) {
-                tileView.onBoard = true
-                tileView.x = intersection.x
-                tileView.y = intersection.y
-                return intersection.rect
-            }
-        }
-        // Fallback, return current frame
-        return tileView.initialFrame
-    }
-    
-    func dropped(tileView: TileView) {
-        onPlacement?()
-        if tileView.tile == Game.blankLetter && tileView.onBoard {
-            onBlank?(tileView: tileView)
-        } else if tileView.isBlank && !tileView.onBoard {
-            tileView.tile = Game.blankLetter
-        }
-    }
-    
-    func lifted(tileView: TileView) {
-        tileView.x = nil
-        tileView.y = nil
-        tileView.onBoard = false
-        onPlacement?()
-    }
-    
-    func tapped(tileView: TileView) {
-        fatalError()
     }
 }

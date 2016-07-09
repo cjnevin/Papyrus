@@ -39,4 +39,8 @@ class TileSwapperViewController : UIViewController, TileViewDelegate {
     func lifted(tileView: TileView) {
         fatalError()
     }
+    
+    func rearrange(tileView: TileView) -> Bool {
+        fatalError()
+    }
 }
