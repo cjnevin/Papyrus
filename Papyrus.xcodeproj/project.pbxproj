@@ -35,6 +35,9 @@
 		995B8B181D30493F0093EFB0 /* UIStoryboardSegue+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 995B8B171D30493F0093EFB0 /* UIStoryboardSegue+Extensions.swift */; };
 		99629C091B547DE800510036 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99629C081B547DE800510036 /* AppDelegate.swift */; };
 		99629C2D1B547DE800510036 /* PapyrusUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99629C2C1B547DE800510036 /* PapyrusUITests.swift */; };
+		9967E11C1D3108B80028FDA8 /* Movable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9967E1191D3108B80028FDA8 /* Movable.swift */; };
+		9967E11D1D3108B80028FDA8 /* Pressable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9967E11A1D3108B80028FDA8 /* Pressable.swift */; };
+		9967E11E1D3108B80028FDA8 /* Tappable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9967E11B1D3108B80028FDA8 /* Tappable.swift */; };
 		9972BA281D304BE0004DEAE8 /* PreferencesNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9972BA271D304BE0004DEAE8 /* PreferencesNavigationController.swift */; };
 		9975A2AF1CF8C9DE003D315F /* wordswithfriends_anagrams.bin in Resources */ = {isa = PBXBuildFile; fileRef = 9975A2AE1CF8C9DE003D315F /* wordswithfriends_anagrams.bin */; };
 		997D186B1BCC4EEC0050B872 /* PapyrusViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 997D186A1BCC4EEC0050B872 /* PapyrusViewController.swift */; };
@@ -154,6 +157,9 @@
 		99629C281B547DE800510036 /* PapyrusUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PapyrusUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		99629C2C1B547DE800510036 /* PapyrusUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PapyrusUITests.swift; sourceTree = "<group>"; };
 		99629C2E1B547DE800510036 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		9967E1191D3108B80028FDA8 /* Movable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Movable.swift; sourceTree = "<group>"; };
+		9967E11A1D3108B80028FDA8 /* Pressable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Pressable.swift; sourceTree = "<group>"; };
+		9967E11B1D3108B80028FDA8 /* Tappable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Tappable.swift; sourceTree = "<group>"; };
 		9972BA271D304BE0004DEAE8 /* PreferencesNavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PreferencesNavigationController.swift; sourceTree = "<group>"; };
 		9975A2AE1CF8C9DE003D315F /* wordswithfriends_anagrams.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = wordswithfriends_anagrams.bin; sourceTree = "<group>"; };
 		997D186A1BCC4EEC0050B872 /* PapyrusViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PapyrusViewController.swift; sourceTree = "<group>"; };
@@ -257,6 +263,9 @@
 			isa = PBXGroup;
 			children = (
 				9953DCFF1D2EE26500B0B367 /* NibLoadable.swift */,
+				9967E1191D3108B80028FDA8 /* Movable.swift */,
+				9967E11A1D3108B80028FDA8 /* Pressable.swift */,
+				9967E11B1D3108B80028FDA8 /* Tappable.swift */,
 			);
 			path = Protocols;
 			sourceTree = "<group>";
@@ -636,6 +645,7 @@
 				994BFCC91CD7C31600D96156 /* Preferences.swift in Sources */,
 				998041DF1CE741480099EF4E /* TileSwapperViewController.swift in Sources */,
 				991E21131D2AEB2200A5058F /* BoardPresenter.swift in Sources */,
+				9967E11D1D3108B80028FDA8 /* Pressable.swift in Sources */,
 				990EA09E1D2EF7D0003C1ECE /* SliderCell.swift in Sources */,
 				9953DD001D2EE26500B0B367 /* NibLoadable.swift in Sources */,
 				995B8B181D30493F0093EFB0 /* UIStoryboardSegue+Extensions.swift in Sources */,
@@ -653,10 +663,12 @@
 				991BC8F81CE71F55000D4C6B /* TilesRemainingViewController.swift in Sources */,
 				991E21191D2B17F300A5058F /* ScoreDrawable.swift in Sources */,
 				9972BA281D304BE0004DEAE8 /* PreferencesNavigationController.swift in Sources */,
+				9967E11C1D3108B80028FDA8 /* Movable.swift in Sources */,
 				99C3D1F31C7BAF510024B932 /* GameView.swift in Sources */,
 				997D186B1BCC4EEC0050B872 /* PapyrusViewController.swift in Sources */,
 				991E21171D2AF2BA00A5058F /* ScorePresenter.swift in Sources */,
 				99139C091D1F12430033E114 /* StarShader.swift in Sources */,
+				9967E11E1D3108B80028FDA8 /* Tappable.swift in Sources */,
 				99D36F531C7E6B2B00A5ADA8 /* TileDrawable.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
