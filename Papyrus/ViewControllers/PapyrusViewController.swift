@@ -344,9 +344,40 @@ extension PapyrusViewController: TileViewDelegate {
             tileIndex = gameView?.tileViews?.index(of: tileView),
             startIndex = gameView?.tileViews?.startIndex {
             let current = startIndex.distance(to: tileIndex)
-            var new = current + tileIndex.distance(to: closestIndex)
+            let new = current + tileIndex.distance(to: closestIndex)
             gameManager.game?.moveRackTile(from: current, to: new)
-            updatePresenter()
+            
+            func swapViews() {
+                let obj = gameView!.tileViews![current]
+                gameView?.tileViews?.remove(at: current)
+                gameView?.tileViews?.insert(obj, at: new)
+                gameView?.bringSubview(toFront: obj)
+                gameManager.saveCache()
+            }
+            let tileViews = self.gameView!.tileViews!
+            let newRect = tileViews[new].initialFrame
+            
+            UIView.animate(withDuration: 0.3, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 1.0, options: .curveEaseOut, animations: {
+                
+                if current > new {
+                    // move left
+                    (new..<current).forEach({ index in
+                        tileViews[index].initialFrame = tileViews[index + 1].initialFrame
+                        tileViews[index].frame = tileViews[index].initialFrame
+                    })
+                } else {
+                    // move right
+                    ((current + 1)...new).reversed().forEach({ index in
+                        tileViews[index].initialFrame = tileViews[index - 1].initialFrame
+                        tileViews[index].frame = tileViews[index].initialFrame
+                    })
+                }
+                
+                tileViews[current].initialFrame = newRect
+                tileViews[current].frame = tileViews[current].initialFrame
+                
+                swapViews()
+                }, completion: nil)
             return true
         }
         return false
