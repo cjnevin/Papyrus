@@ -60,11 +60,8 @@ class PapyrusViewController: UIViewController {
         rackRect.size.height = RackPresenter.calculateHeight(forRect: gameView.frame)
         rackRect.origin.y = gameView.bounds.height - rackRect.height
         
-        var boardRect = gameView.bounds
-        boardRect.origin.x = padding
-        boardRect.size.width = boardRect.width - (boardRect.origin.x * 2)
-        boardRect.size.height = boardRect.width
-        boardRect.origin.y = rackRect.origin.y - boardRect.height
+        let edge = gameView.bounds.width - (padding * 2)
+        let boardRect = CGRect(x: padding, y: rackRect.origin.y - edge, width: edge, height: edge).presentationRect
         
         let boardPresenter = BoardPresenter(rect: boardRect, onPlacement: validate, onBlank: handle)
         let rackPresenter = RackPresenter(rect: rackRect, delegate: boardPresenter)
@@ -228,7 +225,7 @@ extension PapyrusViewController {
         guard let bagType = gameManager.game?.bag.dynamicType else {
             return
         }
-        tilePickerViewController.prepareForPresentation(bagType)
+        tilePickerViewController.prepareForPresentation(of: bagType)
         tilePickerViewController.completionHandler = { letter in
             tileView.tile = letter
             self.validate()
@@ -253,7 +250,7 @@ extension PapyrusViewController {
 extension PapyrusViewController {
     func updateShownTiles() {
         guard let game = gameManager.game else { return }
-        tilesRemainingViewController.prepareForPresentation(game.bag, players: showingUnplayed ? game.players : nil)
+        tilesRemainingViewController.prepareForPresentation(of: game.bag, players: showingUnplayed ? game.players : nil)
     }
     
     func showBagTiles(_ sender: UIAlertAction) {
@@ -345,7 +342,7 @@ extension PapyrusViewController {
     
     func swap(_ sender: UIAlertAction) {
         guard let rack = gameManager.game?.player.rack else { return }
-        tileSwapperViewController.prepareForPresentation(rack)
+        tileSwapperViewController.prepareForPresentation(of: rack)
         fade(out: false, allExcept: tilesSwapperContainerView)
     }
     

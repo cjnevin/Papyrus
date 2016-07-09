@@ -13,7 +13,7 @@ class TileSwapperViewController : UIViewController, TileViewDelegate {
     
     private var renderer = TileDistributionRenderer()
     
-    func prepareForPresentation(_ rack: [RackTile]) {
+    func prepareForPresentation(of rack: [RackTile]) {
         renderer.render(inView: view, filterBlank: false, characters: rack.map({$0.letter}), delegate: self)
         renderer.tileViews?.forEach({ $0.tappable = true; $0.onBoard = true })
     }

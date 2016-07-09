@@ -22,11 +22,11 @@ class TilesRemainingViewController : UIViewController {
         view.addGestureRecognizer(tap)
     }
     
-    func tapped(_ tapGesture: UITapGestureRecognizer) {
+    func tapped(gesture: UITapGestureRecognizer) {
         completionHandler?()
     }
     
-    func prepareForPresentation(_ bag: Bag, players: [Player]? = nil) {
+    func prepareForPresentation(of bag: Bag, players: [Player]? = nil) {
         distributionRenderer.render(inView: view, filterBlank: false, characters: bag.dynamicType.letterPoints.map({ $0.0 }))
         remainingRenderer.render(inView: view, tileViews: distributionRenderer.tileViews, bag: bag, players: players)
     }
