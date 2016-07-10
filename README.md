@@ -14,7 +14,7 @@ Features:
 - Definitions will appear as words are played
 - Picking blank tiles
 - Reset currently dropped tiles to rack
-- Shuffling tiles
+- Shuffling and rearranging tiles
 - Skipping your turn
 - Support for restoring previous incomplete game on launch
 - Support for Super Scrabble
