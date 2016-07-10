@@ -82,6 +82,10 @@ class PapyrusViewController: UIViewController {
         }
     }
     
+    func spring(animations: () -> ()) {
+        UIView.animate(withDuration: 0.3, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 1.0, options: .curveEaseOut, animations: animations, completion: nil)
+    }
+    
     func updatePresenter() {
         guard let game = gameManager.game else { return }
         presenter?.refresh(in: gameView, with: game)
@@ -259,7 +263,12 @@ extension PapyrusViewController {
     }
     
     @IBAction func reset(_ sender: UIBarButtonItem) {
-        updatePresenter()
+        spring() {
+            self.gameView?.tileViews?.forEach({
+                $0.frame = $0.initialFrame
+                $0.onBoard = false
+            })
+        }
     }
     
     @IBAction func submit(_ sender: UIBarButtonItem) {
@@ -318,7 +327,8 @@ extension PapyrusViewController {
             }
             
             let newTileViews = newTiles.map({ zipped.map({ $0.1 })[oldTiles.startIndex.distance(to: oldTiles.index(of: $0)!)] })
-            UIView.animate(withDuration: 0.3, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 1.0, options: .curveEaseOut, animations: {
+            
+            self?.spring() {
                 let newXs = newTileViews.map({ $0.frame.origin.x }).sorted()
                 for (index, newTileView) in newTileViews.enumerated() {
                     var frame = newTileView.frame
@@ -328,7 +338,7 @@ extension PapyrusViewController {
                 }
                 self?.gameView.tileViews = newTileViews
                 self?.gameManager.saveCache()
-                }, completion: nil)
+            }
         }
     }
     
@@ -401,10 +411,9 @@ extension PapyrusViewController: TileViewDelegate {
             let current = startIndex.distance(to: tileIndex)
             let new = current + tileIndex.distance(to: closestIndex)
             gameManager.game?.moveRackTile(from: current, to: new)
-            
-            UIView.animate(withDuration: 0.3, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 1.0, options: .curveEaseOut, animations: {
+            spring() {
                 self.rearrange(from: current, to: new)
-            }, completion: nil)
+            }
             return true
         }
         return false
