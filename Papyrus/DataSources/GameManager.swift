@@ -106,7 +106,7 @@ class GameManager {
     
     func hint(completion: (solution: Solution?) -> ()) {
         enqueue {
-            $0.getHint() { solution in
+            $0.suggestion() { solution in
                 call(onMain: { completion(solution: solution) })
             }
         }

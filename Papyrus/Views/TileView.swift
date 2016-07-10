@@ -80,7 +80,7 @@ class TileView: UIView {
         self.tile = tile
         self.points = points
         self.onBoard = onBoard
-        super.init(frame: frame.presentationRect.insetBy(dx: 1, dy: 1))
+        super.init(frame: frame.presentationRect)
         initialPoint = center
         initialFrame = self.frame
     }
