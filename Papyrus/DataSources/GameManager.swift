@@ -120,8 +120,9 @@ class GameManager {
     }
     
     func shuffle(completion: Completion = { }) {
-        enqueue {
+        enqueue { [weak self] in
             $0.shuffleRack()
+            self?.saveCache()
             call(onMain: completion)
         }
     }

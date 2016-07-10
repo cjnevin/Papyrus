@@ -303,8 +303,32 @@ extension PapyrusViewController {
     }
     
     func shuffle(_ sender: UIAlertAction) {
+        guard let oldTiles = gameManager.game?.player.rack, oldTileViews = gameView.tileViews where oldTiles.count > 1 else {
+            return
+        }
+        let zipped = zip(oldTiles, oldTileViews)
         gameManager.shuffle { [weak self] in
-            self?.updatePresenter()
+            guard let newTiles = self?.gameManager.game?.player.rack else {
+                self?.updatePresenter()
+                return
+            }
+            if oldTiles == newTiles {
+                self?.shuffle(sender)
+                return
+            }
+            
+            let newTileViews = newTiles.map({ zipped.map({ $0.1 })[oldTiles.startIndex.distance(to: oldTiles.index(of: $0)!)] })
+            UIView.animate(withDuration: 0.3, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 1.0, options: .curveEaseOut, animations: {
+                let newXs = newTileViews.map({ $0.frame.origin.x }).sorted()
+                for (index, newTileView) in newTileViews.enumerated() {
+                    var frame = newTileView.frame
+                    frame.origin.x = newXs[index]
+                    newTileView.frame = frame
+                    newTileView.initialFrame = frame
+                }
+                self?.gameView.tileViews = newTileViews
+                self?.gameManager.saveCache()
+                }, completion: nil)
         }
     }
     
@@ -337,6 +361,37 @@ extension PapyrusViewController: TileViewDelegate {
         return tileView.initialFrame
     }
     
+    /// Only use this method for moving a single tile.
+    func rearrange(from currentIndex: Int, to newIndex: Int) {
+        if currentIndex == newIndex { return }
+        
+        let tileViews = self.gameView!.tileViews!
+        let newRect = tileViews[newIndex].initialFrame
+        
+        if currentIndex > newIndex {
+            // move left
+            (newIndex..<currentIndex).forEach({ index in
+                tileViews[index].initialFrame = tileViews[index + 1].initialFrame
+                tileViews[index].frame = tileViews[index].initialFrame
+            })
+        } else {
+            // move right
+            ((currentIndex + 1)...newIndex).reversed().forEach({ index in
+                tileViews[index].initialFrame = tileViews[index - 1].initialFrame
+                tileViews[index].frame = tileViews[index].initialFrame
+            })
+        }
+        
+        tileViews[currentIndex].initialFrame = newRect
+        tileViews[currentIndex].frame = tileViews[currentIndex].initialFrame
+        
+        let obj = gameView!.tileViews![currentIndex]
+        gameView?.tileViews?.remove(at: currentIndex)
+        gameView?.tileViews?.insert(obj, at: newIndex)
+        gameView?.bringSubview(toFront: obj)
+        gameManager.saveCache()
+    }
+    
     func rearrange(tileView: TileView) -> Bool {
         if let intersected = gameView?.tileViews?.filter({ $0 != tileView && $0.frame.intersects(tileView.frame) }),
             closest = intersected.min(isOrderedBefore: { abs($0.center.x - tileView.center.x) < abs($1.center.x - tileView.center.x) }),
@@ -347,37 +402,9 @@ extension PapyrusViewController: TileViewDelegate {
             let new = current + tileIndex.distance(to: closestIndex)
             gameManager.game?.moveRackTile(from: current, to: new)
             
-            func swapViews() {
-                let obj = gameView!.tileViews![current]
-                gameView?.tileViews?.remove(at: current)
-                gameView?.tileViews?.insert(obj, at: new)
-                gameView?.bringSubview(toFront: obj)
-                gameManager.saveCache()
-            }
-            let tileViews = self.gameView!.tileViews!
-            let newRect = tileViews[new].initialFrame
-            
             UIView.animate(withDuration: 0.3, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 1.0, options: .curveEaseOut, animations: {
-                
-                if current > new {
-                    // move left
-                    (new..<current).forEach({ index in
-                        tileViews[index].initialFrame = tileViews[index + 1].initialFrame
-                        tileViews[index].frame = tileViews[index].initialFrame
-                    })
-                } else {
-                    // move right
-                    ((current + 1)...new).reversed().forEach({ index in
-                        tileViews[index].initialFrame = tileViews[index - 1].initialFrame
-                        tileViews[index].frame = tileViews[index].initialFrame
-                    })
-                }
-                
-                tileViews[current].initialFrame = newRect
-                tileViews[current].frame = tileViews[current].initialFrame
-                
-                swapViews()
-                }, completion: nil)
+                self.rearrange(from: current, to: new)
+            }, completion: nil)
             return true
         }
         return false
