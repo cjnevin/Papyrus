@@ -403,13 +403,13 @@ extension PapyrusViewController: TileViewDelegate {
     }
     
     func rearrange(tileView: TileView) -> Bool {
-        if let intersected = gameView?.tileViews?.filter({ $0 != tileView && $0.frame.intersects(tileView.frame) }),
-            closest = intersected.min(isOrderedBefore: { abs($0.center.x - tileView.center.x) < abs($1.center.x - tileView.center.x) }),
+        if let intersected = gameView?.tileViews?.filter({ $0 != tileView && $0.initialFrame.intersects(tileView.frame) }),
+            closest = intersected.min(isOrderedBefore: { abs($0.initialFrame.midX - tileView.initialFrame.midX) < abs($1.initialFrame.midX - tileView.initialFrame.midX) }),
             closestIndex = gameView?.tileViews?.index(of: closest),
             tileIndex = gameView?.tileViews?.index(of: tileView),
             startIndex = gameView?.tileViews?.startIndex {
             let current = startIndex.distance(to: tileIndex)
-            let new = current + tileIndex.distance(to: closestIndex)
+            let new = startIndex.distance(to: closestIndex)
             gameManager.game?.moveRackTile(from: current, to: new)
             spring() {
                 self.rearrange(from: current, to: new)

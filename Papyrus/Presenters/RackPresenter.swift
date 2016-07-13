@@ -30,16 +30,25 @@ struct RackPresenter: Presenter {
         return (insetWidth - spacersWidth) / layout.maximum
     }
     
+    static func calculateTileRect(in rect: CGRect, at index: Int, with count: Int, layout: RackLayout = defaultRackLayout) -> CGRect {
+        let width = RackPresenter.calculateTileWidth(forRect: rect, layout: layout)
+        var inset = layout.inset
+        if CGFloat(count) < layout.maximum {
+            // Offset centred regardless of amount of tiles in rack
+            let amount = layout.maximum - CGFloat(count)
+            inset += ((layout.spacing + width) * amount) / 2
+        }
+        let x = inset + ((layout.spacing + width) * CGFloat(index))
+        let point = CGPoint(x: rect.origin.x + x, y: rect.origin.y + layout.inset)
+        return CGRect(origin: point, size: CGSize(width: width, height: width))
+    }
+    
     static func calculateHeight(forRect rect: CGRect, layout: RackLayout = defaultRackLayout) -> CGFloat {
         return (layout.inset * 2) + calculateTileWidth(forRect: rect, layout: layout)
     }
     
-    private func rackPoint(x: CGFloat, y: CGFloat) -> CGPoint {
-        return CGPoint(x: rect.origin.x + x, y: rect.origin.y + y + layout.inset)
-    }
-    
-    private let rect: CGRect
-    private let layout: RackLayout
+    let rect: CGRect
+    let layout: RackLayout
     
     init(rect: CGRect, layout: RackLayout = defaultRackLayout) {
         self.rect = rect
@@ -56,16 +65,8 @@ struct RackPresenter: Presenter {
     }
     
     func tiles(for rack: [RackTile], letterPoints: [Character: Int], movable: Bool) -> [RackedTile] {
-        let width = RackPresenter.calculateTileWidth(forRect: rect, layout: layout)
-        var inset = layout.inset
-        if CGFloat(rack.count) < layout.maximum {
-            // Offset centred regardless of amount of tiles in rack
-            let amount = layout.maximum - CGFloat(rack.count)
-            inset += ((layout.spacing + width) * amount) / 2
-        }
         return rack.enumerated().map ({ (index, tile) in
-            let x = inset + ((layout.spacing + width) * CGFloat(index))
-            let tileRect = CGRect(origin: rackPoint(x: x, y: 0), size: CGSize(width: width, height: width))
+            let tileRect = RackPresenter.calculateTileRect(in: rect, at: index, with: rack.count)
             let points = tile.isBlank ? 0 : letterPoints[tile.letter] ?? 0
             return RackedTile(tile: tile.letter, points: points, rect: tileRect, movable: movable)
         })
