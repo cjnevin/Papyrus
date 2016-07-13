@@ -6,7 +6,7 @@
 //  Copyright © 2016 CJNevin. All rights reserved.
 //
 
-import UIKit
+import Foundation
 import PapyrusCore
 
 class BoardPresenter: Presenter {

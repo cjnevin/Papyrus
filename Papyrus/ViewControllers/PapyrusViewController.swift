@@ -373,27 +373,27 @@ extension PapyrusViewController: TileViewDelegate {
     
     /// Only use this method for moving a single tile.
     func rearrange(from currentIndex: Int, to newIndex: Int) {
-        if currentIndex == newIndex { return }
+        guard let tileViews = gameView?.tileViews, newRect = tileViews[newIndex].initialFrame where currentIndex != newIndex else { return }
         
-        let tileViews = self.gameView!.tileViews!
-        let newRect = tileViews[newIndex].initialFrame
+        func setFrame(at index: Int, to rect: CGRect) {
+            tileViews[index].initialFrame = rect
+            if tileViews[index].onBoard == false {
+                tileViews[index].frame = rect
+            }
+        }
         
         if currentIndex > newIndex {
             // move left
             (newIndex..<currentIndex).forEach({ index in
-                tileViews[index].initialFrame = tileViews[index + 1].initialFrame
-                tileViews[index].frame = tileViews[index].initialFrame
+                setFrame(at: index, to: tileViews[index + 1].initialFrame)
             })
         } else {
             // move right
             ((currentIndex + 1)...newIndex).reversed().forEach({ index in
-                tileViews[index].initialFrame = tileViews[index - 1].initialFrame
-                tileViews[index].frame = tileViews[index].initialFrame
+                setFrame(at: index, to: tileViews[index - 1].initialFrame)
             })
         }
-        
-        tileViews[currentIndex].initialFrame = newRect
-        tileViews[currentIndex].frame = tileViews[currentIndex].initialFrame
+        setFrame(at: currentIndex, to: newRect)
         
         let obj = gameView!.tileViews![currentIndex]
         gameView?.tileViews?.remove(at: currentIndex)

@@ -6,7 +6,7 @@
 //  Copyright © 2016 CJNevin. All rights reserved.
 //
 
-import UIKit
+import Foundation
 import PapyrusCore
 
 struct RackLayout {
@@ -47,11 +47,12 @@ struct RackPresenter: Presenter {
     }
     
     func refresh(in view: GameView, with game: Game) {
-        var rack = game.player.rack
-        if game.player is Computer {
-            rack = rack.map({ _ in RackTile(letter: " ", isBlank: true) })
+        func toBlank(tile: RackTile) -> RackTile {
+            return RackTile(letter: " ", isBlank: true)
         }
-        view.rackedTiles = tiles(for: rack, letterPoints: game.bag.dynamicType.letterPoints, movable: game.player is Human)
+        let player = game.player
+        let rack = player is Computer ? player.rack.map(toBlank) : player.rack
+        view.rackedTiles = tiles(for: rack, letterPoints: game.bag.dynamicType.letterPoints, movable: player is Human)
     }
     
     func tiles(for rack: [RackTile], letterPoints: [Character: Int], movable: Bool) -> [RackedTile] {
