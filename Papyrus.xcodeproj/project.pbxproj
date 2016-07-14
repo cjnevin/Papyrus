@@ -44,7 +44,6 @@
 		997D186D1BCC570B0050B872 /* TileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 997D186C1BCC570B0050B872 /* TileView.swift */; };
 		998041D71CE73F4A0099EF4E /* TileDistributionRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 998041D61CE73F4A0099EF4E /* TileDistributionRenderer.swift */; };
 		998041D91CE73F4F0099EF4E /* TilesRemainingRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 998041D81CE73F4F0099EF4E /* TilesRemainingRenderer.swift */; };
-		998041DF1CE741480099EF4E /* TileSwapperViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 998041DE1CE741480099EF4E /* TileSwapperViewController.swift */; };
 		998041E41CE79B510099EF4E /* BoardShader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 998041E31CE79B510099EF4E /* BoardShader.swift */; };
 		999925B01CD091E9005D1C89 /* GamePresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 999925AF1CD091E9005D1C89 /* GamePresenter.swift */; };
 		99B861D31CF8CC7C00A9E041 /* sowpods_anagrams.bin in Resources */ = {isa = PBXBuildFile; fileRef = 99B861D11CF8CC7C00A9E041 /* sowpods_anagrams.bin */; };
@@ -165,7 +164,6 @@
 		997D186C1BCC570B0050B872 /* TileView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TileView.swift; path = Papyrus/Views/TileView.swift; sourceTree = SOURCE_ROOT; };
 		998041D61CE73F4A0099EF4E /* TileDistributionRenderer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TileDistributionRenderer.swift; sourceTree = "<group>"; };
 		998041D81CE73F4F0099EF4E /* TilesRemainingRenderer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TilesRemainingRenderer.swift; sourceTree = "<group>"; };
-		998041DE1CE741480099EF4E /* TileSwapperViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TileSwapperViewController.swift; sourceTree = "<group>"; };
 		998041E31CE79B510099EF4E /* BoardShader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BoardShader.swift; sourceTree = "<group>"; };
 		999925AF1CD091E9005D1C89 /* GamePresenter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GamePresenter.swift; sourceTree = "<group>"; };
 		99B861D11CF8CC7C00A9E041 /* sowpods_anagrams.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = sowpods_anagrams.bin; sourceTree = "<group>"; };
@@ -331,7 +329,6 @@
 				9972BA271D304BE0004DEAE8 /* PreferencesNavigationController.swift */,
 				994BFCC31CD7B7E900D96156 /* PreferencesViewController.swift */,
 				99CDF8551CD417C30007DC89 /* TilePickerViewController.swift */,
-				998041DE1CE741480099EF4E /* TileSwapperViewController.swift */,
 				991BC8F71CE71F55000D4C6B /* TilesRemainingViewController.swift */,
 			);
 			name = ViewControllers;
@@ -639,7 +636,6 @@
 				9953DCF51D2EDA9000B0B367 /* BoardView.swift in Sources */,
 				9901443F1C7E4E61005C81BF /* CGRect+Extensions.swift in Sources */,
 				994BFCC91CD7C31600D96156 /* Preferences.swift in Sources */,
-				998041DF1CE741480099EF4E /* TileSwapperViewController.swift in Sources */,
 				991E21131D2AEB2200A5058F /* BoardPresenter.swift in Sources */,
 				9967E11D1D3108B80028FDA8 /* Pressable.swift in Sources */,
 				990EA09E1D2EF7D0003C1ECE /* SliderCell.swift in Sources */,

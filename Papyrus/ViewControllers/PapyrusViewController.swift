@@ -11,31 +11,38 @@ import PapyrusCore
 import WordplaysLookup
 
 class PapyrusViewController: UIViewController {
+    class ButtonState {
+        var skipEnabled: Bool = false
+        var submitEnabled: Bool = false
+        var swapping: Bool = false
+        var tilesDropped: Bool = false
+        var showingUnplayed: Bool = false
+        var faded: Bool = false
+    }
+
+    let buttonState = ButtonState()
+    
     let gameManager = GameManager.sharedInstance
     var presenter: GamePresenter?
     var firstRun: Bool = false
     
-    var showingUnplayed: Bool = false
     var tilePickerViewController: TilePickerViewController!
-    var tileSwapperViewController: TileSwapperViewController!
     var tilesRemainingViewController: TilesRemainingViewController!
     
     @IBOutlet var tileContainerViews: [UIView]!
     @IBOutlet weak var tilePickerContainerView: UIView!
     @IBOutlet weak var tilesRemainingContainerView: UIView!
-    @IBOutlet weak var tilesSwapperContainerView: UIView!
     @IBOutlet weak var blackoutView: UIView!
     
     @IBOutlet weak var gameView: GameView!
     @IBOutlet var submitButton: UIBarButtonItem!
-    @IBOutlet var resetButton: UIBarButtonItem!
+    @IBOutlet var skipButton: UIBarButtonItem!
+    @IBOutlet var swapButton: UIBarButtonItem!
     @IBOutlet var actionButton: UIBarButtonItem!
     
     override func prepare(for segue: UIStoryboardSegue, sender: AnyObject?) {
         if let viewController: TilePickerViewController = segue.inferredDestinationViewController() {
             tilePickerViewController = viewController
-        } else if let viewController: TileSwapperViewController = segue.inferredDestinationViewController() {
-            tileSwapperViewController = viewController
         } else if let viewController: TilesRemainingViewController = segue.inferredDestinationViewController() {
             tilesRemainingViewController = viewController
             tilesRemainingViewController.completionHandler = { [weak self] in self?.fade(out: true) }
@@ -55,30 +62,80 @@ class PapyrusViewController: UIViewController {
         if !firstRun {
             gameView.tileViewDelegate = self
             presenter = GamePresenter(view: gameView)
+            let doubleTap = UITapGestureRecognizer(target: self, action: #selector(doubleTappedRack))
+            doubleTap.numberOfTapsRequired = 2
+            gameView.addGestureRecognizer(doubleTap)
             prepareGame()
             firstRun = true
         }
     }
     
-    func fade(out: Bool, allExcept: UIView? = nil) {
+    func doubleTappedRack(gesture: UITapGestureRecognizer) {
+        if presenter?.rackPresenter.rect.contains(gesture.location(in: gameView)) == true {
+            reset()
+        }
+    }
+    
+    func configureTitle() {
+        if buttonState.swapping {
+            let count = gameView.tileViews?.filter({ $0.highlighted }).count ?? 0
+            title = count > 0 ? "\(count) Tile\(count > 1 ? "s" : "")" : "Choose Tiles"
+        } else {
+            if gameManager.game?.ended == true {
+                title = "Game Over"
+                return
+            }
+            guard let player = gameManager.game?.player else { return }
+            if player is Human {
+                title = "Your Turn"
+            } else {
+                title = "Thinking..."
+            }
+        }
+    }
+    
+    func configureActions() {
+        buttonState.skipEnabled = gameManager.game?.player is Human
+        swapButton.isEnabled = buttonState.skipEnabled
+        skipButton.isEnabled = buttonState.skipEnabled
+        submitButton.isEnabled = buttonState.submitEnabled
+        
+        if buttonState.swapping {
+            navigationItem.leftBarButtonItems = nil
+            navigationItem.rightBarButtonItems = [swapButton]
+            return
+        }
+        if buttonState.faded {
+            navigationItem.leftBarButtonItems = nil
+            navigationItem.rightBarButtonItems = nil
+            return
+        }
+        navigationItem.leftBarButtonItems = [actionButton]
+        if buttonState.tilesDropped {
+            navigationItem.rightBarButtonItems = [submitButton]
+        } else {
+            navigationItem.rightBarButtonItems = [skipButton, swapButton]
+        }
+    }
+    
+    func fade(out: Bool, allExcept: [UIView]? = nil) {
+        buttonState.faded = !out
         defer {
             UIView.animate(withDuration: 0.25) {
                 self.blackoutView.alpha = out ? 0.0 : 0.4
-                self.tileContainerViews.forEach({ $0.alpha = (out == false && $0 == allExcept) ? 1.0 : 0.0 })
+                self.tileContainerViews.forEach({ $0.alpha = (out == false && allExcept?.contains($0) == true) ? 1.0 : 0.0 })
             }
         }
-        
+        defer {
+            configureActions()
+            configureTitle()
+        }
         guard !out else {
-            navigationItem.setLeftBarButtonItems([actionButton, resetButton], animated: true)
-            navigationItem.setRightBarButton(submitButton, animated: true)
             return
         }
-        
-        navigationItem.setLeftBarButtonItems(nil, animated: true)
-        navigationItem.setRightBarButton(allExcept == tilesSwapperContainerView ? UIBarButtonItem(title: "Swap", style: .done, target: self, action: #selector(doSwap)) : nil, animated: true)
-        view.bringSubview(toFront: self.blackoutView)
-        if let fadeInView = allExcept {
-            view.bringSubview(toFront: fadeInView)
+        gameView.bringSubview(toFront: self.blackoutView)
+        if let views = allExcept {
+            views.forEach({ $0.superview?.bringSubview(toFront: $0) })
         }
     }
     
@@ -96,8 +153,7 @@ class PapyrusViewController: UIViewController {
 // MARK: GameEvents
 extension PapyrusViewController {
     func prepareGame() {
-        submitButton.isEnabled = false
-        resetButton.isEnabled = false
+        configureActions()
         
         // Try to restore a cached game first
         gameManager.restoreGame(eventHandler: process) { [weak self] success in
@@ -116,8 +172,7 @@ extension PapyrusViewController {
     }
     
     func newGame() {
-        submitButton.isEnabled = false
-        resetButton.isEnabled = false
+        configureActions()
         
         gameManager.newGame(eventHandler: process) { [weak self] in
             self?.title = "Starting..."
@@ -126,7 +181,6 @@ extension PapyrusViewController {
     }
     
     func gameOver(with winner: Player?) {
-        title = "Game Over"
         if tilesRemainingContainerView.alpha == 1.0 {
             updateShownTiles()
         }
@@ -156,31 +210,20 @@ extension PapyrusViewController {
     }
     
     func process(event: GameEvent) {
-        func turnUpdated() {
-            guard let player = gameManager.game?.player else { return }
-            if player is Human {
-                title = "Your Turn"
-            } else {
-                title = "Thinking..."
-            }
-        }
-        
         switch event {
         case let .over(_, winner):
             updatePresenter()
-            submitButton.isEnabled = false
-            resetButton.isEnabled = false
+            configureTitle()
+            configureActions()
             gameOver(with: winner)
         case .turnBegan(_):
             updatePresenter()
-            turnUpdated()
-            submitButton.isEnabled = false
-            resetButton.isEnabled = false
+            configureTitle()
+            configureActions()
         case .turnEnded(_):
             updatePresenter()
-            turnUpdated()
-            submitButton.isEnabled = false
-            resetButton.isEnabled = false
+            configureTitle()
+            configureActions()
             if tilesRemainingContainerView.alpha == 1.0 {
                 updateShownTiles()
             }
@@ -207,16 +250,20 @@ extension PapyrusViewController {
             self.validate()
             self.fade(out: true)
         }
-        fade(out: false, allExcept: tilePickerContainerView)
+        fade(out: false, allExcept: [tilePickerContainerView])
     }
     
     func validate() {
-        guard let tiles = gameView?.placedTiles, blanks = gameView?.blanks else {
+        guard let tiles = gameView?.placedTiles, blanks = gameView?.blanks where tiles.count > 0 else {
+            buttonState.submitEnabled = false
+            buttonState.tilesDropped = false
+            configureActions()
             return
         }
-        resetButton.isEnabled = gameManager.game?.player is Human && tiles.count > 0
+        buttonState.tilesDropped = true
         gameManager.validate(tiles: tiles, blanks: blanks) { [weak self] (solution) in
-            self?.submitButton.isEnabled = solution != nil
+            self?.buttonState.submitEnabled = solution != nil
+            self?.configureActions()
         }
     }
 }
@@ -226,19 +273,19 @@ extension PapyrusViewController {
 extension PapyrusViewController {
     func updateShownTiles() {
         guard let game = gameManager.game else { return }
-        tilesRemainingViewController.prepareForPresentation(of: game.bag, players: showingUnplayed ? game.players : nil)
+        tilesRemainingViewController.prepareForPresentation(of: game.bag, players: buttonState.showingUnplayed ? game.players : nil)
     }
     
     func showBagTiles(_ sender: UIAlertAction) {
-        showingUnplayed = false
+        buttonState.showingUnplayed = false
         updateShownTiles()
-        fade(out: false, allExcept: tilesRemainingContainerView)
+        fade(out: false, allExcept: [tilesRemainingContainerView])
     }
     
     func showUnplayedTiles(_ sender: UIAlertAction) {
-        showingUnplayed = true
+        buttonState.showingUnplayed = true
         updateShownTiles()
-        fade(out: false, allExcept: tilesRemainingContainerView)
+        fade(out: false, allExcept: [tilesRemainingContainerView])
     }
     
     @IBAction func action(_ sender: UIBarButtonItem) {
@@ -249,11 +296,6 @@ extension PapyrusViewController {
             actionSheet.addAction(UIAlertAction(title: "Unplayed Tiles", style: .default, handler: showUnplayedTiles))
             if gameManager.game?.player is Human {
                 actionSheet.addAction(UIAlertAction(title: "Shuffle", style: .default, handler: shuffle))
-                if gameManager.game?.canSwap == true {
-                    actionSheet.addAction(UIAlertAction(title: "Swap All Tiles", style: .default, handler: swapAll))
-                    actionSheet.addAction(UIAlertAction(title: "Swap Tiles", style: .default, handler: swap))
-                }
-                actionSheet.addAction(UIAlertAction(title: "Skip", style: .default, handler: skip))
                 actionSheet.addAction(UIAlertAction(title: "Hint", style: .default, handler: hint))
             }
         }
@@ -262,17 +304,12 @@ extension PapyrusViewController {
         present(actionSheet, animated: true, completion: nil)
     }
     
-    @IBAction func reset(_ sender: UIBarButtonItem) {
-        spring() {
-            self.gameView?.tileViews?.forEach({
-                $0.frame = $0.initialFrame
-                $0.onBoard = false
-            })
-        }
+    @IBAction func skip(_ sender: UIBarButtonItem) {
+        gameManager.skip()
     }
     
     @IBAction func submit(_ sender: UIBarButtonItem) {
-        guard let tiles = gameView?.placedTiles, blanks = gameView?.blanks else {
+        guard let tiles = gameView?.placedTiles, blanks = gameView?.blanks where tiles.count > 0 else {
             return
         }
         gameManager.validate(tiles: tiles, blanks: blanks) { [weak self] (solution) in
@@ -281,19 +318,12 @@ extension PapyrusViewController {
         }
     }
     
-    func doSwap(_ sender: UIBarButtonItem) {
-        guard let letters = tileSwapperViewController.toSwap() else { return }
-        fade(out: true)
-        gameManager.swap(tiles: letters)
-    }
-    
-    
     func hint(_ sender: UIAlertAction) {
         gameManager.hint { [weak self] (solution) in
             guard let strongSelf = self else { return }
             var message = ""
             if let solution = solution {
-                message = "\((solution.horizontal ? "horizontal" : "vertical")) word '\(solution.word.uppercased())' can be placed \(solution.y + 1) down and \(solution.x + 1) across for a total score of \(solution.score)"
+                message = "\((solution.horizontal ? "Horizontal" : "Vertical")) word '\(solution.word.uppercased())' can be placed \(solution.y + 1) down and \(solution.x + 1) across for a total score of \(solution.score)"
             } else {
                 message = "Could not find any solutions, perhaps skip or swap letters?"
             }
@@ -301,6 +331,24 @@ extension PapyrusViewController {
             alert.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
             strongSelf.present(alert, animated: true, completion: nil)
         }
+    }
+    
+    func reset() {
+        spring() {
+            self.gameView?.tileViews?.forEach({
+                $0.frame = $0.initialFrame
+                $0.x = nil
+                $0.y = nil
+                $0.onBoard = false
+                if $0.isBlank {
+                    $0.tile = Game.blankLetter
+                }
+            })
+        }
+        buttonState.tilesDropped = false
+        buttonState.submitEnabled = false
+        configureActions()
+        configureTitle()
     }
     
     func restart(_ sender: UIAlertAction) {
@@ -342,18 +390,32 @@ extension PapyrusViewController {
         }
     }
     
-    func skip(_ sender: UIAlertAction) {
-        gameManager.skip()
-    }
-    
-    func swap(_ sender: UIAlertAction) {
-        guard let rack = gameManager.game?.player.rack else { return }
-        tileSwapperViewController.prepareForPresentation(of: rack)
-        fade(out: false, allExcept: tilesSwapperContainerView)
-    }
-    
-    func swapAll(_ sender: UIAlertAction) {
-        gameManager.swapAll()
+    @IBAction func swap(_ sender: UIBarButtonItem) {
+        guard buttonState.swapping == false else {
+            defer {
+                buttonState.swapping = false
+                fade(out: true)
+                gameView.tileViews?.forEach({ (tileView) in
+                    tileView.tappable = false
+                    tileView.draggable = true
+                })
+            }
+            guard let toSwap = gameView.tileViews?.filter({ $0.highlighted }).flatMap({ $0.tile }) where toSwap.count > 0 else {
+                return
+            }
+            let _ = gameManager.game?.swap(tiles: toSwap)
+            return
+        }
+        guard gameManager.game?.player is Human else {
+            return
+        }
+        reset()
+        buttonState.swapping = true
+        fade(out: false, allExcept: gameView.tileViews)
+        gameView.tileViews?.forEach({ (tileView) in
+            tileView.tappable = true
+            tileView.draggable = false
+        })
     }
 }
 
@@ -379,6 +441,9 @@ extension PapyrusViewController: TileViewDelegate {
             tileViews[index].initialFrame = rect
             if tileViews[index].onBoard == false {
                 tileViews[index].frame = rect
+                if tileViews[index].isBlank {
+                    tileViews[index].tile = Game.blankLetter
+                }
             }
         }
         
@@ -436,6 +501,7 @@ extension PapyrusViewController: TileViewDelegate {
     }
     
     func tapped(tileView: TileView) {
-        fatalError()
+        tileView.highlighted = !tileView.highlighted
+        configureTitle()
     }
 }
