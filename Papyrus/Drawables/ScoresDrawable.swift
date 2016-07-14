@@ -27,8 +27,11 @@ struct ScoresDrawable : Drawable {
                                     y: rect.origin.y + row * rowHeight,
                                     width: columnWidth,
                                     height: rowHeight)
-            return ScoreDrawable(text: element.name + " \(element.score)",
-                                 highlighted: element.score > 0 && element.score == highScore,
+
+            let prefix = (element.score > 0 && element.score == highScore ? "🏆" : "")
+            
+            return ScoreDrawable(text: prefix + element.name + " \(element.score)",
+                                 highlighted: false,//element.score > 0 && element.score == highScore,
                                  myTurn: element.myTurn,
                                  rect: playerRect)
         }
