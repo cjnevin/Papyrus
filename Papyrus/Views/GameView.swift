@@ -16,6 +16,7 @@ typealias Intersection = (x: Int, y: Int, rect: CGRect, intersection: CGRect)
 
 class GameView: UIView {
     var tileViewDelegate: TileViewDelegate!
+    @IBOutlet weak var blackoutView: UIView!
     
     var blanks: BlankSquares {
         return tileViews?.flatMap({ $0.isPlaced && $0.isBlank ? ($0.x!, $0.y!) : nil }) ?? []
@@ -53,7 +54,7 @@ class GameView: UIView {
             tileViews?.forEach { $0.removeFromSuperview() }
         }
         didSet {
-            tileViews?.forEach { addSubview($0) }
+            tileViews?.forEach { insertSubview($0, belowSubview: blackoutView) }
         }
     }
     

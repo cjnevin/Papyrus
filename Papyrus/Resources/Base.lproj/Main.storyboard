@@ -34,6 +34,9 @@
                                     <constraint firstAttribute="trailing" secondItem="3dp-bN-fMR" secondAttribute="trailing" id="ham-xk-hXc"/>
                                     <constraint firstAttribute="bottom" secondItem="3dp-bN-fMR" secondAttribute="bottom" id="rHP-ut-I4k"/>
                                 </constraints>
+                                <connections>
+                                    <outlet property="blackoutView" destination="3dp-bN-fMR" id="Evk-4q-ihw"/>
+                                </connections>
                             </view>
                             <containerView opaque="NO" alpha="0.0" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="rwX-f3-NTO">
                                 <constraints>
@@ -156,7 +159,6 @@
                     </navigationItem>
                     <connections>
                         <outlet property="actionButton" destination="SSC-L5-TMp" id="Pto-pp-1kf"/>
-                        <outlet property="blackoutView" destination="3dp-bN-fMR" id="fPp-RH-Fx8"/>
                         <outlet property="gameView" destination="Y4a-ff-hHx" id="JFK-70-L5x"/>
                         <outlet property="searchDisplayController" destination="Q6z-gf-lv5" id="5AS-at-00a"/>
                         <outlet property="skipButton" destination="OqI-qz-cVR" id="S0P-Kc-SDo"/>

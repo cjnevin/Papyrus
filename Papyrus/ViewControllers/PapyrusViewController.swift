@@ -32,7 +32,6 @@ class PapyrusViewController: UIViewController {
     @IBOutlet var tileContainerViews: [UIView]!
     @IBOutlet weak var tilePickerContainerView: UIView!
     @IBOutlet weak var tilesRemainingContainerView: UIView!
-    @IBOutlet weak var blackoutView: UIView!
     
     @IBOutlet weak var gameView: GameView!
     @IBOutlet var submitButton: UIBarButtonItem!
@@ -95,7 +94,7 @@ class PapyrusViewController: UIViewController {
     }
     
     func configureActions() {
-        let human = gameManager.game?.player is Human
+        let human = gameManager.game?.player is Human && gameManager.game?.ended == false
         buttonState.skipEnabled = human
         buttonState.tilesDropped = gameView?.placedTiles.count > 0 && human
         swapButton.isEnabled = buttonState.skipEnabled
@@ -129,7 +128,7 @@ class PapyrusViewController: UIViewController {
         buttonState.faded = !out
         defer {
             UIView.animate(withDuration: 0.25) {
-                self.blackoutView.alpha = out ? 0.0 : 0.4
+                self.gameView.blackoutView.alpha = out ? 0.0 : 0.4
                 self.tileContainerViews.forEach({ $0.alpha = (out == false && allExcept?.contains($0) == true) ? 1.0 : 0.0 })
             }
         }
@@ -140,7 +139,7 @@ class PapyrusViewController: UIViewController {
         guard !out else {
             return
         }
-        gameView.bringSubview(toFront: self.blackoutView)
+        gameView.bringSubview(toFront: gameView.blackoutView)
         if let views = allExcept {
             views.forEach({ $0.superview?.bringSubview(toFront: $0) })
         }
