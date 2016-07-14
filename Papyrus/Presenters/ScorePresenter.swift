@@ -29,13 +29,7 @@ struct ScorePresenter: Presenter {
     
     func refresh(in view: GameView, with game: Game) {
         func name(of player: Player) -> String? {
-            if player is Human {
-                let index = game.players.filter({ $0 is Human }).index(where: { $0.id == player.id }) ?? 0
-                return "Human \(index + 1)"
-            } else {
-                let index = game.players.filter({ $0 is Computer }).index(where: { $0.id == player.id }) ?? 0
-                return "AI \(index + 1)"
-            }
+            return player is Human ? "👤" : "🤖"
         }
         let players = game.players.map({ (name: name(of: $0)!, score: $0.score, myTurn: game.ended == false && $0.id == game.player.id) })
         view.scoresDrawable = ScoresDrawable(for: players, rect: layout.insetRect)

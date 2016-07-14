@@ -12,7 +12,7 @@ import PapyrusCore
 struct GamePresenter: Presenter {
     private let presenters: [Presenter]
     private let padding: CGFloat = 8
-    private let scoreHeight: CGFloat = 80
+    private let scoreHeight: CGFloat = 35
     let boardPresenter: BoardPresenter
     let rackPresenter: RackPresenter
     let scorePresenter: ScorePresenter

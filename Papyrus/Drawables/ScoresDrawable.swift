@@ -15,7 +15,7 @@ struct ScoresDrawable : Drawable {
     
     init(for players: [(name: String, score: Int, myTurn: Bool)], rect: CGRect) {
         shader = ScoreShader(highlighted: false)
-        let rows = CGFloat(players.count > 6 ? 4 : players.count > 4 ? 3 : 2)
+        let rows = CGFloat(1)//players.count > 6 ? 4 : players.count > 4 ? 3 : 2)
         let columns = ceil(CGFloat(players.count) / rows)
         let columnWidth = rect.width / columns
         let rowHeight = rect.height / rows
@@ -27,7 +27,7 @@ struct ScoresDrawable : Drawable {
                                     y: rect.origin.y + row * rowHeight,
                                     width: columnWidth,
                                     height: rowHeight)
-            return ScoreDrawable(text: element.name + " (\(element.score))",
+            return ScoreDrawable(text: element.name + " \(element.score)",
                                  highlighted: element.score > 0 && element.score == highScore,
                                  myTurn: element.myTurn,
                                  rect: playerRect)

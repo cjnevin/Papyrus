@@ -18,8 +18,8 @@ class Preferences {
     
     let sections = [["Board": ["", "", "", ""]],
                     ["Difficulty": ["Very Easy", "Easy", "Medium", "Hard"]],
-                    ["AI Players": ["0", "1", "2", "3", "4"]],
-                    ["Human Players": ["0", "1", "2", "3", "4"]],
+                    ["AI Players": ["0", "1", "2", "3"]],
+                    ["Human Players": ["0", "1", "2", "3"]],
                     ["Dictionary": ["SOWPODS", "TWL06", "WWF"]]]
     var values = [Int: Int]()
     var originalValues = [Int: Int]()
