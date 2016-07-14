@@ -95,22 +95,29 @@ class PapyrusViewController: UIViewController {
     }
     
     func configureActions() {
-        buttonState.skipEnabled = gameManager.game?.player is Human
+        let human = gameManager.game?.player is Human
+        buttonState.skipEnabled = human
+        buttonState.tilesDropped = gameView?.placedTiles.count > 0 && human
         swapButton.isEnabled = buttonState.skipEnabled
         skipButton.isEnabled = buttonState.skipEnabled
-        submitButton.isEnabled = buttonState.submitEnabled
+        submitButton.isEnabled = buttonState.submitEnabled && human
         
-        if buttonState.swapping {
+        guard !buttonState.swapping else {
             navigationItem.leftBarButtonItems = nil
             navigationItem.rightBarButtonItems = [swapButton]
             return
         }
-        if buttonState.faded {
+        guard !buttonState.faded else {
             navigationItem.leftBarButtonItems = nil
             navigationItem.rightBarButtonItems = nil
             return
         }
         navigationItem.leftBarButtonItems = [actionButton]
+        guard human else {
+            navigationItem.rightBarButtonItems = nil
+            return
+        }
+        
         if buttonState.tilesDropped {
             navigationItem.rightBarButtonItems = [submitButton]
         } else {
@@ -212,6 +219,7 @@ extension PapyrusViewController {
     func process(event: GameEvent) {
         switch event {
         case let .over(_, winner):
+            buttonState.submitEnabled = false
             updatePresenter()
             configureTitle()
             configureActions()
@@ -221,6 +229,7 @@ extension PapyrusViewController {
             configureTitle()
             configureActions()
         case .turnEnded(_):
+            buttonState.submitEnabled = false
             updatePresenter()
             configureTitle()
             configureActions()
@@ -256,11 +265,9 @@ extension PapyrusViewController {
     func validate() {
         guard let tiles = gameView?.placedTiles, blanks = gameView?.blanks where tiles.count > 0 else {
             buttonState.submitEnabled = false
-            buttonState.tilesDropped = false
             configureActions()
             return
         }
-        buttonState.tilesDropped = true
         gameManager.validate(tiles: tiles, blanks: blanks) { [weak self] (solution) in
             self?.buttonState.submitEnabled = solution != nil
             self?.configureActions()
@@ -345,7 +352,6 @@ extension PapyrusViewController {
                 }
             })
         }
-        buttonState.tilesDropped = false
         buttonState.submitEnabled = false
         configureActions()
         configureTitle()
