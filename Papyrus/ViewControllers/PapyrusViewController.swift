@@ -186,19 +186,34 @@ extension PapyrusViewController {
         }
     }
     
-    func gameOver(with winner: Player?) {
+    func gameOver(with winners: [Player]?) {
         if tilesRemainingContainerView.alpha == 1.0 {
             updateShownTiles()
         }
-        guard let winner = winner,
-            playerIndex = gameManager.game?.index(of: winner),
-            bestMove = winner.solves.sorted(isOrderedBefore: { $0.score > $1.score }).first else {
-                return
+        guard let winners = winners else {
+            let message = "Nobody won."
+            let alertController = UIAlertController(title: "Game Over!", message: message, preferredStyle: .alert)
+            alertController.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
+            return
         }
-        let message = "The winning score was \(winner.score).\nTheir best word was \(bestMove.word.uppercased()) scoring \(bestMove.score) points!"
-        let alertController = UIAlertController(title: "Player \(playerIndex + 1) won!", message: message, preferredStyle: .alert)
-        alertController.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
-        present(alertController, animated: true, completion: nil)
+        
+        if winners.count == 1 {
+            guard let winner = winners.first,
+                playerIndex = gameManager.game?.index(of: winner),
+                bestMove = winner.solves.sorted(isOrderedBefore: { $0.score > $1.score }).first else {
+                    return
+            }
+            let message = "The winning score was \(winner.score).\nTheir best word was \(bestMove.word.uppercased()) scoring \(bestMove.score) points!"
+            let alertController = UIAlertController(title: "Player \(playerIndex + 1) won!", message: message, preferredStyle: .alert)
+            alertController.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
+            present(alertController, animated: true, completion: nil)
+        } else {
+            let players = winners.flatMap({ gameManager.game?.index(of: $0) }).map({ "Player \($0 + 1)" }).joined(separator: ", ")
+            let message = "The game ended in a draw between: \(players)."
+            let alertController = UIAlertController(title: "Draw!", message: message, preferredStyle: .alert)
+            alertController.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
+            present(alertController, animated: true, completion: nil)
+        }
     }
     
     func definition(for word: String, prefix: String? = nil) {
@@ -217,12 +232,12 @@ extension PapyrusViewController {
     
     func process(event: GameEvent) {
         switch event {
-        case let .over(_, winner):
+        case let .over(_, winners):
             buttonState.submitEnabled = false
             updatePresenter()
             configureTitle()
             configureActions()
-            gameOver(with: winner)
+            gameOver(with: winners)
         case .turnBegan(_):
             updatePresenter()
             configureTitle()
