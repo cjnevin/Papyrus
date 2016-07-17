@@ -18,13 +18,13 @@ extension NibLoadable where Self: UIView {
         return String(self).components(separatedBy: ".").last!
     }
     
-    static func nib(in bundle: Bundle = .main()) -> UINib {
+    static func nib(in bundle: Bundle = .main) -> UINib {
         return UINib(nibName: nibName, bundle: bundle)
     }
 }
 
 extension UITableView {
-    func register<T: NibLoadable>(loadable: T.Type, in bundle: Bundle = .main()) {
+    func register<T: NibLoadable>(loadable: T.Type, in bundle: Bundle = .main) {
         self.register(loadable.nib(in: bundle), forCellReuseIdentifier: loadable.nibName)
     }
     

@@ -42,7 +42,7 @@ public struct AnagramDictionary: Lookup {
         return AnagramDictionary.deserialize(data)
     }
     
-    public init?(filename: String, type: String = "bin", bundle: Bundle = .main()) {
+    public init?(filename: String, type: String = "bin", bundle: Bundle = .main) {
         guard let
             anagramPath = bundle.pathForResource(filename, ofType: type),
             anagramDictionary = AnagramDictionary.load(anagramPath) else {

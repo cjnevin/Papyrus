@@ -38,7 +38,7 @@ class GameManager {
     }
     
     func clearCache() {
-        _ = try? FileManager.default().removeItem(at: cacheURL)
+        _ = try? FileManager.default.removeItem(at: cacheURL)
     }
     
     func saveCache() {

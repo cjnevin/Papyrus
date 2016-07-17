@@ -35,7 +35,7 @@ class Preferences {
     func load() {
         let defaults = [0: 0, 1: 3, 2: 1, 3: 1, 4: 0]
         for (index, _) in sections.enumerated() {
-            if let value = UserDefaults.standard().object(forKey: sections[index].keys.first!) as? Int {
+            if let value = UserDefaults.standard.object(forKey: sections[index].keys.first!) as? Int {
                 values[index] = value
             } else {
                 values[index] = defaults[index]
@@ -49,9 +49,9 @@ class Preferences {
             throw PreferenceError.insufficientPlayers
         }
         for (index, _) in sections.enumerated() {
-            UserDefaults.standard().set(values[index]!, forKey: sections[index].keys.first!)
+            UserDefaults.standard.set(values[index]!, forKey: sections[index].keys.first!)
         }
-        UserDefaults.standard().synchronize()
+        UserDefaults.standard.synchronize()
         originalValues = values
     }
     
