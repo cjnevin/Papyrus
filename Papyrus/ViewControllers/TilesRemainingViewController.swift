@@ -27,7 +27,7 @@ class TilesRemainingViewController : UIViewController {
     }
     
     func prepareForPresentation(of bag: Bag, players: [Player]? = nil) {
-        distributionRenderer.render(inView: view, filterBlank: false, characters: bag.dynamicType.letterPoints.map({ $0.0 }))
+        distributionRenderer.render(inView: view, filterBlank: false, characters: bag.letterPoints.map({ $0.0 }))
         remainingRenderer.render(inView: view, tileViews: distributionRenderer.tileViews, bag: bag, players: players)
     }
 }

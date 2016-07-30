@@ -38,30 +38,29 @@ struct BoardDrawable: Drawable {
         shader = BoardShader(color: Color.Tile.Default, strokeColor: Color.Tile.Border, strokeWidth: 0.5)
         range = board.boardRange
         var drawables = [Drawable]()
-        for (y, column) in board.layout.enumerated() {
-            for (x, square) in column.enumerated() {
-                let point = rectPoint(x: CGFloat(x) * squareSize, y: CGFloat(y) * squareSize)
-                let rect = CGRect(origin: point, size: CGSize(width: squareSize, height: squareSize))
-                if square == board.empty {
-                    let isCenter = board.isCenter(atX: x, y: y)
-                    let acronym = isCenter ? "" : (
-                        Acronym.get(withSuffix: "L", multiplier: board.letterMultipliers[y][x]) ??
-                            Acronym.get(withSuffix: "W", multiplier: board.wordMultipliers[y][x])
-                    )
-                    drawables.append(SquareDrawable(rect: rect, acronym: acronym, shader: SquareShader(x: x, y: y, board: board)))
-                    if isCenter {
-                        drawables.append(StarDrawable(rect: rect, shader: StarShader(color: Color.Square.Star, strokeColor: Color.Tile.Border, strokeWidth: 0.5)))
-                    }
-                } else {
-                    var points = 0
-                    if !(board is SuperScrabbleBoard) {
-                        if board.blanks.contains({ $0.x == x && $0.y == y }) == false {
-                            points = letterPoints?[square] ?? 0
-                        }
-                    }
-                    let highlighted = move?.getPositions().contains({ $0.x == x && $0.y == y }) ?? false
-                    drawables.append(TileDrawable(tile: square, points: points, rect: rect, onBoard: true, highlighted: highlighted))
+        board.allPositions.forEach { (position) in
+            let point = rectPoint(x: CGFloat(position.x) * squareSize, y: CGFloat(position.y) * squareSize)
+            let rect = CGRect(origin: point, size: CGSize(width: squareSize, height: squareSize))
+            let square = board.letter(at: position) ?? board.empty
+            if square == board.empty {
+                //let position = Position(x: x, y: y)
+                let isCenter = board.isCenter(at: position)
+                let acronym = isCenter ? "" : (
+                    Acronym.get(withSuffix: "L", multiplier: board.letterMultiplier(at: position)) ??
+                        Acronym.get(withSuffix: "W", multiplier: board.wordMultiplier(at: position))
+                )
+                drawables.append(SquareDrawable(rect: rect, acronym: acronym, shader: SquareShader(x: position.x, y: position.y, board: board)))
+                if isCenter {
+                    drawables.append(StarDrawable(rect: rect, shader: StarShader(color: Color.Square.Star, strokeColor: Color.Tile.Border, strokeWidth: 0.5)))
                 }
+            } else {
+                var points = 0
+                if board.size < 16 && !board.blanks.contains(position) {
+                    points = letterPoints?[square] ?? 0
+                }
+                
+                let highlighted = move?.getPositions().contains(position) ?? false //move?.getPositions().contains({ $0.x == x && $0.y == y }) ?? false
+                drawables.append(TileDrawable(tile: square, points: points, rect: rect, onBoard: true, highlighted: highlighted))
             }
         }
         self.drawables = drawables
