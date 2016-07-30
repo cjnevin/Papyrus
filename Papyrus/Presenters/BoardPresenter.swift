@@ -17,7 +17,7 @@ class BoardPresenter: Presenter {
     }
     
     func refresh(in view: GameView, with game: Game) {
-        view.boardDrawable = BoardDrawable(board: game.board, letterPoints: game.bag.dynamicType.letterPoints, move: game.lastMove, rect: rect)
+        view.boardDrawable = BoardDrawable(board: game.board, letterPoints: game.bag.letterPoints, move: game.lastMove, rect: rect)
     }
     
     func refresh(in view: BoardView, with board: Board) {

@@ -13,6 +13,19 @@ private func call(onMain block: () -> ()) {
     DispatchQueue.main.async(execute: block)
 }
 
+enum GameType: Int {
+    case scrabble = 0
+    case superScrabble
+    case wordfeud
+    case wordsWithFriends
+    
+    var fileURL: URL {
+        let fileNames: [GameType: String] = [.scrabble: "Scrabble", .superScrabble: "SuperScrabble", .wordfeud: "Wordfeud", .wordsWithFriends: "WordsWithFriends"]
+        return URL(fileURLWithPath: Bundle.main.pathForResource(fileNames[self], ofType: "json")!)
+    }
+}
+
+
 class GameManager {
     typealias Completion = () -> ()
     private let gameQueue = OperationQueue()
@@ -87,8 +100,8 @@ class GameManager {
             let players = (makePlayers(prefs.opponents, f: { Computer(difficulty: prefs.difficulty) }) +
                 makePlayers(prefs.humans, f: { Human() })).shuffled()
             
-            strongSelf.game = Game(
-                gameType: prefs.gameType,
+            strongSelf.game = try! Game(
+                config: prefs.gameType.fileURL,
                 dictionary: dictionary,
                 players: players, eventHandler: strongSelf.wrappedEventHandler)
         
@@ -156,15 +169,15 @@ class GameManager {
              completion: completion)
     }
     
-    func validate(tiles: [(x: Int, y: Int, letter: Character)],
-                  blanks: [(x: Int, y: Int)],
+    func validate(tiles: LetterPositions,
+                  blanks: Positions,
                   completion: (solution: Solution?) -> ()) {
         guard game?.ended == false && game?.player is Human else {
             completion(solution: nil)
             return
         }
         enqueue { game in
-            switch game.validate(points: tiles, blanks: blanks) {
+            switch game.validate(positions: tiles, blanks: blanks) {
             case let .valid(solution):
                 call { completion(solution: solution) }
             default:

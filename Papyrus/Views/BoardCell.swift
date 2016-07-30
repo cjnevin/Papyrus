@@ -32,7 +32,7 @@ class BoardCell : UITableViewCell, NibLoadable {
             return
         }
         gameTypeIndex = to
-        boardPresenter.refresh(in: boardView, with: gameTypes[gameTypeIndex].board())
+        boardPresenter.refresh(in: boardView, with: Board(with: gameTypes[gameTypeIndex].fileURL)!)
     }
     
     func nextBoard() {

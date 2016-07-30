@@ -9,8 +9,6 @@
 import UIKit
 import PapyrusCore
 
-typealias BlankSquares = [(x: Int, y: Int)]
-typealias PlacedTiles = [(x: Int, y: Int, letter: Character)]
 typealias Square = (x: Int, y: Int, rect: CGRect)
 typealias Intersection = (x: Int, y: Int, rect: CGRect, intersection: CGRect)
 
@@ -18,12 +16,12 @@ class GameView: UIView {
     var tileViewDelegate: TileViewDelegate!
     @IBOutlet weak var blackoutView: UIView!
     
-    var blanks: BlankSquares {
-        return tileViews?.flatMap({ $0.isPlaced && $0.isBlank ? ($0.x!, $0.y!) : nil }) ?? []
+    var blanks: Positions {
+        return tileViews?.flatMap({ $0.isPlaced && $0.isBlank ? Position(x: $0.x!, y: $0.y!) : nil }) ?? []
     }
     
-    var placedTiles: PlacedTiles {
-        return tileViews?.flatMap({ $0.isPlaced ? ($0.x!, $0.y!, $0.tile) : nil }) ?? []
+    var placedTiles: LetterPositions {
+        return tileViews?.flatMap({ $0.isPlaced ? LetterPosition(x: $0.x!, y: $0.y!, letter: $0.tile) : nil }) ?? []
     }
     
     var boardDrawable: BoardDrawable? {
@@ -73,23 +71,16 @@ class GameView: UIView {
     }
     
     private var emptySquares: [Square] {
-        guard let board = boardDrawable?.board, rect = boardDrawable?.rect else { return [] }
-        func boardPoint(x: CGFloat, y: CGFloat) -> CGPoint {
-            return CGPoint(x: rect.origin.x + x, y: rect.origin.y + y)
+        guard let board = boardDrawable?.board, boardRect = boardDrawable?.rect else { return [] }
+        let squareSize = boardRect.width / CGFloat(board.size)
+        func rect(for position: Position) -> CGRect {
+            return CGRect(x: boardRect.origin.x + CGFloat(position.x) * squareSize,
+                           y: boardRect.origin.y + CGFloat(position.y) * squareSize,
+                           width: squareSize,
+                           height: squareSize)
         }
-        let squareSize = rect.width / CGFloat(board.size)
-        let placed = placedTiles
-        var suitable = [Square]()
-        for (y, column) in board.layout.enumerated() {
-            for (x, square) in column.enumerated() {
-                let point = boardPoint(x: CGFloat(x) * squareSize, y: CGFloat(y) * squareSize)
-                let rect = CGRect(origin: point, size: CGSize(width: squareSize, height: squareSize))
-                if square == board.empty && placed.filter({ $0.x == x && $0.y == y }).count == 0 {
-                    suitable.append((x, y, rect))
-                }
-            }
-        }
-        return suitable
+        let placed = placedTiles.map({ $0.position })
+        return board.emptyPositions.filter({ !placed.contains($0) }).flatMap({ ($0.x, $0.y, rect(for: $0)) })
     }
     
     func bestIntersection(forRect rect: CGRect) -> Intersection? {

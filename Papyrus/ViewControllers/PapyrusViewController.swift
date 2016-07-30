@@ -264,10 +264,10 @@ extension PapyrusViewController {
 // MARK: GamePresenter
 extension PapyrusViewController {
     func handle(blank tileView: TileView) {
-        guard let bagType = gameManager.game?.bag.dynamicType else {
+        guard let bag = gameManager.game?.bag else {
             return
         }
-        tilePickerViewController.prepareForPresentation(of: bagType)
+        tilePickerViewController.prepareForPresentation(of: bag)
         tilePickerViewController.completionHandler = { letter in
             tileView.tile = letter
             self.validate()

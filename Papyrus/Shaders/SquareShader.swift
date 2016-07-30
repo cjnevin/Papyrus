@@ -18,12 +18,13 @@ struct SquareShader: Shader {
         defer {
             textColor = fillColor?.multiplyChannels()
         }
-        if board.isCenter(atX: x, y: y) {
+        let position = Position(x: x, y: y)
+        if board.isCenter(at: position) {
             fillColor = Color.Square.Center
             return
         }
         fillColor = Color.Square.color(
-            forLetterMultiplier: board.letterMultipliers[y][x],
+            forLetterMultiplier: board.letterMultiplier(at: position),
             wordMultiplier: board.wordMultipliers[y][x])
     }
 }

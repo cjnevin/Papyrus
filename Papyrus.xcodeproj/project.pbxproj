@@ -20,6 +20,10 @@
 		991E21191D2B17F300A5058F /* ScoreDrawable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 991E21181D2B17F300A5058F /* ScoreDrawable.swift */; };
 		991E211B1D2B18EC00A5058F /* ScoreShader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 991E211A1D2B18EC00A5058F /* ScoreShader.swift */; };
 		991E211D1D2B1B0A00A5058F /* ScoresDrawable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 991E211C1D2B1B0A00A5058F /* ScoresDrawable.swift */; };
+		992AB9971D4C2CFC0032CCFC /* Scrabble.json in Resources */ = {isa = PBXBuildFile; fileRef = 992AB9931D4C2CFC0032CCFC /* Scrabble.json */; };
+		992AB9981D4C2CFC0032CCFC /* SuperScrabble.json in Resources */ = {isa = PBXBuildFile; fileRef = 992AB9941D4C2CFC0032CCFC /* SuperScrabble.json */; };
+		992AB9991D4C2CFC0032CCFC /* Wordfeud.json in Resources */ = {isa = PBXBuildFile; fileRef = 992AB9951D4C2CFC0032CCFC /* Wordfeud.json */; };
+		992AB99A1D4C2CFC0032CCFC /* WordsWithFriends.json in Resources */ = {isa = PBXBuildFile; fileRef = 992AB9961D4C2CFC0032CCFC /* WordsWithFriends.json */; };
 		993A53481C7EE273001F93CB /* Shader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 993A53461C7EE273001F93CB /* Shader.swift */; };
 		993A53491C7EE273001F93CB /* SquareShader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 993A53471C7EE273001F93CB /* SquareShader.swift */; };
 		993A534B1C7EE338001F93CB /* TileShader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 993A534A1C7EE338001F93CB /* TileShader.swift */; };
@@ -135,6 +139,10 @@
 		991E21181D2B17F300A5058F /* ScoreDrawable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScoreDrawable.swift; sourceTree = "<group>"; };
 		991E211A1D2B18EC00A5058F /* ScoreShader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScoreShader.swift; sourceTree = "<group>"; };
 		991E211C1D2B1B0A00A5058F /* ScoresDrawable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScoresDrawable.swift; sourceTree = "<group>"; };
+		992AB9931D4C2CFC0032CCFC /* Scrabble.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Scrabble.json; sourceTree = "<group>"; };
+		992AB9941D4C2CFC0032CCFC /* SuperScrabble.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = SuperScrabble.json; sourceTree = "<group>"; };
+		992AB9951D4C2CFC0032CCFC /* Wordfeud.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Wordfeud.json; sourceTree = "<group>"; };
+		992AB9961D4C2CFC0032CCFC /* WordsWithFriends.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = WordsWithFriends.json; sourceTree = "<group>"; };
 		993A53461C7EE273001F93CB /* Shader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Shader.swift; sourceTree = "<group>"; };
 		993A53471C7EE273001F93CB /* SquareShader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SquareShader.swift; sourceTree = "<group>"; };
 		993A534A1C7EE338001F93CB /* TileShader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TileShader.swift; sourceTree = "<group>"; };
@@ -230,6 +238,17 @@
 			name = Libraries;
 			path = AnagramDictionary;
 			sourceTree = SOURCE_ROOT;
+		};
+		992AB9921D4C2CFC0032CCFC /* Configurations */ = {
+			isa = PBXGroup;
+			children = (
+				992AB9931D4C2CFC0032CCFC /* Scrabble.json */,
+				992AB9941D4C2CFC0032CCFC /* SuperScrabble.json */,
+				992AB9951D4C2CFC0032CCFC /* Wordfeud.json */,
+				992AB9961D4C2CFC0032CCFC /* WordsWithFriends.json */,
+			);
+			path = Configurations;
+			sourceTree = "<group>";
 		};
 		993A53451C7EE273001F93CB /* Shaders */ = {
 			isa = PBXGroup;
@@ -409,6 +428,7 @@
 				99FD43351BA5901E00F50DCF /* Assets.xcassets */,
 				99FD43361BA5901E00F50DCF /* LaunchScreen.storyboard */,
 				99FD43381BA5901E00F50DCF /* Main.storyboard */,
+				992AB9921D4C2CFC0032CCFC /* Configurations */,
 				99FD433A1BA5901E00F50DCF /* Dictionaries */,
 				99FD433C1BA5901E00F50DCF /* Info.plist */,
 			);
@@ -589,11 +609,15 @@
 				99FD433E1BA5901E00F50DCF /* LaunchScreen.storyboard in Resources */,
 				99B861D41CF8CC7C00A9E041 /* twl06_anagrams.bin in Resources */,
 				990EA0A21D2EF7DA003C1ECE /* SliderCell.xib in Resources */,
+				992AB9981D4C2CFC0032CCFC /* SuperScrabble.json in Resources */,
 				9975A2AF1CF8C9DE003D315F /* wordswithfriends_anagrams.bin in Resources */,
+				992AB9971D4C2CFC0032CCFC /* Scrabble.json in Resources */,
 				9953DCFB1D2EDF4100B0B367 /* BoardCell.xib in Resources */,
 				99FD433D1BA5901E00F50DCF /* Assets.xcassets in Resources */,
+				992AB9991D4C2CFC0032CCFC /* Wordfeud.json in Resources */,
 				99FD433F1BA5901E00F50DCF /* Main.storyboard in Resources */,
 				99B861D31CF8CC7C00A9E041 /* sowpods_anagrams.bin in Resources */,
+				992AB99A1D4C2CFC0032CCFC /* WordsWithFriends.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

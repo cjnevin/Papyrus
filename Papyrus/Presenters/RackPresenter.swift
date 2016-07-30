@@ -61,7 +61,7 @@ struct RackPresenter: Presenter {
         }
         let player = game.player
         let rack = player is Computer ? player.rack.map(toBlank) : player.rack
-        view.rackedTiles = tiles(for: rack, letterPoints: game.bag.dynamicType.letterPoints, movable: player is Human)
+        view.rackedTiles = tiles(for: rack, letterPoints: game.bag.letterPoints, movable: player is Human)
     }
     
     func tiles(for rack: [RackTile], letterPoints: [Character: Int], movable: Bool) -> [RackedTile] {
