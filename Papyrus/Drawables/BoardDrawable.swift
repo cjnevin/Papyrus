@@ -20,7 +20,7 @@ private enum Acronym {
 
 struct BoardDrawable: Drawable {
     let rect: CGRect
-    let board: Board
+    let board: BoardType
     private var drawables: [Drawable]!
     private let squareSize: CGFloat
     private let range: CountableRange<Int>
@@ -31,7 +31,7 @@ struct BoardDrawable: Drawable {
         return CGPoint(x: rect.origin.x + x, y: rect.origin.y + y)
     }
     
-    init(board: Board, letterPoints: [Character: Int]? = nil, move: Solution? = nil, rect: CGRect) {
+    init(board: BoardType, letterPoints: [Character: Int]? = nil, move: Solution? = nil, rect: CGRect) {
         self.rect = rect.presentationRect
         self.board = board
         squareSize = self.rect.width / CGFloat(board.size)
@@ -43,7 +43,6 @@ struct BoardDrawable: Drawable {
             let rect = CGRect(origin: point, size: CGSize(width: squareSize, height: squareSize))
             let square = board.letter(at: position) ?? board.empty
             if square == board.empty {
-                //let position = Position(x: x, y: y)
                 let isCenter = board.isCenter(at: position)
                 let acronym = isCenter ? "" : (
                     Acronym.get(withSuffix: "L", multiplier: board.letterMultiplier(at: position)) ??

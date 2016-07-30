@@ -14,7 +14,7 @@ struct SquareShader: Shader {
     var textColor: UIColor?
     var strokeColor: UIColor?
     var strokeWidth: CGFloat?
-    init(x: Int, y: Int, board: Board) {
+    init(x: Int, y: Int, board: BoardType) {
         defer {
             textColor = fillColor?.multiplyChannels()
         }

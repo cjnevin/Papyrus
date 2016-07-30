@@ -79,7 +79,7 @@ class GameManager {
                 call(onMain: { completion(success: false) })
                 return
             }
-            strongSelf.game = Game(from: strongSelf.cacheURL, dictionary: dictionary, eventHandler: strongSelf.wrappedEventHandler)
+            strongSelf.game = try? Game(restoring: strongSelf.cacheURL, dictionary: dictionary, eventHandler: strongSelf.wrappedEventHandler)
             call(onMain: { [weak strongSelf] in completion(success: strongSelf?.game != nil) })
         }
     }
@@ -98,7 +98,7 @@ class GameManager {
             }
             let prefs = Preferences.sharedInstance
             let players = (makePlayers(prefs.opponents, f: { Computer(difficulty: prefs.difficulty) }) +
-                makePlayers(prefs.humans, f: { Human() })).shuffled()
+                makePlayers(prefs.humans, f: { Human() }))
             
             strongSelf.game = try! Game(
                 config: prefs.gameType.fileURL,
