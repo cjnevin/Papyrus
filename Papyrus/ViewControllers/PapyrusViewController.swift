@@ -423,7 +423,7 @@ extension PapyrusViewController {
             guard let toSwap = gameView.tileViews?.filter({ $0.highlighted }).flatMap({ $0.tile }) where toSwap.count > 0 else {
                 return
             }
-            let _ = gameManager.game?.swap(tiles: toSwap)
+            _ = gameManager.game?.swap(tiles: toSwap)
             return
         }
         guard gameManager.game?.player is Human else {
