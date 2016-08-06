@@ -2,7 +2,7 @@
 
 ![](https://reposs.herokuapp.com/?path=ChrisAU/Papyrus&style=flat)
 
-Scrabble game written in Swift 3 (beta 1) implementing the PapyrusCore for the game logic.
+Scrabble game written in Swift 3 (beta 2) implementing the PapyrusCore for the game logic.
 
 <img src="https://raw.githubusercontent.com/ChrisAU/Papyrus/swift-3.0/Papyrus/Screenshots/1.png?raw=true" width="250">
 
