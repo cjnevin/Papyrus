@@ -23,6 +23,3 @@ Features:
 - Support for multiple computer players (up to 3)
 - Swapping all tiles
 - Swapping individual tiles
-
-Outstanding ToDo's:
-- Lookahead to reduce time spent waiting between turns.
