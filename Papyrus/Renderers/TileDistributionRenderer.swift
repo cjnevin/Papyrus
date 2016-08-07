@@ -21,13 +21,13 @@ struct TileDistributionRenderer {
         shapeLayer?.removeFromSuperlayer()
         tileViews?.forEach({ $0.removeFromSuperview() })
         
-        let containerRect = CGRectInset(view.bounds, inset, inset)
+        let containerRect = view.bounds.insetBy(dx: inset, dy: inset)
         let tileSize = ceil(containerRect.size.width / CGFloat(perRow))
-        let sorted = characters.sort()
+        let sorted = characters.sorted()
         let tiles = filterBlank ? sorted.filter({ $0 != Game.blankLetter }) : sorted
         let lastRow = tiles.count <= perRow ? 0 : Int(tiles.count / perRow)
         let path = UIBezierPath()
-        tileViews = tiles.enumerate().map { (index, value) -> TileView in
+        tileViews = tiles.enumerated().map { (index, value) -> TileView in
             let row = index > 0 ? Int(index / perRow) : 0
             let col = index - row * perRow
             var x = CGFloat(col) * tileSize + padding / 2
@@ -40,34 +40,34 @@ struct TileDistributionRenderer {
                 width: tileSize - padding,
                 height: tileSize - padding)
             
-            let pathRect = CGRectInset(tileRect, -padding, -padding)
+            let pathRect = tileRect.insetBy(dx: -padding, dy: -padding)
             let radii = CGSize(width: inset, height: inset)
             if row == 0 && col == 0 {
-                let corners: UIRectCorner = row == lastRow ? [.BottomLeft, .TopLeft] : .TopLeft
-                path.appendPath(UIBezierPath(roundedRect: pathRect, byRoundingCorners: corners, cornerRadii: radii))
+                let corners: UIRectCorner = row == lastRow ? [.bottomLeft, .topLeft] : .topLeft
+                path.append(UIBezierPath(roundedRect: pathRect, byRoundingCorners: corners, cornerRadii: radii))
             } else if row == 0 && col == perRow - 1 {
-                let corners: UIRectCorner = row == lastRow ? [.BottomRight, .TopRight] : .TopRight
-                path.appendPath(UIBezierPath(roundedRect: pathRect, byRoundingCorners: corners, cornerRadii: radii))
+                let corners: UIRectCorner = row == lastRow ? [.bottomRight, .topRight] : .topRight
+                path.append(UIBezierPath(roundedRect: pathRect, byRoundingCorners: corners, cornerRadii: radii))
             } else if (row == lastRow && col == 0) {
-                path.appendPath(UIBezierPath(roundedRect: pathRect, byRoundingCorners: .BottomLeft, cornerRadii: radii))
+                path.append(UIBezierPath(roundedRect: pathRect, byRoundingCorners: .bottomLeft, cornerRadii: radii))
             } else if (row == lastRow - 1 && col == 0) {
-                path.appendPath(UIBezierPath(roundedRect: pathRect, byRoundingCorners: .BottomLeft, cornerRadii: radii))
+                path.append(UIBezierPath(roundedRect: pathRect, byRoundingCorners: .bottomLeft, cornerRadii: radii))
             } else if (row == lastRow && index == tiles.count - 1) || (row == lastRow - 1 && col == perRow - 1) {
-                path.appendPath(UIBezierPath(roundedRect: pathRect, byRoundingCorners: .BottomRight, cornerRadii: radii))
+                path.append(UIBezierPath(roundedRect: pathRect, byRoundingCorners: .bottomRight, cornerRadii: radii))
             } else {
-                path.appendPath(UIBezierPath(rect: pathRect))
+                path.append(UIBezierPath(rect: pathRect))
             }
             return TileView(frame: tileRect, tile: value, points: 0, onBoard: false, delegate: delegate)
         }
         
         let shape = CAShapeLayer()
-        shape.path = path.CGPath
-        shape.fillColor = UIColor.whiteColor().colorWithAlphaComponent(0.6).CGColor
+        shape.path = path.cgPath
+        shape.fillColor = UIColor.white().withAlphaComponent(0.6).cgColor
         shape.shadowOffset = CGSize(width: 1, height: 1)
-        shape.shadowColor = UIColor.blackColor().CGColor
+        shape.shadowColor = UIColor.black().cgColor
         shape.shadowOpacity = 0.3
         shape.shadowRadius = 4
-        view.backgroundColor = .clearColor()
+        view.backgroundColor = .clear()
         view.layer.addSublayer(shape)
         shapeLayer = shape
         

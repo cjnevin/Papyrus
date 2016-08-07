@@ -19,55 +19,62 @@ private enum Acronym {
 
 
 struct BoardDrawable: Drawable {
+    let rect: CGRect
+    let board: BoardType
     private var drawables: [Drawable]!
-    private let rect: CGRect
     private let squareSize: CGFloat
-    private let range: Range<Int>
+    private let range: CountableRange<Int>
     
     var shader: Shader
     
-    init(board: Board, letterPoints: [Character: Int], move: Solution?, rect: CGRect) {
-        self.rect = rect
-        squareSize = CGRectGetWidth(rect) / CGFloat(board.size)
+    private func rectPoint(x: CGFloat, y: CGFloat) -> CGPoint {
+        return CGPoint(x: rect.origin.x + x, y: rect.origin.y + y)
+    }
+    
+    init(board: BoardType, letterPoints: [Character: Int]? = nil, move: Solution? = nil, rect: CGRect) {
+        self.rect = rect.presentationRect
+        self.board = board
+        squareSize = self.rect.width / CGFloat(board.size)
         shader = BoardShader(color: Color.Tile.Default, strokeColor: Color.Tile.Border, strokeWidth: 0.5)
-        range = board.boardRange
+        range = board.layout.indices
         var drawables = [Drawable]()
-        for (y, column) in board.layout.enumerate() {
-            for (x, square) in column.enumerate() {
-                let point = CGPoint(x: CGFloat(x) * squareSize, y: CGFloat(y) * squareSize)
-                let rect = CGRect(origin: point, size: CGSize(width: squareSize, height: squareSize))
-                if square == board.empty {
-                    let acronym = (
-                        Acronym.get(withSuffix: "L", multiplier: board.letterMultipliers[y][x]) ??
-                            Acronym.get(withSuffix: "W", multiplier: board.wordMultipliers[y][x])
-                    )
-                    drawables.append(SquareDrawable(rect: rect, acronym: acronym, shader: SquareShader(x: x, y: y, board: board)))
-                    if board.isCenterAt(x, y) {
-                        drawables.append(StarDrawable(rect: rect, shader: StarShader(color: Color.Square.Star, strokeColor: Color.Tile.Border, strokeWidth: 0.5)))
-                    }
-                } else {
-                    var points = 0
-                    if board.blanks.contains({ $0.x == x && $0.y == y }) == false {
-                        points = letterPoints[square] ?? 0
-                    }
-                    let highlighted = move?.getPositions().contains({ $0.x == x && $0.y == y }) ?? false
-                    drawables.append(TileDrawable(tile: square, points: points, rect: rect, onBoard: true, highlighted: highlighted))
+        board.allPositions.forEach { (position) in
+            let point = rectPoint(x: CGFloat(position.x) * squareSize, y: CGFloat(position.y) * squareSize)
+            let rect = CGRect(origin: point, size: CGSize(width: squareSize, height: squareSize))
+            let square = board.letter(at: position) ?? board.empty
+            if square == board.empty {
+                let isCenter = board.isCenter(at: position)
+                let acronym = isCenter ? "" : (
+                    Acronym.get(withSuffix: "L", multiplier: board.letterMultiplier(at: position)) ??
+                        Acronym.get(withSuffix: "W", multiplier: board.wordMultiplier(at: position))
+                )
+                drawables.append(SquareDrawable(rect: rect, acronym: acronym, shader: SquareShader(x: position.x, y: position.y, board: board)))
+                if isCenter {
+                    drawables.append(StarDrawable(rect: rect, shader: StarShader(color: Color.Square.Star, strokeColor: Color.Tile.Border, strokeWidth: 0.5)))
                 }
+            } else {
+                var points = 0
+                if board.size < 16 && !board.blanks.contains(position) {
+                    points = letterPoints?[square] ?? 0
+                }
+                
+                let highlighted = move?.getPositions().contains(position) ?? false //move?.getPositions().contains({ $0.x == x && $0.y == y }) ?? false
+                drawables.append(TileDrawable(tile: square, points: points, rect: rect, onBoard: true, highlighted: highlighted))
             }
         }
         self.drawables = drawables
     }
     
     func draw(renderer: Renderer) {
-        renderer.fillRect(rect, shader: shader)
-        renderer.strokeRect(rect, shader: shader)
-        drawables.forEach({ $0.draw(renderer) })
+        renderer.fill(rect: rect, shader: shader)
+        renderer.stroke(rect: rect, shader: shader)
+        drawables.forEach({ $0.draw(renderer: renderer) })
         range.forEach { (i) -> () in
             let offset = CGFloat(i) * squareSize
-            renderer.moveTo(CGPoint(x: offset, y: 0))
-            renderer.lineTo(CGPoint(x: offset, y: rect.size.height), shader: shader)
-            renderer.moveTo(CGPoint(x: 0, y: offset))
-            renderer.lineTo(CGPoint(x: rect.size.width, y: offset), shader: shader)
+            renderer.move(to: rectPoint(x: offset, y: 0))
+            renderer.line(to: rectPoint(x: offset, y: rect.size.height), shader: shader)
+            renderer.move(to: rectPoint(x: 0, y: offset))
+            renderer.line(to: rectPoint(x: rect.size.width, y: offset), shader: shader)
         }
     }
 }

@@ -9,18 +9,18 @@
 import Foundation
 import PapyrusCore
 
-enum PreferenceError : ErrorType {
-    case InsufficientPlayers
+enum PreferenceError : ErrorProtocol {
+    case insufficientPlayers
 }
 
 class Preferences {
     static let sharedInstance = Preferences()
     
-    let sections = [["Game Type": ["Scrabble", "Super Scrabble", "Wordfeud", "Words with Friends"]],
+    let sections = [["Board": ["", "", "", ""]],
                     ["Difficulty": ["Very Easy", "Easy", "Medium", "Hard"]],
-                    ["AI Players": ["0", "1", "2", "3", "4"]],
-                    ["Human Players": ["0", "1", "2", "3", "4"]],
-                    ["Dictionary": ["SOWPODS", "TWL06", "Words with Friends"]]]
+                    ["AI Players": ["0", "1", "2", "3"]],
+                    ["Human Players": ["0", "1", "2", "3"]],
+                    ["Dictionary": ["SOWPODS", "TWL06", "WWF"]]]
     var values = [Int: Int]()
     var originalValues = [Int: Int]()
     
@@ -34,8 +34,8 @@ class Preferences {
     
     func load() {
         let defaults = [0: 0, 1: 3, 2: 1, 3: 1, 4: 0]
-        for (index, _) in sections.enumerate() {
-            if let value = NSUserDefaults.standardUserDefaults().objectForKey(sections[index].keys.first!) as? Int {
+        for (index, _) in sections.enumerated() {
+            if let value = UserDefaults.standard.object(forKey: sections[index].keys.first!) as? Int {
                 values[index] = value
             } else {
                 values[index] = defaults[index]
@@ -46,25 +46,25 @@ class Preferences {
     
     func save() throws {
         if values[2]! + values[3]! < 2 {
-            throw PreferenceError.InsufficientPlayers
+            throw PreferenceError.insufficientPlayers
         }
-        for (index, _) in sections.enumerate() {
-            NSUserDefaults.standardUserDefaults().setInteger(values[index]!, forKey: sections[index].keys.first!)
+        for (index, _) in sections.enumerated() {
+            UserDefaults.standard.set(values[index]!, forKey: sections[index].keys.first!)
         }
-        NSUserDefaults.standardUserDefaults().synchronize()
+        UserDefaults.standard.synchronize()
         originalValues = values
     }
     
     var difficulty: Difficulty {
         switch values[1]! {
         case 0:
-            return .VeryEasy
+            return .veryEasy
         case 1:
-            return .Easy
+            return .easy
         case 2:
-            return .Medium
+            return .medium
         default:
-            return .Hard
+            return .hard
         }
     }
     

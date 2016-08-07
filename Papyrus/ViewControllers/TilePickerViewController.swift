@@ -15,8 +15,8 @@ class TilePickerViewController : UIViewController, TileViewDelegate {
     
     var completionHandler: ((Character) -> ())? = nil
     
-    func prepareForPresentation(bagType: Bag.Type) {
-        renderer.render(inView: view, characters: bagType.letterPoints.map({ $0.0 }), delegate: self)
+    func prepareForPresentation(of bag: Bag) {
+        renderer.render(inView: view, characters: bag.letterPoints.map({ $0.0 }), delegate: self)
         renderer.tileViews?.forEach({ $0.tappable = true })
     }
     
@@ -24,8 +24,19 @@ class TilePickerViewController : UIViewController, TileViewDelegate {
         completionHandler?(tileView.tile)
     }
     
-    func pickedUp(tileView: TileView) { }
-    func frameForDropping(tileView: TileView) -> CGRect { return .zero }
-    func dropped(tileView: TileView) { }
+    func dropRect(for tileView: TileView) -> CGRect {
+        fatalError()
+    }
     
+    func dropped(tileView: TileView) {
+        fatalError()
+    }
+    
+    func lifted(tileView: TileView) {
+        fatalError()
+    }
+    
+    func rearrange(tileView: TileView) -> Bool {
+        fatalError()
+    }
 }

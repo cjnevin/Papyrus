@@ -10,9 +10,10 @@ import Foundation
 import PapyrusCore
 
 extension UIFont {
-    static var tileLetterFontBig: UIFont { return .systemFontOfSize(20) }
-    static var tileLetterFontSmall: UIFont { return .systemFontOfSize(12) }
-    static var pointsFont: UIFont { return .systemFontOfSize(8) }
+    static var tileLetterFontBig: UIFont { return .systemFont(ofSize: 20) }
+    static var tileLetterFontSmall: UIFont { return .systemFont(ofSize: 11) }
+    static var pointsFontBig: UIFont { return .systemFont(ofSize: 10) }
+    static var pointsFontSmall: UIFont { return .systemFont(ofSize: 6) }
 }
 
 struct TileDrawable : Drawable {
@@ -21,7 +22,7 @@ struct TileDrawable : Drawable {
     private let rect: CGRect
     private let tile: Character
     private var letter: String {
-        return String(tile).uppercaseString
+        return String(tile).uppercased()
     }
     private let points: String
     private let onBoard: Bool
@@ -35,17 +36,18 @@ struct TileDrawable : Drawable {
     }
     
     func draw(renderer: Renderer) {
-        renderer.fillRect(rect, shader: shader)
-        renderer.strokeRect(rect, shader: shader)
+        renderer.fill(rect: rect, shader: shader)
+        renderer.stroke(rect: rect, shader: shader)
         
         let letterFont = onBoard ? UIFont.tileLetterFontSmall : UIFont.tileLetterFontBig
-        let letterText = NSAttributedString(string: letter, attributes: [NSFontAttributeName: letterFont])
+        let letterText = AttributedString(string: letter, attributes: [NSFontAttributeName: letterFont])
         let letterRect = rect.centeredRectForSize(letterText.size())
-        renderer.drawText(letterText, rect: letterRect, shader: shader)
+        renderer.draw(text: letterText, rect: letterRect, shader: shader)
         
-        let pointsText = NSAttributedString(string: points, attributes: [NSFontAttributeName: UIFont.pointsFont])
-        let pointsRect = CGRectInset(rect, 2, 1).innerRectForSize(pointsText.size(),
-            verticalAlignment: .Bottom, horizontalAlignment: .Right)
-        renderer.drawText(pointsText, rect: pointsRect, shader: shader)
+        let pointsFont = onBoard ? UIFont.pointsFontSmall : UIFont.pointsFontBig
+        let pointsText = AttributedString(string: points, attributes: [NSFontAttributeName: pointsFont])
+        let pointsRect = rect.insetBy(dx: onBoard ? 1 : 2, dy: 1).innerRectForSize(pointsText.size(),
+            verticalAlignment: .bottom, horizontalAlignment: .right)
+        renderer.draw(text: pointsText, rect: pointsRect, shader: shader)
     }
 }

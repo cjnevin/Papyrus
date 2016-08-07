@@ -21,10 +21,10 @@ struct StarDrawable : Drawable {
         guard let fillColor = shader.fillColor, lineColor = shader.strokeColor, lineWidth = shader.strokeWidth else {
             return
         }
-        renderer.drawPath(createStarPath(CGRectInset(rect, 5, 5)), color: fillColor, lineColor: lineColor, lineWidth: lineWidth, rect: rect)
+        renderer.draw(path: createStarPath(rect.insetBy(dx: 5, dy: 5)), color: fillColor, lineColor: lineColor, lineWidth: lineWidth, rect: rect)
     }
     
-    func createStarPath(rect: CGRect) -> CGPath {
+    func createStarPath(_ rect: CGRect) -> CGPath {
         let size = rect.size
         let numberOfPoints: CGFloat = 5
         
@@ -38,7 +38,7 @@ struct StarDrawable : Drawable {
         let stepAngle = CGFloat(2) * CGFloat(M_PI) / CGFloat(steps)
         let center = CGPoint(x: rect.origin.x + size.width / 2, y: rect.origin.y + size.height / 2)
         
-        let path = CGPathCreateMutable()
+        let path = CGMutablePath()
         
         for i in 0..<Int(steps) {
             let radius = i % 2 == 0 ? outerRadius : innerRadius
@@ -49,14 +49,14 @@ struct StarDrawable : Drawable {
             let y = radius * sin(angle) + center.y
             
             if i == 0 {
-                CGPathMoveToPoint(path, nil, x, y)
+                path.moveTo(nil, x: x, y: y)
             }
             else {
-                CGPathAddLineToPoint(path, nil, x, y)
+                path.addLineTo(nil, x: x, y: y)
             }
         }
         
-        CGPathCloseSubpath(path)
+        path.closeSubpath()
         return path
     }
 }

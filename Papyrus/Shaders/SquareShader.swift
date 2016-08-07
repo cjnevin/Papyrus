@@ -14,16 +14,17 @@ struct SquareShader: Shader {
     var textColor: UIColor?
     var strokeColor: UIColor?
     var strokeWidth: CGFloat?
-    init(x: Int, y: Int, board: Board) {
+    init(x: Int, y: Int, board: BoardType) {
         defer {
             textColor = fillColor?.multiplyChannels()
         }
-        if board.isCenterAt(x, y) {
+        let position = Position(x: x, y: y)
+        if board.isCenter(at: position) {
             fillColor = Color.Square.Center
             return
         }
         fillColor = Color.Square.color(
-            forLetterMultiplier: board.letterMultipliers[y][x],
+            forLetterMultiplier: board.letterMultiplier(at: position),
             wordMultiplier: board.wordMultipliers[y][x])
     }
 }

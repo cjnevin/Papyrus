@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="11129.15" systemVersion="15F34" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11103.10"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="KJP-b6-ceH" customClass="BoardCell" customModule="Papyrus" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="375" height="375"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KJP-b6-ceH" id="Vqg-2b-7ZF">
+                <frame key="frameInset" width="375" height="374"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="15E-q8-SXI" customClass="BoardView" customModule="Papyrus" customModuleProvider="target">
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                </subviews>
+                <constraints>
+                    <constraint firstAttribute="bottom" secondItem="15E-q8-SXI" secondAttribute="bottom" constant="8" id="47c-Fp-E07"/>
+                    <constraint firstAttribute="trailing" secondItem="15E-q8-SXI" secondAttribute="trailing" constant="8" id="SdS-nv-bjs"/>
+                    <constraint firstItem="15E-q8-SXI" firstAttribute="top" secondItem="Vqg-2b-7ZF" secondAttribute="top" constant="8" id="ZO9-zC-HhL"/>
+                    <constraint firstItem="15E-q8-SXI" firstAttribute="leading" secondItem="Vqg-2b-7ZF" secondAttribute="leading" constant="8" id="nsC-n4-fHQ"/>
+                </constraints>
+            </tableViewCellContentView>
+            <connections>
+                <outlet property="boardView" destination="15E-q8-SXI" id="Vgz-7Y-1je"/>
+            </connections>
+            <point key="canvasLocation" x="35" y="-97"/>
+        </tableViewCell>
+    </objects>
+</document>

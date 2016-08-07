@@ -10,15 +10,15 @@ import UIKit
 
 extension CGRect {
     enum HorizontalAlignment: CGFloat {
-        case Left = 0.0
-        case Center = 0.5
-        case Right = 1.0
+        case left = 0.0
+        case center = 0.5
+        case right = 1.0
     }
     
     enum VerticalAlignment: CGFloat {
-        case Top = 0.0
-        case Center = 0.5
-        case Bottom = 1.0
+        case top = 0.0
+        case center = 0.5
+        case bottom = 1.0
     }
     
     /// Sum of width plus height.
@@ -26,7 +26,7 @@ extension CGRect {
         return width + height
     }
     
-    func innerRectForSize(size: CGSize,
+    func innerRectForSize(_ size: CGSize,
         verticalAlignment: VerticalAlignment,
         horizontalAlignment: HorizontalAlignment) -> CGRect {
             return CGRect(
@@ -36,8 +36,19 @@ extension CGRect {
                 size: size)
     }
     
-    func centeredRectForSize(size: CGSize) -> CGRect {
-        return innerRectForSize(size, verticalAlignment: .Center,
-            horizontalAlignment: .Center)
+    func centeredRectForSize(_ size: CGSize) -> CGRect {
+        return innerRectForSize(size, verticalAlignment: .center,
+            horizontalAlignment: .center)
+    }
+    
+    var presentationRect: CGRect {
+        var rect = self.integral
+        if rect.size.width.truncatingRemainder(dividingBy: 2) != 0 {
+            rect.size.width -= 1
+        }
+        if rect.size.height.truncatingRemainder(dividingBy: 2) != 0 {
+            rect.size.height -= 1
+        }
+        return rect
     }
 }

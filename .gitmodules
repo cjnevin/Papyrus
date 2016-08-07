@@ -1,9 +1,6 @@
 [submodule "PapyrusCore"]
 	path = PapyrusCore
 	url = https://ChrisAU@github.com/ChrisAU/PapyrusCore.git
-[submodule "AnagramDictionary"]
-	path = AnagramDictionary
-	url = https://github.com/ChrisAU/AnagramDictionary.git
-[submodule "Lookup"]
-	path = Lookup
-	url = https://github.com/ChrisAU/LookupProtocol.git
+[submodule "WordplaysLookup"]
+	path = WordplaysLookup
+	url = https://github.com/ChrisAU/WordplaysLookup.git

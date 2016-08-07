@@ -8,26 +8,48 @@
 
 /* Begin PBXBuildFile section */
 		9901443F1C7E4E61005C81BF /* CGRect+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9901443E1C7E4E61005C81BF /* CGRect+Extensions.swift */; };
+		990EA09E1D2EF7D0003C1ECE /* SliderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 990EA09D1D2EF7D0003C1ECE /* SliderCell.swift */; };
+		990EA0A21D2EF7DA003C1ECE /* SliderCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 990EA0A11D2EF7DA003C1ECE /* SliderCell.xib */; };
 		99139C091D1F12430033E114 /* StarShader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99139C081D1F12430033E114 /* StarShader.swift */; };
 		99139C0C1D1F12770033E114 /* StarDrawable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99139C0B1D1F12770033E114 /* StarDrawable.swift */; };
 		991BC8F81CE71F55000D4C6B /* TilesRemainingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 991BC8F71CE71F55000D4C6B /* TilesRemainingViewController.swift */; };
+		991E21101D2AE82700A5058F /* RackPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 991E210F1D2AE82700A5058F /* RackPresenter.swift */; };
+		991E21131D2AEB2200A5058F /* BoardPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 991E21121D2AEB2200A5058F /* BoardPresenter.swift */; };
+		991E21151D2AEF8D00A5058F /* Presenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 991E21141D2AEF8D00A5058F /* Presenter.swift */; };
+		991E21171D2AF2BA00A5058F /* ScorePresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 991E21161D2AF2BA00A5058F /* ScorePresenter.swift */; };
+		991E21191D2B17F300A5058F /* ScoreDrawable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 991E21181D2B17F300A5058F /* ScoreDrawable.swift */; };
+		991E211B1D2B18EC00A5058F /* ScoreShader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 991E211A1D2B18EC00A5058F /* ScoreShader.swift */; };
+		991E211D1D2B1B0A00A5058F /* ScoresDrawable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 991E211C1D2B1B0A00A5058F /* ScoresDrawable.swift */; };
+		992AB9971D4C2CFC0032CCFC /* Scrabble.json in Resources */ = {isa = PBXBuildFile; fileRef = 992AB9931D4C2CFC0032CCFC /* Scrabble.json */; };
+		992AB9981D4C2CFC0032CCFC /* SuperScrabble.json in Resources */ = {isa = PBXBuildFile; fileRef = 992AB9941D4C2CFC0032CCFC /* SuperScrabble.json */; };
+		992AB9991D4C2CFC0032CCFC /* Wordfeud.json in Resources */ = {isa = PBXBuildFile; fileRef = 992AB9951D4C2CFC0032CCFC /* Wordfeud.json */; };
+		992AB99A1D4C2CFC0032CCFC /* WordsWithFriends.json in Resources */ = {isa = PBXBuildFile; fileRef = 992AB9961D4C2CFC0032CCFC /* WordsWithFriends.json */; };
 		993A53481C7EE273001F93CB /* Shader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 993A53461C7EE273001F93CB /* Shader.swift */; };
 		993A53491C7EE273001F93CB /* SquareShader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 993A53471C7EE273001F93CB /* SquareShader.swift */; };
 		993A534B1C7EE338001F93CB /* TileShader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 993A534A1C7EE338001F93CB /* TileShader.swift */; };
 		993A534D1C7EED0F001F93CB /* FillShader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 993A534C1C7EED0F001F93CB /* FillShader.swift */; };
 		994BFCC41CD7B7E900D96156 /* PreferencesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 994BFCC31CD7B7E900D96156 /* PreferencesViewController.swift */; };
 		994BFCC91CD7C31600D96156 /* Preferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = 994BFCC81CD7C31600D96156 /* Preferences.swift */; };
+		9951B58B1D294187007FD0EC /* AnagramDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9951B58A1D294187007FD0EC /* AnagramDictionary.swift */; };
+		9951B59A1D29B202007FD0EC /* GameManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9951B5991D29B202007FD0EC /* GameManager.swift */; };
+		9953DCF51D2EDA9000B0B367 /* BoardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9953DCF41D2EDA9000B0B367 /* BoardView.swift */; };
+		9953DCF91D2EDC5200B0B367 /* BoardCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9953DCF81D2EDC5200B0B367 /* BoardCell.swift */; };
+		9953DCFB1D2EDF4100B0B367 /* BoardCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9953DCFA1D2EDF4100B0B367 /* BoardCell.xib */; };
+		9953DD001D2EE26500B0B367 /* NibLoadable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9953DCFF1D2EE26500B0B367 /* NibLoadable.swift */; };
+		995B8B181D30493F0093EFB0 /* UIStoryboardSegue+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 995B8B171D30493F0093EFB0 /* UIStoryboardSegue+Extensions.swift */; };
 		99629C091B547DE800510036 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99629C081B547DE800510036 /* AppDelegate.swift */; };
 		99629C2D1B547DE800510036 /* PapyrusUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99629C2C1B547DE800510036 /* PapyrusUITests.swift */; };
+		9967E11C1D3108B80028FDA8 /* Movable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9967E1191D3108B80028FDA8 /* Movable.swift */; };
+		9967E11D1D3108B80028FDA8 /* Pressable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9967E11A1D3108B80028FDA8 /* Pressable.swift */; };
+		9967E11E1D3108B80028FDA8 /* Tappable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9967E11B1D3108B80028FDA8 /* Tappable.swift */; };
+		9972BA281D304BE0004DEAE8 /* PreferencesNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9972BA271D304BE0004DEAE8 /* PreferencesNavigationController.swift */; };
 		9975A2AF1CF8C9DE003D315F /* wordswithfriends_anagrams.bin in Resources */ = {isa = PBXBuildFile; fileRef = 9975A2AE1CF8C9DE003D315F /* wordswithfriends_anagrams.bin */; };
 		997D186B1BCC4EEC0050B872 /* PapyrusViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 997D186A1BCC4EEC0050B872 /* PapyrusViewController.swift */; };
 		997D186D1BCC570B0050B872 /* TileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 997D186C1BCC570B0050B872 /* TileView.swift */; };
 		998041D71CE73F4A0099EF4E /* TileDistributionRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 998041D61CE73F4A0099EF4E /* TileDistributionRenderer.swift */; };
 		998041D91CE73F4F0099EF4E /* TilesRemainingRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 998041D81CE73F4F0099EF4E /* TilesRemainingRenderer.swift */; };
-		998041DF1CE741480099EF4E /* TileSwapperViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 998041DE1CE741480099EF4E /* TileSwapperViewController.swift */; };
 		998041E41CE79B510099EF4E /* BoardShader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 998041E31CE79B510099EF4E /* BoardShader.swift */; };
 		999925B01CD091E9005D1C89 /* GamePresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 999925AF1CD091E9005D1C89 /* GamePresenter.swift */; };
-		99B5013B1BB0C7FB0098767C /* Watchdog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99B5013A1BB0C7FB0098767C /* Watchdog.swift */; };
 		99B861D31CF8CC7C00A9E041 /* sowpods_anagrams.bin in Resources */ = {isa = PBXBuildFile; fileRef = 99B861D11CF8CC7C00A9E041 /* sowpods_anagrams.bin */; };
 		99B861D41CF8CC7C00A9E041 /* twl06_anagrams.bin in Resources */ = {isa = PBXBuildFile; fileRef = 99B861D21CF8CC7C00A9E041 /* twl06_anagrams.bin */; };
 		99C3D1F31C7BAF510024B932 /* GameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99C3D1F21C7BAF510024B932 /* GameView.swift */; };
@@ -42,52 +64,9 @@
 		99FD433D1BA5901E00F50DCF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 99FD43351BA5901E00F50DCF /* Assets.xcassets */; };
 		99FD433E1BA5901E00F50DCF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 99FD43361BA5901E00F50DCF /* LaunchScreen.storyboard */; };
 		99FD433F1BA5901E00F50DCF /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 99FD43381BA5901E00F50DCF /* Main.storyboard */; };
-		99FD43411BA5901E00F50DCF /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 99FD433C1BA5901E00F50DCF /* Info.plist */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		99127A831D1FBFBF009DCF7A /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 99127A7E1D1FBFBF009DCF7A /* AnagramDictionary.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 99127A591D1FBEFD009DCF7A;
-			remoteInfo = AnagramDictionary;
-		};
-		99127A851D1FBFBF009DCF7A /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 99127A7E1D1FBFBF009DCF7A /* AnagramDictionary.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 99127A631D1FBEFD009DCF7A;
-			remoteInfo = AnagramDictionaryTests;
-		};
-		991AE45C1D1FC214001C98E4 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 991AE4561D1FC214001C98E4 /* Lookup.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 99127A931D1FC082009DCF7A;
-			remoteInfo = Lookup;
-		};
-		991AE45E1D1FC214001C98E4 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 991AE4561D1FC214001C98E4 /* Lookup.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 99127A9D1D1FC082009DCF7A;
-			remoteInfo = LookupTests;
-		};
-		991AE47D1D1FC7D8001C98E4 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 99127A7E1D1FBFBF009DCF7A /* AnagramDictionary.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = 99127A581D1FBEFD009DCF7A;
-			remoteInfo = AnagramDictionary;
-		};
-		991AE47F1D1FC7DA001C98E4 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 991AE4561D1FC214001C98E4 /* Lookup.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = 99127A921D1FC082009DCF7A;
-			remoteInfo = Lookup;
-		};
 		99629C1E1B547DE800510036 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 99629BFD1B547DE800510036 /* Project object */;
@@ -101,6 +80,27 @@
 			proxyType = 1;
 			remoteGlobalIDString = 99629C041B547DE800510036;
 			remoteInfo = Papyrus;
+		};
+		99D316F61D2C43BF00BC4476 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 99D316F11D2C43BF00BC4476 /* WordplaysLookup.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 99D316D21D2C3ABC00BC4476;
+			remoteInfo = WordplaysLookup;
+		};
+		99D316F81D2C43BF00BC4476 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 99D316F11D2C43BF00BC4476 /* WordplaysLookup.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 99D316DC1D2C3ABC00BC4476;
+			remoteInfo = WordplaysLookupTests;
+		};
+		99D316FA1D2C43C700BC4476 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 99D316F11D2C43BF00BC4476 /* WordplaysLookup.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 99D316D11D2C3ABC00BC4476;
+			remoteInfo = WordplaysLookup;
 		};
 		99FD435B1BA59BF900F50DCF /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -127,17 +127,35 @@
 
 /* Begin PBXFileReference section */
 		9901443E1C7E4E61005C81BF /* CGRect+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CGRect+Extensions.swift"; sourceTree = "<group>"; };
-		99127A7E1D1FBFBF009DCF7A /* AnagramDictionary.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = AnagramDictionary.xcodeproj; sourceTree = "<group>"; };
+		990EA09D1D2EF7D0003C1ECE /* SliderCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SliderCell.swift; sourceTree = "<group>"; };
+		990EA0A11D2EF7DA003C1ECE /* SliderCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SliderCell.xib; sourceTree = "<group>"; };
 		99139C081D1F12430033E114 /* StarShader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StarShader.swift; sourceTree = "<group>"; };
 		99139C0B1D1F12770033E114 /* StarDrawable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StarDrawable.swift; sourceTree = "<group>"; };
-		991AE4561D1FC214001C98E4 /* Lookup.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Lookup.xcodeproj; path = Lookup/Lookup.xcodeproj; sourceTree = SOURCE_ROOT; };
 		991BC8F71CE71F55000D4C6B /* TilesRemainingViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TilesRemainingViewController.swift; sourceTree = "<group>"; };
+		991E210F1D2AE82700A5058F /* RackPresenter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RackPresenter.swift; sourceTree = "<group>"; };
+		991E21121D2AEB2200A5058F /* BoardPresenter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BoardPresenter.swift; sourceTree = "<group>"; };
+		991E21141D2AEF8D00A5058F /* Presenter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Presenter.swift; sourceTree = "<group>"; };
+		991E21161D2AF2BA00A5058F /* ScorePresenter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScorePresenter.swift; sourceTree = "<group>"; };
+		991E21181D2B17F300A5058F /* ScoreDrawable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScoreDrawable.swift; sourceTree = "<group>"; };
+		991E211A1D2B18EC00A5058F /* ScoreShader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScoreShader.swift; sourceTree = "<group>"; };
+		991E211C1D2B1B0A00A5058F /* ScoresDrawable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScoresDrawable.swift; sourceTree = "<group>"; };
+		992AB9931D4C2CFC0032CCFC /* Scrabble.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Scrabble.json; sourceTree = "<group>"; };
+		992AB9941D4C2CFC0032CCFC /* SuperScrabble.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = SuperScrabble.json; sourceTree = "<group>"; };
+		992AB9951D4C2CFC0032CCFC /* Wordfeud.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Wordfeud.json; sourceTree = "<group>"; };
+		992AB9961D4C2CFC0032CCFC /* WordsWithFriends.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = WordsWithFriends.json; sourceTree = "<group>"; };
 		993A53461C7EE273001F93CB /* Shader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Shader.swift; sourceTree = "<group>"; };
 		993A53471C7EE273001F93CB /* SquareShader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SquareShader.swift; sourceTree = "<group>"; };
 		993A534A1C7EE338001F93CB /* TileShader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TileShader.swift; sourceTree = "<group>"; };
 		993A534C1C7EED0F001F93CB /* FillShader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FillShader.swift; sourceTree = "<group>"; };
 		994BFCC31CD7B7E900D96156 /* PreferencesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PreferencesViewController.swift; sourceTree = "<group>"; };
 		994BFCC81CD7C31600D96156 /* Preferences.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Preferences.swift; sourceTree = "<group>"; };
+		9951B58A1D294187007FD0EC /* AnagramDictionary.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnagramDictionary.swift; sourceTree = "<group>"; };
+		9951B5991D29B202007FD0EC /* GameManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameManager.swift; sourceTree = "<group>"; };
+		9953DCF41D2EDA9000B0B367 /* BoardView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BoardView.swift; sourceTree = "<group>"; };
+		9953DCF81D2EDC5200B0B367 /* BoardCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BoardCell.swift; sourceTree = "<group>"; };
+		9953DCFA1D2EDF4100B0B367 /* BoardCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = BoardCell.xib; sourceTree = "<group>"; };
+		9953DCFF1D2EE26500B0B367 /* NibLoadable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NibLoadable.swift; sourceTree = "<group>"; };
+		995B8B171D30493F0093EFB0 /* UIStoryboardSegue+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIStoryboardSegue+Extensions.swift"; sourceTree = "<group>"; };
 		99629C051B547DE800510036 /* Papyrus.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Papyrus.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		99629C081B547DE800510036 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		99629C1D1B547DE800510036 /* PapyrusTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PapyrusTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -145,19 +163,22 @@
 		99629C281B547DE800510036 /* PapyrusUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PapyrusUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		99629C2C1B547DE800510036 /* PapyrusUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PapyrusUITests.swift; sourceTree = "<group>"; };
 		99629C2E1B547DE800510036 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		9967E1191D3108B80028FDA8 /* Movable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Movable.swift; sourceTree = "<group>"; };
+		9967E11A1D3108B80028FDA8 /* Pressable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Pressable.swift; sourceTree = "<group>"; };
+		9967E11B1D3108B80028FDA8 /* Tappable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Tappable.swift; sourceTree = "<group>"; };
+		9972BA271D304BE0004DEAE8 /* PreferencesNavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PreferencesNavigationController.swift; sourceTree = "<group>"; };
 		9975A2AE1CF8C9DE003D315F /* wordswithfriends_anagrams.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = wordswithfriends_anagrams.bin; sourceTree = "<group>"; };
 		997D186A1BCC4EEC0050B872 /* PapyrusViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PapyrusViewController.swift; sourceTree = "<group>"; };
 		997D186C1BCC570B0050B872 /* TileView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TileView.swift; path = Papyrus/Views/TileView.swift; sourceTree = SOURCE_ROOT; };
 		998041D61CE73F4A0099EF4E /* TileDistributionRenderer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TileDistributionRenderer.swift; sourceTree = "<group>"; };
 		998041D81CE73F4F0099EF4E /* TilesRemainingRenderer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TilesRemainingRenderer.swift; sourceTree = "<group>"; };
-		998041DE1CE741480099EF4E /* TileSwapperViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TileSwapperViewController.swift; sourceTree = "<group>"; };
 		998041E31CE79B510099EF4E /* BoardShader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BoardShader.swift; sourceTree = "<group>"; };
 		999925AF1CD091E9005D1C89 /* GamePresenter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GamePresenter.swift; sourceTree = "<group>"; };
-		99B5013A1BB0C7FB0098767C /* Watchdog.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Watchdog.swift; path = ../Papyrus/Watchdog.swift; sourceTree = "<group>"; };
 		99B861D11CF8CC7C00A9E041 /* sowpods_anagrams.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = sowpods_anagrams.bin; sourceTree = "<group>"; };
 		99B861D21CF8CC7C00A9E041 /* twl06_anagrams.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = twl06_anagrams.bin; sourceTree = "<group>"; };
 		99C3D1F21C7BAF510024B932 /* GameView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameView.swift; sourceTree = "<group>"; };
 		99CDF8551CD417C30007DC89 /* TilePickerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TilePickerViewController.swift; sourceTree = "<group>"; };
+		99D316F11D2C43BF00BC4476 /* WordplaysLookup.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = WordplaysLookup.xcodeproj; path = WordplaysLookup/WordplaysLookup.xcodeproj; sourceTree = SOURCE_ROOT; };
 		99D36F491C7E6B2B00A5ADA8 /* BoardDrawable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BoardDrawable.swift; sourceTree = "<group>"; };
 		99D36F4A1C7E6B2B00A5ADA8 /* Drawable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Drawable.swift; sourceTree = "<group>"; };
 		99D36F4B1C7E6B2B00A5ADA8 /* SquareDrawable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SquareDrawable.swift; sourceTree = "<group>"; };
@@ -197,34 +218,36 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		990648E41D3052360024409D /* Cells */ = {
+			isa = PBXGroup;
+			children = (
+				9953DCF81D2EDC5200B0B367 /* BoardCell.swift */,
+				9953DCFA1D2EDF4100B0B367 /* BoardCell.xib */,
+				990EA09D1D2EF7D0003C1ECE /* SliderCell.swift */,
+				990EA0A11D2EF7DA003C1ECE /* SliderCell.xib */,
+			);
+			name = Cells;
+			sourceTree = "<group>";
+		};
 		99127A391D1FBE4B009DCF7A /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
-				99127A7E1D1FBFBF009DCF7A /* AnagramDictionary.xcodeproj */,
-				991AE4561D1FC214001C98E4 /* Lookup.xcodeproj */,
 				99FD43561BA59BF900F50DCF /* PapyrusCore.xcodeproj */,
-				99B5013A1BB0C7FB0098767C /* Watchdog.swift */,
+				99D316F11D2C43BF00BC4476 /* WordplaysLookup.xcodeproj */,
 			);
 			name = Libraries;
 			path = AnagramDictionary;
 			sourceTree = SOURCE_ROOT;
 		};
-		99127A7F1D1FBFBF009DCF7A /* Products */ = {
+		992AB9921D4C2CFC0032CCFC /* Configurations */ = {
 			isa = PBXGroup;
 			children = (
-				99127A841D1FBFBF009DCF7A /* AnagramDictionary.framework */,
-				99127A861D1FBFBF009DCF7A /* AnagramDictionaryTests.xctest */,
+				992AB9931D4C2CFC0032CCFC /* Scrabble.json */,
+				992AB9941D4C2CFC0032CCFC /* SuperScrabble.json */,
+				992AB9951D4C2CFC0032CCFC /* Wordfeud.json */,
+				992AB9961D4C2CFC0032CCFC /* WordsWithFriends.json */,
 			);
-			name = Products;
-			sourceTree = "<group>";
-		};
-		991AE4571D1FC214001C98E4 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				991AE45D1D1FC214001C98E4 /* Lookup.framework */,
-				991AE45F1D1FC214001C98E4 /* LookupTests.xctest */,
-			);
-			name = Products;
+			path = Configurations;
 			sourceTree = "<group>";
 		};
 		993A53451C7EE273001F93CB /* Shaders */ = {
@@ -233,6 +256,7 @@
 				993A53461C7EE273001F93CB /* Shader.swift */,
 				993A534C1C7EED0F001F93CB /* FillShader.swift */,
 				998041E31CE79B510099EF4E /* BoardShader.swift */,
+				991E211A1D2B18EC00A5058F /* ScoreShader.swift */,
 				993A53471C7EE273001F93CB /* SquareShader.swift */,
 				99139C081D1F12430033E114 /* StarShader.swift */,
 				993A534A1C7EE338001F93CB /* TileShader.swift */,
@@ -243,9 +267,22 @@
 		994BFCC71CD7C30E00D96156 /* DataSources */ = {
 			isa = PBXGroup;
 			children = (
+				9951B58A1D294187007FD0EC /* AnagramDictionary.swift */,
+				9951B5991D29B202007FD0EC /* GameManager.swift */,
 				994BFCC81CD7C31600D96156 /* Preferences.swift */,
 			);
 			path = DataSources;
+			sourceTree = "<group>";
+		};
+		9953DCFE1D2EE26500B0B367 /* Protocols */ = {
+			isa = PBXGroup;
+			children = (
+				9953DCFF1D2EE26500B0B367 /* NibLoadable.swift */,
+				9967E1191D3108B80028FDA8 /* Movable.swift */,
+				9967E11A1D3108B80028FDA8 /* Pressable.swift */,
+				9967E11B1D3108B80028FDA8 /* Tappable.swift */,
+			);
+			path = Protocols;
 			sourceTree = "<group>";
 		};
 		99629BFC1B547DE800510036 = {
@@ -279,6 +316,7 @@
 				99629C581B547E8200510036 /* ViewControllers */,
 				999925AE1CD091E9005D1C89 /* Presenters */,
 				99629C5A1B547E8200510036 /* Views */,
+				9953DCFE1D2EE26500B0B367 /* Protocols */,
 				99DF9E0D1B54ED7300F58DA7 /* Extensions */,
 				99127A391D1FBE4B009DCF7A /* Libraries */,
 				99FD43341BA5901E00F50DCF /* Resources */,
@@ -307,9 +345,9 @@
 			isa = PBXGroup;
 			children = (
 				997D186A1BCC4EEC0050B872 /* PapyrusViewController.swift */,
+				9972BA271D304BE0004DEAE8 /* PreferencesNavigationController.swift */,
 				994BFCC31CD7B7E900D96156 /* PreferencesViewController.swift */,
 				99CDF8551CD417C30007DC89 /* TilePickerViewController.swift */,
-				998041DE1CE741480099EF4E /* TileSwapperViewController.swift */,
 				991BC8F71CE71F55000D4C6B /* TilesRemainingViewController.swift */,
 			);
 			name = ViewControllers;
@@ -319,6 +357,8 @@
 		99629C5A1B547E8200510036 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				990648E41D3052360024409D /* Cells */,
+				9953DCF41D2EDA9000B0B367 /* BoardView.swift */,
 				99C3D1F21C7BAF510024B932 /* GameView.swift */,
 				997D186C1BCC570B0050B872 /* TileView.swift */,
 			);
@@ -329,9 +369,22 @@
 		999925AE1CD091E9005D1C89 /* Presenters */ = {
 			isa = PBXGroup;
 			children = (
+				991E21141D2AEF8D00A5058F /* Presenter.swift */,
+				991E21121D2AEB2200A5058F /* BoardPresenter.swift */,
 				999925AF1CD091E9005D1C89 /* GamePresenter.swift */,
+				991E210F1D2AE82700A5058F /* RackPresenter.swift */,
+				991E21161D2AF2BA00A5058F /* ScorePresenter.swift */,
 			);
 			path = Presenters;
+			sourceTree = "<group>";
+		};
+		99D316F21D2C43BF00BC4476 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				99D316F71D2C43BF00BC4476 /* WordplaysLookup.framework */,
+				99D316F91D2C43BF00BC4476 /* WordplaysLookupTests.xctest */,
+			);
+			name = Products;
 			sourceTree = "<group>";
 		};
 		99D36F481C7E6B2B00A5ADA8 /* Drawables */ = {
@@ -339,6 +392,8 @@
 			children = (
 				99D36F4A1C7E6B2B00A5ADA8 /* Drawable.swift */,
 				99D36F491C7E6B2B00A5ADA8 /* BoardDrawable.swift */,
+				991E21181D2B17F300A5058F /* ScoreDrawable.swift */,
+				991E211C1D2B1B0A00A5058F /* ScoresDrawable.swift */,
 				99D36F4B1C7E6B2B00A5ADA8 /* SquareDrawable.swift */,
 				99139C0B1D1F12770033E114 /* StarDrawable.swift */,
 				99D36F4C1C7E6B2B00A5ADA8 /* TileDrawable.swift */,
@@ -362,6 +417,7 @@
 			children = (
 				9901443E1C7E4E61005C81BF /* CGRect+Extensions.swift */,
 				99DF9E0E1B54ED8200F58DA7 /* UIColor+Papyrus.swift */,
+				995B8B171D30493F0093EFB0 /* UIStoryboardSegue+Extensions.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -372,6 +428,7 @@
 				99FD43351BA5901E00F50DCF /* Assets.xcassets */,
 				99FD43361BA5901E00F50DCF /* LaunchScreen.storyboard */,
 				99FD43381BA5901E00F50DCF /* Main.storyboard */,
+				992AB9921D4C2CFC0032CCFC /* Configurations */,
 				99FD433A1BA5901E00F50DCF /* Dictionaries */,
 				99FD433C1BA5901E00F50DCF /* Info.plist */,
 			);
@@ -411,8 +468,7 @@
 			buildRules = (
 			);
 			dependencies = (
-				991AE4801D1FC7DA001C98E4 /* PBXTargetDependency */,
-				991AE47E1D1FC7D8001C98E4 /* PBXTargetDependency */,
+				99D316FB1D2C43C700BC4476 /* PBXTargetDependency */,
 				99FD43601BA59C0800F50DCF /* PBXTargetDependency */,
 			);
 			name = Papyrus;
@@ -464,18 +520,22 @@
 			attributes = {
 				LastSwiftMigration = 0710;
 				LastSwiftUpdateCheck = 0710;
-				LastUpgradeCheck = 0700;
+				LastUpgradeCheck = 0800;
 				ORGANIZATIONNAME = CJNevin;
 				TargetAttributes = {
 					99629C041B547DE800510036 = {
 						CreatedOnToolsVersion = 7.0;
+						LastSwiftMigration = 0800;
+						ProvisioningStyle = Manual;
 					};
 					99629C1C1B547DE800510036 = {
 						CreatedOnToolsVersion = 7.0;
+						LastSwiftMigration = 0800;
 						TestTargetID = 99629C041B547DE800510036;
 					};
 					99629C271B547DE800510036 = {
 						CreatedOnToolsVersion = 7.0;
+						LastSwiftMigration = 0800;
 						TestTargetID = 99629C041B547DE800510036;
 					};
 				};
@@ -493,16 +553,12 @@
 			projectDirPath = "";
 			projectReferences = (
 				{
-					ProductGroup = 99127A7F1D1FBFBF009DCF7A /* Products */;
-					ProjectRef = 99127A7E1D1FBFBF009DCF7A /* AnagramDictionary.xcodeproj */;
-				},
-				{
-					ProductGroup = 991AE4571D1FC214001C98E4 /* Products */;
-					ProjectRef = 991AE4561D1FC214001C98E4 /* Lookup.xcodeproj */;
-				},
-				{
 					ProductGroup = 99FD43571BA59BF900F50DCF /* Products */;
 					ProjectRef = 99FD43561BA59BF900F50DCF /* PapyrusCore.xcodeproj */;
+				},
+				{
+					ProductGroup = 99D316F21D2C43BF00BC4476 /* Products */;
+					ProjectRef = 99D316F11D2C43BF00BC4476 /* WordplaysLookup.xcodeproj */;
 				},
 			);
 			projectRoot = "";
@@ -515,32 +571,18 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
-		99127A841D1FBFBF009DCF7A /* AnagramDictionary.framework */ = {
+		99D316F71D2C43BF00BC4476 /* WordplaysLookup.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
-			path = AnagramDictionary.framework;
-			remoteRef = 99127A831D1FBFBF009DCF7A /* PBXContainerItemProxy */;
+			path = WordplaysLookup.framework;
+			remoteRef = 99D316F61D2C43BF00BC4476 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		99127A861D1FBFBF009DCF7A /* AnagramDictionaryTests.xctest */ = {
+		99D316F91D2C43BF00BC4476 /* WordplaysLookupTests.xctest */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.cfbundle;
-			path = AnagramDictionaryTests.xctest;
-			remoteRef = 99127A851D1FBFBF009DCF7A /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		991AE45D1D1FC214001C98E4 /* Lookup.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = Lookup.framework;
-			remoteRef = 991AE45C1D1FC214001C98E4 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		991AE45F1D1FC214001C98E4 /* LookupTests.xctest */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.cfbundle;
-			path = LookupTests.xctest;
-			remoteRef = 991AE45E1D1FC214001C98E4 /* PBXContainerItemProxy */;
+			path = WordplaysLookupTests.xctest;
+			remoteRef = 99D316F81D2C43BF00BC4476 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		99FD435C1BA59BF900F50DCF /* PapyrusCore.framework */ = {
@@ -565,12 +607,17 @@
 			buildActionMask = 2147483647;
 			files = (
 				99FD433E1BA5901E00F50DCF /* LaunchScreen.storyboard in Resources */,
-				99FD43411BA5901E00F50DCF /* Info.plist in Resources */,
 				99B861D41CF8CC7C00A9E041 /* twl06_anagrams.bin in Resources */,
+				990EA0A21D2EF7DA003C1ECE /* SliderCell.xib in Resources */,
+				992AB9981D4C2CFC0032CCFC /* SuperScrabble.json in Resources */,
 				9975A2AF1CF8C9DE003D315F /* wordswithfriends_anagrams.bin in Resources */,
+				992AB9971D4C2CFC0032CCFC /* Scrabble.json in Resources */,
+				9953DCFB1D2EDF4100B0B367 /* BoardCell.xib in Resources */,
 				99FD433D1BA5901E00F50DCF /* Assets.xcassets in Resources */,
+				992AB9991D4C2CFC0032CCFC /* Wordfeud.json in Resources */,
 				99FD433F1BA5901E00F50DCF /* Main.storyboard in Resources */,
 				99B861D31CF8CC7C00A9E041 /* sowpods_anagrams.bin in Resources */,
+				992AB99A1D4C2CFC0032CCFC /* WordsWithFriends.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -595,6 +642,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				991E21101D2AE82700A5058F /* RackPresenter.swift in Sources */,
 				993A534B1C7EE338001F93CB /* TileShader.swift in Sources */,
 				993A53481C7EE273001F93CB /* Shader.swift in Sources */,
 				99D36F501C7E6B2B00A5ADA8 /* BoardDrawable.swift in Sources */,
@@ -602,26 +650,41 @@
 				997D186D1BCC570B0050B872 /* TileView.swift in Sources */,
 				99D36F521C7E6B2B00A5ADA8 /* SquareDrawable.swift in Sources */,
 				993A534D1C7EED0F001F93CB /* FillShader.swift in Sources */,
+				9951B58B1D294187007FD0EC /* AnagramDictionary.swift in Sources */,
+				9953DCF91D2EDC5200B0B367 /* BoardCell.swift in Sources */,
 				998041E41CE79B510099EF4E /* BoardShader.swift in Sources */,
+				991E211D1D2B1B0A00A5058F /* ScoresDrawable.swift in Sources */,
 				998041D71CE73F4A0099EF4E /* TileDistributionRenderer.swift in Sources */,
 				993A53491C7EE273001F93CB /* SquareShader.swift in Sources */,
+				991E21151D2AEF8D00A5058F /* Presenter.swift in Sources */,
+				9953DCF51D2EDA9000B0B367 /* BoardView.swift in Sources */,
 				9901443F1C7E4E61005C81BF /* CGRect+Extensions.swift in Sources */,
 				994BFCC91CD7C31600D96156 /* Preferences.swift in Sources */,
-				998041DF1CE741480099EF4E /* TileSwapperViewController.swift in Sources */,
+				991E21131D2AEB2200A5058F /* BoardPresenter.swift in Sources */,
+				9967E11D1D3108B80028FDA8 /* Pressable.swift in Sources */,
+				990EA09E1D2EF7D0003C1ECE /* SliderCell.swift in Sources */,
+				9953DD001D2EE26500B0B367 /* NibLoadable.swift in Sources */,
+				995B8B181D30493F0093EFB0 /* UIStoryboardSegue+Extensions.swift in Sources */,
 				99139C0C1D1F12770033E114 /* StarDrawable.swift in Sources */,
-				99B5013B1BB0C7FB0098767C /* Watchdog.swift in Sources */,
+				991E211B1D2B18EC00A5058F /* ScoreShader.swift in Sources */,
 				999925B01CD091E9005D1C89 /* GamePresenter.swift in Sources */,
 				99CDF8561CD417C30007DC89 /* TilePickerViewController.swift in Sources */,
 				99D36F551C7E6B2B00A5ADA8 /* Renderer.swift in Sources */,
+				9951B59A1D29B202007FD0EC /* GameManager.swift in Sources */,
 				99629C091B547DE800510036 /* AppDelegate.swift in Sources */,
 				99DF9E0F1B54ED8200F58DA7 /* UIColor+Papyrus.swift in Sources */,
 				99D36F511C7E6B2B00A5ADA8 /* Drawable.swift in Sources */,
 				994BFCC41CD7B7E900D96156 /* PreferencesViewController.swift in Sources */,
 				99D36F541C7E6B2B00A5ADA8 /* CGContext+Renderer.swift in Sources */,
 				991BC8F81CE71F55000D4C6B /* TilesRemainingViewController.swift in Sources */,
+				991E21191D2B17F300A5058F /* ScoreDrawable.swift in Sources */,
+				9972BA281D304BE0004DEAE8 /* PreferencesNavigationController.swift in Sources */,
+				9967E11C1D3108B80028FDA8 /* Movable.swift in Sources */,
 				99C3D1F31C7BAF510024B932 /* GameView.swift in Sources */,
 				997D186B1BCC4EEC0050B872 /* PapyrusViewController.swift in Sources */,
+				991E21171D2AF2BA00A5058F /* ScorePresenter.swift in Sources */,
 				99139C091D1F12430033E114 /* StarShader.swift in Sources */,
+				9967E11E1D3108B80028FDA8 /* Tappable.swift in Sources */,
 				99D36F531C7E6B2B00A5ADA8 /* TileDrawable.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -644,16 +707,6 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		991AE47E1D1FC7D8001C98E4 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = AnagramDictionary;
-			targetProxy = 991AE47D1D1FC7D8001C98E4 /* PBXContainerItemProxy */;
-		};
-		991AE4801D1FC7DA001C98E4 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = Lookup;
-			targetProxy = 991AE47F1D1FC7DA001C98E4 /* PBXContainerItemProxy */;
-		};
 		99629C1F1B547DE800510036 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 99629C041B547DE800510036 /* Papyrus */;
@@ -663,6 +716,11 @@
 			isa = PBXTargetDependency;
 			target = 99629C041B547DE800510036 /* Papyrus */;
 			targetProxy = 99629C291B547DE800510036 /* PBXContainerItemProxy */;
+		};
+		99D316FB1D2C43C700BC4476 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = WordplaysLookup;
+			targetProxy = 99D316FA1D2C43C700BC4476 /* PBXContainerItemProxy */;
 		};
 		99FD43601BA59C0800F50DCF /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -778,11 +836,13 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_OPTIMIZATION_LEVEL = fast;
 				INFOPLIST_FILE = "$(SRCROOT)/Papyrus/Resources/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.cjnevin.Papyrus;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
@@ -791,10 +851,13 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = "$(SRCROOT)/Papyrus/Resources/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.cjnevin.Papyrus;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
@@ -808,6 +871,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.cjnevin.PapyrusTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Papyrus.app/Papyrus";
 			};
 			name = Debug;
@@ -820,6 +884,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.cjnevin.PapyrusTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Papyrus.app/Papyrus";
 			};
 			name = Release;
@@ -831,6 +896,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.cjnevin.PapyrusUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
 				TEST_TARGET_NAME = Papyrus;
 				USES_XCTRUNNER = YES;
 			};
@@ -843,6 +909,8 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.cjnevin.PapyrusUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_VERSION = 3.0;
 				TEST_TARGET_NAME = Papyrus;
 				USES_XCTRUNNER = YES;
 			};

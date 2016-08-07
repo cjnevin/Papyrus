@@ -10,23 +10,36 @@ import UIKit
 import PapyrusCore
 
 protocol TileViewDelegate {
-    func pickedUp(tileView: TileView)
-    func frameForDropping(tileView: TileView) -> CGRect
+    func dropRect(for tileView: TileView) -> CGRect
     func dropped(tileView: TileView)
+    func lifted(tileView: TileView)
+    func rearrange(tileView: TileView) -> Bool
     func tapped(tileView: TileView)
 }
 
 class TileView: UIView {
+    private var velocity = CGPoint.zero
+    
     var draggable: Bool = false {
         didSet {
-            draggable ? makeDraggable() : makeUndraggable()
+            if draggable {
+                makePressable(selector: #selector(pressed))
+                makeMovable(selector: #selector(moved))
+            } else {
+                makeUnpressable()
+                makeImmovable()
+            }
         }
     }
     
     var tappable: Bool = false {
         didSet {
-            tappable ? makeTappable() : makeUntappable()
+            tappable ? makeTappable(selector: #selector(tapped)) : makeUntappable()
         }
+    }
+    
+    var isPlaced: Bool {
+        return x != nil && y != nil
     }
     
     var initialFrame: CGRect!
@@ -67,96 +80,87 @@ class TileView: UIView {
         self.tile = tile
         self.points = points
         self.onBoard = onBoard
-        super.init(frame: frame)
+        super.init(frame: frame.presentationRect)
         initialPoint = center
-        initialFrame = frame
+        initialFrame = self.frame
     }
 
     override func didMoveToSuperview() {
         super.didMoveToSuperview()
-        contentMode = .Redraw
+        contentMode = .redraw
     }
     
-    override func drawRect(rect: CGRect) {
+    override func draw(_ rect: CGRect) {
         guard let tile = tile, context = UIGraphicsGetCurrentContext() else {
             return
         }
         let drawable = TileDrawable(tile: tile, points: points, rect: rect, onBoard: onBoard, highlighted: highlighted)
-        drawable.draw(context)
+        drawable.draw(renderer: context)
     }
 }
 
 // MARK: - UIGestures
 
-extension TileView : UIGestureRecognizerDelegate {
-    func makeDraggable() {
-        let panGesture = UIPanGestureRecognizer(target: self, action: #selector(didPan))
-        panGesture.delegate = self
-        addGestureRecognizer(panGesture)
-        
-        let pressGesture = UILongPressGestureRecognizer(target: self, action: #selector(didPress))
-        pressGesture.minimumPressDuration = 0.001
-        pressGesture.delegate = self
-        addGestureRecognizer(pressGesture)
+extension TileView: Movable {
+    func moved(with gesture: UIPanGestureRecognizer) {
+        if gesture.state == .changed {
+            velocity = gesture.velocity(in: superview)
+            let translation = gesture.translation(in: superview)
+            center = CGPoint(x: center.x + translation.x, y: center.y + translation.y)
+            gesture.setTranslation(CGPoint.zero, in: superview)
+        }
+    }
+}
+
+extension TileView: Pressable {
+    func move(to newFrame: CGRect) {
+        let normalScale: CGFloat = 1.0
+        transform = CGAffineTransform(scaleX: normalScale, y: normalScale)
+        center = CGPoint(x: newFrame.midX, y: newFrame.midY)
+        bounds = newFrame
     }
     
-    func makeUndraggable() {
-        gestureRecognizers?.forEach { if $0 is UIPanGestureRecognizer || $0 is UILongPressGestureRecognizer { removeGestureRecognizer($0) } }
-    }
-    
-    func makeTappable() {
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(didTap))
-        tapGesture.delegate = self
-        addGestureRecognizer(tapGesture)
-    }
-    
-    func makeUntappable() {
-        gestureRecognizers?.forEach { if $0 is UITapGestureRecognizer { removeGestureRecognizer($0) } }
-    }
-    
-    func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWithGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
-        return gestureRecognizers?.contains(gestureRecognizer) == true &&
-            gestureRecognizers?.contains(otherGestureRecognizer) == true
-    }
-    
-    func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldReceiveTouch touch: UITouch) -> Bool {
-        return true
-    }
-    
-    func didTap(tapGesture: UITapGestureRecognizer) {
-        delegate?.tapped(self)
-    }
-    
-    func didPress(pressGesture: UILongPressGestureRecognizer) {
-        switch pressGesture.state {
-        case .Began:
-            delegate?.pickedUp(self)
+    func pressed(with gesture: UILongPressGestureRecognizer) {
+        let shrunkScale: CGFloat = 0.9
+        let animationDuration: TimeInterval = 0.15
+        switch gesture.state {
+        case .began:
+            delegate?.lifted(tileView: self)
             let center = self.center
-            UIView.animateWithDuration(0.1, animations: {
+            UIView.animate(withDuration: animationDuration) {
                 self.bounds = self.initialFrame
                 self.center = center
-                self.superview?.bringSubviewToFront(self)
-                self.transform = CGAffineTransformMakeScale(0.9, 0.9)
-            })
-        case .Cancelled, .Ended, .Failed:
-            guard let newFrame = delegate?.frameForDropping(self) else {
+                self.superview?.bringSubview(toFront: self)
+                self.transform = CGAffineTransform(scaleX: shrunkScale, y: shrunkScale)
+            }
+        case .cancelled, .ended, .failed:
+            guard let newFrame = delegate?.dropRect(for: self) else {
                 return
             }
-            UIView.animateWithDuration(0.1, animations: {
-                self.transform = CGAffineTransformMakeScale(1.0, 1.0)
-                self.center = CGPoint(x: CGRectGetMidX(newFrame), y: CGRectGetMidY(newFrame))
-                self.bounds = newFrame
-            }, completion: { (complete) in
-                self.delegate?.dropped(self)
+            // Let parent handle the animation of this tile moving to a new position
+            if newFrame.equalTo(initialFrame) && delegate?.rearrange(tileView: self) == true {
+                return
+            }
+            UIView.animate(withDuration: animationDuration, animations: {
+                self.move(to: newFrame)
+            }, completion: { _ in
+                self.delegate?.dropped(tileView: self)
             })
         default:
             break
         }
     }
-    
-    func didPan(panGesture: UIPanGestureRecognizer) {
-        let translation = panGesture.translationInView(superview)
-        center = CGPointMake(center.x + translation.x, center.y + translation.y)
-        panGesture.setTranslation(CGPointZero, inView: superview)
+}
+
+extension TileView: Tappable {
+    func tapped(with gesture: UITapGestureRecognizer) {
+        delegate?.tapped(tileView: self)
+    }
+}
+
+extension TileView: UIGestureRecognizerDelegate {
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        return gestureRecognizers?.contains(gestureRecognizer) == true &&
+            gestureRecognizers?.contains(otherGestureRecognizer) == true
     }
 }
