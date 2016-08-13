@@ -62,12 +62,12 @@ struct TileDistributionRenderer {
         
         let shape = CAShapeLayer()
         shape.path = path.cgPath
-        shape.fillColor = UIColor.white().withAlphaComponent(0.6).cgColor
+        shape.fillColor = UIColor.white.withAlphaComponent(0.6).cgColor
         shape.shadowOffset = CGSize(width: 1, height: 1)
-        shape.shadowColor = UIColor.black().cgColor
+        shape.shadowColor = UIColor.black.cgColor
         shape.shadowOpacity = 0.3
         shape.shadowRadius = 4
-        view.backgroundColor = .clear()
+        view.backgroundColor = .clear
         view.layer.addSublayer(shape)
         shapeLayer = shape
         

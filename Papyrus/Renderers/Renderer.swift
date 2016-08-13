@@ -23,7 +23,7 @@ protocol Renderer {
     func stroke(rect: CGRect, color: UIColor, width: CGFloat)
     
     /// Draws `text` in a given rectangle.
-    func draw(text: AttributedString, rect: CGRect)
+    func draw(text: NSAttributedString, rect: CGRect)
     
     /// Draw path in a given rectangle.
     func draw(path: CGPath, color: UIColor, lineColor: UIColor, lineWidth: CGFloat, rect: CGRect)
@@ -47,7 +47,7 @@ extension Renderer {
     }
     
     /// Draws text using the `textColor` defined by the `shader`.
-    func draw(text: AttributedString, rect: CGRect, shader: Shader) {
+    func draw(text: NSAttributedString, rect: CGRect, shader: Shader) {
         let mutable = NSMutableAttributedString(attributedString: text)
         mutable.addAttributes([NSForegroundColorAttributeName: shader.textColor!], range: NSMakeRange(0, mutable.length))
         draw(text: mutable, rect: rect)

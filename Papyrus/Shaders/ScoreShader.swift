@@ -15,6 +15,6 @@ struct ScoreShader : Shader {
     var strokeColor: UIColor?
     var strokeWidth: CGFloat?
     init(highlighted: Bool) {
-        textColor = (highlighted ? Color.bestScore : .black())
+        textColor = (highlighted ? Color.bestScore : .black)
     }
 }

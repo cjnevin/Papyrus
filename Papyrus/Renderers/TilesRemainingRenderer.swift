@@ -26,12 +26,12 @@ struct TilesRemainingRenderer {
             let countLabel = UILabel(frame: CGRect(x: tileView.frame.origin.x + tileView.frame.size.width - 15, y: tileView.frame.origin.y + tileView.frame.size.height - 15, width: 20, height: 20))
             countLabel.text = "\(count)"
             countLabel.font = .boldSystemFont(ofSize: 10)
-            countLabel.textColor = count == 0 ? .red() : .black()
+            countLabel.textColor = count == 0 ? .red : .black
             countLabel.textAlignment = .center
-            countLabel.backgroundColor = .white()
+            countLabel.backgroundColor = .white
             countLabel.clipsToBounds = true
             countLabel.layer.cornerRadius = 10
-            countLabel.layer.borderColor = UIColor.lightGray().cgColor
+            countLabel.layer.borderColor = UIColor.lightGray.cgColor
             countLabel.layer.borderWidth = 1
             view.addSubview(countLabel)
             countLabels?.append(countLabel)

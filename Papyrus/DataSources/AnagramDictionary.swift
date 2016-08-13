@@ -43,9 +43,9 @@ public struct AnagramDictionary: Lookup {
     }
     
     public init?(filename: String, type: String = "bin", bundle: Bundle = .main) {
-        guard let
-            anagramPath = bundle.pathForResource(filename, ofType: type),
-            anagramDictionary = AnagramDictionary.load(anagramPath) else {
+        guard
+            let anagramPath = bundle.path(forResource: filename, ofType: type),
+            let anagramDictionary = AnagramDictionary.load(anagramPath) else {
             return nil
         }
         self = anagramDictionary

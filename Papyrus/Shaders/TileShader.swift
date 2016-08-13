@@ -21,7 +21,7 @@ struct TileShader : Shader {
         } else {
             fillColor = Color.Tile.Default
         }
-        textColor = (points == 0 ? .gray() : .black())
+        textColor = (points == 0 ? .gray : .black)
         strokeColor = Color.Tile.Border
         strokeWidth = 0.5
     }

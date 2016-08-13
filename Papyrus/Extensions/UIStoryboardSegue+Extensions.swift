@@ -15,7 +15,7 @@ protocol Segueable {
 extension UIStoryboardSegue {
     func inferredDestinationViewController<T: Segueable>() -> T? {
         if T.segueIdentifier == identifier {
-            return destinationViewController as? T
+            return destination as? T
         }
         return nil
     }

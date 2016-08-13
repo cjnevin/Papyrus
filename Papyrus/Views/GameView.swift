@@ -63,7 +63,7 @@ class GameView: UIView {
         context.saveGState()
         boardDrawable?.draw(renderer: context)
         scoresDrawable?.draw(renderer: context)
-        let blackColor = UIColor.black().cgColor
+        let blackColor = UIColor.black.cgColor
         context.setStrokeColor(blackColor)
         context.setLineWidth(0.5)
         context.strokePath()
@@ -71,7 +71,7 @@ class GameView: UIView {
     }
     
     private var emptySquares: [Square] {
-        guard let board = boardDrawable?.board, boardRect = boardDrawable?.rect else { return [] }
+        guard let board = boardDrawable?.board, let boardRect = boardDrawable?.rect else { return [] }
         let squareSize = boardRect.width / CGFloat(board.size)
         func rect(for position: Position) -> CGRect {
             return CGRect(x: boardRect.origin.x + CGFloat(position.x) * squareSize,
@@ -87,7 +87,7 @@ class GameView: UIView {
         return emptySquares.flatMap({ (x, y, squareRect) -> Intersection? in
             let intersection = squareRect.intersection(rect)
             return intersection.widthPlusHeight > 0 ? (x, y, squareRect, intersection) : nil
-        }).sorted(isOrderedBefore: { (lhs, rhs) in
+        }).sorted(by: { (lhs, rhs) in
             return lhs.intersection.widthPlusHeight < rhs.intersection.widthPlusHeight
         }).last
     }

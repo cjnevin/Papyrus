@@ -18,7 +18,7 @@ struct StarDrawable : Drawable {
     }
     
     func draw(renderer: Renderer) {
-        guard let fillColor = shader.fillColor, lineColor = shader.strokeColor, lineWidth = shader.strokeWidth else {
+        guard let fillColor = shader.fillColor, let lineColor = shader.strokeColor, let lineWidth = shader.strokeWidth else {
             return
         }
         renderer.draw(path: createStarPath(rect.insetBy(dx: 5, dy: 5)), color: fillColor, lineColor: lineColor, lineWidth: lineWidth, rect: rect)

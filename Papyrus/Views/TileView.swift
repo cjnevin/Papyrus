@@ -91,7 +91,7 @@ class TileView: UIView {
     }
     
     override func draw(_ rect: CGRect) {
-        guard let tile = tile, context = UIGraphicsGetCurrentContext() else {
+        guard let tile = tile, let context = UIGraphicsGetCurrentContext() else {
             return
         }
         let drawable = TileDrawable(tile: tile, points: points, rect: rect, onBoard: onBoard, highlighted: highlighted)

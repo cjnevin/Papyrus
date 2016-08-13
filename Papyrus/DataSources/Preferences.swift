@@ -9,7 +9,7 @@
 import Foundation
 import PapyrusCore
 
-enum PreferenceError : ErrorProtocol {
+enum PreferenceError : Error {
     case insufficientPlayers
 }
 

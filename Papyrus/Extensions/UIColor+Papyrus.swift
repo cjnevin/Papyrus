@@ -58,7 +58,7 @@ enum Color {
     enum Tile {
         static let Border = irgba(100, 100, 80)
         static let Default = irgba(240, 240, 200)
-        static let Illuminated = UIColor.white()
+        static let Illuminated = UIColor.white
     }
 }
 

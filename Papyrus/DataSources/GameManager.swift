@@ -21,7 +21,7 @@ enum GameType: Int {
     
     var fileURL: URL {
         let fileNames: [GameType: String] = [.scrabble: "Scrabble", .superScrabble: "SuperScrabble", .wordfeud: "Wordfeud", .wordsWithFriends: "WordsWithFriends"]
-        return URL(fileURLWithPath: Bundle.main.pathForResource(fileNames[self], ofType: "json")!)
+        return URL(fileURLWithPath: Bundle.main.path(forResource: fileNames[self], ofType: "json")!)
     }
 }
 
@@ -75,7 +75,7 @@ class GameManager {
     func restoreGame(eventHandler handler: EventHandler, completion: (success: Bool) -> ()) {
         eventHandler = handler
         gameQueue.addOperation { [weak self] in
-            guard let strongSelf = self, dictionary = GameManager.dictionary else {
+            guard let strongSelf = self, let dictionary = GameManager.dictionary else {
                 call(onMain: { completion(success: false) })
                 return
             }
@@ -89,7 +89,7 @@ class GameManager {
         clearCache()
         eventHandler = handler
         gameQueue.addOperation { [weak self] in
-            guard let strongSelf = self, dictionary = GameManager.dictionary else {
+            guard let strongSelf = self, let dictionary = GameManager.dictionary else {
                 call(onMain: completion)
                 return
             }
@@ -155,7 +155,7 @@ class GameManager {
     }
     
     func swap(tiles: [Character]?, completion: Completion = { }) {
-        guard let letters = tiles where letters.count > 0 else {
+        guard let letters = tiles, letters.count > 0 else {
             return
         }
         enqueue {

@@ -115,7 +115,7 @@ class PreferencesDataSource : NSObject, UITableViewDataSource, UITableViewDelega
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if let cell: BoardCell = tableView.cell(at: indexPath) where indexPath.section == 0 {
+        if let cell: BoardCell = tableView.cell(at: indexPath), indexPath.section == 0 {
             cell.nextBoard()
             setValue(for: indexPath.section, value: cell.gameTypeIndex)
             tableView.deselectRow(at: indexPath, animated: true)

@@ -21,7 +21,7 @@ class BoardView: UIView {
         }
         context.saveGState()
         drawable?.draw(renderer: context)
-        let blackColor = UIColor.black().cgColor
+        let blackColor = UIColor.black.cgColor
         context.setStrokeColor(blackColor)
         context.setLineWidth(0.5)
         context.strokePath()

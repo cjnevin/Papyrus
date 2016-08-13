@@ -44,7 +44,7 @@ extension CGContext : Renderer {
         bezierPath.stroke()
     }
     
-    func draw(text: AttributedString, rect: CGRect) {
+    func draw(text: NSAttributedString, rect: CGRect) {
         text.draw(in: rect)
     }
 }

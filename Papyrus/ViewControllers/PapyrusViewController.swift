@@ -199,8 +199,8 @@ extension PapyrusViewController {
         
         if winners.count == 1 {
             guard let winner = winners.first,
-                playerIndex = gameManager.game?.index(of: winner),
-                bestMove = winner.solves.sorted(isOrderedBefore: { $0.score > $1.score }).first else {
+                let playerIndex = gameManager.game?.index(of: winner),
+                let bestMove = winner.solves.sorted(by: { $0.score > $1.score }).first else {
                     return
             }
             let message = "The winning score was \(winner.score).\nTheir best word was \(bestMove.word.uppercased()) scoring \(bestMove.score) points!"
@@ -277,7 +277,7 @@ extension PapyrusViewController {
     }
     
     func validate() {
-        guard let tiles = gameView?.placedTiles, blanks = gameView?.blanks where tiles.count > 0 else {
+        guard let tiles = gameView?.placedTiles, let blanks = gameView?.blanks, tiles.count > 0 else {
             buttonState.submitEnabled = false
             configureActions()
             return
@@ -330,7 +330,7 @@ extension PapyrusViewController {
     }
     
     @IBAction func submit(_ sender: UIBarButtonItem) {
-        guard let tiles = gameView?.placedTiles, blanks = gameView?.blanks where tiles.count > 0 else {
+        guard let tiles = gameView?.placedTiles, let blanks = gameView?.blanks, tiles.count > 0 else {
             return
         }
         gameManager.validate(tiles: tiles, blanks: blanks) { [weak self] (solution) in
@@ -380,7 +380,7 @@ extension PapyrusViewController {
     }
     
     func shuffle(_ sender: UIAlertAction) {
-        guard let oldTiles = gameManager.game?.player.rack, oldTileViews = gameView.tileViews where oldTiles.count > 1 else {
+        guard let oldTiles = gameManager.game?.player.rack, let oldTileViews = gameView.tileViews, oldTiles.count > 1 else {
             return
         }
         let zipped = zip(oldTiles, oldTileViews)
@@ -420,7 +420,7 @@ extension PapyrusViewController {
                     tileView.draggable = true
                 })
             }
-            guard let toSwap = gameView.tileViews?.filter({ $0.highlighted }).flatMap({ $0.tile }) where toSwap.count > 0 else {
+            guard let toSwap = gameView.tileViews?.filter({ $0.highlighted }).flatMap({ $0.tile }), toSwap.count > 0 else {
                 return
             }
             _ = gameManager.game?.swap(tiles: toSwap)
@@ -441,7 +441,7 @@ extension PapyrusViewController {
 
 extension PapyrusViewController: TileViewDelegate {
     func dropRect(for tileView: TileView) -> CGRect {
-        if let rect = gameView?.boardDrawable?.rect where tileView.frame.intersects(rect) {
+        if let rect = gameView?.boardDrawable?.rect, tileView.frame.intersects(rect) {
             if let intersection = gameView?.bestIntersection(forRect: tileView.frame) {
                 tileView.onBoard = true
                 tileView.x = intersection.x
@@ -455,7 +455,7 @@ extension PapyrusViewController: TileViewDelegate {
     
     /// Only use this method for moving a single tile.
     func rearrange(from currentIndex: Int, to newIndex: Int) {
-        guard let tileViews = gameView?.tileViews, newRect = tileViews[newIndex].initialFrame where currentIndex != newIndex else { return }
+        guard let tileViews = gameView?.tileViews, let newRect = tileViews[newIndex].initialFrame, currentIndex != newIndex else { return }
         
         func setFrame(at index: Int, to rect: CGRect) {
             tileViews[index].initialFrame = rect
@@ -489,10 +489,10 @@ extension PapyrusViewController: TileViewDelegate {
     
     func rearrange(tileView: TileView) -> Bool {
         if let intersected = gameView?.tileViews?.filter({ $0 != tileView && $0.initialFrame.intersects(tileView.frame) }),
-            closest = intersected.min(isOrderedBefore: { abs($0.initialFrame.midX - tileView.initialFrame.midX) < abs($1.initialFrame.midX - tileView.initialFrame.midX) }),
-            closestIndex = gameView?.tileViews?.index(of: closest),
-            tileIndex = gameView?.tileViews?.index(of: tileView),
-            startIndex = gameView?.tileViews?.startIndex {
+            let closest = intersected.min(by: { abs($0.initialFrame.midX - tileView.initialFrame.midX) < abs($1.initialFrame.midX - tileView.initialFrame.midX) }),
+            let closestIndex = gameView?.tileViews?.index(of: closest),
+            let tileIndex = gameView?.tileViews?.index(of: tileView),
+            let startIndex = gameView?.tileViews?.startIndex {
             let current = startIndex.distance(to: tileIndex)
             let new = startIndex.distance(to: closestIndex)
             gameManager.game?.moveRackTile(from: current, to: new)
