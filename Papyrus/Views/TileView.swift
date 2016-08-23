@@ -45,7 +45,7 @@ class TileView: UIView {
     var initialFrame: CGRect!
     var initialPoint: CGPoint!
     var delegate: TileViewDelegate?
-    var tile: Character! {
+    var tile: Letter! {
         didSet {
             setNeedsDisplay()
         }
@@ -75,7 +75,7 @@ class TileView: UIView {
         initialFrame = frame
     }
     
-    init(frame: CGRect, tile: Character, points: Int, onBoard: Bool, delegate: TileViewDelegate? = nil) {
+    init(frame: CGRect, tile: Letter, points: Int, onBoard: Bool, delegate: TileViewDelegate? = nil) {
         self.delegate = delegate
         self.tile = tile
         self.points = points

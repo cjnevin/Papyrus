@@ -20,14 +20,14 @@ struct TileDrawable : Drawable {
     var shader: Shader
     
     private let rect: CGRect
-    private let tile: Character
+    private let tile: Letter
     private var letter: String {
-        return String(tile).uppercased()
+        return tile.uppercased()
     }
     private let points: String
     private let onBoard: Bool
     
-    init(tile: Character, points: Int, rect: CGRect, onBoard: Bool, highlighted: Bool = false, shader: Shader? = nil) {
+    init(tile: Letter, points: Int, rect: CGRect, onBoard: Bool, highlighted: Bool = false, shader: Shader? = nil) {
         self.shader = shader ?? TileShader(tile: tile, points: points, highlighted: highlighted)
         self.onBoard = onBoard
         self.tile = tile

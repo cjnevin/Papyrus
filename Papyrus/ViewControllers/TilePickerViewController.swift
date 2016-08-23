@@ -13,7 +13,7 @@ class TilePickerViewController : UIViewController, TileViewDelegate {
     
     private var renderer = TileDistributionRenderer()
     
-    var completionHandler: ((Character) -> ())? = nil
+    var completionHandler: ((Letter) -> ())? = nil
     
     func prepareForPresentation(of bag: Bag) {
         renderer.render(inView: view, characters: bag.letterPoints.map({ $0.0 }), delegate: self)

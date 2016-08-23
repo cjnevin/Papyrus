@@ -31,7 +31,7 @@ struct BoardDrawable: Drawable {
         return CGPoint(x: rect.origin.x + x, y: rect.origin.y + y)
     }
     
-    init(board: BoardType, letterPoints: [Character: Int]? = nil, move: Solution? = nil, rect: CGRect) {
+    init(board: BoardType, letterPoints: [Letter: Int]? = nil, move: Solution? = nil, rect: CGRect) {
         self.rect = rect.presentationRect
         self.board = board
         squareSize = self.rect.width / CGFloat(board.size)

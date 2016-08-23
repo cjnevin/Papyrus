@@ -1,6 +1,7 @@
 {
   "allTilesUsedBonus": 35,
   "maximumWordLength": 15,
+  "centers": [[7,7]],
   "vowels": ["a", "e", "i", "o", "u"],
   "letters": {
     "_": 2, "a": 9, "b": 2, "c": 2, "d": 5,

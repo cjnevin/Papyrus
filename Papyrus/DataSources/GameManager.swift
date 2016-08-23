@@ -154,7 +154,7 @@ class GameManager {
         }
     }
     
-    func swap(tiles: [Character]?, completion: Completion = { }) {
+    func swap(tiles: [Letter]?, completion: Completion = { }) {
         guard let letters = tiles, letters.count > 0 else {
             return
         }

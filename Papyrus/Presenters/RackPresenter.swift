@@ -17,7 +17,7 @@ struct RackLayout {
 let defaultRackLayout = RackLayout(spacing: 4, inset: 8, maximum: CGFloat(Game.rackAmount))
 
 struct RackedTile {
-    let tile: Character
+    let tile: Letter
     let points: Int
     let rect: CGRect
     let movable: Bool
@@ -64,7 +64,7 @@ struct RackPresenter: Presenter {
         view.rackedTiles = tiles(for: rack, letterPoints: game.bag.letterPoints, movable: player is Human)
     }
     
-    func tiles(for rack: [RackTile], letterPoints: [Character: Int], movable: Bool) -> [RackedTile] {
+    func tiles(for rack: [RackTile], letterPoints: [Letter: Int], movable: Bool) -> [RackedTile] {
         return rack.enumerated().map ({ (index, tile) in
             let tileRect = RackPresenter.calculateTileRect(in: rect, at: index, with: rack.count)
             let points = tile.isBlank ? 0 : letterPoints[tile.letter] ?? 0

@@ -17,7 +17,7 @@ struct TileDistributionRenderer {
     var tileViews: [TileView]?
     var shapeLayer: CAShapeLayer?
     
-    mutating func render(inView view: UIView, filterBlank: Bool = true, characters: [Character], delegate: TileViewDelegate? = nil) {
+    mutating func render(inView view: UIView, filterBlank: Bool = true, characters: [Letter], delegate: TileViewDelegate? = nil) {
         shapeLayer?.removeFromSuperlayer()
         tileViews?.forEach({ $0.removeFromSuperview() })
         

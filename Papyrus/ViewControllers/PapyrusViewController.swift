@@ -170,7 +170,7 @@ extension PapyrusViewController {
                 return
             }
             strongSelf.title = "Starting..."
-            if let word = strongSelf.gameManager.game?.lastMove?.word {
+            if let word = strongSelf.gameManager.game?.lastMove?.word.joined(separator: "") {
                 strongSelf.definition(for: word)
             }
             strongSelf.gameManager.start()
@@ -203,7 +203,7 @@ extension PapyrusViewController {
                 let bestMove = winner.solves.sorted(by: { $0.score > $1.score }).first else {
                     return
             }
-            let message = "The winning score was \(winner.score).\nTheir best word was \(bestMove.word.uppercased()) scoring \(bestMove.score) points!"
+            let message = "The winning score was \(winner.score).\nTheir best word was \(bestMove.lookupWord.uppercased()) scoring \(bestMove.score) points!"
             let alertController = UIAlertController(title: "Player \(playerIndex + 1) won!", message: message, preferredStyle: .alert)
             alertController.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
             present(alertController, animated: true, completion: nil)
@@ -251,7 +251,7 @@ extension PapyrusViewController {
                 updateShownTiles()
             }
         case let .move(_, solution):
-            definition(for: solution.word)
+            definition(for: solution.lookupWord)
         case let .drewTiles(_, letters):
             print("Drew Tiles \(letters)")
         case .swappedTiles(_):
@@ -344,7 +344,7 @@ extension PapyrusViewController {
             guard let strongSelf = self else { return }
             var message = ""
             if let solution = solution {
-                message = "\((solution.horizontal ? "Horizontal" : "Vertical")) word '\(solution.word.uppercased())' can be placed \(solution.y + 1) down and \(solution.x + 1) across for a total score of \(solution.score)"
+                message = "\((solution.horizontal ? "Horizontal" : "Vertical")) word '\(solution.lookupWord.uppercased())' can be placed \(solution.y + 1) down and \(solution.x + 1) across for a total score of \(solution.score)"
             } else {
                 message = "Could not find any solutions, perhaps skip or swap letters?"
             }
