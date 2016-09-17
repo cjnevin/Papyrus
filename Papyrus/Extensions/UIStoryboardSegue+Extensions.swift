@@ -23,6 +23,6 @@ extension UIStoryboardSegue {
 
 extension UIViewController: Segueable {
     class var segueIdentifier: String {
-        return String(self) + "Segue"
+        return String(describing: self) + "Segue"
     }
 }

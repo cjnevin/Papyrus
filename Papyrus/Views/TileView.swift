@@ -18,7 +18,7 @@ protocol TileViewDelegate {
 }
 
 class TileView: UIView {
-    private var velocity = CGPoint.zero
+    fileprivate var velocity = CGPoint.zero
     
     var draggable: Bool = false {
         didSet {

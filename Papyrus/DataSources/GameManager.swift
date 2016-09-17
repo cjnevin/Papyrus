@@ -9,7 +9,7 @@
 import Foundation
 import PapyrusCore
 
-private func call(onMain block: () -> ()) {
+private func call(onMain block: @escaping () -> ()) {
     DispatchQueue.main.async(execute: block)
 }
 
@@ -72,19 +72,19 @@ class GameManager {
         }
     }
     
-    func restoreGame(eventHandler handler: EventHandler, completion: (success: Bool) -> ()) {
+    func restoreGame(eventHandler handler: @escaping EventHandler, completion: @escaping (Bool) -> ()) {
         eventHandler = handler
         gameQueue.addOperation { [weak self] in
             guard let strongSelf = self, let dictionary = GameManager.dictionary else {
-                call(onMain: { completion(success: false) })
+                call(onMain: { completion(false) })
                 return
             }
             strongSelf.game = try? Game(restoring: strongSelf.cacheURL, dictionary: dictionary, eventHandler: strongSelf.wrappedEventHandler)
-            call(onMain: { [weak strongSelf] in completion(success: strongSelf?.game != nil) })
+            call(onMain: { [weak strongSelf] in completion(strongSelf?.game != nil) })
         }
     }
     
-    func newGame(eventHandler handler: EventHandler, completion: Completion) {
+    func newGame(eventHandler handler: @escaping EventHandler, completion: @escaping Completion) {
         endGame()
         clearCache()
         eventHandler = handler
@@ -117,10 +117,10 @@ class GameManager {
         game = nil
     }
     
-    func hint(completion: (solution: Solution?) -> ()) {
+    func hint(completion: @escaping (Solution?) -> ()) {
         enqueue {
             $0.suggestion() { solution in
-                call(onMain: { completion(solution: solution) })
+                call(onMain: { completion(solution) })
             }
         }
     }
@@ -132,7 +132,7 @@ class GameManager {
         }
     }
     
-    func shuffle(completion: Completion = { }) {
+    func shuffle(completion: @escaping Completion = { }) {
         enqueue { [weak self] in
             $0.shuffleRack()
             self?.saveCache()
@@ -140,21 +140,21 @@ class GameManager {
         }
     }
     
-    func skip(completion: Completion = { }) {
+    func skip(completion: @escaping Completion = { }) {
         enqueue {
             $0.skip()
             call(onMain: completion)
         }
     }
     
-    func start(completion: Completion = { }) {
+    func start(completion: @escaping Completion = { }) {
         enqueue {
             $0.start()
             call(onMain: completion)
         }
     }
     
-    func swap(tiles: [Character]?, completion: Completion = { }) {
+    func swap(tiles: [Character]?, completion: @escaping Completion = { }) {
         guard let letters = tiles, letters.count > 0 else {
             return
         }
@@ -164,32 +164,32 @@ class GameManager {
         }
     }
     
-    func swapAll(completion: Completion = { }) {
+    func swapAll(completion: @escaping Completion = { }) {
         swap(tiles: game?.player.rack.map({ $0.letter }),
              completion: completion)
     }
     
     func validate(tiles: LetterPositions,
                   blanks: Positions,
-                  completion: (solution: Solution?) -> ()) {
+                  completion: @escaping (Solution?) -> ()) {
         guard game?.ended == false && game?.player is Human else {
-            completion(solution: nil)
+            completion(nil)
             return
         }
         enqueue { game in
             switch game.validate(positions: tiles, blanks: blanks) {
             case let .valid(solution):
-                call { completion(solution: solution) }
+                call { completion(solution) }
             default:
-                call { completion(solution: nil) }
+                call { completion(nil) }
             }
         }
     }
     
-    private func enqueue(_ f: (game: Game) -> ()) {
+    private func enqueue(_ f: @escaping (Game) -> ()) {
         gameQueue.addOperation { [weak game] in
             guard let game = game else { return }
-            f(game: game)
+            f(game)
         }
     }
 }

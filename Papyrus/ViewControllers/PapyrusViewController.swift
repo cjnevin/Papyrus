@@ -39,7 +39,7 @@ class PapyrusViewController: UIViewController {
     @IBOutlet var swapButton: UIBarButtonItem!
     @IBOutlet var actionButton: UIBarButtonItem!
     
-    override func prepare(for segue: UIStoryboardSegue, sender: AnyObject?) {
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if let viewController: TilePickerViewController = segue.inferredDestinationViewController() {
             tilePickerViewController = viewController
         } else if let viewController: TilesRemainingViewController = segue.inferredDestinationViewController() {
@@ -96,7 +96,7 @@ class PapyrusViewController: UIViewController {
     func configureActions() {
         let human = gameManager.game?.player is Human && gameManager.game?.ended == false
         buttonState.skipEnabled = human
-        buttonState.tilesDropped = gameView?.placedTiles.count > 0 && human
+        buttonState.tilesDropped = gameView.placedTiles.count > 0 && human
         swapButton.isEnabled = buttonState.skipEnabled
         skipButton.isEnabled = buttonState.skipEnabled
         submitButton.isEnabled = buttonState.submitEnabled && human
@@ -145,7 +145,7 @@ class PapyrusViewController: UIViewController {
         }
     }
     
-    func spring(animations: () -> ()) {
+    func spring(animations: @escaping () -> ()) {
         UIView.animate(withDuration: 0.3, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 1.0, options: .curveEaseOut, animations: animations, completion: nil)
     }
     

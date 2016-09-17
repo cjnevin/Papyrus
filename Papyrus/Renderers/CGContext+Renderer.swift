@@ -9,17 +9,13 @@
 import UIKit
 
 extension CGContext : Renderer {
-    func move(to position: CGPoint) {
-        self.moveTo(x: position.x, y: position.y)
-    }
-    
     func line(to position: CGPoint, color: UIColor, width: CGFloat) {
         var r = CGFloat(0), g = CGFloat(0), b = CGFloat(0), a = CGFloat(0)
         color.getRed(&r, green: &g, blue: &b, alpha: &a)
         let context = UIGraphicsGetCurrentContext()
         context?.setLineWidth(width)
         context?.setStrokeColor(red: r, green: g, blue: b, alpha: a)
-        self.addLineTo(x: position.x, y: position.y)
+        addLine(to: position)
         context?.strokePath()
     }
     

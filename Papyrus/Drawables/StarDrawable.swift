@@ -45,14 +45,13 @@ struct StarDrawable : Drawable {
             
             let angle = CGFloat(i) * stepAngle - CGFloat(M_PI_2)
             
-            let x = radius * cos(angle) + center.x
-            let y = radius * sin(angle) + center.y
+            let point = CGPoint(x: radius * cos(angle) + center.x,
+                                y: radius * sin(angle) + center.y)
             
             if i == 0 {
-                path.moveTo(nil, x: x, y: y)
-            }
-            else {
-                path.addLineTo(nil, x: x, y: y)
+                path.move(to: point)
+            } else {
+                path.addLine(to: point)
             }
         }
         

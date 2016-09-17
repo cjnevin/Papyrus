@@ -15,7 +15,7 @@ protocol NibLoadable {
 
 extension NibLoadable where Self: UIView {
     static var nibName: String {
-        return String(self).components(separatedBy: ".").last!
+        return String(describing: self).components(separatedBy: ".").last!
     }
     
     static func nib(in bundle: Bundle = .main) -> UINib {
@@ -28,11 +28,11 @@ extension UITableView {
         self.register(loadable.nib(in: bundle), forCellReuseIdentifier: loadable.nibName)
     }
     
-    func cell<T: NibLoadable where T: UITableViewCell>(at indexPath: IndexPath) -> T? {
+    func cell<T: NibLoadable>(at indexPath: IndexPath) -> T? where T: UITableViewCell {
         return self.cellForRow(at: indexPath) as? T
     }
     
-    func dequeueCell<T: NibLoadable where T: UITableViewCell>(at indexPath: IndexPath) -> T {
+    func dequeueCell<T: NibLoadable>(at indexPath: IndexPath) -> T where T: UITableViewCell {
         return self.dequeueReusableCell(withIdentifier: T.nibName, for: indexPath) as! T
     }
 }

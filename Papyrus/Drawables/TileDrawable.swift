@@ -22,7 +22,7 @@ struct TileDrawable : Drawable {
     private let rect: CGRect
     private let tile: Character
     private var letter: String {
-        return String(tile).uppercased()
+        return String(tile).capitalized
     }
     private let points: String
     private let onBoard: Bool

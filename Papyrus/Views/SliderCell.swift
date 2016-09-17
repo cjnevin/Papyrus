@@ -16,7 +16,7 @@ class SliderCell : UITableViewCell, NibLoadable {
     private var values: [String]?
     private var stepValue: Float = 1
     private var index: Int = 0
-    private var onChange: ((newIndex: Int) -> ())?
+    private var onChange: ((Int) -> ())?
     
     override func layoutSubviews() {
         super.layoutSubviews()
@@ -24,7 +24,7 @@ class SliderCell : UITableViewCell, NibLoadable {
         changedValue()
     }
     
-    func configure(index: Int, values: [String], onChange: (newIndex: Int) -> ()) {
+    func configure(index: Int, values: [String], onChange: @escaping (Int) -> ()) {
         self.values = values
         self.index = index
         slider.maximumValue = Float(values.count - 1)
@@ -32,7 +32,7 @@ class SliderCell : UITableViewCell, NibLoadable {
     }
     
     private func changedValue() {
-        onChange?(newIndex: index)
+        onChange?(index)
         label.text = values?[index]
     }
     

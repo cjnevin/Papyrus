@@ -36,7 +36,7 @@ struct BoardDrawable: Drawable {
         self.board = board
         squareSize = self.rect.width / CGFloat(board.size)
         shader = BoardShader(color: Color.Tile.Default, strokeColor: Color.Tile.Border, strokeWidth: 0.5)
-        range = board.layout.indices
+        range = 0..<board.layout.rows
         var drawables = [Drawable]()
         board.allPositions.forEach { (position) in
             let point = rectPoint(x: CGFloat(position.x) * squareSize, y: CGFloat(position.y) * squareSize)
