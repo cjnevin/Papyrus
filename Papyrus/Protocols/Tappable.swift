@@ -8,19 +8,25 @@
 
 import UIKit
 
-protocol Tappable {
-    func makeTappable(selector: Selector)
-    func makeUntappable()
+@objc protocol ObjCTappable {
+    func tapped(with gesture: UITapGestureRecognizer)
+}
+
+protocol Tappable: Gesturable, ObjCTappable {
+    var tappable: Bool { get set }
 }
 
 extension Tappable where Self: UIView {
-    func makeTappable(selector: Selector) {
-        let tapGesture = UITapGestureRecognizer(target: self, action: selector)
-        tapGesture.delegate = self as? UIGestureRecognizerDelegate
-        addGestureRecognizer(tapGesture)
-    }
-    
-    func makeUntappable() {
-        gestureRecognizers?.forEach { if $0 is UITapGestureRecognizer { removeGestureRecognizer($0) } }
+    var tappable: Bool {
+        get {
+            return hasGesture(ofType: UITapGestureRecognizer.self)
+        }
+        set {
+            if newValue {
+                register(gestureType: UITapGestureRecognizer.self, selector: #selector(tapped))
+            } else {
+                unregister(gestureType: UITapGestureRecognizer.self)
+            }
+        }
     }
 }

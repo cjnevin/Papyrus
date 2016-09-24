@@ -8,19 +8,25 @@
 
 import UIKit
 
-protocol Movable {
-    func makeMovable(selector: Selector)
-    func makeImmovable()
+@objc protocol ObjCMovable {
+    func moved(with gesture: UIPanGestureRecognizer)
+}
+
+protocol Movable: Gesturable, ObjCMovable {
+    var movable: Bool { get set }
 }
 
 extension Movable where Self: UIView {
-    func makeMovable(selector: Selector) {
-        let panGesture = UIPanGestureRecognizer(target: self, action: selector)
-        panGesture.delegate = self as? UIGestureRecognizerDelegate
-        addGestureRecognizer(panGesture)
-    }
-    
-    func makeImmovable() {
-        gestureRecognizers?.forEach { if $0 is UIPanGestureRecognizer { removeGestureRecognizer($0) } }
+    var movable: Bool {
+        get {
+            return hasGesture(ofType: UIPanGestureRecognizer.self)
+        }
+        set {
+            if newValue {
+                register(gestureType: UIPanGestureRecognizer.self, selector: #selector(moved))
+            } else {
+                unregister(gestureType: UIPanGestureRecognizer.self)
+            }
+        }
     }
 }

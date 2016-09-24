@@ -28,6 +28,7 @@
 		993A53491C7EE273001F93CB /* SquareShader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 993A53471C7EE273001F93CB /* SquareShader.swift */; };
 		993A534B1C7EE338001F93CB /* TileShader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 993A534A1C7EE338001F93CB /* TileShader.swift */; };
 		993A534D1C7EED0F001F93CB /* FillShader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 993A534C1C7EED0F001F93CB /* FillShader.swift */; };
+		993CA7A81D966D08008CB45D /* Gesturable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 993CA7A71D966D08008CB45D /* Gesturable.swift */; };
 		994BFCC41CD7B7E900D96156 /* PreferencesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 994BFCC31CD7B7E900D96156 /* PreferencesViewController.swift */; };
 		994BFCC91CD7C31600D96156 /* Preferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = 994BFCC81CD7C31600D96156 /* Preferences.swift */; };
 		9951B58B1D294187007FD0EC /* AnagramDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9951B58A1D294187007FD0EC /* AnagramDictionary.swift */; };
@@ -147,6 +148,7 @@
 		993A53471C7EE273001F93CB /* SquareShader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SquareShader.swift; sourceTree = "<group>"; };
 		993A534A1C7EE338001F93CB /* TileShader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TileShader.swift; sourceTree = "<group>"; };
 		993A534C1C7EED0F001F93CB /* FillShader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FillShader.swift; sourceTree = "<group>"; };
+		993CA7A71D966D08008CB45D /* Gesturable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Gesturable.swift; sourceTree = "<group>"; };
 		994BFCC31CD7B7E900D96156 /* PreferencesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PreferencesViewController.swift; sourceTree = "<group>"; };
 		994BFCC81CD7C31600D96156 /* Preferences.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Preferences.swift; sourceTree = "<group>"; };
 		9951B58A1D294187007FD0EC /* AnagramDictionary.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnagramDictionary.swift; sourceTree = "<group>"; };
@@ -278,6 +280,7 @@
 			isa = PBXGroup;
 			children = (
 				9953DCFF1D2EE26500B0B367 /* NibLoadable.swift */,
+				993CA7A71D966D08008CB45D /* Gesturable.swift */,
 				9967E1191D3108B80028FDA8 /* Movable.swift */,
 				9967E11A1D3108B80028FDA8 /* Pressable.swift */,
 				9967E11B1D3108B80028FDA8 /* Tappable.swift */,
@@ -665,6 +668,7 @@
 				990EA09E1D2EF7D0003C1ECE /* SliderCell.swift in Sources */,
 				9953DD001D2EE26500B0B367 /* NibLoadable.swift in Sources */,
 				995B8B181D30493F0093EFB0 /* UIStoryboardSegue+Extensions.swift in Sources */,
+				993CA7A81D966D08008CB45D /* Gesturable.swift in Sources */,
 				99139C0C1D1F12770033E114 /* StarDrawable.swift in Sources */,
 				991E211B1D2B18EC00A5058F /* ScoreShader.swift in Sources */,
 				999925B01CD091E9005D1C89 /* GamePresenter.swift in Sources */,

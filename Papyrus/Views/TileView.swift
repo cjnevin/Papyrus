@@ -22,19 +22,8 @@ class TileView: UIView {
     
     var draggable: Bool = false {
         didSet {
-            if draggable {
-                makePressable(selector: #selector(pressed))
-                makeMovable(selector: #selector(moved))
-            } else {
-                makeUnpressable()
-                makeImmovable()
-            }
-        }
-    }
-    
-    var tappable: Bool = false {
-        didSet {
-            tappable ? makeTappable(selector: #selector(tapped)) : makeUntappable()
+            pressable = draggable
+            movable = draggable
         }
     }
     

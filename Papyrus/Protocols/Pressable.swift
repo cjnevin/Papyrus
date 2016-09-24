@@ -8,20 +8,26 @@
 
 import UIKit
 
-protocol Pressable {
-    func makePressable(selector: Selector)
-    func makeUnpressable()
+@objc protocol ObjCPressable {
+    func pressed(with gesture: UILongPressGestureRecognizer)
+}
+
+protocol Pressable: Gesturable, ObjCPressable {
+    var pressable: Bool { get set }
 }
 
 extension Pressable where Self: UIView {
-    func makePressable(selector: Selector) {
-        let pressGesture = UILongPressGestureRecognizer(target: self, action: selector)
-        pressGesture.minimumPressDuration = 0.001
-        pressGesture.delegate = self as? UIGestureRecognizerDelegate
-        addGestureRecognizer(pressGesture)
-    }
-    
-    func makeUnpressable() {
-        gestureRecognizers?.forEach { if $0 is UILongPressGestureRecognizer { removeGestureRecognizer($0) } }
+    var pressable: Bool {
+        get {
+            return hasGesture(ofType: UILongPressGestureRecognizer.self)
+        }
+        set {
+            if newValue {
+                let longPress = register(gestureType: UILongPressGestureRecognizer.self, selector: #selector(pressed)) as! UILongPressGestureRecognizer
+                longPress.minimumPressDuration = 0.001
+            } else {
+                unregister(gestureType: UILongPressGestureRecognizer.self)
+            }
+        }
     }
 }
