@@ -33,7 +33,7 @@ struct SquareDrawable : Drawable {
         }
         if shader.textColor != nil && acronym != nil {
             let letterText = NSAttributedString(string: acronym!, attributes: [NSFontAttributeName: UIFont.acronymFontBig])
-            let letterRect = rect.centeredRectForSize(letterText.size())
+            let letterRect = rect.centeredRect(forSize: letterText.size())
             renderer.draw(text: letterText, rect: letterRect, shader: shader)
         }
     }

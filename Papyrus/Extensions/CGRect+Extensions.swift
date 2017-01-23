@@ -26,9 +26,9 @@ extension CGRect {
         return width + height
     }
     
-    func innerRectForSize(_ size: CGSize,
-        verticalAlignment: VerticalAlignment,
-        horizontalAlignment: HorizontalAlignment) -> CGRect {
+    func innerRect(forSize size: CGSize,
+                   verticalAlignment: VerticalAlignment,
+                   horizontalAlignment: HorizontalAlignment) -> CGRect {
             return CGRect(
                 origin: CGPoint(
                     x: origin.x + (self.size.width - size.width) * horizontalAlignment.rawValue,
@@ -36,9 +36,10 @@ extension CGRect {
                 size: size)
     }
     
-    func centeredRectForSize(_ size: CGSize) -> CGRect {
-        return innerRectForSize(size, verticalAlignment: .center,
-            horizontalAlignment: .center)
+    func centeredRect(forSize size: CGSize) -> CGRect {
+        return innerRect(forSize: size,
+                         verticalAlignment: .center,
+                         horizontalAlignment: .center)
     }
     
     var presentationRect: CGRect {

@@ -41,12 +41,12 @@ struct TileDrawable : Drawable {
         
         let letterFont = onBoard ? UIFont.tileLetterFontSmall : UIFont.tileLetterFontBig
         let letterText = NSAttributedString(string: letter, attributes: [NSFontAttributeName: letterFont])
-        let letterRect = rect.centeredRectForSize(letterText.size())
+        let letterRect = rect.centeredRect(forSize: letterText.size())
         renderer.draw(text: letterText, rect: letterRect, shader: shader)
         
         let pointsFont = onBoard ? UIFont.pointsFontSmall : UIFont.pointsFontBig
         let pointsText = NSAttributedString(string: points, attributes: [NSFontAttributeName: pointsFont])
-        let pointsRect = rect.insetBy(dx: onBoard ? 1 : 2, dy: 1).innerRectForSize(pointsText.size(),
+        let pointsRect = rect.insetBy(dx: onBoard ? 1 : 2, dy: 1).innerRect(forSize: pointsText.size(),
             verticalAlignment: .bottom, horizontalAlignment: .right)
         renderer.draw(text: pointsText, rect: pointsRect, shader: shader)
     }

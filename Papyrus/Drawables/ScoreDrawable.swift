@@ -24,7 +24,7 @@ struct ScoreDrawable : Drawable {
     
     func draw(renderer: Renderer) {
         let attrText = NSAttributedString(string: text, attributes: [NSFontAttributeName: font])
-        let attrRect = rect.centeredRectForSize(attrText.size())
+        let attrRect = rect.centeredRect(forSize: attrText.size())
         renderer.draw(text: attrText, rect: attrRect, shader: shader)
     }
 }
