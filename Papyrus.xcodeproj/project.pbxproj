@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		838A3C401F2E1F340048829C /* PreferencesDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 838A3C3F1F2E1F340048829C /* PreferencesDataSource.swift */; };
+		83AAABEE1F5BE82200E68D16 /* GameType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83AAABED1F5BE82200E68D16 /* GameType.swift */; };
 		9901443F1C7E4E61005C81BF /* CGRect+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9901443E1C7E4E61005C81BF /* CGRect+Extensions.swift */; };
 		990EA09E1D2EF7D0003C1ECE /* SliderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 990EA09D1D2EF7D0003C1ECE /* SliderCell.swift */; };
 		990EA0A21D2EF7DA003C1ECE /* SliderCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 990EA0A11D2EF7DA003C1ECE /* SliderCell.xib */; };
@@ -129,6 +130,7 @@
 
 /* Begin PBXFileReference section */
 		838A3C3F1F2E1F340048829C /* PreferencesDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PreferencesDataSource.swift; sourceTree = "<group>"; };
+		83AAABED1F5BE82200E68D16 /* GameType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameType.swift; sourceTree = "<group>"; };
 		9901443E1C7E4E61005C81BF /* CGRect+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CGRect+Extensions.swift"; sourceTree = "<group>"; };
 		990EA09D1D2EF7D0003C1ECE /* SliderCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SliderCell.swift; sourceTree = "<group>"; };
 		990EA0A11D2EF7DA003C1ECE /* SliderCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SliderCell.xib; sourceTree = "<group>"; };
@@ -273,6 +275,7 @@
 			children = (
 				9951B58A1D294187007FD0EC /* AnagramDictionary.swift */,
 				9951B5991D29B202007FD0EC /* GameManager.swift */,
+				83AAABED1F5BE82200E68D16 /* GameType.swift */,
 				994BFCC81CD7C31600D96156 /* Preferences.swift */,
 			);
 			path = DataSources;
@@ -676,6 +679,7 @@
 				991E211B1D2B18EC00A5058F /* ScoreShader.swift in Sources */,
 				999925B01CD091E9005D1C89 /* GamePresenter.swift in Sources */,
 				838A3C401F2E1F340048829C /* PreferencesDataSource.swift in Sources */,
+				83AAABEE1F5BE82200E68D16 /* GameType.swift in Sources */,
 				99CDF8561CD417C30007DC89 /* TilePickerViewController.swift in Sources */,
 				99D36F551C7E6B2B00A5ADA8 /* Renderer.swift in Sources */,
 				9951B59A1D29B202007FD0EC /* GameManager.swift in Sources */,

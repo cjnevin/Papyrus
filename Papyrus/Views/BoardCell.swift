@@ -10,7 +10,7 @@ import UIKit
 import PapyrusCore
 
 class BoardCell : UITableViewCell, NibLoadable {
-    private let gameTypes: [GameType] = [.scrabble, .superScrabble, .wordfeud, .wordsWithFriends]
+    private let gameTypes = allGameTypes
     private(set) var gameTypeIndex: Int = 0
     private var boardPresenter: BoardPresenter!
     

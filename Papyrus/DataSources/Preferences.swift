@@ -69,7 +69,7 @@ class Preferences {
     }
     
     var gameType: GameType {
-        return GameType(rawValue: values[0]!)!
+		return allGameTypes[values[0]!]
     }
     
     var opponents: Int {

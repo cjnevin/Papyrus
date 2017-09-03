@@ -13,19 +13,6 @@ private func call(onMain block: @escaping () -> ()) {
     DispatchQueue.main.async(execute: block)
 }
 
-enum GameType: Int {
-    case scrabble = 0
-    case superScrabble
-    case wordfeud
-    case wordsWithFriends
-    
-    var fileURL: URL {
-        let fileNames: [GameType: String] = [.scrabble: "Scrabble", .superScrabble: "SuperScrabble", .wordfeud: "Wordfeud", .wordsWithFriends: "WordsWithFriends"]
-        return URL(fileURLWithPath: Bundle.main.path(forResource: fileNames[self], ofType: "json")!)
-    }
-}
-
-
 class GameManager {
     typealias Completion = () -> ()
     private let gameQueue = OperationQueue()
