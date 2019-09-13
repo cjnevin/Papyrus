@@ -10,7 +10,7 @@ import Foundation
 import PapyrusCore
 
 internal func hashValue(_ word: String) -> String {
-    return String(word.characters.sorted())
+    return String(word.sorted())
 }
 
 internal func hashValue(_ characters: [Character]) -> String {
@@ -29,7 +29,7 @@ public struct AnagramDictionary: Lookup {
     }
     
     public static func deserialize(_ data: Data) -> AnagramDictionary? {
-        guard let words = try? JSONSerialization.jsonObject(with: data, options: JSONSerialization.ReadingOptions.allowFragments) as! Words else {
+        guard let words = try? JSONSerialization.jsonObject(with: data, options: JSONSerialization.ReadingOptions.allowFragments) as? Words else {
             return nil
         }
         return AnagramDictionary(words: words)

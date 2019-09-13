@@ -49,7 +49,7 @@ extension Renderer {
     /// Draws text using the `textColor` defined by the `shader`.
     func draw(text: NSAttributedString, rect: CGRect, shader: Shader) {
         let mutable = NSMutableAttributedString(attributedString: text)
-        mutable.addAttributes([NSForegroundColorAttributeName: shader.textColor!], range: NSMakeRange(0, mutable.length))
+        mutable.addAttributes([NSAttributedString.Key.foregroundColor: shader.textColor!], range: NSMakeRange(0, mutable.length))
         draw(text: mutable, rect: rect)
     }
 }

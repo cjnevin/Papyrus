@@ -39,7 +39,7 @@ struct GamePresenter: Presenter {
                                                 height: boardRect.origin.y - definitionY))
         definitionLabel.numberOfLines = 4
         definitionLabel.textAlignment = .center
-        definitionLabel.font = UIFont.systemFont(ofSize: 12, weight: UIFontWeightLight)
+        definitionLabel.font = UIFont.systemFont(ofSize: 12, weight: UIFont.Weight.light)
         view.addSubview(definitionLabel)
         
         presenters = [boardPresenter, rackPresenter, scorePresenter]

@@ -119,7 +119,7 @@ extension TileView: Pressable {
             UIView.animate(withDuration: animationDuration) {
                 self.bounds = self.initialFrame
                 self.center = center
-                self.superview?.bringSubview(toFront: self)
+                self.superview?.bringSubviewToFront(self)
                 self.transform = CGAffineTransform(scaleX: shrunkScale, y: shrunkScale)
             }
         case .cancelled, .ended, .failed:

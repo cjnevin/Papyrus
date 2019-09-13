@@ -19,11 +19,11 @@ struct ScoreDrawable : Drawable {
         self.shader = ScoreShader(highlighted: highlighted)
         self.text = text
         self.rect = rect
-        self.font = UIFont.systemFont(ofSize: 13, weight: myTurn ? UIFontWeightSemibold : UIFontWeightLight)
+        self.font = UIFont.systemFont(ofSize: 13, weight: myTurn ? UIFont.Weight.semibold : UIFont.Weight.light)
     }
     
     func draw(renderer: Renderer) {
-        let attrText = NSAttributedString(string: text, attributes: [NSFontAttributeName: font])
+        let attrText = NSAttributedString(string: text, attributes: [NSAttributedString.Key.font: font])
         let attrRect = rect.centeredRect(forSize: attrText.size())
         renderer.draw(text: attrText, rect: attrRect, shader: shader)
     }

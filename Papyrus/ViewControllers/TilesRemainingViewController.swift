@@ -22,7 +22,7 @@ class TilesRemainingViewController : UIViewController {
         view.addGestureRecognizer(tap)
     }
     
-    func tapped(gesture: UITapGestureRecognizer) {
+    @objc func tapped(gesture: UITapGestureRecognizer) {
         completionHandler?()
     }
     

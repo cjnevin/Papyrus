@@ -69,7 +69,7 @@ class PapyrusViewController: UIViewController {
         }
     }
     
-    func doubleTappedRack(gesture: UITapGestureRecognizer) {
+    @objc func doubleTappedRack(gesture: UITapGestureRecognizer) {
         if presenter?.rackPresenter.rect.contains(gesture.location(in: gameView)) == true {
             reset()
         }
@@ -139,9 +139,9 @@ class PapyrusViewController: UIViewController {
         guard !out else {
             return
         }
-        gameView.bringSubview(toFront: gameView.blackoutView)
+        gameView.bringSubviewToFront(gameView.blackoutView)
         if let views = allExcept {
-            views.forEach({ $0.superview?.bringSubview(toFront: $0) })
+            views.forEach({ $0.superview?.bringSubviewToFront($0) })
         }
     }
     
@@ -483,15 +483,15 @@ extension PapyrusViewController: TileViewDelegate {
         let obj = gameView!.tileViews![currentIndex]
         gameView?.tileViews?.remove(at: currentIndex)
         gameView?.tileViews?.insert(obj, at: newIndex)
-        gameView?.bringSubview(toFront: obj)
+        gameView?.bringSubviewToFront(obj)
         gameManager.saveCache()
     }
     
     func rearrange(tileView: TileView) -> Bool {
         if let intersected = gameView?.tileViews?.filter({ $0 != tileView && $0.initialFrame.intersects(tileView.frame) }),
             let closest = intersected.min(by: { abs($0.initialFrame.midX - tileView.initialFrame.midX) < abs($1.initialFrame.midX - tileView.initialFrame.midX) }),
-            let closestIndex = gameView?.tileViews?.index(of: closest),
-            let tileIndex = gameView?.tileViews?.index(of: tileView),
+            let closestIndex = gameView?.tileViews?.firstIndex(of: closest),
+            let tileIndex = gameView?.tileViews?.firstIndex(of: tileView),
             let startIndex = gameView?.tileViews?.startIndex {
             let current = startIndex.distance(to: tileIndex)
             let new = startIndex.distance(to: closestIndex)
